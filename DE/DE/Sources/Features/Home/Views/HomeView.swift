@@ -1,19 +1,30 @@
 //
-//  ViewController.swift
-//  Basic
+//  HomeView.swift
+//  Drink-EG
 //
-//  Created by 김도연 on 12/17/24.
+//  Created by 이현주 on 12/17/24.
 //
 
 import UIKit
 
-class ViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
+class HomeView: UIView {
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        backgroundColor = .white
+        self.addComponents()
+        self.constraints()
     }
-
-
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
+    private func addComponents() {
+        [].forEach{ self.addSubview($0) }
+    }
+    
+    private func constraints() {
+        
+    }
 }
-
