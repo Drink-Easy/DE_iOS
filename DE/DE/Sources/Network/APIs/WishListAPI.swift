@@ -1,9 +1,4 @@
-//
-//  WishListAPI.swift
-//  Drink-EG
-//
-//  Created by 이현주 on 8/20/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import Foundation
 import Moya

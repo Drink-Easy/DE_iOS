@@ -1,9 +1,4 @@
-//
-//  AuthPlugin.swift
-//  Drink-EG
-//
-//  Created by 김도연 on 8/11/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import Foundation
 import Moya
@@ -24,6 +19,3 @@ final class CookiePlugin: PluginType {
         return request
     }
 }
-
-
-//let provider = MoyaProvider<MemberInfoAPI>(plugins: [CookiePlugin()])

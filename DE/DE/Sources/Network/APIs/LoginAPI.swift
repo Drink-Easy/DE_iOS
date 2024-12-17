@@ -1,9 +1,4 @@
-//
-//  LoginAPI.swift
-//  Drink-EG
-//
-//  Created by 김도연 on 8/12/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import Foundation
 import Moya
