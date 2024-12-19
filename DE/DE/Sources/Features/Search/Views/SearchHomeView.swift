@@ -13,7 +13,10 @@ class SearchHomeView: UIView {
     
     public lazy var backBtn: UIButton = {
         let b = UIButton()
-        b.setImage(UIImage(named: "icon_arrow_back"), for: .normal)
+        
+        let config = UIImage.SymbolConfiguration(pointSize: 22, weight: .regular)
+        let image = UIImage(systemName: "chevron.backward", withConfiguration: config)
+        b.setImage(image, for: .normal)
         b.tintColor = UIColor(hex: "#767676")
         b.backgroundColor = .clear
         return b
@@ -22,20 +25,30 @@ class SearchHomeView: UIView {
     public lazy var title: UILabel = {
         let l = UILabel()
         l.numberOfLines = 0
-        l.text = "검색하고 싶은\n와인을 입력해주세요"
-        l.textColor = UIColor(hex: "#121212")
-        l.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        let text = "검색하고 싶은\n와인을 입력해주세요"
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineHeightMultiple = 1.25 // 줄 간격 설정
+
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.ptdSemiBoldFont(ofSize: 24),
+            .paragraphStyle: paragraphStyle,
+            .foregroundColor: UIColor(hex: "#121212") ?? .black
+        ]
+        let attributedText = NSAttributedString(string: text, attributes: attributes)
+        l.attributedText = attributedText
+        
         return l
     }()
 
     public var searchBar: SearchBar = SearchBar()
         
-//    public lazy var searchResultTableView: UITableView = {
-//        let t = UITableView()
-//        t.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
-//        t.separatorStyle = .none
-//        return t
-//    }()
+    public lazy var searchResultTableView: UITableView = {
+        let t = UITableView()
+        t.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
+        t.separatorStyle = .none
+        return t
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -49,7 +62,7 @@ class SearchHomeView: UIView {
     }
     
     private func addComponents() {
-        [backBtn, title, searchBar].forEach{ self.addSubview($0) }
+        [backBtn, title, searchBar, searchResultTableView].forEach{ self.addSubview($0) }
     }
     
     private func constraints() {
@@ -65,8 +78,14 @@ class SearchHomeView: UIView {
         
         searchBar.snp.makeConstraints { make in
             make.top.equalTo(title.snp.bottom).offset(16)
-            make.leading.trailing.equalTo(safeAreaLayoutGuide).inset(24)
+            make.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(24)
             make.height.equalTo(48)
+        }
+        
+        searchResultTableView.snp.makeConstraints { make in
+            make.top.equalTo(searchBar.snp.bottom).offset(18)
+            make.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(18)
+            make.bottom.equalTo(<#T##other: any ConstraintRelatableTarget##any ConstraintRelatableTarget#>)
         }
     }
 }
