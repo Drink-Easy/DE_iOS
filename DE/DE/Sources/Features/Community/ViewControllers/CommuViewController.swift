@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class CommuViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
