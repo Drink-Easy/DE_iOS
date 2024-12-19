@@ -3,6 +3,11 @@
 
 ## 🍎 Developers
 
+| [@doyeonk429](https://github.com/doyeonk429) | [@JustinLee02](https://github.com/JustinLee02) | [@yeseonglee](https://github.com/yeseonglee) | [@dlguszoo](https://github.com/dlguszoo) |
+|:---:|:---:|:---:|:---:|
+| image | image | image | image |
+| `stack` | `stack` | `stack` | `stack` |
+
 ## 🛠 Development Environment
 
 ## ✏️ Project Design
@@ -38,3 +43,38 @@
 6. 작업 완료 후, 에러가 없는지 확인한 후 push 한다
 7. 코드리뷰 후 수정사항 반영한 뒤, develop 브랜치에 merge 한다
 ```
+
+## Tuist 사용법
+코드는 그대로 XCode에서 작성하면 됨.
+외부 라이브러리 추가 시, Project파일과 Package파일 수정 필요함(못하겠으면 @doyeonk429 에게 연락)
+- env
+version : 4.31.0(mise 통해서 설치)
+
+- 주요 명령어 (mise exec -- : node로 global 설정 시 필요 없음. 바로 명령어만 쳐도됨)
+1. Tuist project, Package file을 수정한 경우(infoplist, package, target)
+   `tuist install`
+2. 1번의 경우에서 프로젝트 세팅파일을 수정하고 싶은 경우
+   `tuist edit`
+3. Xcode project(workspace)를 열고 싶은 경우
+   `tuist generate`
+4. 모듈/피쳐/라이브러리 간 의존관계를 보고 싶은 경우(graph 첫 실행 시, 관련 패키지 설치 필요)
+   `tuist graph`
+5. package error 등으로 서드파티를 다시 불러오고 싶은 경우
+   `tuist clean`
+6. 그 외 명령어를 알고 싶을 때
+   `tuist help`
+
+## 📂 Foldering
+
+## 🎁 Library
+| Name         | Version  |          |
+| ------------ |  :-----: |  ------------ |
+| [Then](https://github.com/devxoul/Then) | `3.0.0` | 객체를 생성하고 설정하는 코드를 하나의 블록으로 묶어 가독성을 향상시킨다. |
+| [SnapKit](https://github.com/SnapKit/SnapKit) | `5.7.1` | Auto Layout 제약조건을 코드로 쉽게 작성할 수 있도록 한다. |
+| [Moya](https://github.com/Moya/Moya) |  `15.0.3`  | 네트워크 요청을 간편화하고, 구조화된 방식으로 관리하여 코드의 가독성과 유지 보수성을 높인다.|
+| [Kingfisher](https://github.com/onevcat/Kingfisher) | `7.12.0` | URL로부터 이미지 다운 중 처리 작업을 간소화할 수 있도록 한다. |
+| [NMFMaps](https://navermaps.github.io/ios-map-sdk/guide-ko/1.html) | `15.0.3` | 다양한 지도 기능을 원활하게 구현할 수 있도록 한다. |
+| [Lottie](https://github.com/airbnb/lottie-ios) | `4.5.0` | 벡터 그래픽 애니메이션을 추가하고 관리한다. |
+
+## 🔥 Trouble Shooting
+[🔗 Trouble Shooting](https://doyeonk429.notion.site/16106f67320e801689eec293b53a57bd?pvs=4)
