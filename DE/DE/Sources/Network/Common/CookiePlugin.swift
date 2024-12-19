@@ -1,14 +1,8 @@
-//
-//  AuthPlugin.swift
-//  Drink-EG
-//
-//  Created by 김도연 on 8/11/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import Foundation
 import Moya
 
-// 토큰 추가 플러그인 정의
 final class CookiePlugin: PluginType {
     func prepare(_ request: URLRequest, target: TargetType) -> URLRequest {
         var request = request
@@ -24,6 +18,3 @@ final class CookiePlugin: PluginType {
         return request
     }
 }
-
-
-//let provider = MoyaProvider<MemberInfoAPI>(plugins: [CookiePlugin()])
