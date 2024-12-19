@@ -13,6 +13,7 @@ struct Constants {
     
     struct API {
         static let baseURL = "https://drinkeg.com"
+        static let commentURL = "https://drinkeg.com/comments"
     }
     
     struct Design {
