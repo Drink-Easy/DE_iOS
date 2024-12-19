@@ -7,13 +7,17 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+struct SearchModel {
+    
+}
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view.
-    }
-
-
+struct Wine: Codable {
+    let wineId: Int
+    let name: String
+    let imageUrl: String?
+    let rating: Double
+    let price: Int
+    let area: String
+    let sort: String
 }
 
