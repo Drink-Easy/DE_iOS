@@ -25,7 +25,7 @@ extension MemberInfoAPI: TargetType {
     
     var task: Moya.Task {
         switch self {
-        case .patchMember(let data) :
+        case .patchMember(let data):
             return .requestJSONEncodable(data)
         }
     }
