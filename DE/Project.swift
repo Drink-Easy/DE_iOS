@@ -83,20 +83,26 @@ let project = Project(
                 .target(name: "Network"),
                 .target(name: "Authentication"),
                 
-                // 뷰 관련
-                .external(name: "SnapKit"),
-                .external(name: "PinLayout"),
-                .external(name: "FlexLayout"),
                 .external(name: "KeychainSwift"),
-                
-                // 컴포넌트 기능
-                .external(name: "SDWebImage"),
-                .external(name: "SwiftyToaster"),
-                .external(name: "Then"),
-                .external(name: "Cosmos"),
+                .external(name: "KakaoSDK")
+//                .target(name: "Core"),
+//                .target(name: "Network"),
+//                .target(name: "Authentication"),
+//                
+//                // 뷰 관련
+//                .external(name: "SnapKit"),
+//                .external(name: "PinLayout"),
+//                .external(name: "FlexLayout"),
+//                .external(name: "KeychainSwift"),
+//                
+//                // 컴포넌트 기능
+//                .external(name: "SDWebImage"),
+//                .external(name: "SwiftyToaster"),
+//                .external(name: "Then"),
+//                .external(name: "Cosmos"),
                 
                 // 카카오
-                .external(name: "KakaoSDK"),
+//                .external(name: "KakaoSDK"),
 //                .external(name: "KakaoSDKAuth"),
 //                .external(name: "KakaoSDKCert"),
 //                .external(name: "KakaoSDKCertCore"),
@@ -164,34 +170,28 @@ let project = Project(
                 .target(name: "Core"),
                 .target(name: "Network"),
                 .target(name: "Authentication"),
-
-                // 뷰 관련
-                .external(name: "SnapKit"),
-                .external(name: "PinLayout"),
-                .external(name: "FlexLayout"),
+                
                 .external(name: "KeychainSwift"),
-                
-                // 컴포넌트 기능
-                .external(name: "SDWebImage"),
-                .external(name: "SwiftyToaster"),
-                .external(name: "Then"),
-                .external(name: "Cosmos"),
-                
-                // 카카오
-                .external(name: "KakaoSDK"),
-                .external(name: "KakaoSDKAuth"),
-                .external(name: "KakaoSDKCert"),
-                .external(name: "KakaoSDKCertCore"),
-                .external(name: "KakaoSDKCommon")
+                .external(name: "KakaoSDK")
             ]
         ),
-        // Core Module
         .target(
             name: "Core",
             destinations: .iOS,
             product: .staticFramework,
             bundleId: "\(bundleId).\(bundleMid).Core",
-            sources: ["DE/Sources/Core/**"]
+            sources: ["DE/Sources/Core/**"],
+            resources: ["DE/Resources/**"],
+            dependencies: [
+                .external(name: "SnapKit"),
+                .external(name: "PinLayout"),
+                .external(name: "FlexLayout"),
+                .external(name: "SDWebImage"),
+                .external(name: "SwiftyToaster"),
+                .external(name: "Then"),
+                .external(name: "Cosmos"),
+                
+            ]
         ),
         .target(
             name: "Network",
@@ -199,6 +199,7 @@ let project = Project(
             product: .staticFramework,
             bundleId: "\(bundleId).\(bundleMid).Network",
             sources: ["DE/Sources/Network/**"],
+            resources: ["DE/Resources/**"],
             dependencies: [
                 .external(name: "Moya"),
             ]
@@ -209,6 +210,7 @@ let project = Project(
             product: .staticFramework,
             bundleId: "\(bundleId).\(bundleMid).Authentication",
             sources: ["DE/Sources/Features/Authentication/**"],
+            resources: ["DE/Resources/**"],
             dependencies: [
                 .target(name: "Core"),
                 .target(name: "Network")
