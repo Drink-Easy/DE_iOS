@@ -3,7 +3,6 @@
 import Foundation
 import Moya
 
-// 토큰 추가 플러그인 정의
 final class CookiePlugin: PluginType {
     func prepare(_ request: URLRequest, target: TargetType) -> URLRequest {
         var request = request
