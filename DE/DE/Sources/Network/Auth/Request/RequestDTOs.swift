@@ -14,6 +14,12 @@ struct JoinDTO : Codable {
     let rePassword : String
 }
 
+// login
+struct LoginDTO : Codable {
+    let username : String
+    let password : String
+}
+
 // 사용자 초기 정보 추가
 struct MemberRequestDTO : Codable {
     let name : String
