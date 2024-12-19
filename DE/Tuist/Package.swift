@@ -15,10 +15,10 @@
                        "KeychainSwift" : .framework,
                        
                        "KakaoSDK": .staticLibrary,
-                       "KakaoSDKAuth": .staticLibrary,
-                       "KakaoSDKCert": .staticLibrary,
-                       "KakaoSDKCertCore": .staticLibrary,
-                       "KakaoSDKCommon": .staticLibrary,
+//                       "KakaoSDKAuth": .staticLibrary,
+//                       "KakaoSDKCert": .staticLibrary,
+//                       "KakaoSDKCertCore": .staticLibrary,
+//                       "KakaoSDKCommon": .staticLibrary,
                        
                        "SDWebImage" : .framework,
                        "SwiftyToaster" : .framework,

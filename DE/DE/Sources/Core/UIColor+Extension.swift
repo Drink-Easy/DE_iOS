@@ -7,10 +7,10 @@ struct AppColor {
 }
 
 extension UIColor {
-    class func appPurple() -> UIColor {
-        return UIColor(hex: AppColor.wineClassPurple)!
-    }
-    
+//    class func appPurple() -> UIColor {
+//        return UIColor(hex: AppColor.wineClassPurple)!
+//    }
+//    
     func toHex() -> String? {
         var r: CGFloat = 0
         var g: CGFloat = 0

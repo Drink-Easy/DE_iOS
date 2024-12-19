@@ -7,9 +7,9 @@
 
 import Foundation
 
-struct APIResponseWineNewsResponse : Codable {
-    let isSuccess: Bool
-    let code: String
-    let message: String
-    let result: WineNewsResponse
-}
+//struct APIResponseWineNewsResponse : Decodable {
+//    let isSuccess: Bool
+//    let code: String
+//    let message: String
+//    let result: WineNewsResponse
+//}
