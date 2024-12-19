@@ -1,5 +1,19 @@
 import ProjectDescription
 
+let swiftLintScript = TargetScript.pre(
+    script: """
+    export PATH="$PATH:/opt/homebrew/bin"
+    if which swiftlint >/dev/null; then
+        swiftlint
+    else
+        echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
+    fi
+    """,
+    name: "SwiftLint",
+    basedOnDependencyAnalysis: false
+)
+
+
 let project = Project(
     name: "DE",
     targets: [
@@ -60,6 +74,7 @@ let project = Project(
             sources: ["DE/Sources/**"],
             resources: ["DE/Resources/**"],
             entitlements: "DE/DE.entitlements",
+            scripts: [ swiftLintScript ],
             dependencies: [
                 // 뷰 관련
                 .external(name: "Moya"),

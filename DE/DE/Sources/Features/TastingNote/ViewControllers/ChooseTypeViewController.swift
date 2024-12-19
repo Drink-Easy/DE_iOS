@@ -1,19 +1,18 @@
 //
-//  ViewController.swift
-//  Basic
+//  ChooseTypeViewController.swift
+//  Drink-EG
 //
-//  Created by 김도연 on 12/17/24.
+//  Created by 이수현 on 12/17/24.
 //
 
 import UIKit
 
-class ViewController: UIViewController {
+class ChooseTypeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         // Do any additional setup after loading the view.
     }
 
-
 }
-
