@@ -6,5 +6,3 @@ struct CommentRequestDTO : Codable {
     let partId : Int
     let content : String
 }
-
-

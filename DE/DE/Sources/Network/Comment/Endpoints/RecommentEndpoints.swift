@@ -10,18 +10,23 @@ enum RecommentEndpoints {
 
 extension RecommentEndpoints : TargetType {
     var baseURL: URL {
-        guard let url = URL(string: Constants.API.baseURL) else {
+        guard let url = URL(string: Constants.API.recommentURL) else {
             fatalError("잘못된 URL")
         }
         return url
     }
     
     var path: String {
-        <#code#>
+        return "/"
     }
     
     var method: Moya.Method {
-        <#code#>
+        switch self {
+        case .postRecomments:
+            return .post
+        case .deleteRecomments:
+            return .delete
+        }
     }
     
     var task: Moya.Task {
