@@ -83,30 +83,30 @@ let project = Project(
                 .target(name: "Network"),
                 .target(name: "Authentication"),
                 
-                .external(name: "KeychainSwift"),
+                    .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK")
-//                .target(name: "Core"),
-//                .target(name: "Network"),
-//                .target(name: "Authentication"),
-//                
-//                // 뷰 관련
-//                .external(name: "SnapKit"),
-//                .external(name: "PinLayout"),
-//                .external(name: "FlexLayout"),
-//                .external(name: "KeychainSwift"),
-//                
-//                // 컴포넌트 기능
-//                .external(name: "SDWebImage"),
-//                .external(name: "SwiftyToaster"),
-//                .external(name: "Then"),
-//                .external(name: "Cosmos"),
+                //                .target(name: "Core"),
+                //                .target(name: "Network"),
+                //                .target(name: "Authentication"),
+                //
+                //                // 뷰 관련
+                //                .external(name: "SnapKit"),
+                //                .external(name: "PinLayout"),
+                //                .external(name: "FlexLayout"),
+                //                .external(name: "KeychainSwift"),
+                //
+                //                // 컴포넌트 기능
+                //                .external(name: "SDWebImage"),
+                //                .external(name: "SwiftyToaster"),
+                //                .external(name: "Then"),
+                //                .external(name: "Cosmos"),
                 
                 // 카카오
-//                .external(name: "KakaoSDK"),
-//                .external(name: "KakaoSDKAuth"),
-//                .external(name: "KakaoSDKCert"),
-//                .external(name: "KakaoSDKCertCore"),
-//                .external(name: "KakaoSDKCommon")
+                //                .external(name: "KakaoSDK"),
+                //                .external(name: "KakaoSDKAuth"),
+                //                .external(name: "KakaoSDKCert"),
+                //                .external(name: "KakaoSDKCertCore"),
+                //                .external(name: "KakaoSDKCommon")
             ]
         ),
         .target(
@@ -171,10 +171,11 @@ let project = Project(
                 .target(name: "Network"),
                 .target(name: "Authentication"),
                 
-                .external(name: "KeychainSwift"),
+                    .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK")
             ]
         ),
+        // module
         .target(
             name: "Core",
             destinations: .iOS,
@@ -216,16 +217,17 @@ let project = Project(
                 .target(name: "Network")
             ]
         ),
-            .target(
-                name: "DETests",
-                destinations: .iOS,
-                product: .unitTests,
-                bundleId: "io.tuist.DETests",
-                infoPlist: .default,
-                sources: ["DE/Tests/**"],
-                resources: [],
-                dependencies: [.target(name: "DE")]
-            ),
+        // Tests
+        .target(
+            name: "DETests",
+            destinations: .iOS,
+            product: .unitTests,
+            bundleId: "io.tuist.DETests",
+            infoPlist: .default,
+            sources: ["DE/Tests/**"],
+            resources: [],
+            dependencies: [.target(name: "DE")]
+        ),
     ],
     fileHeaderTemplate: "Copyright © 2024 DRINKIG. All rights reserved"
 )
