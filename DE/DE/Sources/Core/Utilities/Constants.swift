@@ -1,6 +1,7 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import Foundation
+import UIKit
 
 struct Constants {
     static let appname = "Drink-EG"
@@ -18,7 +19,20 @@ struct Constants {
     }
     
     struct Design {
-        
+        struct Colors {
+            static let black = UIColor(named: "black")
+            static let gray20 = UIColor(named: "gray20")
+            static let gray40 = UIColor(named: "gray40")
+            static let gray60 = UIColor(named: "gray60")
+            static let gray80 = UIColor(named: "gray80")
+            static let gray100 = UIColor(named: "gray100")
+            static let purple10 = UIColor(named: "purple10")
+            static let purple20 = UIColor(named: "purple20")
+            static let purple30 = UIColor(named: "purple30")
+            static let purple50 = UIColor(named: "purple50")
+            static let purple70 = UIColor(named: "purple70")
+            static let purple100 = UIColor(named: "purple100")
+        }
     }
     
     struct Policy {

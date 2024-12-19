@@ -36,7 +36,5 @@ extension RecommentEndpoints : TargetType {
     var headers: [String : String]? {
         <#code#>
     }
-    
-    
 }
 
