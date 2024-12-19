@@ -74,7 +74,7 @@ let project = Project(
                     // 다른 설정은 여기에다가 추가
                 ]
             ),
-            sources: ["DE/Sources/App/**"],
+            sources: ["DE/Sources/**"],
             resources: ["DE/Resources/**"],
             entitlements: "DE/DE.entitlements",
             scripts: [ swiftLintScript ],
