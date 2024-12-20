@@ -3,6 +3,7 @@
 .DS_Store
 .AppleDouble
 .LSOverride
+.mise.toml
 
 # Icon must end with two
 Icon
