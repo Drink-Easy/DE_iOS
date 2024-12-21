@@ -1,11 +1,12 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
+import CoreModule
 import Foundation
 import Moya
 
 enum RecommentEndpoints {
-    case postRecomments(id : Int)
-    case deleteRecomments(id : Int)
+    case postRecomments(requestDTO : RecommentRequestDTO)
+    case deleteRecomments(recommentId : Int)
 }
 
 extension RecommentEndpoints : TargetType {
@@ -30,11 +31,18 @@ extension RecommentEndpoints : TargetType {
     }
     
     var task: Moya.Task {
-        <#code#>
+        switch self {
+        case .postRecomments(let requestDTO):
+            return .requestCompositeParameters(bodyParameters: ["Content": requestDTO.content], bodyEncoding: JSONEncoding.default, urlParameters: ["commentId": requestDTO.commentId])
+        case .deleteRecomments(let id):
+            return .requestParameters(parameters: ["recommentId": id], encoding: URLEncoding.queryString)
+        }
     }
     
     var headers: [String : String]? {
-        <#code#>
+        return [
+            "Content-type": "application/json"
+        ]
     }
 }
 

@@ -3,40 +3,28 @@
 import Foundation
 import UIKit
 
-struct Constants {
-    static let appname = "Drink-EG"
+public struct Constants {
+    public static let appname = "Drink-EG"
     
-    struct Auth {
-        static var Tokens : [String : String] = [:]
+    public struct Auth {
+        public static var Tokens : [String : String] = [:]
         // iOS test id : iOSadmin
         // iOS test pw : 0000
     }
     
-    struct API {
-        static let baseURL = "https://drinkeg.com"
-        static let commentURL = "https://drinkeg.com/comments"
-        static let recommentURL = "https://drinkeg.com/recomments"
+    public struct API {
+        public static let baseURL = "https://drinkeg.com"
+        public static let commentURL = "https://drinkeg.com/comments"
+        public static let recommentURL = "https://drinkeg.com/recomments"
     }
     
-    struct Design {
-        struct Colors {
-            static let black = UIColor(named: "black")
-            static let gray20 = UIColor(named: "gray20")
-            static let gray40 = UIColor(named: "gray40")
-            static let gray60 = UIColor(named: "gray60")
-            static let gray80 = UIColor(named: "gray80")
-            static let gray100 = UIColor(named: "gray100")
-            static let purple10 = UIColor(named: "purple10")
-            static let purple20 = UIColor(named: "purple20")
-            static let purple30 = UIColor(named: "purple30")
-            static let purple50 = UIColor(named: "purple50")
-            static let purple70 = UIColor(named: "purple70")
-            static let purple100 = UIColor(named: "purple100")
-        }
+
+    public struct Design {
+        
     }
     
-    struct Policy {
-        static let service =
+    public struct Policy {
+        public static let service =
 """
 서비스 이용약관
 
@@ -215,7 +203,7 @@ struct Constants {
     2. 미디어, 통신사 등을 통한 홍보목적으로 이용자의 콘텐츠를 제공, 전시하도록 하는 등의 사용.
 """
   
-        static let privacy =
+        public static let privacy =
 """
 개인정보처리방침
 
