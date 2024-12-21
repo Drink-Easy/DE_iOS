@@ -68,22 +68,22 @@ let project = Project(
                         [
                             "CFBundleTypeRole" : "Editor",
                             "CFBundleURLName" : "kakaologin",
-                            "CFBundleURLSchemes" : ["kakao74177ce7b14b89614c47ac7d51464b95"]
+                            "CFBundleURLSchemes" : ["kakao180ebe6367eb8ee6eafe439aa551744a"]
                         ],
                     ],
                     // 다른 설정은 여기에다가 추가
                 ]
             ),
-            sources: ["DE/Sources/App/**"],
+            sources: ["DE/Sources/**"],
             resources: ["DE/Resources/**"],
             entitlements: "DE/DE.entitlements",
             scripts: [ swiftLintScript ],
             dependencies: [
-                .target(name: "Core"),
-                .target(name: "Network"),
+//                .target(name: "CoreModule"),
+//                .target(name: "Network"),
                 .target(name: "Authentication"),
                 
-                    .external(name: "KeychainSwift"),
+                .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK")
                 //                .target(name: "Core"),
                 //                .target(name: "Network"),
@@ -167,20 +167,20 @@ let project = Project(
             entitlements: "DE/DE.entitlements",
             scripts: [ swiftLintScript ],
             dependencies: [
-                .target(name: "Core"),
-                .target(name: "Network"),
+//                .target(name: "CoreModule"),
+//                .target(name: "Network"),
                 .target(name: "Authentication"),
                 
-                    .external(name: "KeychainSwift"),
+                .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK")
             ]
         ),
         // module
         .target(
-            name: "Core",
+            name: "CoreModule",
             destinations: .iOS,
             product: .staticFramework,
-            bundleId: "\(bundleId).\(bundleMid).Core",
+            bundleId: "\(bundleId).\(bundleMid).CoreModule",
             sources: ["DE/Sources/Core/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
@@ -191,7 +191,6 @@ let project = Project(
                 .external(name: "SwiftyToaster"),
                 .external(name: "Then"),
                 .external(name: "Cosmos"),
-                
             ]
         ),
         .target(
@@ -202,7 +201,8 @@ let project = Project(
             sources: ["DE/Sources/Network/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
-                .external(name: "Moya"),
+                .target(name: "CoreModule"),
+                .external(name: "Moya")
             ]
         ),
         .target(
@@ -213,7 +213,7 @@ let project = Project(
             sources: ["DE/Sources/Features/Authentication/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
-                .target(name: "Core"),
+                .target(name: "CoreModule"),
                 .target(name: "Network")
             ]
         ),

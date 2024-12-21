@@ -16,47 +16,47 @@ struct AppFontName {
 
 extension UIFont {
     // Pretendard Thin Font
-    class func ptdThinFont(ofSize size: CGFloat) -> UIFont {
+    public class func ptdThinFont(ofSize size: CGFloat) -> UIFont {
         return UIFont(name: AppFontName.pThin, size: size)!
     }
     
     // Pretendard Regular Font
-    class func ptdRegularFont(ofSize size: CGFloat) -> UIFont {
+    public class func ptdRegularFont(ofSize size: CGFloat) -> UIFont {
         return UIFont(name: AppFontName.pRegular, size: size)!
     }
     
     // Pretendard Medium Font
-    class func ptdMediumFont(ofSize size: CGFloat) -> UIFont {
+    public class func ptdMediumFont(ofSize size: CGFloat) -> UIFont {
         return UIFont(name: AppFontName.pMedium, size: size)!
     }
     
     // Pretendard Light Font
-    class func ptdLightFont(ofSize size: CGFloat) -> UIFont {
+    public class func ptdLightFont(ofSize size: CGFloat) -> UIFont {
         return UIFont(name: AppFontName.pLight, size: size)!
     }
     
     // Pretendard ExtraLight Font
-    class func ptdExtraLightFont(ofSize size: CGFloat) -> UIFont {
+    public class func ptdExtraLightFont(ofSize size: CGFloat) -> UIFont {
         return UIFont(name: AppFontName.pExtraLight, size: size)!
     }
     
     // Pretendard ExtraBold Font
-    class func ptdExtraBoldFont(ofSize size: CGFloat) -> UIFont {
+    public class func ptdExtraBoldFont(ofSize size: CGFloat) -> UIFont {
         return UIFont(name: AppFontName.pExtraBold, size: size)!
     }
     
     // Pretendard Bold Font
-    class func ptdBoldFont(ofSize size: CGFloat) -> UIFont {
+    public class func ptdBoldFont(ofSize size: CGFloat) -> UIFont {
         return UIFont(name: AppFontName.pBold, size: size)!
     }
     
     // Pretendard SemiBold Font
-    class func ptdSemiBoldFont(ofSize size: CGFloat) -> UIFont {
+    public class func ptdSemiBoldFont(ofSize size: CGFloat) -> UIFont {
         return UIFont(name: AppFontName.pSemiBold, size: size)!
     }
     
     // Pretendard Black Font
-    class func ptdBlackFont(ofSize size: CGFloat) -> UIFont {
+    public class func ptdBlackFont(ofSize size: CGFloat) -> UIFont {
         return UIFont(name: AppFontName.pBlack, size: size)!
     }
 }
