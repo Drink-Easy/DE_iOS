@@ -1,9 +1,4 @@
-//
-//  JoinViewController.swift
-//  Drink-EG
-//
-//  Created by 이현주 on 7/30/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
 import SnapKit
@@ -11,7 +6,6 @@ import Moya
 import SwiftyToaster
 
 class JoinViewController: UIViewController, UITextFieldDelegate {
-    let provider = MoyaProvider<LoginAPI>()
     public var userID : String?
     public var userPW : String?
     var joinDTO : JoinNLoginRequest?
@@ -217,7 +211,7 @@ class JoinViewController: UIViewController, UITextFieldDelegate {
         idTextField.layer.cornerRadius = 16
         idTextField.layer.borderWidth = 2
         idTextField.layer.borderColor = UIColor.white.cgColor.copy(alpha: 0.1)
-        idTextField.setIdIcon(UIImage(named: "icon_person")!)
+//        idTextField.setIdIcon(UIImage(named: "icon_person")!)
         idTextField.returnKeyType = .done
         idTextField.clearButtonMode = .always
     }
@@ -231,7 +225,7 @@ class JoinViewController: UIViewController, UITextFieldDelegate {
         pwTextField.layer.cornerRadius = 16
         pwTextField.layer.borderWidth = 2
         pwTextField.layer.borderColor = UIColor.white.cgColor.copy(alpha: 0.1)
-        pwTextField.setPwIcon(UIImage(named: "icon_lock")!)
+//        pwTextField.setPwIcon(UIImage(named: "icon_lock")!)
         pwTextField.returnKeyType = .done
         pwTextField.textContentType = .password
         pwTextField.isSecureTextEntry = true
@@ -248,7 +242,7 @@ class JoinViewController: UIViewController, UITextFieldDelegate {
         pwAgainTextField.layer.cornerRadius = 16
         pwAgainTextField.layer.borderWidth = 2
         pwAgainTextField.layer.borderColor = UIColor.white.cgColor.copy(alpha: 0.1)
-        pwAgainTextField.setPwIcon(UIImage(named: "icon_lock")!)
+//        pwAgainTextField.setPwIcon(UIImage(named: "icon_lock")!)
         pwAgainTextField.returnKeyType = .done
         pwAgainTextField.textContentType = .password
         pwAgainTextField.isSecureTextEntry = true
@@ -264,10 +258,10 @@ class JoinViewController: UIViewController, UITextFieldDelegate {
         textField.layer.borderWidth = 1
         textField.layer.borderColor = UIColor(hex: "#FF6F62")?.cgColor
         if textField.tag == 1 {
-            textField.setIdIcon(UIImage(named: "icon_person_fill")!)
+//            textField.setIdIcon(UIImage(named: "icon_person_fill")!)
         }
         else if textField.tag == 2 || textField.tag == 3 {
-            textField.setPwIcon(UIImage(named: "icon_lock_fill")!)
+//            textField.setPwIcon(UIImage(named: "icon_lock_fill")!)
         }
     }
 
@@ -277,10 +271,10 @@ class JoinViewController: UIViewController, UITextFieldDelegate {
         textField.layer.borderWidth = 2
         textField.layer.borderColor = UIColor.white.cgColor.copy(alpha: 0.1)
         if textField.tag == 1 {
-            textField.setIdIcon(UIImage(named: "icon_person")!)
+//            textField.setIdIcon(UIImage(named: "icon_person")!)
         }
         else if textField.tag == 2 || textField.tag == 3 {
-            textField.setPwIcon(UIImage(named: "icon_lock")!)
+//            textField.setPwIcon(UIImage(named: "icon_lock")!)
         }
 //        self.userID = self.idTextField.text
 //        self.userPW = self.pwTextField.text
@@ -318,27 +312,27 @@ class JoinViewController: UIViewController, UITextFieldDelegate {
     }
     
     private func callJoinAPI(completion: @escaping (Bool) -> Void) {
-        if let data = self.joinDTO {
-            provider.request(.postRegister(data: data)) { result in
-                switch result {
-                case .success(let response):
-                    do {
-                        let data = try response.map(APIResponseString.self)
-//                        print("User Created: \(data)")
-                        completion(data.isSuccess)
-                    } catch {
-                        print("Failed to map data: \(error)")
-                        completion(false)
-                    }
-                case .failure(let error):
-                    print("Request failed: \(error)")
-                    completion(false)
-                }
-            }
-        } else {
-            print("User Data가 없습니다.")
-            completion(false)
-        }
+//        if let data = self.joinDTO {
+//            provider.request(.postRegister(data: data)) { result in
+//                switch result {
+//                case .success(let response):
+//                    do {
+//                        let data = try response.map(APIResponseString.self)
+////                        print("User Created: \(data)")
+//                        completion(data.isSuccess)
+//                    } catch {
+//                        print("Failed to map data: \(error)")
+//                        completion(false)
+//                    }
+//                case .failure(let error):
+//                    print("Request failed: \(error)")
+//                    completion(false)
+//                }
+//            }
+//        } else {
+//            print("User Data가 없습니다.")
+//            completion(false)
+//        }
     }
 }
 

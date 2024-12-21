@@ -1,6 +1,7 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import Foundation
+import UIKit
 
 public struct Constants {
     public static let appname = "Drink-EG"
@@ -368,5 +369,8 @@ public struct Constants {
     1. 중앙행정심판위원회 : (국번없이) 110 (www.simpan.go.kr)
 """
     }
+    
+    public static let superViewHeight = UIScreen.main.bounds.height
+    public static let superViewWidth = UIScreen.main.bounds.width
     
 }

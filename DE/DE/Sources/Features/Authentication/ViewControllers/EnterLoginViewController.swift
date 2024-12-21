@@ -1,11 +1,7 @@
-//
-//  EnterLoginViewController.swift
-//  Drink-EG
-//
-//  Created by 이현주 on 7/30/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+import CoreModule
 
 class EnterLoginViewController: UIViewController {
     
@@ -64,7 +60,8 @@ class EnterLoginViewController: UIViewController {
         startButton.setTitleColor(.white, for: .normal)
         startButton.contentHorizontalAlignment = .center
         
-        startButton.backgroundColor = UIColor(hex: "#FF6F62")
+//        startButton.backgroundColor = UIColor(hex: "FF6F62")
+        startButton.backgroundColor = AppColor.purple100
         startButton.layer.cornerRadius = 16
         startButton.layer.borderWidth = 0
         

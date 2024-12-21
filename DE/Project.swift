@@ -79,8 +79,8 @@ let project = Project(
             entitlements: "DE/DE.entitlements",
             scripts: [ swiftLintScript ],
             dependencies: [
-                .target(name: "CoreModule"),
-                .target(name: "Network"),
+//                .target(name: "CoreModule"),
+//                .target(name: "Network"),
                 .target(name: "Authentication"),
                 
                 .external(name: "KeychainSwift"),
@@ -167,8 +167,8 @@ let project = Project(
             entitlements: "DE/DE.entitlements",
             scripts: [ swiftLintScript ],
             dependencies: [
-                .target(name: "CoreModule"),
-                .target(name: "Network"),
+//                .target(name: "CoreModule"),
+//                .target(name: "Network"),
                 .target(name: "Authentication"),
                 
                 .external(name: "KeychainSwift"),
