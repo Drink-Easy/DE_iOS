@@ -7,9 +7,7 @@
 
 import UIKit
 import SnapKit
-import Moya
-import SDWebImage
-import SwiftyToaster
+import Then
 
 class SearchHomeViewController : UIViewController, UISearchBarDelegate {
     
@@ -19,8 +17,23 @@ class SearchHomeViewController : UIViewController, UISearchBarDelegate {
         self.view = searchHomeView
     }
     
-    public lazy var searchHomeView: SearchHomeView = {
-        let v = SearchHomeView()
-        return v
-    }()
+    private lazy var searchHomeView = SearchHomeView().then {
+        $0.searchResultTableView.dataSource = self
+        $0.searchResultTableView.delegate = self
+    }
+}
+
+extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 20
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultTableViewCell", for: indexPath) as? SearchResultTableViewCell else {
+            return UITableViewCell()
+        }
+        
+//        cell.configure(model: data[indexPath.row])
+        return cell
+    }
 }

@@ -17,7 +17,7 @@ class SearchHomeView: UIView {
         let config = UIImage.SymbolConfiguration(pointSize: 22, weight: .regular)
         let image = UIImage(systemName: "chevron.backward", withConfiguration: config)
         b.setImage(image, for: .normal)
-        b.tintColor = Constants.Design.Colors.gray80
+        b.tintColor = Constants.AppColor.gray80
         b.backgroundColor = .clear
         return b
     }()
@@ -33,7 +33,7 @@ class SearchHomeView: UIView {
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.ptdSemiBoldFont(ofSize: 24),
             .paragraphStyle: paragraphStyle,
-            .foregroundColor: Constants.Design.Colors.black ?? .black
+            .foregroundColor: Constants.AppColor.DGblack ?? .black
         ]
         let attributedText = NSAttributedString(string: text, attributes: attributes)
         l.attributedText = attributedText
@@ -82,10 +82,10 @@ class SearchHomeView: UIView {
             make.height.equalTo(48)
         }
         
-//        searchResultTableView.snp.makeConstraints { make in
-//            make.top.equalTo(searchBar.snp.bottom).offset(18)
-//            make.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(18)
-//            make.bottom.equalTo(<#T##other: any ConstraintRelatableTarget##any ConstraintRelatableTarget#>)
-//        }
+        searchResultTableView.snp.makeConstraints { make in
+            make.top.equalTo(searchBar.snp.bottom).offset(18)
+            make.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(18)
+            make.bottom.equalTo(safeAreaLayoutGuide).offset(-18)
+        }
     }
 }
