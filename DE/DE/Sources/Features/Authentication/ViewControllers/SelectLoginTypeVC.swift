@@ -8,7 +8,7 @@ import SwiftyToaster
 import CoreModule
 import Then
 
-public class SelectLoginViewController: UIViewController {
+public class SelectLoginTypeVC: UIViewController {
     
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
     
@@ -30,7 +30,7 @@ public class SelectLoginViewController: UIViewController {
     let appleButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = UIColor(hex: "#FEE500")
-        button.setTitle("   카카오로 시작하기", for: .normal)
+        button.setTitle("   애플로 시작하기", for: .normal)
         button.setTitleColor(UIColor(hex: "#191919"), for: .normal)
         //        button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 22)
         button.layer.cornerRadius = 15
@@ -51,15 +51,27 @@ public class SelectLoginViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .white
+        if navigationController == nil {
+            let navigationController = UINavigationController(rootViewController: self)
+            navigationController.modalPresentationStyle = .fullScreen
+            
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
+                keyWindow.rootViewController?.present(navigationController, animated: true)
+            }
+        }
+        
+        self.navigationController?.isNavigationBarHidden = true
+        
+        view.backgroundColor = AppColor.bgGray
         setupUI()
         setupConstraints()
+        joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
     }
     
     private func setupUI() {
@@ -76,17 +88,17 @@ public class SelectLoginViewController: UIViewController {
         }
         kakaoButton.snp.makeConstraints { make in
             make.top.equalTo(Constants.superViewHeight * 0.6)
-            make.leading.trailing.equalToSuperview().inset(16)
+            make.leading.trailing.equalToSuperview().inset(Constants.padding)
             make.height.equalTo(60)
         }
         appleButton.snp.makeConstraints { make in
             make.top.equalTo(kakaoButton.snp.bottom).offset(10)
             make.height.equalTo(60)
-            make.leading.trailing.equalToSuperview().inset(16)
+            make.leading.trailing.equalToSuperview().inset(Constants.padding)
         }
         loginButton.snp.makeConstraints { make in
             make.top.equalTo(appleButton.snp.bottom).offset(10)
-            make.leading.trailing.equalToSuperview().inset(16)
+            make.leading.trailing.equalToSuperview().inset(Constants.padding)
         }
         joinStackView.snp.makeConstraints { make in
             make.centerX.equalToSuperview() // 수평 가운데 정렬
@@ -103,17 +115,17 @@ public class SelectLoginViewController: UIViewController {
     }
     
     @objc private func loginButtonTapped() {
-        let loginViewController = LoginViewController()
+        let loginViewController = LoginVC()
         navigationController?.pushViewController(loginViewController, animated: true)
     }
     
     @objc private func joinButtonTapped() {
-        let joinViewController = JoinViewController()
+        let joinViewController = SignUpVC()
         navigationController?.pushViewController(joinViewController, animated: true)
     }
     
     private func goToNextView() {
-        if LoginViewController.isFirstLogin {
+        if LoginVC.isFirstLogin {
             let enterTasteTestViewController = TestVC()
             navigationController?.pushViewController(enterTasteTestViewController, animated: true)
         } else {

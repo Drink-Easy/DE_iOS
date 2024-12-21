@@ -1,13 +1,9 @@
-//
-//  StartLoginCollectionViewCell.swift
-//  Drink-EG
-//
-//  Created by 이현주 on 7/30/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+import CoreModule
 
-class StartLoginCollectionViewCell: UICollectionViewCell {
+class OnboardingCollectionViewCell: UICollectionViewCell {
     
     private let imageView: UIImageView = {
         let iv = UIImageView()
@@ -17,7 +13,7 @@ class StartLoginCollectionViewCell: UICollectionViewCell {
     
     private let label1: UILabel = {
         let l1 = UILabel()
-        l1.font = .systemFont(ofSize: 32, weight: .bold)
+        l1.font = UIFont.ptdBoldFont(ofSize: 33)
         l1.textColor = .white
         l1.textAlignment = .center
         l1.numberOfLines = 0
@@ -26,7 +22,7 @@ class StartLoginCollectionViewCell: UICollectionViewCell {
     
     private let label2: UILabel = {
         let l2 = UILabel()
-        l2.font = .systemFont(ofSize: 14, weight: .bold)
+        l2.font = UIFont.ptdMediumFont(ofSize: 14)
         l2.textColor = .white
         l2.textAlignment = .center
         l2.numberOfLines = 0
@@ -43,36 +39,23 @@ class StartLoginCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupUI() {
-        let safeView = UIView()
-        self.contentView.addSubview(safeView)
         
-        safeView.addSubview(imageView)
-        safeView.addSubview(label1)
-        safeView.addSubview(label2)
+        addSubview(imageView)
+        addSubview(label1)
+        addSubview(label2)
         
         imageView.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
+            make.top.equalToSuperview().offset(-UIScreen.main.bounds.height * 0.1)
+            make.leading.trailing.bottom.equalToSuperview()
         }
-        
         label1.snp.makeConstraints { make in
-            make.top.equalTo(imageView.snp.bottom)
-            make.centerX.equalToSuperview()
+            make.top.equalToSuperview().inset(Constants.superViewHeight * 0.6)
+            make.leading.equalTo(Constants.padding)
         }
-        
         label2.snp.makeConstraints { make in
             make.top.equalTo(label1.snp.bottom).offset(20)
-            make.centerX.equalToSuperview()
+            make.leading.equalTo(Constants.padding)
         }
-        
-        safeView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(-50)
-        }
-        
-        
-        
-        
-        
     }
     
     func configure(imageName: String, label1: String, label2: String) {

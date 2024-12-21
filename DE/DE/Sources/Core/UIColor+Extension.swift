@@ -12,11 +12,13 @@ public struct AppColor {
     
     static public let gray100 = UIColor(hex: "#606060")
     static public let gray80 = UIColor(hex: "#A7A7A7")
-    static public let gray60 = UIColor(hex: "#DADADA")
+    static public let gray60 = UIColor(hex: "#C2C2C2")
     static public let gray40 = UIColor(hex: "#E9E9E9")
+    static public let gray30 = UIColor(hex: "#F0F0F0")
     static public let gray20 = UIColor(hex: "#F8F8F8")
     
     static public let black = UIColor(hex: "#121212")
+    static public let bgGray = UIColor(hex: "#F8F8FA")
 }
 
 public extension UIColor {
