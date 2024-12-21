@@ -49,11 +49,11 @@ extension CommentEndpoints : TargetType {
             return .requestJSONEncodable(data)
         case .deleteComments(let commentId):
             return .requestParameters(parameters: ["commentId" : commentId], encoding: URLEncoding.queryString)
-        case .patchComments(let commentId):
+        case .patchComments(let commentId) :
             return .requestParameters(parameters: ["commentId" : commentId], encoding: URLEncoding.queryString)
-        case .getComments(let partyId):
+        case .getComments(let partyId) :
             return .requestParameters(parameters: ["partyId" : partyId], encoding: URLEncoding.queryString)
-        case .getCommentsCount(let partyId):
+        case .getCommentsCount(let partyId) :
             return .requestParameters(parameters: ["partyId" : partyId], encoding: URLEncoding.queryString)
         }
     }
