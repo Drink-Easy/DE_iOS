@@ -64,11 +64,11 @@ class CustomSuggestionCell: UITableViewCell {
         }
     }
     
-    func configure(with wine: Wine, isSelected: Bool) {
-        let imageURL = URL(string: wine.imageUrl!)
-        suggestionImageView.sd_setImage(with: imageURL, placeholderImage: UIImage(named: "placeholder"))
-        suggestionLabel.text = wine.name
-        selectionIndicator.image = isSelected ? UIImage(systemName: "checkmark.square.fill") : UIImage(systemName: "square  ")
-        selectionIndicator.tintColor = isSelected ? .systemOrange : .lightGray
-    }
+//    func configure(with wine: Wine, isSelected: Bool) {
+//        let imageURL = URL(string: wine.imageUrl!)
+//        suggestionImageView.sd_setImage(with: imageURL, placeholderImage: UIImage(named: "placeholder"))
+//        suggestionLabel.text = wine.name
+//        selectionIndicator.image = isSelected ? UIImage(systemName: "checkmark.square.fill") : UIImage(systemName: "square  ")
+//        selectionIndicator.tintColor = isSelected ? .systemOrange : .lightGray
+//    }
 }

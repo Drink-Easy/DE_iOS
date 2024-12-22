@@ -7,12 +7,12 @@
 
 import UIKit
 
-class ChooseWineColorViewController: UIViewController {
+public class ChooseWineColorViewController: UIViewController {
 
     let chooseWineColor = ChooseWineColor()
     
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         setupUI()

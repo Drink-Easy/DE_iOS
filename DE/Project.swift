@@ -175,6 +175,70 @@ let project = Project(
                 .external(name: "KakaoSDK")
             ]
         ),
+        .target(
+            name: "TastingNoteApp",
+            destinations: .iOS,
+            product: .app,
+            bundleId: "\(bundleId).\(bundleMid).TastingNoteApp",
+            infoPlist: .extendingDefault(
+                with: [
+                    "UIUserInterfaceStyle" : "Light", // 다크모드 제거
+                    "UISupportedInterfaceOrientations" : ["UIInterfaceOrientationPortrait"], // 화면 방향 세로 고정
+                    "UIApplicationSceneManifest": [ // Scene 설정
+                        "UIApplicationSupportsMultipleScenes": false,
+                        "UISceneConfigurations": [
+                            "UIWindowSceneSessionRoleApplication": [
+                                [
+                                    "UISceneConfigurationName": "Default Configuration",
+                                    "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).SceneDelegate"
+                                ],
+                            ]
+                        ]
+                                                  ],
+                    // 폰트 추가
+                    "UIAppFonts": ["Pretendard-Black.otf",
+                                   "Pretendard-Bold.otf",
+                                   "Pretendard-ExtraBold.otf",
+                                   "Pretendard-ExtraLight.otf",
+                                   "Pretendard-Light.otf",
+                                   "Pretendard-Medium.otf",
+                                   "Pretendard-Regular.otf",
+                                   "Pretendard-SemiBold.otf",
+                                   "Pretendard-Thin.otf"
+                                  ],
+                    // http 연결 설정
+                    "NSAppTransportSecurity" : [
+                        "NSAllowsArbitraryLoads" : true
+                    ],
+                    // 런치 스크린
+                    "UILaunchScreen" : [
+                        "UIColorName" : "LaunchScreenBGColor",
+                        "UIImageName" : "LaunchLogo",
+                        "UIImageRespectsSafeAreaInsets" : true
+                    ],
+                    // 카카오 로그인 설정
+                    "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink", "kakaoplus"],
+                    "CFBundleURLTypes" : [
+                        [
+                            "CFBundleTypeRole" : "Editor",
+                            "CFBundleURLName" : "kakaologin",
+                            "CFBundleURLSchemes" : ["kakao74177ce7b14b89614c47ac7d51464b95"]
+                        ],
+                    ],
+                    // 다른 설정은 여기에다가 추가
+                ]
+            ),
+            sources: ["DE/Sources/App/**"],
+            resources: ["DE/Resources/**"],
+            entitlements: "DE/DE.entitlements",
+            scripts: [ swiftLintScript ],
+            dependencies: [
+                .target(name: "TastingNote"),
+                
+                .external(name: "KeychainSwift"),
+                .external(name: "KakaoSDK")
+            ]
+        ),
         // module
         .target(
             name: "CoreModule",
@@ -215,6 +279,18 @@ let project = Project(
             dependencies: [
                 .target(name: "CoreModule"),
                 .target(name: "Network")
+            ]
+        ),
+        .target(
+            name: "TastingNote",
+            destinations: .iOS,
+            product: .staticFramework,
+            bundleId: "\(bundleId).\(bundleMid).TastingNote",
+            sources: ["DE/Sources/Features/TastingNote/**"],
+            resources: ["DE/Resources/**"],
+            dependencies: [
+                .target(name: "CoreModule"),
+                .target(name: "Network"),
             ]
         ),
         // Tests

@@ -9,8 +9,8 @@ import Foundation
 import UIKit
 import SnapKit
 
+// 테이스팅 목록 표시 뷰
 class MyTastingNote: UIView {
-    
     
     let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.itemSize = .init(width: 107, height: 131)

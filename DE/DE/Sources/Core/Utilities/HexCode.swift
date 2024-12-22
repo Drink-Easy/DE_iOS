@@ -2,7 +2,7 @@
 
 import UIKit
 
-extension UIColor {
+public extension UIColor {
     // HEX 문자열을 UIColor로 변환하는 초기화 메서드
     convenience init?(hex: String) {
         var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)

@@ -6,7 +6,9 @@
 //
 
 import UIKit
+import CoreModule
 
+// 계열 선택 뷰
 class ChooseNoseView: UIView {
 
     override init(frame: CGRect) {
@@ -55,4 +57,5 @@ class ChooseNoseView: UIView {
         return n
     }()
 
+    
 }
