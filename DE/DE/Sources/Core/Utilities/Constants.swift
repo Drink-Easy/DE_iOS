@@ -13,9 +13,15 @@ public struct Constants {
     }
     
     public struct API {
-        public static let baseURL = "https://drinkeg.com"
-        public static let commentURL = "https://drinkeg.com/comments"
-        public static let recommentURL = "https://drinkeg.com/recomments"
+        static let baseURL = "https://drinkeg.com"
+        static let commentURL = "\(baseURL)/comments"
+        static let recommentURL = "\(baseURL)/recomments"
+        static let tastingNoteURL = "\(baseURL)/tasting-note"
+        static let wineClassURL = "\(baseURL)/wine-class"
+        static let wineLectureURL = "\(baseURL)/wine-lecture"
+        static let wineLectureCompleteURL = "\(baseURL)/wine-lecture-complete"
+        static let wineURL = "\(baseURL)/wine"
+        static let wishlistURL = "\(baseURL)/wine-wishlist"
     }
     
     public struct Design {
