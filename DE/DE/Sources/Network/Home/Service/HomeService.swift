@@ -22,7 +22,7 @@ final class HomeService: NetworkManager {
     
     //MARK: - API func
     
-    // 위시리스트 조회
+    /// 홈 정보 조회
     func fetchHomeInfo(completion: @escaping (Result<HomeResponseDTO, NetworkError>) -> Void) {
         request(target: .getHomeInfo, decodingType: HomeResponseDTO.self, completion: completion)
     }
