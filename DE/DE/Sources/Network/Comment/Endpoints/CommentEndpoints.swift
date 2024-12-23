@@ -22,10 +22,12 @@ extension CommentEndpoints : TargetType {
     
     var path: String {
         switch self {
-        case .deleteComments, .patchComments, .getComments:
-            return "/"
-        case .getCommentsCount:
-            return "/count/"
+        case .deleteComments(let commentId), .patchComments(let commentId):
+            return "/\(commentId)"
+        case .getComments(let partyId):
+            return "/\(partyId)"
+        case .getCommentsCount(let partyId):
+            return "/count/\(partyId)"
         default:
             return ""
         }
@@ -48,14 +50,8 @@ extension CommentEndpoints : TargetType {
         switch self {
         case .postComments(let data):
             return .requestJSONEncodable(data)
-        case .deleteComments(let commentId):
-            return .requestParameters(parameters: ["commentId" : commentId], encoding: URLEncoding.queryString)
-        case .patchComments(let commentId):
-            return .requestParameters(parameters: ["commentId" : commentId], encoding: URLEncoding.queryString)
-        case .getComments(let partyId):
-            return .requestParameters(parameters: ["partyId" : partyId], encoding: URLEncoding.queryString)
-        case .getCommentsCount(let partyId):
-            return .requestParameters(parameters: ["partyId" : partyId], encoding: URLEncoding.queryString)
+        case .deleteComments, .patchComments, .getComments, .getCommentsCount:
+            return .requestPlain
         }
     }
     
