@@ -20,6 +20,10 @@ final class RecommentService: NetworkManager {
         self.provider = provider ?? MoyaProvider<RecommentEndpoints>(plugins: plugins)
     }
     
+    func makePostDTO(commentId: Int, content: String) -> RecommentRequestDTO {
+        return RecommentRequestDTO(commentId: commentId, content: content)
+    }
+    
     //MARK: - API funcs
     
     // 대댓글 작성

@@ -20,6 +20,10 @@ final class WishlistService: NetworkManager {
         self.provider = provider ?? MoyaProvider<WishlistEndpoint>(plugins: plugins)
     }
     
+    func makePostDTO(wineId: Int) -> WineWishlistRequestDTO {
+        return WineWishlistRequestDTO(wineId: wineId)
+    }
+    
     //MARK: - API funcs
     
     // 위시리스트 조회

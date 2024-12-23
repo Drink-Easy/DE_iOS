@@ -18,6 +18,10 @@ final class AuthService : NetworkManager {
         // provider 초기화
         self.provider = provider ?? MoyaProvider<AuthorizationEndpoints>(plugins: plugins)
     }
+    
+    //MARK: - DTO funcs
+    
+    func makeLoginDTO(
 
     //MARK: - API funcs
     func login(data: LoginDTO, completion: @escaping (Result<LoginResponseDTO, NetworkError>) -> Void) {

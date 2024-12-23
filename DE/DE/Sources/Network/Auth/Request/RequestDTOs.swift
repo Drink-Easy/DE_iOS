@@ -5,6 +5,10 @@ import Foundation
 // 애플 로그인
 struct AppleLoginRequestDTO : Codable {
     let identityToken : String
+    
+    init(identityToken: String) {
+        self.identityToken = identityToken
+    }
 }
 
 // 자체 회원가입
@@ -12,12 +16,23 @@ struct JoinDTO : Codable {
     let username : String
     let password : String
     let rePassword : String
+    
+    init(username: String, password: String, rePassword: String) {
+        self.username = username
+        self.password = password
+        self.rePassword = rePassword
+    }
 }
 
 // login
 struct LoginDTO : Codable {
     let username : String
     let password : String
+    
+    init(username: String, password: String) {
+        self.username = username
+        self.password = password
+    }
 }
 
 // 사용자 초기 정보 추가
@@ -29,4 +44,14 @@ struct MemberRequestDTO : Codable {
     let wineArea : [String]
     let wineVariety : [String]
     let region : String
+    
+    init(name: String, isNewBie: Bool, monthPrice: Int, wineSort: [String], wineArea: [String], wineVariety: [String], region: String) {
+        self.name = name
+        self.isNewBie = isNewBie
+        self.monthPrice = monthPrice
+        self.wineSort = wineSort
+        self.wineArea = wineArea
+        self.wineVariety = wineVariety
+        self.region = region
+    }
 }

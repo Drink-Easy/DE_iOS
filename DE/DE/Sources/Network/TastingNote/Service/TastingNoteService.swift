@@ -19,6 +19,48 @@ final class TastingNoteService: NetworkManager {
         self.provider = provider ?? MoyaProvider<TastingNoteEndpoint>(plugins: plugins)
     }
     
+    //MARK: - DTO funcs
+    /// 새 노트 작성을 위한 DTO 생성 함수
+    /// 모든 항목이 required임
+    func makePostNoteDTO(wineId : Int,
+                         color: String,
+                         tasteDate : String,
+                         sugarContent: Int,
+                         acidity : Int,
+                         tannin : Int,
+                         body : Int,
+                         alcohol : Int,
+                         nose : [String],
+                         satisfaction : Double,
+                         review : String
+    ) -> TastingNoteRequestDTO {
+        return TastingNoteRequestDTO(wineId: wineId, color: color, tasteDate: tasteDate, sugarContent: sugarContent, acidity: acidity, tannin: tannin, body: body, alcohol: alcohol, nose: nose, satisfaction: satisfaction, review: review)
+    }
+    
+    /// 노트 수정을 위한 DTO 생성 함수
+    /// 모든 항목이 required임
+    func makeUpdateNoteDTO(noteId : Int,
+                           body : TastingNoteUpdateRequestDTO) -> TastingNotePatchRequestDTO {
+        return TastingNotePatchRequestDTO(noteId: noteId, body: body)
+    }
+    
+    /// 노트 수정DTO의 body을 위한 DTO 생성 함수
+    /// 모든 항목이 optional임
+    func makeUpdateNoteBodyDTO(color : String?,
+                           tastingDate : String?,
+                           sugarContent : Int?,
+                           acidity : Int?,
+                           tannin : Int?,
+                           body : Int?,
+                           alcohol : Int?,
+                           addNoseList : [String]?,
+                           removeNoseList : [Int]?,
+                           satisfaction : Double?,
+                           review : String?
+    ) -> TastingNoteUpdateRequestDTO {
+        return TastingNoteUpdateRequestDTO(color: color, tastingDate: tastingDate, sugarContent: sugarContent, acidity: acidity, tannin: tannin, body: body, alcohol: alcohol, addNoseList: addNoseList, removeNoseList: removeNoseList, satisfaction: satisfaction, review: review)
+    }
+    
     //MARK: - API funcs
     
     // 새 노트 작성

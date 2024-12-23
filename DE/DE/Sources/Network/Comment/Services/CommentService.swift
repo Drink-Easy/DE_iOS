@@ -20,6 +20,11 @@ final class CommentService: NetworkManager {
         self.provider = provider ?? MoyaProvider<CommentEndpoints>(plugins: plugins)
     }
     
+    func makePostDTO(partId : Int, content : String) -> CommentRequestDTO {
+        return CommentRequestDTO(partId: partId, content: content)
+    }
+    
+    
     //MARK: - API funcs
     
     // 댓글 작성

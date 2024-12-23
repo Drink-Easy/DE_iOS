@@ -4,4 +4,8 @@ import Foundation
 
 struct WineWishlistRequestDTO : Codable {
     let wineId : Int
+    
+    init(wineId: Int) {
+        self.wineId = wineId
+    }
 }
