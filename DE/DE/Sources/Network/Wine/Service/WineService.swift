@@ -22,17 +22,17 @@ final class WineService: NetworkManager {
     
     //MARK: - API funcs
     
-    // 와인 검색
+    /// 와인 검색
     func fetchWines(searchName: String, completion: @escaping (Result<[SearchWineResponseDTO], NetworkError>) -> Void) {
         request(target: .getWines(searchName: searchName), decodingType: [SearchWineResponseDTO].self, completion: completion)
     }
     
-    // 선택 와인 정보 조회
+    /// 선택 와인 정보 조회
     func fetchWineInfo(wineId: Int, completion: @escaping (Result<WineResponseWithThreeReviewsDTO, NetworkError>) -> Void) {
         request(target: .getWineInfo(wineId: wineId), decodingType: WineResponseWithThreeReviewsDTO.self, completion: completion)
     }
     
-    // 선택 와인 리뷰 조회
+    /// 선택 와인 리뷰 조회
     func fetchWineReviews(wineId: Int, completion: @escaping (Result<[WineReviewResponseDTO], NetworkError>) -> Void) {
         request(target: .getWineReview(wineId: wineId), decodingType: [WineReviewResponseDTO].self, completion: completion)
     }

@@ -21,36 +21,34 @@ final class AuthService : NetworkManager {
     
     //MARK: - DTO funcs
     
-    func makeLoginDTO(
+    /// 로그인 데이터 구조 생성
+    func makeLoginDTO(username: String, password: String) -> LoginDTO {
+        return LoginDTO(username: username, password: password)
+    }
+    
+    /// 자체 회원가입 데이터 구조 생성
+    func makeJoinDTO(username: String, password: String, rePassword: String) -> JoinDTO {
+        return JoinDTO(username: username, password: password, rePassword: rePassword)
+    }
 
     //MARK: - API funcs
+    /// 자체 로그인
     func login(data: LoginDTO, completion: @escaping (Result<LoginResponseDTO, NetworkError>) -> Void) {
         request(target: .postLogin(data: data), decodingType: LoginResponseDTO.self, completion: completion)
     }
     
+    /// 로그아웃
     func logout(completion: @escaping (Result<Void, NetworkError>) -> Void) {
         requestStatusCode(target: .postLogout, completion: completion)
     }
     
+    /// 자체 회원가입
     func join(data: JoinDTO, completion: @escaping (Result<Void, NetworkError>) -> Void) {
-        request(target: .postJoin(data: data), decodingType: EmptyResponse.self) { result in
-            switch result {
-            case .success:
-                completion(.success(()))
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
+        requestStatusCode(target: .postJoin(data: data), completion: completion)
     }
     
+    /// 토큰 재발급
     func reissueToken(completion: @escaping (Result<Void, NetworkError>) -> Void) {
-        request(target: .postReIssueToken, decodingType: EmptyResponse.self) { result in
-            switch result {
-            case .success:
-                completion(.success(()))
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
+        requestStatusCode(target: .postReIssueToken, completion: completion)
     }
 }

@@ -20,6 +20,7 @@ final class CommentService: NetworkManager {
         self.provider = provider ?? MoyaProvider<CommentEndpoints>(plugins: plugins)
     }
     
+    /// 댓글 등록 데이터 생성
     func makePostDTO(partId : Int, content : String) -> CommentRequestDTO {
         return CommentRequestDTO(partId: partId, content: content)
     }
@@ -27,22 +28,22 @@ final class CommentService: NetworkManager {
     
     //MARK: - API funcs
     
-    // 댓글 작성
+    /// 댓글 작성
     func postComment(data: CommentRequestDTO, completion: @escaping (Result<String, NetworkError>) -> Void) {
         request(target: .postComments(data: data), decodingType: String.self, completion: completion)
     }
     
-    // 댓글 수정
+    /// 댓글 수정
     func patchComment(commentId: Int, completion: @escaping (Result<String, NetworkError>) -> Void) {
         request(target: .patchComments(commentId: commentId), decodingType: String.self, completion: completion)
     }
     
-    // 댓글 삭제
+    /// 댓글 삭제
     func deleteComment(commentId: Int, completion: @escaping (Result<String, NetworkError>) -> Void) {
         request(target: .deleteComments(commentId: commentId), decodingType: String.self, completion: completion)
     }
     
-    // 댓글 목록 조회
+    /// 댓글 목록 조회
     func fetchComments(partyId: Int, completion: @escaping (Result<[CommentResponseDTO], NetworkError>) -> Void) {
         request(target: .getComments(partyId: partyId), decodingType: [CommentResponseDTO].self, completion: completion)
     }
