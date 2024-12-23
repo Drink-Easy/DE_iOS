@@ -69,11 +69,23 @@ extension AuthorizationEndpoints: TargetType {
         }
     }
     
-    // API 호출 시, header에 token 넣어서 전달
     var headers: [String : String]? {
-        return [
+        var headers: [String: String] = [
             "Content-type": "application/json"
         ]
+        
+        switch self {
+        case .patchMemberInfo, .postReIssueToken:
+            if let cookies = HTTPCookieStorage.shared.cookies {
+                let cookieHeader = HTTPCookie.requestHeaderFields(with: cookies)
+                for (key, value) in cookieHeader {
+                    headers[key] = value // 쿠키를 헤더에 추가
+                }
+            }
+        default:
+            break
+        }
+        return headers
     }
     
     var validationType: ValidationType {

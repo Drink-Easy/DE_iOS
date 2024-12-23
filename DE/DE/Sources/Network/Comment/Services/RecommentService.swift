@@ -9,8 +9,15 @@ final class RecommentService: NetworkManager {
     // Provider 설정
     let provider: MoyaProvider<RecommentEndpoints>
     
-    init(provider: MoyaProvider<RecommentEndpoints> = MoyaProvider<RecommentEndpoints>()) {
-        self.provider = provider
+    init(provider: MoyaProvider<RecommentEndpoints>? = nil) {
+        // 플러그인 추가
+        let plugins: [PluginType] = [
+            CookiePlugin(),
+            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)) // 로그 플러그인
+        ]
+        
+        // provider 초기화
+        self.provider = provider ?? MoyaProvider<RecommentEndpoints>(plugins: plugins)
     }
     
     //MARK: - API funcs

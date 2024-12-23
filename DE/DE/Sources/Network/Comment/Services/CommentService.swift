@@ -9,8 +9,15 @@ final class CommentService: NetworkManager {
     // Provider 설정
     let provider: MoyaProvider<CommentEndpoints>
     
-    init(provider: MoyaProvider<CommentEndpoints> = MoyaProvider<CommentEndpoints>()) {
-        self.provider = provider
+    init(provider: MoyaProvider<CommentEndpoints>? = nil) {
+        // 플러그인 추가
+        let plugins: [PluginType] = [
+            CookiePlugin(),
+            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)) // 로그 플러그인
+        ]
+        
+        // provider 초기화
+        self.provider = provider ?? MoyaProvider<CommentEndpoints>(plugins: plugins)
     }
     
     //MARK: - API funcs

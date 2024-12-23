@@ -9,8 +9,14 @@ final class AuthService : NetworkManager {
     //MARK: - Provider 설정
     let provider: MoyaProvider<AuthorizationEndpoints>
     
-    init(provider: MoyaProvider<AuthorizationEndpoints> = MoyaProvider<AuthorizationEndpoints>()) {
-        self.provider = provider
+    init(provider: MoyaProvider<AuthorizationEndpoints>? = nil) {
+        // 플러그인 추가
+        let plugins: [PluginType] = [
+            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)) // 로그 플러그인
+        ]
+        
+        // provider 초기화
+        self.provider = provider ?? MoyaProvider<AuthorizationEndpoints>(plugins: plugins)
     }
 
     //MARK: - API funcs
