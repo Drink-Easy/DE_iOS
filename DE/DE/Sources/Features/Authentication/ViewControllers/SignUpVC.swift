@@ -13,7 +13,6 @@ class SignUpVC: UIViewController {
     
     public var userID : String?
     public var userPW : String?
-    var joinDTO : JoinNLoginRequest?
     
     //MARK: - TextFields
     private lazy var emailField: CustomLabelTextFieldView = {
@@ -107,19 +106,47 @@ class SignUpVC: UIViewController {
     }
     
     //MARK: - Button Funcs
-    @objc private func signupButtonTapped() {
-        
-        networkService.join(data: JoinDTO, completion: <#T##(Result<Void, NetworkError>) -> Void#>)
-        
-    }
+//    @objc private func signupButtonTapped() {
+//        guard let id = self.userID, let pw = self.userPW else { return }
+//        networkService.join(data: networkService.makeJoinDTO(username: id, password: pw, rePassword: pw)) { [weak self] result in
+//            guard let self = self else { return }
+//            
+//            switch result {
+//            case .success(let response) :
+//                goToLoginView()
+//            case .failure(let error) :
+//                // 에러 처리
+//            }
+//        }
+//    }
+    
+    /*
+     @objc private func signupButtonTapped() {
+         guard let id = self.userID, let pw = self.userPW else {
+             showAlert(message: "아이디와 비밀번호를 입력해 주세요.")
+             return
+         }
+         
+         let joinDTO = networkService.makeJoinDTO(username: id, password: pw, rePassword: pw)
+         setLoading(true)
+         
+         networkService.join(data: joinDTO) { [weak self] result in
+             guard let self = self else { return }
+             self.setLoading(false)
+             
+             switch result {
+             case .success:
+                 self.goToLoginView()
+             case .failure(let error):
+                 self.handleError(error)
+             }
+         }
+     }
+     */
 
     private func goToLoginView() {
         let loginViewController = LoginVC()
         navigationController?.pushViewController(loginViewController, animated: true)
-    }
-    
-    private func assignUserData() {
-        self.joinDTO = JoinNLoginRequest(username: self.userID ?? "", password: self.userPW ?? "")
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -127,28 +154,11 @@ class SignUpVC: UIViewController {
         self.view.endEditing(true)  //firstresponder가 전부 사라짐
     }
     
-    private func callJoinAPI(completion: @escaping (Bool) -> Void) {
-//        if let data = self.joinDTO {
-//            provider.request(.postRegister(data: data)) { result in
-//                switch result {
-//                case .success(let response):
-//                    do {
-//                        let data = try response.map(APIResponseString.self)
-////                        print("User Created: \(data)")
-//                        completion(data.isSuccess)
-//                    } catch {
-//                        print("Failed to map data: \(error)")
-//                        completion(false)
-//                    }
-//                case .failure(let error):
-//                    print("Request failed: \(error)")
-//                    completion(false)
-//                }
-//            }
-//        } else {
-//            print("User Data가 없습니다.")
-//            completion(false)
-//        }
+    private func showAlert(title: String = "알림", message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default))
+        present(alert, animated: true)
     }
+    
 }
 
