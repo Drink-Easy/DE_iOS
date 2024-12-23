@@ -1,17 +1,18 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import Foundation
+import UIKit
 
-struct Constants {
-    static let appname = "Drink-EG"
+public struct Constants {
+    public static let appname = "Drink-EG"
     
-    struct Auth {
-        static var Tokens : [String : String] = [:]
+    public struct Auth {
+        public static var Tokens : [String : String] = [:]
         // iOS test id : iOSadmin
         // iOS test pw : 0000
     }
     
-    struct API {
+    public struct API {
         static let baseURL = "https://drinkeg.com"
         static let commentURL = "\(baseURL)/comments"
         static let recommentURL = "\(baseURL)/recomments"
@@ -23,12 +24,12 @@ struct Constants {
         static let wishlistURL = "\(baseURL)/wine-wishlist"
     }
     
-    struct Design {
+    public struct Design {
         
     }
     
-    struct Policy {
-        static let service =
+    public struct Policy {
+        public static let service =
 """
 서비스 이용약관
 
@@ -207,7 +208,7 @@ struct Constants {
     2. 미디어, 통신사 등을 통한 홍보목적으로 이용자의 콘텐츠를 제공, 전시하도록 하는 등의 사용.
 """
   
-        static let privacy =
+        public static let privacy =
 """
 개인정보처리방침
 
@@ -375,4 +376,8 @@ struct Constants {
 """
     }
     
+    public static let superViewHeight = UIScreen.main.bounds.height
+    public static let superViewWidth = UIScreen.main.bounds.width
+    
+    public static let padding: CGFloat = 32.0
 }

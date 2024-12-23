@@ -30,6 +30,7 @@ class ChooseWineColor: UIView {
         let d = DescriptionUIView()
         d.layer.cornerRadius = 14
         d.backgroundColor = .white
+        
         return d
     }()
     
@@ -57,85 +58,10 @@ class ChooseWineColor: UIView {
         return v
     }()
     
-    let colorStackView = ColorStackView()
-    
-    let tastingNoteLabel: UILabel = {
-        let t = UILabel()
-        t.text = "Tasting Note"
-        t.textColor = .black
-        t.font = .ptdSemiBoldFont(ofSize: 20)
-        t.textAlignment = .center
-        return t
-    }()
-    
-    let tastingLabelKorean: UILabel = {
-        let c = UILabel()
-        c.text = "테이스팅 노트"
-        c.textColor = UIColor(hex: "919191")
-        c.font = .ptdRegularFont(ofSize: 14)
-        c.textAlignment = .center
-        return c
-    }()
-    
-    let vector2: UIView = {
-        let v = UIView()
-        v.backgroundColor = UIColor(hex: "#B06FCD")
-        return v
-    }()
-    
-    let aromaLabel: UILabel = {
-        let a = UILabel()
-        a.text = "Aroma"
-        a.textColor = .black
-        a.font = .ptdSemiBoldFont(ofSize: 18)
-        a.textAlignment = .center
-        return a
-    }()
-    
-    let aromaLabelKorean: UILabel = {
-        let c = UILabel()
-        c.text = "아로마"
-        c.textColor = UIColor(hex: "919191")
-        c.font = .ptdRegularFont(ofSize: 14)
-        c.textAlignment = .center
-        return c
-    }()
-    
-    let tasteLabel: UILabel = {
-        let a = UILabel()
-        a.text = "Taste"
-        a.textColor = .black
-        a.font = .ptdSemiBoldFont(ofSize: 18)
-        a.textAlignment = .center
-        return a
-    }()
-    
-    let tasteLabelKorean: UILabel = {
-        let c = UILabel()
-        c.text = "맛"
-        c.textColor = UIColor(hex: "919191")
-        c.font = .ptdRegularFont(ofSize: 14)
-        c.textAlignment = .center
-        return c
-    }()
-    
-    let finishLabel: UILabel = {
-        let a = UILabel()
-        a.text = "Finish"
-        a.textColor = .black
-        a.font = .ptdSemiBoldFont(ofSize: 18)
-        a.textAlignment = .center
-        return a
-    }()
-    
-    let finishLabelKorean: UILabel = {
-        let c = UILabel()
-        c.text = "여운"
-        c.textColor = UIColor(hex: "919191")
-        c.font = .ptdRegularFont(ofSize: 14)
-        c.textAlignment = .center
-        return c
-    }()
+    let colorStackView1 = ColorStackView()
+    let colorStackView2 = ColorStackView()
+    let colorStackView3 = ColorStackView()
+    let colorStackView4 = ColorStackView()
     
     let nextButton: UIButton = {
         let b = UIButton()
@@ -158,11 +84,12 @@ class ChooseWineColor: UIView {
         wineImage.snp.makeConstraints { make in
             make.top.equalTo(wineNameLabel.snp.bottom).offset(20)
             make.leading.equalTo(wineNameLabel.snp.leading)
+            make.width.height.equalTo(100)
         }
         
         addSubview(descriptionView)
         descriptionView.snp.makeConstraints { make in
-            make.top.equalTo(wineImage)
+            make.top.bottom.equalTo(wineImage)
             make.leading.equalTo(wineImage.snp.trailing).offset(8)
         }
         
@@ -187,73 +114,35 @@ class ChooseWineColor: UIView {
             make.height.equalTo(1)
         }
         
-        addSubview(colorStackView)
-        colorStackView.snp.makeConstraints { make in
+        addSubview(colorStackView1)
+        colorStackView1.snp.makeConstraints { make in
             make.top.equalTo(vector.snp.bottom).offset(24)
             make.leading.equalTo(vector.snp.leading)
             make.trailing.equalTo(vector.snp.trailing).offset(-62)
         }
         
-        addSubview(tastingNoteLabel)
-        tastingNoteLabel.snp.makeConstraints { make in
-            make.top.equalTo(colorStackView.snp.bottom).offset(50)
-            make.leading.equalTo(colorStackView.snp.leading)
+        addSubview(colorStackView2)
+        colorStackView2.snp.makeConstraints { make in
+            make.top.equalTo(colorStackView1.snp.bottom).offset(15)
+            make.leading.equalTo(colorStackView1)
         }
         
-        addSubview(tastingLabelKorean)
-        tastingLabelKorean.snp.makeConstraints { make in
-            make.top.equalTo(tastingNoteLabel.snp.top).offset(4)
-            make.leading.equalTo(tastingNoteLabel.snp.trailing).offset(8)
+        addSubview(colorStackView3)
+        colorStackView3.snp.makeConstraints { make in
+            make.top.equalTo(colorStackView2.snp.bottom).offset(15)
+            make.leading.equalTo(colorStackView2)
         }
         
-        addSubview(vector2)
-        vector2.snp.makeConstraints { make in
-            make.top.equalTo(tastingNoteLabel.snp.bottom).offset(6)
-            make.leading.equalTo(tastingNoteLabel.snp.leading)
-            make.centerX.equalToSuperview()
-            make.height.equalTo(1)
-        }
-        
-        addSubview(aromaLabel)
-        aromaLabel.snp.makeConstraints { make in
-            make.top.equalTo(vector2.snp.bottom).offset(24)
-            make.leading.equalTo(vector2.snp.leading).offset(1)
-        }
-        
-        addSubview(aromaLabelKorean)
-        aromaLabelKorean.snp.makeConstraints { make in
-            make.top.equalTo(aromaLabel.snp.top).offset(4)
-            make.leading.equalTo(aromaLabel.snp.trailing).offset(8)
-        }
-        
-        addSubview(tasteLabel)
-        tasteLabel.snp.makeConstraints { make in
-            make.top.equalTo(aromaLabel.snp.bottom).offset(50)
-            make.leading.equalTo(aromaLabel.snp.leading)
-        }
-        
-        addSubview(tasteLabelKorean)
-        tasteLabelKorean.snp.makeConstraints { make in
-            make.top.equalTo(tasteLabel.snp.top).offset(4)
-            make.leading.equalTo(tasteLabel.snp.trailing).offset(8)
-        }
-        
-        addSubview(finishLabel)
-        finishLabel.snp.makeConstraints { make in
-            make.top.equalTo(tasteLabel.snp.bottom).offset(50)
-            make.leading.equalTo(tasteLabel.snp.leading)
-        }
-        
-        addSubview(finishLabelKorean)
-        finishLabelKorean.snp.makeConstraints { make in
-            make.top.equalTo(finishLabel.snp.top).offset(4)
-            make.leading.equalTo(finishLabel.snp.trailing).offset(8)
+        addSubview(colorStackView4)
+        colorStackView4.snp.makeConstraints { make in
+            make.top.equalTo(colorStackView3.snp.bottom).offset(15)
+            make.leading.equalTo(colorStackView3)
         }
         
         addSubview(nextButton)
         nextButton.snp.makeConstraints { make in
-            make.top.equalTo(finishLabel.snp.bottom).offset(50)
-            make.leading.equalTo(finishLabel.snp.leading).offset(3)
+            make.top.equalTo(colorStackView4.snp.bottom).offset(143)
+            make.leading.equalTo(colorStackView4.snp.leading).offset(-3)
             make.centerX.equalToSuperview()
             make.height.equalTo(56)
         }

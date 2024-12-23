@@ -34,10 +34,10 @@ class NoteListViewController: UIViewController, UICollectionViewDataSource {
     private let noteListView = NoteListView()
     // Source -> cells -> TastingNote
     private let wineImageStackView = WineImageStackView()
-    private let myTastingNote = MyTastingNote()
+    private let myTastingNote = MyTastingNoteView()
     
     override func viewDidLoad() {
-        view.backgroundColor = UIColor(hex: ColorHex().background)
+        view.backgroundColor = UIColor(hex: "F8F8FA")
         super.viewDidLoad()
         setupUI()
         setupDelegate()
