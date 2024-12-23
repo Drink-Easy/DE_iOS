@@ -1,6 +1,7 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+import TastingNote
 import Authentication
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -16,6 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         // 실제 첫 화면이 되는 MainViewController 인스턴스 생성
 
+//        let vc = ChooseNoseViewController()
         let vc = OnboardingVC()
         // NavigationController을 사용할 경우, MainViewController를 rootViewController로 갖는 NavigationController을 생성해야한다.
         let navigationController = UINavigationController(rootViewController: vc)

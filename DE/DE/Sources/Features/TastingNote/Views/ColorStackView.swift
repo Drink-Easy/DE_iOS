@@ -19,7 +19,7 @@ class ColorStackView: UIStackView {
         self.spacing = 8
         self.distribution = .fillEqually
         
-        let colors = [UIColor(hex: "#FFFBD8"), UIColor(hex: "#FDEFA4"), UIColor(hex: "#FEB6B6"), UIColor(hex: "#BA2121"), UIColor(hex: "#892222"), UIColor(hex: "#521515")]
+        let colors = [UIColor(hex: "#FFFBD8"), UIColor(hex: "#FDEFA4"), UIColor(hex: "#FEB6B6"), UIColor(hex: "#BA2121"), UIColor(hex: "#892222"), UIColor(hex: "#521515"), UIColor(hex: "#521515")]
         
         for color in colors {
             let colorView = UIButton()
