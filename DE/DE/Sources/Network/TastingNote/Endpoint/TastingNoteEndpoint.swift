@@ -4,7 +4,7 @@ import Foundation
 import Moya
 //import CoreModule
 
-enum TastingNoteAPI {
+enum TastingNoteEndpoint {
     case postNote(data : TastingNoteRequestDTO)
     case getNote(noteId : Int)
     case deleteNote(noteId : Int)
@@ -12,7 +12,7 @@ enum TastingNoteAPI {
     case getAllNotes(sort : String)
 }
 
-extension TastingNoteAPI: TargetType {
+extension TastingNoteEndpoint: TargetType {
     var baseURL: URL {
         guard let url = URL(string: Constants.API.tastingNoteURL) else {
             fatalError("잘못된 URL")
