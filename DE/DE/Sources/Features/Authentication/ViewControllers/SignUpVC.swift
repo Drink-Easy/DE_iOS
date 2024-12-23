@@ -5,12 +5,17 @@ import SnapKit
 import Moya
 import SwiftyToaster
 import CoreModule
+import Network
 
 class SignUpVC: UIViewController {
+    
+    private let networkService = AuthService()
+    
     public var userID : String?
     public var userPW : String?
     var joinDTO : JoinNLoginRequest?
     
+    //MARK: - TextFields
     private lazy var emailField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(descriptionImageIcon: "person.fill", descriptionLabelText: "이메일", textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "이메일 형식이 올바르지 않습니다")
         field.textField.keyboardType = .emailAddress
@@ -29,6 +34,7 @@ class SignUpVC: UIViewController {
         return field
     }()
     
+    //MARK: - Buttons
     private let signupButton = CustomButton(
         title: "회원가입",
         titleColor: .white,
@@ -47,6 +53,7 @@ class SignUpVC: UIViewController {
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         self.navigationController?.navigationBar.tintColor = .white
         
+        // 이거 왜 여기에다가 선언했는지?
         let titleLabel = UILabel()
         titleLabel.text = "가입하기"
         titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
@@ -54,6 +61,8 @@ class SignUpVC: UIViewController {
         titleLabel.textAlignment = .center
                 
         let titleView = UIView()
+        
+        // TODO : 이런거 함수 분리 반드시!!
         titleView.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -97,16 +106,11 @@ class SignUpVC: UIViewController {
         }
     }
     
+    //MARK: - Button Funcs
     @objc private func signupButtonTapped() {
-        assignUserData()
-        callJoinAPI { [weak self] isSuccess in
-            if isSuccess {
-                self?.goToLoginView()
-            } else {
-                print("회원가입 실패")
-                Toaster.shared.makeToast("400 Bad Request: Failed to Register", .short)
-            }
-        }
+        
+        networkService.join(data: JoinDTO, completion: <#T##(Result<Void, NetworkError>) -> Void#>)
+        
     }
 
     private func goToLoginView() {
