@@ -2,6 +2,7 @@
 
 import UIKit
 import Then
+import CoreModule
 
 class WineDetailView: UIView {
     
@@ -54,7 +55,7 @@ class WineDetailView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .white
+        backgroundColor = Constants.AppColor.grayBG
         self.addComponents()
         self.constraints()
     }
@@ -80,6 +81,7 @@ class WineDetailView: UIView {
             $0.leading.equalTo(image.snp.trailing).offset(8)
             $0.trailing.equalTo(safeAreaLayoutGuide).offset(-24)
             $0.height.equalTo(image.snp.height)
+            $0.bottom.equalToSuperview()
         }
         
         titleStackView.snp.makeConstraints {

@@ -6,14 +6,15 @@
 //
 
 import UIKit
+import CoreModule
 import SnapKit
 import Then
 
-class SearchHomeViewController : UIViewController, UISearchBarDelegate {
+public class SearchHomeViewController : UIViewController, UISearchBarDelegate {
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(hex: "#F8F8FA")
+        view.backgroundColor = Constants.AppColor.grayBG
         self.view = searchHomeView
     }
     
@@ -24,16 +25,21 @@ class SearchHomeViewController : UIViewController, UISearchBarDelegate {
 }
 
 extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 20
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultTableViewCell", for: indexPath) as? SearchResultTableViewCell else {
             return UITableViewCell()
         }
         
 //        cell.configure(model: data[indexPath.row])
         return cell
+    }
+    
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = WineDetailViewController()
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

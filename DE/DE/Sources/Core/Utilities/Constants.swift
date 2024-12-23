@@ -31,6 +31,7 @@ public struct Constants {
         static public let purple20 = UIColor(hex: "#E1CAE9")
         static public let purple10 = UIColor(hex: "#EEE1F0")
         
+        static public let grayBG = UIColor(hex: "F8F8FA")
         static public let DGblack = UIColor(hex: "#121212")
         static public let gray100 = UIColor(hex: "#606060")
         static public let gray80 = UIColor(hex: "#A7A7A7")

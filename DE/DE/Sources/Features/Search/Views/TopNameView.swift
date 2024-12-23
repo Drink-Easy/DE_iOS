@@ -2,6 +2,7 @@
 
 import UIKit
 import Then
+import CoreModule
 import SnapKit
 
 class TopNameView: UIView {
@@ -17,6 +18,8 @@ class TopNameView: UIView {
     public lazy var likeBtn = UIButton().then {
         $0.setImage(UIImage(named: "like_nfill"), for: .normal)
         $0.backgroundColor = .clear
+        $0.contentHorizontalAlignment = .fill
+        $0.contentVerticalAlignment = .fill
     }
     
     public lazy var name = UILabel().then {
@@ -27,7 +30,7 @@ class TopNameView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .white
+        backgroundColor = Constants.AppColor.grayBG
         self.addComponents()
         self.constraints()
     }
@@ -55,6 +58,7 @@ class TopNameView: UIView {
         name.snp.makeConstraints {
             $0.top.equalTo(backBtn.snp.bottom).offset(26)
             $0.leading.equalTo(safeAreaLayoutGuide).offset(25)
+            $0.bottom.equalToSuperview()
         }
     }
 }

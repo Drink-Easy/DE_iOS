@@ -3,8 +3,11 @@
 import UIKit
 import SnapKit
 import Then
+import CoreModule
 
 class SearchResultTableViewCell: UITableViewCell {
+    
+    private let borderLayer = CALayer()
     
     private lazy var image = UIImageView().then {
         $0.image = UIImage(named: "스파클링")
@@ -45,12 +48,18 @@ class SearchResultTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+        if selected {
+            contentView.backgroundColor = Constants.AppColor.purple10 // 선택된 배경색
+            borderLayer.borderColor = Constants.AppColor.purple50?.cgColor // 선택된 테두리색
+        } else {
+            contentView.backgroundColor = .white // 기본 배경색
+            borderLayer.borderColor = UIColor.clear.cgColor // 기본 테두리 없음
+        }
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupView()
         addComponents()
         constraints()
     }
@@ -65,6 +74,23 @@ class SearchResultTableViewCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupView() {
+        // 기본 셀 스타일 설정
+        contentView.backgroundColor = .white
+        selectionStyle = .none // 기본 선택 스타일 제거
+        
+        // 테두리 설정
+        borderLayer.borderWidth = 1
+        borderLayer.borderColor = UIColor.clear.cgColor // 기본 테두리 없음
+        borderLayer.frame = contentView.bounds
+        contentView.layer.addSublayer(borderLayer)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        borderLayer.frame = contentView.bounds // 레이아웃 변경 시 테두리 업데이트
     }
     
     private func addComponents() {
