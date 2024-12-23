@@ -236,7 +236,8 @@ let project = Project(
                 .target(name: "TastingNote"),
                 
                 .external(name: "KeychainSwift"),
-                .external(name: "KakaoSDK")
+                .external(name: "KakaoSDK"),
+                .external(name: "AMPopTip")
             ]
         ),
         // module

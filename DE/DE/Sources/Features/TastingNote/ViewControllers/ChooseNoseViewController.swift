@@ -6,10 +6,12 @@
 //
 
 import UIKit
+//import AMPopTip
 
 public class ChooseNoseViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     private let sections = NoseSectionModel.sections()
+    
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch collectionView.tag {
