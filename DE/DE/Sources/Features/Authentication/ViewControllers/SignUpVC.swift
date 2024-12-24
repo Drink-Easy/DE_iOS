@@ -106,22 +106,9 @@ class SignUpVC: UIViewController {
     }
     
     //MARK: - Button Funcs
-//    @objc private func signupButtonTapped() {
-//        guard let id = self.userID, let pw = self.userPW else { return }
-//        networkService.join(data: networkService.makeJoinDTO(username: id, password: pw, rePassword: pw)) { [weak self] result in
-//            guard let self = self else { return }
-//            
-//            switch result {
-//            case .success(let response) :
-//                goToLoginView()
-//            case .failure(let error) :
-//                // 에러 처리
-//            }
-//        }
-//    }
-    
     /*
      @objc private func signupButtonTapped() {
+     // 이거 optional 까줄 이유가 없음
          guard let id = self.userID, let pw = self.userPW else {
              showAlert(message: "아이디와 비밀번호를 입력해 주세요.")
              return
@@ -143,7 +130,7 @@ class SignUpVC: UIViewController {
          }
      }
      */
-
+    
     private func goToLoginView() {
         let loginViewController = LoginVC()
         navigationController?.pushViewController(loginViewController, animated: true)
