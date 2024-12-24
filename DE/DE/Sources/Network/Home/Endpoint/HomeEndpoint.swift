@@ -2,6 +2,7 @@
 
 import Foundation
 import Moya
+import CoreModule
 
 enum HomeEndpoint {
     case getHomeInfo

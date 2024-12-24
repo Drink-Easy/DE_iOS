@@ -1,5 +1,5 @@
 {
-  "originHash" : "cb528f8e7f600ae353057df1d72b7abb2a7b60fb1d9d9cc9a9f0bc99141ce872",
+  "originHash" : "116dc2846d71a9afe33619fa0e361d508059871c080a3949bf2b2162fd1c887c",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "513364f870f6bfc468f9d2ff0a95caccc10044c5",
         "version" : "5.10.2"
+      }
+    },
+    {
+      "identity" : "ampoptip",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/andreamazz/AMPopTip",
+      "state" : {
+        "revision" : "db495eea0747a3493ca8b3c737d037c0090973db",
+        "version" : "4.12.0"
       }
     },
     {

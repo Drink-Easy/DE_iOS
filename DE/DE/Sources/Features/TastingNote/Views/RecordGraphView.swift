@@ -6,9 +6,38 @@
 //
 
 import UIKit
+import CoreModule
+import AMPopTip
 
-class RecordGraphView: UIView {
-
+class RecordGraphView: UIView, UIScrollViewDelegate {
+    
+    let navView: CustomNavigationBar = {
+        let n = CustomNavigationBar()
+        n.backgroundColor = AppColor.gray20
+        return n
+    }()
+    
+    let scrollView: UIScrollView = {
+        let s = UIScrollView()
+        return s
+    }()
+    
+    let contentView: UIView = {
+        let c = UIView()
+        c.backgroundColor = AppColor.gray20
+        return c
+    }()
+    
+    let pageLabel: UILabel = {
+        let p = UILabel()
+        p.textColor = AppColor.gray80
+        let fullText = "3/5"
+        let coloredText = "3"
+        let attributedString = fullText.withColor(for: coloredText, color: AppColor.purple70 ?? UIColor(hex: "9741BF")!)
+        p.attributedText = attributedString
+        p.font = .ptdMediumFont(ofSize: 16)
+        return p
+    }()
     
     let wineNameLabel: UILabel = {
         let w = UILabel()
@@ -25,21 +54,6 @@ class RecordGraphView: UIView {
         w.contentMode = .scaleAspectFit
         w.image = UIImage(named: "루이로드레")
         return w
-    }()
-    
-    let descriptionView: DescriptionUIView = {
-        let d = DescriptionUIView()
-        d.layer.cornerRadius = 14
-        d.backgroundColor = .white
-        return d
-    }()
-    
-    let graphView: UIView = {
-        let g = UIView()
-        g.backgroundColor = .white
-        g.layer.cornerRadius = 24
-        g.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
-        return g
     }()
     
     let graphLabel: UILabel = {
@@ -70,17 +84,7 @@ class RecordGraphView: UIView {
         let p = PolygonChartView()
         return p
     }()
-    
-    let recordGraphView: UIView = {
-        let r = UIView()
-        r.backgroundColor = .white
-        r.layer.cornerRadius = 24
-        r.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
-        r.layer.borderWidth = 1
-        r.layer.borderColor = UIColor.black.cgColor
-        return r
-    }()
-    
+
     let graphRecordLabel: UILabel = {
         let g = UILabel()
         g.text = "Graph Record"
@@ -114,50 +118,200 @@ class RecordGraphView: UIView {
         return s
     }()
     
+    let sweetToolTip: UIButton = {
+        let s = UIButton()
+        s.setImage(UIImage(systemName: "info.circle"), for: .normal)
+        s.tintColor = AppColor.gray60
+        s.tag = 0
+        return s
+    }()
     
+    let sweetTip: PopTip = {
+        let s = PopTip()
+        s.bubbleColor = AppColor.gray100 ?? UIColor(hex: "#121212B3")!
+        return s
+    }()
     
+    let sweetSlider: CustomSlider = {
+        let c = CustomSlider()
+        return c
+    }()
     
+    let acidLabel: UILabel = {
+        let s = UILabel()
+        s.text = "산도"
+        s.textColor = .black
+        s.textAlignment = .center
+        s.font = .ptdMediumFont(ofSize: 18)
+        return s
+    }()
+    
+    let acidToolTip: UIButton = {
+        let s = UIButton()
+        s.setImage(UIImage(systemName: "info.circle"), for: .normal)
+        s.tintColor = AppColor.gray60
+        s.tag = 1
+        return s
+    }()
+    
+    let acidTip: PopTip = {
+        let s = PopTip()
+        s.bubbleColor = AppColor.gray100 ?? UIColor(hex: "#121212B3")!
+        return s
+    }()
+    
+    let acidSlider: CustomSlider = {
+        let c = CustomSlider()
+        return c
+    }()
+    
+    let tanninLabel: UILabel = {
+        let s = UILabel()
+        s.text = "타닌"
+        s.textColor = .black
+        s.textAlignment = .center
+        s.font = .ptdMediumFont(ofSize: 18)
+        return s
+    }()
+    
+    let tanninToolTip: UIButton = {
+        let s = UIButton()
+        s.setImage(UIImage(systemName: "info.circle"), for: .normal)
+        s.tintColor = AppColor.gray60
+        s.tag = 2
+        return s
+    }()
+    
+    let tanninTip: PopTip = {
+        let s = PopTip()
+        s.bubbleColor = AppColor.gray100 ?? UIColor(hex: "#121212B3")!
+        return s
+    }()
+    
+    let tanninSlider: CustomSlider = {
+        let c = CustomSlider()
+        return c
+    }()
+    
+    let bodyLabel: UILabel = {
+        let s = UILabel()
+        s.text = "바디"
+        s.textColor = .black
+        s.textAlignment = .center
+        s.font = .ptdMediumFont(ofSize: 18)
+        return s
+    }()
+    
+    let bodyToolTip: UIButton = {
+        let s = UIButton()
+        s.setImage(UIImage(systemName: "info.circle"), for: .normal)
+        s.tintColor = AppColor.gray60
+        s.tag = 3
+        return s
+    }()
+    
+    let bodyTip: PopTip = {
+        let s = PopTip()
+        s.bubbleColor = AppColor.gray100 ?? UIColor(hex: "#121212B3")!
+        return s
+    }()
+    
+    let bodySlider: CustomSlider = {
+        let c = CustomSlider()
+        return c
+    }()
+    
+    let alcoholLabel: UILabel = {
+        let s = UILabel()
+        s.text = "알코올"
+        s.textColor = .black
+        s.textAlignment = .center
+        s.font = .ptdMediumFont(ofSize: 18)
+        return s
+    }()
+    
+    let alcoholToolTip: UIButton = {
+        let s = UIButton()
+        s.setImage(UIImage(systemName: "info.circle"), for: .normal)
+        s.tintColor = AppColor.gray60
+        s.tag = 4
+        return s
+    }()
+    
+    let alcoholTip: PopTip = {
+        let s = PopTip()
+        s.bubbleColor = AppColor.gray100 ?? UIColor(hex: "#121212B3")!
+        return s
+    }()
+    
+    let alcoholSlider: CustomSlider = {
+        let c = CustomSlider()
+        return c
+    }()
+    
+    let nextButton: UIButton = {
+        let n = UIButton()
+        n.setTitle("다음", for: .normal)
+        n.titleLabel?.font = .ptdBoldFont(ofSize: 18)
+        n.setTitleColor(.white, for: .normal)
+        n.backgroundColor = AppColor.purple100
+        n.layer.cornerRadius = 14
+        return n
+    }()
     
     func setupUI() {
-        addSubview(wineNameLabel)
-        wineNameLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(110)
+        addSubview(navView)
+        navView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.top.equalTo(safeAreaLayoutGuide)
+            make.height.equalTo(56)
+        }
+        
+        addSubview(scrollView)
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(navView.snp.bottom)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
+        
+        scrollView.addSubview(contentView)
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalToSuperview()
+        }
+        
+        contentView.addSubview(pageLabel)
+        pageLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(10)
             make.leading.equalToSuperview().offset(24)
         }
         
-        addSubview(wineImage)
+        contentView.addSubview(wineNameLabel)
+        wineNameLabel.snp.makeConstraints { make in
+            make.top.equalTo(pageLabel.snp.bottom).offset(2)
+            make.leading.equalToSuperview().offset(24)
+        }
+        
+        contentView.addSubview(wineImage)
         wineImage.snp.makeConstraints { make in
             make.top.equalTo(wineNameLabel.snp.bottom).offset(20)
             make.leading.equalTo(wineNameLabel.snp.leading)
         }
         
-        addSubview(descriptionView)
-        descriptionView.snp.makeConstraints { make in
-            make.top.equalTo(wineImage)
-            make.leading.equalTo(wineImage.snp.trailing).offset(8)
-        }
-        
-        addSubview(graphView)
-        graphView.snp.makeConstraints { make in
-            make.top.equalTo(wineImage.snp.bottom).offset(36)
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(911)
-        }
-        
-        graphView.addSubview(graphLabel)
+        contentView.addSubview(graphLabel)
         graphLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(30)
+            make.top.equalTo(wineNameLabel.snp.bottom).offset(38)
             make.leading.equalToSuperview().offset(24)
             make.width.equalTo(57)
         }
         
-        graphView.addSubview(graphLabelKorean)
+        contentView.addSubview(graphLabelKorean)
         graphLabelKorean.snp.makeConstraints { make in
             make.top.equalTo(graphLabel.snp.top).offset(4)
             make.leading.equalTo(graphLabel.snp.trailing).offset(8)
         }
         
-        graphView.addSubview(vector)
+        contentView.addSubview(vector)
         vector.snp.makeConstraints { make in
             make.height.equalTo(1)
             make.top.equalTo(graphLabel.snp.bottom).offset(6)
@@ -165,7 +319,7 @@ class RecordGraphView: UIView {
             make.centerX.equalToSuperview()
         }
         
-        graphView.addSubview(polygonChart)
+        contentView.addSubview(polygonChart)
         polygonChart.snp.makeConstraints { make in
             make.top.equalTo(vector.snp.bottom).offset(25)
             make.leading.equalTo(vector.snp.leading).offset(17)
@@ -173,26 +327,19 @@ class RecordGraphView: UIView {
             make.height.equalTo(311)
         }
         
-        graphView.addSubview(recordGraphView)
-        recordGraphView.snp.makeConstraints { make in
-            make.top.equalTo(polygonChart.snp.bottom).offset(65)
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(561)
-        }
-        
-        recordGraphView.addSubview(graphRecordLabel)
+        contentView.addSubview(graphRecordLabel)
         graphRecordLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(30)
-            make.leading.equalToSuperview().offset(25)
+            make.top.equalTo(polygonChart.snp.bottom).offset(57)
+            make.leading.equalTo(graphLabel.snp.leading)
         }
         
-        recordGraphView.addSubview(graphRecordLabelKorean)
+        contentView.addSubview(graphRecordLabelKorean)
         graphRecordLabelKorean.snp.makeConstraints { make in
             make.top.equalTo(graphRecordLabel.snp.top).offset(4)
             make.leading.equalTo(graphRecordLabel.snp.trailing).offset(6)
         }
         
-        recordGraphView.addSubview(vector2)
+        contentView.addSubview(vector2)
         vector2.snp.makeConstraints { make in
             make.top.equalTo(graphRecordLabel.snp.bottom).offset(6)
             make.leading.equalTo(graphRecordLabel)
@@ -200,14 +347,174 @@ class RecordGraphView: UIView {
             make.height.equalTo(1)
         }
         
+        contentView.addSubview(sweetnessLabel)
+        sweetnessLabel.snp.makeConstraints { make in
+            make.top.equalTo(vector2.snp.bottom).offset(58)
+            make.leading.equalTo(vector2.snp.leading)
+        }
         
+        contentView.addSubview(sweetToolTip)
+        sweetToolTip.snp.makeConstraints { make in
+            make.top.equalTo(sweetnessLabel).offset(6)
+            make.centerY.equalTo(sweetnessLabel)
+            make.leading.equalTo(sweetnessLabel.snp.trailing).offset(4)
+        }
         
+        contentView.addSubview(sweetSlider)
+        sweetSlider.snp.makeConstraints { make in
+            make.top.equalTo(sweetToolTip.snp.top).offset(3)
+            make.leading.equalTo(sweetToolTip.snp.trailing).offset(23)
+            make.centerY.equalTo(sweetToolTip.snp.centerY)
+            make.trailing.equalTo(vector2.snp.trailing)
+        }
+        
+        contentView.addSubview(acidLabel)
+        acidLabel.snp.makeConstraints { make in
+            make.top.equalTo(sweetnessLabel.snp.bottom).offset(46)
+            make.leading.equalTo(sweetnessLabel.snp.leading)
+        }
+        
+        contentView.addSubview(acidToolTip)
+        acidToolTip.snp.makeConstraints { make in
+            make.top.equalTo(acidLabel).offset(6)
+            make.centerY.equalTo(acidLabel)
+            make.leading.equalTo(acidLabel.snp.trailing).offset(4)
+        }
+        
+        contentView.addSubview(acidSlider)
+        acidSlider.snp.makeConstraints { make in
+            make.top.equalTo(acidToolTip.snp.top).offset(3)
+            make.leading.equalTo(acidToolTip.snp.trailing).offset(23)
+            make.centerY.equalTo(acidToolTip.snp.centerY)
+            make.trailing.equalTo(sweetSlider.snp.trailing)
+        }
+        
+        contentView.addSubview(tanninLabel)
+        tanninLabel.snp.makeConstraints { make in
+            make.top.equalTo(acidLabel.snp.bottom).offset(46)
+            make.leading.equalTo(acidLabel.snp.leading)
+        }
+        
+        contentView.addSubview(tanninToolTip)
+        tanninToolTip.snp.makeConstraints { make in
+            make.top.equalTo(tanninLabel).offset(6)
+            make.centerY.equalTo(tanninLabel)
+            make.leading.equalTo(tanninLabel.snp.trailing).offset(4)
+        }
+        
+        contentView.addSubview(tanninSlider)
+        tanninSlider.snp.makeConstraints { make in
+            make.top.equalTo(tanninToolTip.snp.top).offset(3)
+            make.leading.equalTo(tanninToolTip.snp.trailing).offset(23)
+            make.centerY.equalTo(tanninToolTip.snp.centerY)
+            make.trailing.equalTo(acidSlider.snp.trailing)
+        }
+        
+        contentView.addSubview(bodyLabel)
+        bodyLabel.snp.makeConstraints { make in
+            make.top.equalTo(tanninLabel.snp.bottom).offset(46)
+            make.leading.equalTo(tanninLabel.snp.leading)
+        }
+        
+        contentView.addSubview(bodyToolTip)
+        bodyToolTip.snp.makeConstraints { make in
+            make.top.equalTo(bodyLabel).offset(6)
+            make.centerY.equalTo(bodyLabel)
+            make.leading.equalTo(bodyLabel.snp.trailing).offset(4)
+        }
+        
+        contentView.addSubview(bodySlider)
+        bodySlider.snp.makeConstraints { make in
+            make.top.equalTo(bodyToolTip.snp.top).offset(3)
+            make.leading.equalTo(bodyToolTip.snp.trailing).offset(23)
+            make.centerY.equalTo(bodyToolTip.snp.centerY)
+            make.trailing.equalTo(tanninSlider.snp.trailing)
+        }
+        
+        contentView.addSubview(alcoholLabel)
+        alcoholLabel.snp.makeConstraints { make in
+            make.top.equalTo(bodyLabel.snp.bottom).offset(46)
+            make.leading.equalTo(bodyLabel.snp.leading)
+        }
+        
+        contentView.addSubview(alcoholToolTip)
+        alcoholToolTip.snp.makeConstraints { make in
+            make.top.equalTo(alcoholLabel).offset(6)
+            make.centerY.equalTo(alcoholLabel)
+            make.leading.equalTo(alcoholLabel.snp.trailing).offset(4)
+        }
+        
+        contentView.addSubview(alcoholSlider)
+        alcoholSlider.snp.makeConstraints { make in
+            make.top.equalTo(alcoholToolTip.snp.top).offset(3)
+            make.leading.equalTo(alcoholToolTip.snp.trailing).offset(23)
+            make.centerY.equalTo(alcoholToolTip.snp.centerY)
+            make.trailing.equalTo(bodySlider.snp.trailing)
+        }
+        
+        contentView.addSubview(nextButton)
+        nextButton.snp.makeConstraints { make in
+            make.top.equalTo(alcoholLabel.snp.bottom).offset(54)
+            make.leading.equalTo(vector2.snp.leading).offset(4)
+            make.centerX.equalTo(vector2.snp.centerX)
+            make.height.greaterThanOrEqualTo(56)
+        }
+        
+        contentView.snp.makeConstraints { make in
+            make.bottom.equalTo(nextButton.snp.bottom).offset(34)
+        }
     }
     
+    func setupActions() {
+        sweetToolTip.addTarget(self, action: #selector(popupTips), for: .touchUpInside)
+        acidToolTip.addTarget(self, action: #selector(popupTips), for: .touchUpInside)
+        tanninToolTip.addTarget(self, action: #selector(popupTips), for: .touchUpInside)
+        bodyToolTip.addTarget(self, action: #selector(popupTips), for: .touchUpInside)
+        alcoholToolTip.addTarget(self, action: #selector(popupTips), for: .touchUpInside)
+    }
+    
+    @objc func popupTips(_ sender: UIButton) {
+        guard let buttonSuperview = sender.superview else { return }
+        
+        let buttonFrameInScrollView = buttonSuperview.convert(sender.frame, to: scrollView)
+        
+        let selectedTip: PopTip
+        let text: String
+        switch sender.tag {
+        case 0:
+            selectedTip = sweetTip
+            text = "와인이 달콤하면 당도가 높고, 달지 않으면 드라이(dry)한 와인이라고 해요. 혀끝에서 단 맛이 나는지 느껴보세요!"
+        case 1:
+            selectedTip = acidTip
+            text = "산도가 높은 와인은 입 안이 상쾌해지고 신선한 느낌이 들어요. 산도가 낮으면 좀 더 부드럽고 묵직한 느낌이에요."
+        case 2:
+            selectedTip = tanninTip
+            text = "주로 레드 와인에서 느껴지는 성분이에요. 타닌이 많을수록 입안이 살짝 뻑뻑한 느낌이 들어요. 타닌이 적으면 더 부드럽게 넘어갑니다."
+        case 3:
+            selectedTip = bodyTip
+            text = "와인이 가볍게 느껴지나요, 아니면 묵직하고 풍부한 느낌인가요? 입 안에 느껴지는 점도를 뜻 한답니다!"
+        case 4:
+            selectedTip = alcoholTip
+            text = "알코올이 많으면 목을 넘어갈 때 따뜻하거나 약간 뜨거운 느낌이 나요. 적으면 더 부드럽고 가벼운 느낌이랍니다."
+        default:
+            return
+        }
+        
+        selectedTip.bubbleColor = AppColor.gray100 ?? UIColor(hex: "#121212B3")!
+        selectedTip.show(
+            text: text,
+            direction: .down,
+            maxWidth: 200,
+            in: scrollView,
+            from: buttonFrameInScrollView
+        )
+    }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor(hex: "#F8F8FA")
+        backgroundColor = AppColor.gray20
         setupUI()
+        setupActions()
     }
     
     required init? (coder: NSCoder) {

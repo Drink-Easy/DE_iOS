@@ -31,7 +31,7 @@ class ChooseNoseView: UIView {
     
     private let contentView: UIView = {
         let c = UIView()
-        c.backgroundColor = UIColor(hex: "#F8F8FA")
+        c.backgroundColor = AppColor.gray20
         return c
     }()
     
