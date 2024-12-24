@@ -287,7 +287,7 @@ class RecordGraphView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor(hex: "#F8F8FA")
+        backgroundColor = AppColor.gray20
         setupUI()
     }
     
