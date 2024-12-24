@@ -6,9 +6,20 @@
 //
 
 import UIKit
+import CoreModule
 
 class RecordGraphView: UIView {
 
+    let scrollView: UIScrollView = {
+        let s = UIScrollView()
+        return s
+    }()
+    
+    let contentView: UIView = {
+        let c = UIView()
+        c.backgroundColor = AppColor.gray20
+        return c
+    }()
     
     let wineNameLabel: UILabel = {
         let w = UILabel()
@@ -25,13 +36,6 @@ class RecordGraphView: UIView {
         w.contentMode = .scaleAspectFit
         w.image = UIImage(named: "루이로드레")
         return w
-    }()
-    
-    let descriptionView: DescriptionUIView = {
-        let d = DescriptionUIView()
-        d.layer.cornerRadius = 14
-        d.backgroundColor = .white
-        return d
     }()
     
     let graphView: UIView = {
@@ -114,30 +118,64 @@ class RecordGraphView: UIView {
         return s
     }()
     
+    let sweetToolTip: UIButton = {
+        let s = UIButton()
+        s.setImage(UIImage(systemName: "info.circle"), for: .normal)
+        s.tintColor = AppColor.gray60
+        return s
+    }()
     
+    let sweetSlider: CustomSlider = {
+        let c = CustomSlider()
+        return c
+    }()
     
+    let acidLabel: UILabel = {
+        let s = UILabel()
+        s.text = "산도"
+        s.textColor = .black
+        s.textAlignment = .center
+        s.font = .ptdMediumFont(ofSize: 18)
+        return s
+    }()
     
+    let acidToolTip: UIButton = {
+        let s = UIButton()
+        s.setImage(UIImage(systemName: "info.circle"), for: .normal)
+        s.tintColor = AppColor.gray60
+        return s
+    }()
+    
+    let acidSlider: CustomSlider = {
+        let c = CustomSlider()
+        return c
+    }()
     
     func setupUI() {
-        addSubview(wineNameLabel)
+        addSubview(scrollView)
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        scrollView.addSubview(contentView)
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalToSuperview()
+        }
+        
+        contentView.addSubview(wineNameLabel)
         wineNameLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(110)
             make.leading.equalToSuperview().offset(24)
         }
         
-        addSubview(wineImage)
+        contentView.addSubview(wineImage)
         wineImage.snp.makeConstraints { make in
             make.top.equalTo(wineNameLabel.snp.bottom).offset(20)
             make.leading.equalTo(wineNameLabel.snp.leading)
         }
         
-        addSubview(descriptionView)
-        descriptionView.snp.makeConstraints { make in
-            make.top.equalTo(wineImage)
-            make.leading.equalTo(wineImage.snp.trailing).offset(8)
-        }
-        
-        addSubview(graphView)
+        contentView.addSubview(graphView)
         graphView.snp.makeConstraints { make in
             make.top.equalTo(wineImage.snp.bottom).offset(36)
             make.leading.trailing.equalToSuperview()
@@ -200,8 +238,51 @@ class RecordGraphView: UIView {
             make.height.equalTo(1)
         }
         
+        recordGraphView.addSubview(sweetnessLabel)
+        sweetnessLabel.snp.makeConstraints { make in
+            make.top.equalTo(vector2.snp.bottom).offset(58)
+            make.leading.equalTo(vector2.snp.leading)
+        }
         
+        recordGraphView.addSubview(sweetToolTip)
+        sweetToolTip.snp.makeConstraints { make in
+            make.top.equalTo(sweetnessLabel).offset(6)
+            make.centerY.equalTo(sweetnessLabel)
+            make.leading.equalTo(sweetnessLabel.snp.trailing).offset(4)
+        }
         
+        recordGraphView.addSubview(sweetSlider)
+        sweetSlider.snp.makeConstraints { make in
+            make.top.equalTo(sweetToolTip.snp.top).offset(3)
+            make.leading.equalTo(sweetToolTip.snp.trailing).offset(23)
+            make.centerY.equalTo(sweetToolTip.snp.centerY)
+            make.trailing.equalTo(vector2.snp.trailing)
+        }
+        
+        recordGraphView.addSubview(acidLabel)
+        acidLabel.snp.makeConstraints { make in
+            make.top.equalTo(sweetnessLabel.snp.bottom).offset(46)
+            make.leading.equalTo(sweetnessLabel.snp.leading)
+        }
+        
+        recordGraphView.addSubview(acidToolTip)
+        acidToolTip.snp.makeConstraints { make in
+            make.top.equalTo(acidLabel).offset(6)
+            make.centerY.equalTo(acidLabel)
+            make.leading.equalTo(acidLabel.snp.trailing).offset(4)
+        }
+        
+        recordGraphView.addSubview(acidSlider)
+        acidSlider.snp.makeConstraints { make in
+            make.top.equalTo(acidToolTip.snp.top).offset(3)
+            make.leading.equalTo(acidToolTip.snp.trailing).offset(23)
+            make.centerY.equalTo(acidToolTip.snp.centerY)
+            make.trailing.equalTo(sweetSlider.snp.trailing)
+        }
+        
+        contentView.snp.makeConstraints { make in
+            make.bottom.equalTo(recordGraphView.snp.bottom).offset(20)
+        }
     }
     
     override init(frame: CGRect) {
