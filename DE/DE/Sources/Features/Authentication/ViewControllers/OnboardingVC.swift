@@ -7,6 +7,7 @@ import Then
 
 public class OnboardingVC: UIViewController, UICollectionViewDelegate {
     
+    // TODO : String으로 구성하지말고, Model 만들어서 관리하는게 더 좋을 것 같음
     private var StartImage: [String] = ["onboarding1", "onboarding2", "onboarding3"]
     private var Label1: [String] = ["쉽게 배우는 와인 지식", "함께 즐기는 와인", "나만의 테이스팅 노트"]
     private var Label2: [String] = ["드링키지, 와인의 진입장벽을 낮추다.", "더 즐거운 시간을 공유해 보세요.", "다양한 테이스팅 노트를 기록하며\n나의 취향에 대해 알아 보세요."]
