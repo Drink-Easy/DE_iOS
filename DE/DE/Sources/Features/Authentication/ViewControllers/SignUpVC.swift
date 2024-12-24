@@ -15,6 +15,17 @@ class SignUpVC: UIViewController {
     public var userPW : String?
     
     //MARK: - TextFields
+    let titleView = UIView()
+    
+    let titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "가입하기"
+        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.textColor = .white
+        label.textAlignment = .center
+        return label
+    }()
+    
     private lazy var emailField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(descriptionImageIcon: "person.fill", descriptionLabelText: "이메일", textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "이메일 형식이 올바르지 않습니다")
         field.textField.keyboardType = .emailAddress
@@ -52,22 +63,6 @@ class SignUpVC: UIViewController {
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         self.navigationController?.navigationBar.tintColor = .white
         
-        // 이거 왜 여기에다가 선언했는지?
-        let titleLabel = UILabel()
-        titleLabel.text = "가입하기"
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
-        titleLabel.textColor = .white
-        titleLabel.textAlignment = .center
-                
-        let titleView = UIView()
-        
-        // TODO : 이런거 함수 분리 반드시!!
-        titleView.addSubview(titleLabel)
-        titleLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(5)
-        }
-        
         self.navigationItem.titleView = titleView
         
         setupUI()
@@ -80,6 +75,7 @@ class SignUpVC: UIViewController {
     }
     
     private func setupUI() {
+        titleView.addSubview(titleLabel)
         [emailField,passwordField,confirmPasswordField,signupButton].forEach {
             view.addSubview($0)
         }
@@ -87,6 +83,10 @@ class SignUpVC: UIViewController {
     }
     
     private func setupConstraints() {
+        titleLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(5)
+        }
         emailField.snp.makeConstraints { make in
             make.top.equalTo(Constants.superViewHeight * 0.2)
             make.leading.trailing.equalToSuperview().inset(Constants.padding)
@@ -106,30 +106,28 @@ class SignUpVC: UIViewController {
     }
     
     //MARK: - Button Funcs
-    /*
      @objc private func signupButtonTapped() {
      // 이거 optional 까줄 이유가 없음
-         guard let id = self.userID, let pw = self.userPW else {
-             showAlert(message: "아이디와 비밀번호를 입력해 주세요.")
-             return
-         }
-         
-         let joinDTO = networkService.makeJoinDTO(username: id, password: pw, rePassword: pw)
-         setLoading(true)
-         
-         networkService.join(data: joinDTO) { [weak self] result in
-             guard let self = self else { return }
-             self.setLoading(false)
-             
-             switch result {
-             case .success:
-                 self.goToLoginView()
-             case .failure(let error):
-                 self.handleError(error)
-             }
-         }
+//         guard let id = self.userID, let pw = self.userPW else {
+//             showAlert(message: "아이디와 비밀번호를 입력해 주세요.")
+//             return
+//         }
+//         
+//         let joinDTO = networkService.makeJoinDTO(username: id, password: pw, rePassword: pw)
+//         setLoading(true)
+//         
+//         networkService.join(data: joinDTO) { [weak self] result in
+//             guard let self = self else { return }
+//             self.setLoading(false)
+//             
+//             switch result {
+//             case .success:
+//                 self.goToLoginView()
+//             case .failure(let error):
+//                 self.handleError(error)
+//             }
+//         }
      }
-     */
     
     private func goToLoginView() {
         let loginViewController = LoginVC()
