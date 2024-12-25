@@ -12,7 +12,6 @@ public class ChooseNoseViewController: UIViewController, UICollectionViewDataSou
     
     private let sections = NoseSectionModel.sections()
     
-    
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         switch collectionView.tag {
         case 0:
@@ -117,6 +116,7 @@ public class ChooseNoseViewController: UIViewController, UICollectionViewDataSou
         
         setupUI()
         setupDelegate()
+        setupActions()
     }
     
     func setupUI() {
@@ -151,6 +151,19 @@ public class ChooseNoseViewController: UIViewController, UICollectionViewDataSou
         chooseNoseView.burnsCollectionView.allowsMultipleSelection = true
     }
     
+    func setupActions() {
+        chooseNoseView.navView.backButton.addTarget(self, action: #selector(prevVC), for: .touchUpInside)
+        chooseNoseView.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+    }
     
+    @objc func prevVC() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func nextVC() {
+        let nextVC = RecordGraphViewController()
+        nextVC.modalPresentationStyle = .fullScreen
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
     
 }
