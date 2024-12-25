@@ -9,7 +9,6 @@ import CoreModule
 import Then
 
 public class SelectLoginTypeVC: UIViewController {
-    
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
     
     private let imageView = UIImageView().then {
