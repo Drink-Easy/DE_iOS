@@ -7,32 +7,39 @@
 
 import UIKit
 
-class RatingWineViewController: UIViewController {
-
-    let wineView = WineInfoView()
-    let scrollView = UIScrollView()
-    override func viewDidLoad() {
+public class RatingWineViewController: UIViewController {
+    
+    let ratingWineView = RatingWineView()
+    public override func viewDidLoad() {
         super.viewDidLoad()
-
-        setupUI()
+        
+        self.view = ratingWineView
+        setupActions()
     }
     
-    func setupUI() {
+    func setupActions() {
+        ratingWineView.navView.backButton.addTarget(self, action: #selector(prevVC), for: .touchUpInside)
+        ratingWineView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
         
-        view.addSubview(scrollView)
-        view.backgroundColor = UIColor(hex: "F8F8FA")
-        scrollView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
-        }
-        
-        scrollView.addSubview(wineView)
-        wineView.backgroundColor = UIColor(hex: "F8F8FA")
-        wineView.snp.makeConstraints { make in
-            make.edges.equalTo(scrollView)
-            make.width.equalTo(scrollView)
-            // make.bottom.equalTo(scrollView.snp.bottom).offset(-10)
-            make.height.equalTo(1000)
+        ratingWineView.ratingButton.didFinishTouchingCosmos = { [weak self] rating in
+            guard let self = self else { return }
+            self.updateRatingLabel(with: rating)
         }
     }
+    
+    private func updateRatingLabel(with rating: Double) {
+        ratingWineView.ratingLabel.text = String(format: "%.1f / 5.0", rating)
+    }
+    
+    @objc func prevVC() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func nextVC() {
+        let nextVC = NoteListViewController()
+        nextVC.modalPresentationStyle = .fullScreen
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
     
 }
