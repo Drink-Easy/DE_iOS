@@ -46,7 +46,7 @@ class SignUpVC: UIViewController {
             tintColor: AppColor.gray80!
         )
     }
-
+    
     private func setupActions() {
         signUpView.emailField.textField.addTarget(self, action: #selector(emailValidate), for: .editingChanged)
         signUpView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .editingChanged)
@@ -64,26 +64,18 @@ class SignUpVC: UIViewController {
     
     //MARK: - Button Funcs
     @objc private func signupButtonTapped() {
-        // 이거 optional 까줄 이유가 없음
-        //         guard let id = self.userID, let pw = self.userPW else {
-        //             showAlert(message: "아이디와 비밀번호를 입력해 주세요.")
-        //             return
-        //         }
-        //
-        //         let joinDTO = networkService.makeJoinDTO(username: id, password: pw, rePassword: pw)
-        //         setLoading(true)
-        //
-        //         networkService.join(data: joinDTO) { [weak self] result in
-        //             guard let self = self else { return }
-        //             self.setLoading(false)
-        //
-        //             switch result {
-        //             case .success:
-        //                 self.goToLoginView()
-        //             case .failure(let error):
-        //                 self.handleError(error)
-        //             }
-        //         }
+        let signUpDTO = networkService.makeJoinDTO(username: signUpView.emailField.text!, password: signUpView.passwordField.text!, rePassword: signUpView.confirmPasswordField.text!)
+        
+        networkService.join(data: signUpDTO) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let response):
+                self.goToHomeView()
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
     
     @objc func emailValidate() {
@@ -102,13 +94,13 @@ class SignUpVC: UIViewController {
     }
     
     private func validateInputs() {
-            let isValid = validationManager.isEmailValid &&
-                          validationManager.isPasswordValid &&
-                          validationManager.isConfirmPasswordValid
-            
+        let isValid = validationManager.isEmailValid &&
+        validationManager.isPasswordValid &&
+        validationManager.isConfirmPasswordValid
+        
         signUpView.signupButton.isEnabled = isValid
         signUpView.signupButton.backgroundColor = isValid ? AppColor.purple100 : AppColor.gray80
-        }
+    }
     
     @objc private func backButtonTapped() {
         navigationController?.popViewController(animated: true)
@@ -117,6 +109,11 @@ class SignUpVC: UIViewController {
     @objc private func goToLoginView() {
         let loginViewController = LoginVC()
         navigationController?.pushViewController(loginViewController, animated: true)
+    }
+    
+    @objc private func goToHomeView() {
+        let homeViewController = TestVC()
+        navigationController?.pushViewController(homeViewController, animated: true)
     }
     
     private func showAlert(title: String = "알림", message: String) {

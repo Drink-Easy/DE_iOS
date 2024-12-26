@@ -14,15 +14,13 @@ class SignUpView: UIView {
     }()
     
     let passwordField: CustomLabelTextFieldView = {
-        let field = CustomLabelTextFieldView(descriptionImageIcon: "lock.fill", descriptionLabelText: "비밀번호", textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: "8~20자 이내 영문자, 숫자, 특수문자의 조합")
-        field.textField.isSecureTextEntry = true
+        let field = CustomLabelTextFieldView(descriptionImageIcon: "lock.fill", descriptionLabelText: "비밀번호", textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: "8~20자 이내 영문자, 숫자, 특수문자의 조합", isPasswordField: true)
         field.textField.textContentType = .newPassword
         return field
     }()
     
     let confirmPasswordField: CustomLabelTextFieldView = {
-        let field = CustomLabelTextFieldView(descriptionImageIcon: "lock.fill", descriptionLabelText: "비밀번호 재입력", textFieldPlaceholder: "비밀번호를 다시 입력해 주세요", validationText: "다시 확인해 주세요")
-        field.textField.isSecureTextEntry = true
+        let field = CustomLabelTextFieldView(descriptionImageIcon: "lock.fill", descriptionLabelText: "비밀번호 재입력", textFieldPlaceholder: "비밀번호를 다시 입력해 주세요", validationText: "다시 확인해 주세요", isPasswordField: true)
         field.textField.textContentType = .newPassword
         return field
     }()
