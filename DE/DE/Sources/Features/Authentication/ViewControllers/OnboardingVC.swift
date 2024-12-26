@@ -25,22 +25,28 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate {
     ).then {
         $0.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
     }
-//    private let startButton = CustomButton(
-//        title: "로그인",
-//        titleColor: .white,
-//        backgroundColor: AppColor.purple100!
-//    ).then {
-//        $0.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
-//    }
+    //    private let startButton = CustomButton(
+    //        title: "로그인",
+    //        titleColor: .white,
+    //        backgroundColor: AppColor.purple100!
+    //    ).then {
+    //        $0.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
+    //    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationController?.isNavigationBarHidden = false
-        self.navigationController?.navigationBar.backIndicatorImage = UIImage(named:"icon_back")
-        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named:"icon_back")
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        self.navigationController?.navigationBar.tintColor = .white
+        if navigationController == nil {
+            let navigationController = UINavigationController(rootViewController: self)
+            navigationController.modalPresentationStyle = .fullScreen
+            
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
+                keyWindow.rootViewController?.present(navigationController, animated: true)
+            }
+        }
+        
+        self.navigationController?.isNavigationBarHidden = true
         
         view.backgroundColor = AppColor.bgGray
         setupUI()
@@ -81,7 +87,7 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate {
         layout.scrollDirection = .horizontal // 가로로 스크롤
         layout.minimumLineSpacing = 0 // 셀 간 간격 없음
         layout.minimumInteritemSpacing = 0 // 아이템 간 간격 없음
-
+        
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.isPagingEnabled = true // 페이지 단위 스크롤
         collectionView.showsHorizontalScrollIndicator = false // 가로 스크롤바 숨김
@@ -100,8 +106,8 @@ extension OnboardingVC: UIScrollViewDelegate {
         pageControl.currentPage = pageIndex
         
         if pageIndex == 0 && scrollView.contentOffset.x < 0 {
-                scrollView.contentOffset.x = 0
-            }
+            scrollView.contentOffset.x = 0
+        }
         if pageIndex == startImage.count - 1 {
             let maxOffsetX = CGFloat(startImage.count - 1) * view.frame.width
             if scrollView.contentOffset.x > maxOffsetX {

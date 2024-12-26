@@ -90,13 +90,12 @@ class LoginVC: UIViewController {
         validationManager.isPasswordValid
         
         loginView.loginButton.isEnabled = isValid
-        // TODO : 색상 바꾸기
-//        loginView.loginButton.backgroundColor = isValid ? Constants.Colors.skyblue : Constants.Colors.gray600
+        loginView.loginButton.backgroundColor = isValid ? AppColor.purple100 : AppColor.gray80
     }
         
     @objc private func emailSaveCheckBoxTapped() {
         loginView.emailSaveCheckBox.isSelected.toggle()
-        // 이거는 제일 나중에
+        //TODO: 이거는 제일 나중에
     }
     
     @objc private func loginButtonTapped() {

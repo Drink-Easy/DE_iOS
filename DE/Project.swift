@@ -28,6 +28,7 @@ let project = Project(
             deploymentTargets: .iOS("17.0"),
             infoPlist: .extendingDefault(
                 with: [
+                    "UILaunchStoryboardName": "",
                     "UIUserInterfaceStyle" : "Light", // 다크모드 제거
                     "UISupportedInterfaceOrientations" : ["UIInterfaceOrientationPortrait"], // 화면 방향 세로 고정
                     "UIApplicationSceneManifest": [ // Scene 설정
@@ -79,11 +80,11 @@ let project = Project(
             entitlements: "DE/DE.entitlements",
             scripts: [ swiftLintScript ],
             dependencies: [
-//                .target(name: "CoreModule"),
-//                .target(name: "Network"),
+                //                .target(name: "CoreModule"),
+                //                .target(name: "Network"),
                 .target(name: "Authentication"),
                 
-                .external(name: "KeychainSwift"),
+                    .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK")
                 //                .target(name: "Core"),
                 //                .target(name: "Network"),
@@ -144,12 +145,13 @@ let project = Project(
                     "NSAppTransportSecurity" : [
                         "NSAllowsArbitraryLoads" : true
                     ],
+                    "UILaunchStoryboardName": "",
                     // 런치 스크린
-                    "UILaunchScreen" : [
-                        "UIColorName" : "LaunchScreenBGColor",
-                        "UIImageName" : "LaunchLogo",
-                        "UIImageRespectsSafeAreaInsets" : true
-                    ],
+                    //                    "UILaunchScreen" : [
+                    //                        "UIColorName" : "LaunchScreenBGColor",
+                    //                        "UIImageName" : "LaunchLogo",
+                    //                        "UIImageRespectsSafeAreaInsets" : true
+                    //                    ],
                     // 카카오 로그인 설정
                     "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink", "kakaoplus"],
                     "CFBundleURLTypes" : [
@@ -167,11 +169,11 @@ let project = Project(
             entitlements: "DE/DE.entitlements",
             scripts: [ swiftLintScript ],
             dependencies: [
-//                .target(name: "CoreModule"),
-//                .target(name: "Network"),
+                //                .target(name: "CoreModule"),
+                //                .target(name: "Network"),
                 .target(name: "Authentication"),
                 
-                .external(name: "KeychainSwift"),
+                    .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK")
             ]
         ),
@@ -235,7 +237,7 @@ let project = Project(
             dependencies: [
                 .target(name: "TastingNote"),
                 
-                .external(name: "KeychainSwift"),
+                    .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK"),
                 .external(name: "AMPopTip")
             ]

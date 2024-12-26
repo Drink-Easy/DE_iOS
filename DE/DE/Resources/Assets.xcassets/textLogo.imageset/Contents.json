@@ -1,17 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "Rectangle 261.png",
+      "filename" : "textLogo.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Rectangle 261@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Rectangle 261@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -56,18 +56,6 @@ public class SelectLoginTypeVC: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        if navigationController == nil {
-            let navigationController = UINavigationController(rootViewController: self)
-            navigationController.modalPresentationStyle = .fullScreen
-            
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
-                keyWindow.rootViewController?.present(navigationController, animated: true)
-            }
-        }
-        
-        self.navigationController?.isNavigationBarHidden = true
-        
         view.backgroundColor = AppColor.bgGray
         setupUI()
         setupConstraints()

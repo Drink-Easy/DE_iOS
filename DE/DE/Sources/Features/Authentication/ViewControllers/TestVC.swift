@@ -3,7 +3,7 @@
 import UIKit
 import CoreModule
 
-class TestVC: UIViewController {
+public class TestVC: UIViewController {
     
     // MARK: - UI Elements
     private lazy var sampleButton: UIButton = {
@@ -26,7 +26,7 @@ class TestVC: UIViewController {
     }()
     
     // MARK: - Lifecycle
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
     }
