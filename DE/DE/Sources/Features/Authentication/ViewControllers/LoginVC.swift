@@ -13,6 +13,8 @@ class LoginVC: UIViewController {
     // MARK: - Properties
     private let loginView = LoginView() // LoginView 인스턴스
     private let navigationBarManager = NavigationBarManager()
+    private let validationManager = ValidationManager()
+
     
     public static var isFirstLogin : Bool = true
     
@@ -74,22 +76,47 @@ class LoginVC: UIViewController {
         self.view.endEditing(true)
     }
 
-    @objc private func emailValidate() {
+    @objc func emailValidate() {
+            validationManager.validateEmail(
+                loginView.emailField.text,
+                textField: loginView.emailField.textField,
+                validationLabel: loginView.emailField.validationLabel
+            ) { [weak self] isValid in
+                self?.validationManager.isEmailValid = isValid
+                self?.validateInputs()
+            }
+        }
         
-    }
+        @objc func passwordValidate() {
+            validationManager.isPasswordValid = validationManager.validatePassword(
+                loginView.passwordField.text,
+                textField: loginView.passwordField.textField,
+                validationLabel: loginView.passwordField.validationLabel
+            )
+            validateInputs()
+        }
     
-    @objc private func passwordValidate() {
+    private func validateInputs() {
+            let isValid = validationManager.isUsernameValid &&
+                          validationManager.isEmailValid &&
+                          validationManager.isPasswordValid &&
+                          validationManager.isConfirmPasswordValid &&
+                          validationManager.isTermsAgreeValid
+            
+//            signUpButton.isEnabled = isValid
+//            signUpButton.backgroundColor = isValid ? Constants.Colors.skyblue : Constants.Colors.gray600
+        }
         
-    }
-    
     @objc private func emailSaveCheckBoxTapped() {
-        
+        loginView.emailSaveCheckBox.isSelected.toggle()
+//        updateAllAgreeState()
+//        termsAgreeValidate()
     }
     
     @objc private func loginButtonTapped() {
         // API 호출
     }
-
+        
     private func goToNextView() {
         if LoginVC.isFirstLogin {
             let enterTasteTestViewController = TestVC()
