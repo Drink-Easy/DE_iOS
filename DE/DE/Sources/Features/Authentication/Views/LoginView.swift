@@ -43,7 +43,7 @@ final class LoginView: UIView {
     let loginButton = CustomButton(
         title: "로그인",
         titleColor: .white,
-        backgroundColor: AppColor.purple100!
+        backgroundColor: AppColor.gray80!
     )
     
     // MARK: - 초기화
