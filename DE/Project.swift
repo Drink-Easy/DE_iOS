@@ -234,9 +234,7 @@ let project = Project(
             scripts: [ swiftLintScript ],
             dependencies: [
                 .target(name: "TastingNote"),
-                
                 .external(name: "KeychainSwift"),
-                .external(name: "KakaoSDK")
             ]
         ),
         // module
@@ -290,7 +288,7 @@ let project = Project(
             resources: ["DE/Resources/**"],
             dependencies: [
                 .target(name: "CoreModule"),
-                .target(name: "Network"),
+//                .target(name: "Network"),
             ]
         ),
         // Tests
