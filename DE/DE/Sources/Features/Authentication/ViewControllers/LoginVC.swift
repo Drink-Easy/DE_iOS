@@ -13,7 +13,7 @@ class LoginVC: UIViewController {
     // MARK: - Properties
     private let loginView = LoginView() // LoginView 인스턴스
     private let navigationBarManager = NavigationBarManager()
-    private let validationManager = ValidationManager()
+    let validationManager = ValidationManager()
 
     
     public static var isFirstLogin : Bool = true
@@ -77,24 +77,14 @@ class LoginVC: UIViewController {
     }
 
     @objc func emailValidate() {
-            validationManager.validateEmail(
-                loginView.emailField.text,
-                textField: loginView.emailField.textField,
-                validationLabel: loginView.emailField.validationLabel
-            ) { [weak self] isValid in
-                self?.validationManager.isEmailValid = isValid
-                self?.validateInputs()
-            }
-        }
-        
-        @objc func passwordValidate() {
-            validationManager.isPasswordValid = validationManager.validatePassword(
-                loginView.passwordField.text,
-                textField: loginView.passwordField.textField,
-                validationLabel: loginView.passwordField.validationLabel
-            )
-            validateInputs()
-        }
+        validationManager.isEmailValid = validationManager.validateEmail(loginView.emailField)
+        validateInputs()
+    }
+    
+    @objc func passwordValidate() {
+        validationManager.isPasswordValid = validationManager.validatePassword(loginView.passwordField)
+        validateInputs()
+    }
     
     private func validateInputs() {
             let isValid = validationManager.isUsernameValid &&

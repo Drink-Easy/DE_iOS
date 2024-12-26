@@ -4,10 +4,10 @@ import UIKit
 import CoreModule
 
 public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
-    public let descriptionLabel: UILabel
-    public let textField: PaddedTextField
-    public let validationLabel: UILabel
-    public let imageView: UIImageView
+    let descriptionLabel: UILabel
+    let textField: PaddedTextField
+    let validationLabel: UILabel
+    let imageView: UIImageView
     
     var text: String? {
         return textField.text
@@ -21,17 +21,9 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
         
         super.init(frame: .zero)
         
-        let imageView = UIImageView(image: UIImage(systemName: descriptionImageIcon)?.withRenderingMode(.alwaysTemplate))
+        imageView.image = UIImage(systemName: descriptionImageIcon)?.withRenderingMode(.alwaysTemplate)
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = AppColor.gray60 // 초기 색상 설정
-        imageView.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
-        
-        // Wrap imageView in a container view to add padding
-        let leftViewContainer = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 20)) // Adjust width for padding
-        leftViewContainer.addSubview(imageView)
-        
-        textField.leftView = leftViewContainer
-        textField.leftViewMode = .always
         
         descriptionLabel.text = descriptionLabelText
         descriptionLabel.textColor = AppColor.black
@@ -64,15 +56,10 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
         addSubview(descriptionLabel)
         
         imageView.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().offset(8) // Add padding to the left
-            make.width.height.equalTo(20) // Set image size
+            make.leading.equalToSuperview().offset(16) // 원하는 leading 간격 설정
+            make.centerY.equalToSuperview() // 수직 가운데 정렬
+            make.width.height.equalTo(20) // 이미지 크기 설정
         }
-        //        imageView.snp.makeConstraints { make in
-        //            make.leading.equalToSuperview().offset(16) // 원하는 leading 간격 설정
-        //            make.centerY.equalToSuperview() // 수직 가운데 정렬
-        //            make.width.height.equalTo(20) // 이미지 크기 설정
-        //        }
         descriptionLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.equalToSuperview().offset(16)
@@ -99,10 +86,9 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
     
     private func updateTextFieldStyle(isEditing: Bool) {
         if isEditing {
-            textField.backgroundColor = AppColor.purple10
-            textField.layer.borderColor = AppColor.purple100?.cgColor
-            imageView.tintColor = AppColor.purple100
-            
+//            textField.backgroundColor = AppColor.purple10
+//            textField.layer.borderColor = AppColor.purple100?.cgColor
+//            imageView.tintColor = AppColor.purple100
         } else {
             textField.backgroundColor = AppColor.gray30
             textField.layer.borderColor = AppColor.gray30?.cgColor
