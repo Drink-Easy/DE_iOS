@@ -29,18 +29,18 @@ extension NetworkManager {
         provider.request(target) { result in
             switch result {
             case .success(let response):
-                let result: Result<ApiResponse<EmptyResponse>, NetworkError> = handleResponse(
+                let result: Result<ApiResponse<String?>, NetworkError> = handleResponse(
                     response,
-                    decodingType: ApiResponse<EmptyResponse>.self
+                    decodingType: ApiResponse<String?>.self
                 )
                 
                 switch result {
                 case .success:
-                    completion(.success(()))
+                    completion(.success(())) // 성공 처리
                 case .failure(let error):
-                    completion(.failure(error))
+                    completion(.failure(error)) // 실패 처리
                 }
-                
+
             case .failure(let error):
                 let networkError = handleNetworkError(error)
                 completion(.failure(networkError))
@@ -54,8 +54,8 @@ extension NetworkManager {
         decodingType: T.Type
     ) -> Result<T, NetworkError> {
         do {
+            // 1. 상태 코드 확인
             guard (200...299).contains(response.statusCode) else {
-                // 상태 코드별 기본 메시지 설정
                 let errorMessage: String
                 switch response.statusCode {
                 case 300..<400:
@@ -67,17 +67,22 @@ extension NetworkManager {
                 default:
                     errorMessage = "알 수 없는 오류가 발생했습니다. 코드: \(response.statusCode)"
                 }
-                
-                // 서버 응답 메시지 디코딩
+
                 let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: response.data)
                 let finalMessage = errorResponse?.message ?? errorMessage
-                
                 return .failure(.serverError(statusCode: response.statusCode, message: finalMessage))
             }
-            
+
+            // 2. 응답 디코딩
             let apiResponse = try JSONDecoder().decode(ApiResponse<T>.self, from: response.data)
-            return .success(apiResponse.result)
             
+            // ✅ result가 없는 경우 처리 추가
+            guard let result = apiResponse.result else {
+                return .failure(.serverError(statusCode: response.statusCode, message: "결과 데이터가 없습니다."))
+            }
+            
+            return .success(result)
+
         } catch {
             return .failure(.decodingError)
         }

@@ -7,7 +7,7 @@ public struct ApiResponse<T: Decodable>: Decodable {
     public let isSuccess: Bool
     public let code: String
     public let message: String
-    public let result: T
+    public let result: T?
 }
 
 public struct EmptyResponse: Decodable {}
