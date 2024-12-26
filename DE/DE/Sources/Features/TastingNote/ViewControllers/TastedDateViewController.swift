@@ -7,15 +7,16 @@
 
 import UIKit
 
-class TastedDateViewController: UIViewController {
+public class TastedDateViewController: UIViewController {
 
     let tastedDateView = TastedDateView()
     // let selection = UICalendarSelectionSingleDate(delegate: self)
     
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setupActions()
     }
     
     func setupUI() {
@@ -24,6 +25,21 @@ class TastedDateViewController: UIViewController {
         tastedDateView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+    }
+    
+    func setupActions() {
+        tastedDateView.navView.backButton.addTarget(self, action: #selector(prevVC), for: .touchUpInside)
+        tastedDateView.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+    }
+    
+    @objc func prevVC() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func nextVC() {
+        let nextVC = ChooseWineColorViewController()
+        nextVC.modalPresentationStyle = .fullScreen
+        navigationController?.pushViewController(nextVC, animated: true)
     }
     
 }
