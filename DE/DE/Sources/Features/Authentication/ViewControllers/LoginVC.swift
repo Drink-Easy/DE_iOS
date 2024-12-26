@@ -1,54 +1,29 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+
 import SnapKit
-import SwiftyToaster
-import CoreModule
 import Then
+
+import CoreModule
 import Network
 
+
 class LoginVC: UIViewController {
+    // MARK: - Properties
+    private let loginView = LoginView() // LoginView 인스턴스
+    private let navigationBarManager = NavigationBarManager()
+    
     public static var isFirstLogin : Bool = true
     
-    let navigationBarManager = NavigationBarManager()
-    
-    private lazy var emailField: CustomLabelTextFieldView = {
-        let field = CustomLabelTextFieldView(descriptionImageIcon: "person.fill", descriptionLabelText: "이메일", textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "사용할 수 없는 이메일입니다")
-        field.textField.keyboardType = .emailAddress
-        return field
-    }()
-    private lazy var passwordField: CustomLabelTextFieldView = {
-        let field = CustomLabelTextFieldView(descriptionImageIcon: "lock.fill", descriptionLabelText: "비밀번호", textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: "8~20자 이내 영문자, 숫자, 특수문자의 조합")
-        field.textField.isSecureTextEntry = true
-        field.textField.textContentType = .newPassword
-        return field
-    }()
-    
-    private let joinStackView = JoinStackView()
-    
-    private lazy var emailSaveCheckBox = CustomCheckSquareButton(title: "아이디 저장하기")
-    
-    private let idSearchButton = UIButton().then {
-        $0.setTitle("아이디 / 비밀번호 찾기", for: .normal)
-        $0.setTitleColor(UIColor(hex: "#191919"), for: .normal)
-        $0.titleLabel?.font =  UIFont.ptdMediumFont(ofSize: 14)
-        //        $0.addTarget(self, action: #selector(searchButtonTapped), for: .touchUpInside)
-    }
-    
-    private let loginButton = CustomButton(
-        title: "로그인",
-        titleColor: .white,
-        backgroundColor: AppColor.purple100!
-    ).then {
-        $0.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+    override func loadView() {
+        view = loginView // 커스텀 뷰 사용
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         
-        setupUI()
-        setupConstraints()
         setupActions()
         setupNavigationBar()
     }
@@ -63,57 +38,32 @@ class LoginVC: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
-    private func setupUI() {
-        [emailField,passwordField,emailSaveCheckBox,idSearchButton,joinStackView,loginButton].forEach {
-            view.addSubview($0)
-        }
-    }
-    
-    private func setupConstraints() {
-        emailField.snp.makeConstraints { make in
-            make.top.equalTo(Constants.superViewHeight * 0.2)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
-        }
-        passwordField.snp.makeConstraints { make in
-            make.top.equalTo(emailField.snp.bottom).offset(32)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
-        }
-        emailSaveCheckBox.snp.makeConstraints { make in
-            make.top.equalTo(passwordField.snp.bottom).offset(32)
-            make.leading.equalToSuperview().inset(Constants.padding)
-        }
-        idSearchButton.snp.makeConstraints { make in
-            make.centerY.equalTo(emailSaveCheckBox)
-            make.trailing.equalToSuperview().inset(Constants.padding)
-        }
-        loginButton.snp.makeConstraints { make in
-            make.top.equalTo(idSearchButton.snp.bottom).offset(64)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
-        }
-        joinStackView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview() // 수평 가운데 정렬
-            make.bottom.equalToSuperview().offset(-50) // 하단에서 위로 50pt
-        }
-    }
-    
-    private func setupActions(){
-        emailField.textField.addTarget(self, action: #selector(emailValidate), for: .editingChanged)
-        passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .editingChanged)
-        emailSaveCheckBox.addTarget(self, action: #selector(emailSaveCheckBoxTapped), for: .touchUpInside)
-        joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        self.view.addGestureRecognizer(tapGesture)
-    }
-    
+    // MARK: - 네비게이션 바 설정
     private func setupNavigationBar() {
-        navigationBarManager.setTitle(to: navigationItem, title: "로그인", textColor: AppColor.black!)
+        navigationBarManager.setTitle(
+            to: navigationItem,
+            title: "로그인",
+            textColor: AppColor.black!
+        )
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
             action: #selector(backButtonTapped),
             tintColor: AppColor.gray80!
         )
+    }
+    
+    // MARK: - Action 설정
+    private func setupActions() {
+        loginView.emailField.textField.addTarget(self, action: #selector(emailValidate), for: .editingChanged)
+        loginView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .editingChanged)
+        loginView.emailSaveCheckBox.addTarget(self, action: #selector(emailSaveCheckBoxTapped), for: .touchUpInside)
+        loginView.joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+        
+        loginView.loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
     }
     
     @objc private func backButtonTapped() {
@@ -150,19 +100,9 @@ class LoginVC: UIViewController {
         }
     }
     
-    private func goToHomeView() {
-        let homeViewController = TestVC()
-        navigationController?.pushViewController(homeViewController, animated: true)
-    }
-    
     @objc private func joinButtonTapped() {
         let joinViewController = SignUpVC()
         navigationController?.pushViewController(joinViewController, animated: true)
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        self.view.endEditing(true)  //firstresponder가 전부 사라짐
     }
     
 }
