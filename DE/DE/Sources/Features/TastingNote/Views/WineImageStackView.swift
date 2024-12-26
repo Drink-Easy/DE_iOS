@@ -34,6 +34,17 @@ class WineImageStackView: UIStackView {
             subStackView.addArrangedSubview(imageView)
             subStackView.addArrangedSubview(label)
             
+            imageView.snp.makeConstraints { make in
+                make.width.equalToSuperview()
+                make.height.equalTo(imageView.snp.width)
+            }
+            
+            label.snp.makeConstraints { make in
+                make.top.equalTo(imageView.snp.bottom).offset(8)
+                // make.leading.equalTo(imageView.snp.leading).offset(13)
+                make.centerX.equalTo(imageView.snp.centerX)
+            }
+            
             self.addArrangedSubview(subStackView)
         }
     }
