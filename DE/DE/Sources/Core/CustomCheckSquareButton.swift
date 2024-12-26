@@ -24,12 +24,8 @@ public class CustomCheckSquareButton: UIButton {
                 make.centerY.equalTo(imageView)
             }
         }
-        self.addTarget(self, action: #selector(toggleButtonState), for: .touchUpInside)
     }
     
-    @objc private func toggleButtonState() {
-        self.isSelected.toggle()
-    }
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

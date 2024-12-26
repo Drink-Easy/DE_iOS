@@ -2,8 +2,11 @@
 
 import UIKit
 import CoreModule
+import Network
 
 public class TestVC: UIViewController {
+    
+    let networkService = AuthService()
     
     // MARK: - UI Elements
     private lazy var sampleButton: UIButton = {
@@ -52,9 +55,25 @@ public class TestVC: UIViewController {
         ])
     }
     
+    
     // MARK: - Actions
     @objc private func didTapSampleButton() {
         sampleLabel.text = "Button Clicked!"
         sampleLabel.textColor = .systemRed
+        
+        networkService.logout { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success:
+                sampleLabel.text = "logout!"
+                sampleLabel.textColor = .systemRed
+                let basicVC = SplashVC()
+                basicVC.modalPresentationStyle = .fullScreen
+                present(basicVC, animated: true)
+            case .failure(let error):
+                sampleLabel.text = "로그아웃 실패!"
+            }
+        }
     }
 }

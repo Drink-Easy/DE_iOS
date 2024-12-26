@@ -39,7 +39,15 @@ public final class AuthService : NetworkManager {
     
     /// 로그아웃 API
     public func logout(completion: @escaping (Result<Void, NetworkError>) -> Void) {
-        requestStatusCode(target: .postLogout, completion: completion)
+        provider.request(.postLogout) { result in
+            switch result {
+            case .success(let response):
+                completion(.success(()))
+            case .failure(let error):
+                let networkError = self.handleNetworkError(error)
+                completion(.failure(networkError))
+            }
+        }
     }
     
     /// 자체 회원가입 API

@@ -93,7 +93,7 @@ extension NetworkManager {
     }
     
     // MARK: - 네트워크 오류 처리 함수
-    private func handleNetworkError(_ error: Error) -> NetworkError {
+    func handleNetworkError(_ error: Error) -> NetworkError {
         let nsError = error as NSError
         switch nsError.code {
         case NSURLErrorNotConnectedToInternet:

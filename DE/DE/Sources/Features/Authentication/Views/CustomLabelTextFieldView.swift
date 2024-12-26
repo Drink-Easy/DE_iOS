@@ -12,7 +12,13 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
     let toggleButton: UIButton? // 패스워드 보기 버튼
 
     var text: String? {
-        return textField.text
+        get {
+            //필요한 연산 과정
+            return textField.text
+        }
+        set(emailString) {
+            textField.text = emailString
+        }
     }
     
     private var isPasswordField: Bool = false

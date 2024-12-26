@@ -7,9 +7,11 @@ import Moya
 import SwiftyToaster
 import CoreModule
 import Then
+import KeychainSwift
 
 public class SelectLoginTypeVC: UIViewController {
     
+    public static let keychain = KeychainSwift()
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
     
     private let imageView = UIImageView().then {

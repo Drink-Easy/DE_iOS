@@ -17,6 +17,9 @@ class LoginVC: UIViewController {
     let validationManager = ValidationManager()
     let networkService = AuthService()
     
+    var isSavingEmail : Bool = false
+    var emailString : String = ""
+    
     override func loadView() {
         view = loginView // 커스텀 뷰 사용
     }
@@ -95,17 +98,19 @@ class LoginVC: UIViewController {
         
     @objc private func emailSaveCheckBoxTapped() {
         loginView.emailSaveCheckBox.isSelected.toggle()
-        //TODO: 이거는 제일 나중에
+        isSavingEmail = loginView.emailSaveCheckBox.isSelected
     }
     
     @objc private func loginButtonTapped() {
         let loginDTO = networkService.makeLoginDTO(username: loginView.emailField.text!, password: loginView.passwordField.text!)
+        emailString = loginDTO.username
         
         networkService.login(data: loginDTO) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(let response):
+                SelectLoginTypeVC.keychain.set(emailString, forKey: "savedUserEmail")
                 self.goToNextView(response.isFirst)
             case .failure(let error):
                 print(error)
@@ -126,5 +131,11 @@ class LoginVC: UIViewController {
     @objc private func joinButtonTapped() {
         let joinViewController = SignUpVC()
         navigationController?.pushViewController(joinViewController, animated: true)
+    }
+    
+    func fillSavedEmail() {
+        if let email = SelectLoginTypeVC.keychain.get("savedUserEmail") {
+            loginView.emailField.text = email
+        }
     }
 }

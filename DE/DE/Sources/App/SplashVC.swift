@@ -10,8 +10,8 @@ import SwiftyToaster
 import AppTrackingTransparency
 import AdSupport
 
-import Network
 import Authentication
+import Network
 import CoreModule
 
 public class SplashVC : UIViewController {
