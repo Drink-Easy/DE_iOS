@@ -29,6 +29,7 @@ extension NetworkManager {
         provider.request(target) { result in
             switch result {
             case .success(let response):
+                // ✅ 빈 데이터를 처리하는 ApiResponse 타입으로 요청
                 let result: Result<ApiResponse<String?>, NetworkError> = handleResponse(
                     response,
                     decodingType: ApiResponse<String?>.self
@@ -68,6 +69,7 @@ extension NetworkManager {
                     errorMessage = "알 수 없는 오류가 발생했습니다. 코드: \(response.statusCode)"
                 }
 
+                // 서버 응답 메시지 디코딩
                 let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: response.data)
                 let finalMessage = errorResponse?.message ?? errorMessage
                 return .failure(.serverError(statusCode: response.statusCode, message: finalMessage))
@@ -75,13 +77,15 @@ extension NetworkManager {
 
             // 2. 응답 디코딩
             let apiResponse = try JSONDecoder().decode(ApiResponse<T>.self, from: response.data)
-            
-            // ✅ result가 없는 경우 처리 추가
-            guard let result = apiResponse.result else {
+
+            // ✅ result가 없는 경우 처리 (옵셔널 대응)
+            if let result = apiResponse.result {
+                return .success(result)
+            } else if T.self == String?.self { // 빈 데이터일 경우 허용
+                return .success("" as! T)
+            } else {
                 return .failure(.serverError(statusCode: response.statusCode, message: "결과 데이터가 없습니다."))
             }
-            
-            return .success(result)
 
         } catch {
             return .failure(.decodingError)

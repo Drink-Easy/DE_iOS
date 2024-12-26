@@ -43,8 +43,8 @@ public final class AuthService : NetworkManager {
     }
     
     /// 자체 회원가입 API
-    public func join(data: JoinDTO, completion: @escaping (Result<Void, NetworkError>) -> Void) {
-        requestStatusCode(target: .postJoin(data: data), completion: completion)
+    public func join(data: JoinDTO, completion: @escaping (Result<String, NetworkError>) -> Void) {
+        request(target: .postJoin(data: data), decodingType: String.self, completion: completion)
     }
     
     /// 토큰 재발급 API

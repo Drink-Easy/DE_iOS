@@ -70,8 +70,8 @@ class SignUpVC: UIViewController {
             guard let self = self else { return }
             
             switch result {
-            case .success(let response):
-                self.goToHomeView()
+            case .success(_):
+                self.goToLoginView()
             case .failure(let error):
                 print(error)
             }
@@ -109,17 +109,6 @@ class SignUpVC: UIViewController {
     @objc private func goToLoginView() {
         let loginViewController = LoginVC()
         navigationController?.pushViewController(loginViewController, animated: true)
-    }
-    
-    @objc private func goToHomeView() {
-        let homeViewController = TestVC()
-        navigationController?.pushViewController(homeViewController, animated: true)
-    }
-    
-    private func showAlert(title: String = "알림", message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "확인", style: .default))
-        present(alert, animated: true)
     }
     
 }
