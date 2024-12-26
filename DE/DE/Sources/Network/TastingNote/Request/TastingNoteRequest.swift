@@ -2,7 +2,7 @@
 
 import Foundation
 
-struct TastingNoteRequestDTO : Codable {
+public struct TastingNoteRequestDTO : Codable {
     let wineId : Int
     let color : String
     let tasteDate : String
@@ -15,7 +15,7 @@ struct TastingNoteRequestDTO : Codable {
     let satisfaction : Double
     let review : String
     
-    init(wineId: Int, color: String, tasteDate: String, sugarContent: Int, acidity: Int, tannin: Int, body: Int, alcohol: Int, nose: [String], satisfaction: Double, review: String) {
+    public init(wineId: Int, color: String, tasteDate: String, sugarContent: Int, acidity: Int, tannin: Int, body: Int, alcohol: Int, nose: [String], satisfaction: Double, review: String) {
         self.wineId = wineId
         self.color = color
         self.tasteDate = tasteDate
@@ -30,17 +30,17 @@ struct TastingNoteRequestDTO : Codable {
     }
 }
 
-struct TastingNotePatchRequestDTO : Codable {
+public struct TastingNotePatchRequestDTO : Codable {
     let noteId : Int
     let body : TastingNoteUpdateRequestDTO
     
-    init(noteId: Int, body: TastingNoteUpdateRequestDTO) {
+    public init(noteId: Int, body: TastingNoteUpdateRequestDTO) {
         self.noteId = noteId
         self.body = body
     }
 }
 
-struct TastingNoteUpdateRequestDTO : Codable {
+public struct TastingNoteUpdateRequestDTO : Codable {
     let color : String?
     let tastingDate : String?
     let sugarContent: Int?
@@ -53,7 +53,7 @@ struct TastingNoteUpdateRequestDTO : Codable {
     let satisfaction : Double?
     let review : String?
     
-    init(color: String?, tastingDate: String?, sugarContent: Int?, acidity: Int?, tannin: Int?, body: Int?, alcohol: Int?, addNoseList: [String]?, removeNoseList: [Int]?, satisfaction: Double?, review: String?) {
+    public init(color: String?, tastingDate: String?, sugarContent: Int?, acidity: Int?, tannin: Int?, body: Int?, alcohol: Int?, addNoseList: [String]?, removeNoseList: [Int]?, satisfaction: Double?, review: String?) {
         self.color = color
         self.tastingDate = tastingDate
         self.sugarContent = sugarContent

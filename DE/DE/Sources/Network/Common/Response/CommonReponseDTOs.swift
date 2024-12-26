@@ -3,11 +3,11 @@
 import Foundation
 
 // 최상위 응답 모델
-struct ApiResponse<T: Decodable>: Decodable {
-    let isSuccess: Bool
-    let code: String
-    let message: String
-    let result: T
+public struct ApiResponse<T: Decodable>: Decodable {
+    public let isSuccess: Bool
+    public let code: String
+    public let message: String
+    public let result: T
 }
 
-struct EmptyResponse: Decodable {}
+public struct EmptyResponse: Decodable {}

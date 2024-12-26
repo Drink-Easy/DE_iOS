@@ -2,8 +2,8 @@
 
 import Foundation
 
-struct LoginResponseDTO : Decodable {
-    let username : String
-    let role : String
-    let isFirst : Bool
+public struct LoginResponseDTO : Decodable {
+    public let username : String
+    public let role : String
+    public let isFirst : Bool
 }

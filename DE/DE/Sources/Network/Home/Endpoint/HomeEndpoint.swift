@@ -2,32 +2,33 @@
 
 import Foundation
 import Moya
+import CoreModule
 
-enum HomeEndpoint {
+public enum HomeEndpoint {
     case getHomeInfo
 }
 
 extension HomeEndpoint: TargetType {
-    var baseURL: URL {
+    public var baseURL: URL {
         guard let url = URL(string: Constants.API.baseURL) else {
             fatalError("잘못된 URL")
         }
         return url
     }
     
-    var path: String {
+    public var path: String {
         return "/home"
     }
     
-    var method: Moya.Method {
+    public var method: Moya.Method {
         return .get
     }
     
-    var task: Moya.Task {
+    public var task: Moya.Task {
         return .requestPlain
     }
     
-    var headers: [String : String]? {
+    public var headers: [String : String]? {
         return [
             "Content-type": "application/json"
         ]

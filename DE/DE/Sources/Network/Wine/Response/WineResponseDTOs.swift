@@ -2,42 +2,42 @@
 
 import Foundation
 
-struct SearchWineResponseDTO: Decodable {
-    let wineId: Int
-    let name: String
-    let imageUrl : String
-    let sort: String
-    let area: String
-    let satisfaction: Double
-    let price: Int
-    let liked: Bool
+public struct SearchWineResponseDTO: Decodable {
+    public let wineId: Int
+    public let name: String
+    public let imageUrl : String
+    public let sort: String
+    public let area: String
+    public let satisfaction: Double
+    public let price: Int
+    public let liked: Bool
 }
 
-struct WineResponseWithThreeReviewsDTO: Decodable {
-    let wineResponseDTO: WineResponseDTO
-    let recentReviews: [WineReviewResponseDTO]
+public struct WineResponseWithThreeReviewsDTO: Decodable {
+    public let wineResponseDTO: WineResponseDTO
+    public let recentReviews: [WineReviewResponseDTO]
 }
 
-struct WineResponseDTO : Decodable {
-    let wineId: Int
-    let name: String
-    let imageUrl: String
-    let price: Int
-    let sort: String
-    let area: String
-    let satisfaction: Double
-    let avgSugarContent: Double
-    let avgAcidity: Double
-    let avgTanin: Double
-    let avgBody: Double
-    let avgAlcohol: Double
-    let wineNoteNose: WineNoteNose
+public struct WineResponseDTO : Decodable {
+    public let wineId: Int
+    public let name: String
+    public let imageUrl: String
+    public let price: Int
+    public let sort: String
+    public let area: String
+    public let satisfaction: Double
+    public let avgSugarContent: Double
+    public let avgAcidity: Double
+    public let avgTanin: Double
+    public let avgBody: Double
+    public let avgAlcohol: Double
+    public let wineNoteNose: WineNoteNose
 }
 
-struct WineNoteNose : Decodable {
-    let nose1 : String
-    let nose2 : String
-    let nose3 : String
+public struct WineNoteNose : Decodable {
+    public let nose1 : String
+    public let nose2 : String
+    public let nose3 : String
 }
 
 struct WineReviewResponseDTO: Decodable {

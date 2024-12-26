@@ -3,13 +3,13 @@
 import Foundation
 import Moya
 
-final class AuthService : NetworkManager {
+public final class AuthService : NetworkManager {
     typealias Endpoint = AuthorizationEndpoints
     
     // MARK: - Provider 설정
     let provider: MoyaProvider<AuthorizationEndpoints>
     
-    init(provider: MoyaProvider<AuthorizationEndpoints>? = nil) {
+    public init(provider: MoyaProvider<AuthorizationEndpoints>? = nil) {
         // 플러그인 추가
         let plugins: [PluginType] = [
             NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)) // 로그 플러그인

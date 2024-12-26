@@ -3,21 +3,21 @@
 import Foundation
 
 // 애플 로그인
-struct AppleLoginRequestDTO : Codable {
-    let identityToken : String
+public struct AppleLoginRequestDTO : Codable {
+    public let identityToken : String
     
-    init(identityToken: String) {
+    public init(identityToken: String) {
         self.identityToken = identityToken
     }
 }
 
 // 자체 회원가입
-struct JoinDTO : Codable {
-    let username : String
-    let password : String
-    let rePassword : String
+public struct JoinDTO : Codable {
+    public let username : String
+    public let password : String
+    public let rePassword : String
     
-    init(username: String, password: String, rePassword: String) {
+    public init(username: String, password: String, rePassword: String) {
         self.username = username
         self.password = password
         self.rePassword = rePassword
@@ -25,18 +25,18 @@ struct JoinDTO : Codable {
 }
 
 // login
-struct LoginDTO : Codable {
-    let username : String
-    let password : String
+public struct LoginDTO : Codable {
+    public let username : String
+    public let password : String
     
-    init(username: String, password: String) {
+    public init(username: String, password: String) {
         self.username = username
         self.password = password
     }
 }
 
 // 사용자 초기 정보 추가
-struct MemberRequestDTO : Codable {
+public struct MemberRequestDTO : Codable {
     let name : String
     let isNewBie : Bool
     let monthPrice : Int

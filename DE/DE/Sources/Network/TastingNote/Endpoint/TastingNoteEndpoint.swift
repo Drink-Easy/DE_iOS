@@ -4,7 +4,7 @@ import Foundation
 import Moya
 import CoreModule
 
-enum TastingNoteEndpoint {
+public enum TastingNoteEndpoint {
     case postNote(data : TastingNoteRequestDTO)
     case getNote(noteId : Int)
     case deleteNote(noteId : Int)
@@ -13,14 +13,14 @@ enum TastingNoteEndpoint {
 }
 
 extension TastingNoteEndpoint: TargetType {
-    var baseURL: URL {
+    public var baseURL: URL {
         guard let url = URL(string: Constants.API.tastingNoteURL) else {
             fatalError("잘못된 URL")
         }
         return url
     }
     
-    var path: String {
+    public var path: String {
         switch self {
         case .postNote:
             return "/new-note"
@@ -33,7 +33,7 @@ extension TastingNoteEndpoint: TargetType {
         }
     }
     
-    var method: Moya.Method {
+    public var method: Moya.Method {
         switch self {
         case .postNote:
             return .post
@@ -46,7 +46,7 @@ extension TastingNoteEndpoint: TargetType {
         }
     }
     
-    var task: Moya.Task {
+    public var task: Moya.Task {
         switch self {
         case .postNote(let data):
             return .requestJSONEncodable(data)
@@ -61,7 +61,7 @@ extension TastingNoteEndpoint: TargetType {
         }
     }
     
-    var headers: [String : String]? {
+    public var headers: [String : String]? {
         return [ "Content-type": "application/json" ]
     }
     
