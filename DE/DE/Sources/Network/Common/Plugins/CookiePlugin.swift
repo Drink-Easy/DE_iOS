@@ -17,4 +17,15 @@ final class CookiePlugin: PluginType {
         
         return request
     }
+    
+//    func fetchTokens() {
+//        if let url = URL(string: "https://drinkeg.com/login") {
+//            if let cookies = HTTPCookieStorage.shared.cookies(for: url) {
+//                for cookie in cookies {
+//                    print("쿠키 이름 : \(cookie.name), 값 : \(cookie.value)")
+//                    print("")
+//                }
+//            }
+//        }
+//    }
 }
