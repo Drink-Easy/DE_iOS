@@ -36,6 +36,12 @@ class MyTastingNoteView: UIView {
         return t
     }()
     
+    let writeButton: UIButton = {
+        let w = UIButton()
+        w.setImage(UIImage(named: "writeNote"), for: .normal)
+        return w
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -57,7 +63,6 @@ class MyTastingNoteView: UIView {
             make.leading.equalTo(vector.snp.leading)
             make.centerX.equalToSuperview()
         }
-        
     }
     
     func setupCollectionView() {
@@ -69,6 +74,12 @@ class MyTastingNoteView: UIView {
             make.centerX.equalToSuperview()
             // make.width.equalTo(341)
             make.height.equalTo(500)
+        }
+        
+        addSubview(writeButton)
+        writeButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-14)
+            make.bottom.equalToSuperview().offset(-103)
         }
     }
     

@@ -7,30 +7,29 @@
 
 import UIKit
 
-class RecordGraphViewController: UIViewController {
+public class RecordGraphViewController: UIViewController {
 
     let recordGraphView = RecordGraphView()
-    let scrollView = UIScrollView()
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
-        
-        setupUI()
+        self.view = recordGraphView
+        setupActions()
     }
     
-    func setupUI() {
-        view.addSubview(scrollView)
-        view.backgroundColor = .white
-        scrollView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
-        }
-        
-        scrollView.addSubview(recordGraphView)
-        recordGraphView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-            make.height.equalTo(1325)
-            make.width.equalTo(scrollView)
-        }
+    func setupActions() {
+        recordGraphView.navView.backButton.addTarget(self, action: #selector(prevVC), for: .touchUpInside)
+        recordGraphView.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+    }
+    
+    @objc func prevVC() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func nextVC() {
+        let nextVC = RatingWineViewController()
+        nextVC.modalPresentationStyle = .fullScreen
+        navigationController?.pushViewController(nextVC, animated: true)
     }
 
 }

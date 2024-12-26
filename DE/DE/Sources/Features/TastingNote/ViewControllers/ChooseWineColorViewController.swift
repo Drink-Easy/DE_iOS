@@ -16,6 +16,7 @@ public class ChooseWineColorViewController: UIViewController {
         super.viewDidLoad()
 
         setupUI()
+        setupActions()
     }
     
     func setupUI() {
@@ -26,7 +27,19 @@ public class ChooseWineColorViewController: UIViewController {
             make.edges.equalToSuperview()
         }
     }
-
     
-
+    func setupActions() {
+        chooseWineColor.navView.backButton.addTarget(self, action: #selector(prevVC), for: .touchUpInside)
+        chooseWineColor.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+    }
+    
+    @objc func prevVC() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc func nextVC() {
+        let nextVC = ChooseNoseViewController()
+        nextVC.modalPresentationStyle = .fullScreen
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
 }

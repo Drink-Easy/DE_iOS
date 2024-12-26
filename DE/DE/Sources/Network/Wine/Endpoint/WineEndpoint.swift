@@ -2,6 +2,7 @@
 
 import Foundation
 import Moya
+import CoreModule
 
 public enum WineEndpoint {
     case getWines(searchName: String)

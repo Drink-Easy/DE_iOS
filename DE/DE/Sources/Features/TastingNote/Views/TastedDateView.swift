@@ -6,9 +6,27 @@
 //
 
 import UIKit
+import CoreModule
 
 class TastedDateView: UIView {
 
+    let navView: CustomNavigationBar = {
+        let n = CustomNavigationBar()
+        n.backgroundColor = AppColor.gray20
+        return n
+    }()
+    
+    let pageLabel: UILabel = {
+        let p = UILabel()
+        p.textColor = AppColor.gray80
+        let fullText = "1/5"
+        let coloredText = "1"
+        let attributedString = fullText.withColor(for: coloredText, color: AppColor.purple70 ?? UIColor(hex: "9741BF")!)
+        p.attributedText = attributedString
+        p.font = .ptdMediumFont(ofSize: 16)
+        return p
+    }()
+    
     let wineName: UILabel = {
         let w = UILabel()
         w.text = "루이 로드레 크리스탈 2015"
@@ -27,6 +45,7 @@ class TastedDateView: UIView {
     
     private var calender: UICalendarView = {
         let c = UICalendarView()
+        c.backgroundColor = .white
         c.calendar = .current
         c.locale = .current
         c.fontDesign = .rounded
@@ -47,12 +66,25 @@ class TastedDateView: UIView {
     }()
     
     func setupUI() {
-        backgroundColor = .white
+        backgroundColor = AppColor.gray20
+        
+        addSubview(navView)
+        navView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.top.equalTo(safeAreaLayoutGuide)
+            make.height.equalTo(56)
+        }
+        
+        addSubview(pageLabel)
+        pageLabel.snp.makeConstraints { make in
+            make.top.equalTo(navView.snp.bottom).offset(10)
+            make.leading.equalToSuperview().offset(24)
+        }
         
         addSubview(wineName)
         wineName.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(110)
-            make.leading.equalToSuperview().offset(25)
+            make.top.equalTo(pageLabel.snp.bottom).offset(2)
+            make.leading.equalTo(pageLabel)
         }
         
         addSubview(label)

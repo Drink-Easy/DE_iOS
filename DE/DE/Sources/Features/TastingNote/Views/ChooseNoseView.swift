@@ -31,8 +31,25 @@ class ChooseNoseView: UIView {
     
     private let contentView: UIView = {
         let c = UIView()
-        c.backgroundColor = UIColor(hex: "#F8F8FA")
+        c.backgroundColor = AppColor.gray20
         return c
+    }()
+    
+    let navView: CustomNavigationBar = {
+        let n = CustomNavigationBar()
+        n.backgroundColor = AppColor.gray20
+        return n
+    }()
+    
+    let pageLabel: UILabel = {
+        let p = UILabel()
+        p.textColor = AppColor.gray80
+        let fullText = "1/5"
+        let coloredText = "1"
+        let attributedString = fullText.withColor(for: coloredText, color: AppColor.purple70 ?? UIColor(hex: "9741BF")!)
+        p.attributedText = attributedString
+        p.font = .ptdMediumFont(ofSize: 16)
+        return p
     }()
     
     private let wineName: UILabel = {
@@ -152,12 +169,31 @@ class ChooseNoseView: UIView {
         $0.tag = 6
     }
     
+    let nextButton: UIButton = {
+        let n = UIButton()
+        n.setTitle("다음", for: .normal)
+        n.titleLabel?.font = UIFont.ptdBoldFont(ofSize: 18)
+        n.backgroundColor = UIColor(hex: "#7E13B1")
+        n.layer.cornerRadius = 14
+        n.setTitleColor(.white, for: .normal)
+        return n
+    }()
+    
     func setupUI() {
-        backgroundColor = .white
+        backgroundColor = AppColor.gray20
+        
+        addSubview(navView)
+        navView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.top.equalTo(safeAreaLayoutGuide)
+            make.height.equalTo(56)
+        }
         
         addSubview(scrollView)
         scrollView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.equalTo(navView.snp.bottom)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
         }
         
         scrollView.addSubview(contentView)
@@ -166,10 +202,16 @@ class ChooseNoseView: UIView {
             make.width.equalToSuperview()
         }
         
+        contentView.addSubview(pageLabel)
+        pageLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(10)
+            make.leading.equalToSuperview().offset(24)
+        }
+        
         contentView.addSubview(wineName)
         wineName.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(110)
-            make.leading.equalToSuperview().offset(24)
+            make.top.equalTo(pageLabel.snp.bottom).offset(2)
+            make.leading.equalTo(pageLabel)
         }
         
         contentView.addSubview(noseLabel)
@@ -249,8 +291,16 @@ class ChooseNoseView: UIView {
             make.height.equalTo(143)
         }
         
+        contentView.addSubview(nextButton)
+        nextButton.snp.makeConstraints { make in
+            make.top.equalTo(burnsCollectionView.snp.bottom).offset(60)
+            make.centerX.equalToSuperview()
+            make.leading.equalToSuperview().offset(28)
+            make.height.equalTo(56)
+        }
+        
         contentView.snp.makeConstraints { make in
-            make.bottom.equalTo(burnsCollectionView.snp.bottom).offset(20)
+            make.bottom.equalTo(nextButton.snp.bottom).offset(20)
         }
         
     }
