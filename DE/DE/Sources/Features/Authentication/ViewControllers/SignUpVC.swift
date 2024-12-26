@@ -11,32 +11,25 @@ class SignUpVC: UIViewController {
     
     private let networkService = AuthService()
     
+    let navigationBarManager = NavigationBarManager()
+    
     public var userID : String?
     public var userPW : String?
     
     //MARK: - TextFields
-    let titleView = UIView()
-    
-    let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "가입하기"
-        label.font = UIFont.boldSystemFont(ofSize: 20)
-        label.textColor = .white
-        label.textAlignment = .center
-        return label
-    }()
-    
     private lazy var emailField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(descriptionImageIcon: "person.fill", descriptionLabelText: "이메일", textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "이메일 형식이 올바르지 않습니다")
-//        field.textField.keyboardType = .emailAddress
+        field.textField.keyboardType = .emailAddress
         return field
     }()
+    
     private lazy var passwordField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(descriptionImageIcon: "lock.fill", descriptionLabelText: "비밀번호", textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: "8~20자 이내 영문자, 숫자, 특수문자의 조합")
         field.textField.isSecureTextEntry = true
         field.textField.textContentType = .newPassword
         return field
     }()
+    
     private lazy var confirmPasswordField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(descriptionImageIcon: "lock.fill", descriptionLabelText: "비밀번호 재입력", textFieldPlaceholder: "비밀번호를 다시 입력해 주세요", validationText: "다시 확인해 주세요")
         field.textField.isSecureTextEntry = true
@@ -51,17 +44,10 @@ class SignUpVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-
-        self.navigationController?.isNavigationBarHidden = false
-        self.navigationController?.navigationBar.backIndicatorImage = UIImage(named:"icon_back")
-        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named:"icon_back")
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        self.navigationController?.navigationBar.tintColor = .white
-        
-        self.navigationItem.titleView = titleView
         
         setupUI()
         setupConstraints()
+        setupNavigationBar()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -69,19 +55,28 @@ class SignUpVC: UIViewController {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    private func setupNavigationBar() {
+        navigationBarManager.setTitle(to: navigationItem, title: "가입하기", textColor: AppColor.black!)
+        navigationBarManager.addBackButton(
+            to: navigationItem,
+            target: self,
+            action: #selector(backButtonTapped),
+            tintColor: AppColor.gray80!
+        )
+    }
+    
     private func setupUI() {
-        titleView.addSubview(titleLabel)
         [emailField,passwordField,confirmPasswordField,signupButton].forEach {
             view.addSubview($0)
         }
-
     }
     
     private func setupConstraints() {
-        titleLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(5)
-        }
         emailField.snp.makeConstraints { make in
             make.top.equalTo(Constants.superViewHeight * 0.2)
             make.leading.trailing.equalToSuperview().inset(Constants.padding)
@@ -101,30 +96,34 @@ class SignUpVC: UIViewController {
     }
     
     //MARK: - Button Funcs
-     @objc private func signupButtonTapped() {
-     // 이거 optional 까줄 이유가 없음
-//         guard let id = self.userID, let pw = self.userPW else {
-//             showAlert(message: "아이디와 비밀번호를 입력해 주세요.")
-//             return
-//         }
-//         
-//         let joinDTO = networkService.makeJoinDTO(username: id, password: pw, rePassword: pw)
-//         setLoading(true)
-//         
-//         networkService.join(data: joinDTO) { [weak self] result in
-//             guard let self = self else { return }
-//             self.setLoading(false)
-//             
-//             switch result {
-//             case .success:
-//                 self.goToLoginView()
-//             case .failure(let error):
-//                 self.handleError(error)
-//             }
-//         }
-     }
+    @objc private func signupButtonTapped() {
+        // 이거 optional 까줄 이유가 없음
+        //         guard let id = self.userID, let pw = self.userPW else {
+        //             showAlert(message: "아이디와 비밀번호를 입력해 주세요.")
+        //             return
+        //         }
+        //
+        //         let joinDTO = networkService.makeJoinDTO(username: id, password: pw, rePassword: pw)
+        //         setLoading(true)
+        //
+        //         networkService.join(data: joinDTO) { [weak self] result in
+        //             guard let self = self else { return }
+        //             self.setLoading(false)
+        //
+        //             switch result {
+        //             case .success:
+        //                 self.goToLoginView()
+        //             case .failure(let error):
+        //                 self.handleError(error)
+        //             }
+        //         }
+    }
     
-    private func goToLoginView() {
+    @objc private func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func goToLoginView() {
         let loginViewController = LoginVC()
         navigationController?.pushViewController(loginViewController, animated: true)
     }

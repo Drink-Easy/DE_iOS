@@ -10,6 +10,8 @@ import Network
 class LoginVC: UIViewController {
     public static var isFirstLogin : Bool = true
     
+    let navigationBarManager = NavigationBarManager()
+    
     private lazy var emailField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(descriptionImageIcon: "person.fill", descriptionLabelText: "이메일", textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "사용할 수 없는 이메일입니다")
         field.textField.keyboardType = .emailAddress
@@ -45,20 +47,15 @@ class LoginVC: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         
-        self.navigationController?.isNavigationBarHidden = false
-        self.navigationController?.navigationBar.backIndicatorImage = UIImage(named:"icon_back")
-        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named:"icon_back")
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        self.navigationController?.navigationBar.tintColor = .white
-        
-        
-        let titleView = UIView()
-        
-        self.navigationItem.titleView = titleView
-        
         setupUI()
         setupConstraints()
         setupActions()
+        setupNavigationBar()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -74,7 +71,7 @@ class LoginVC: UIViewController {
     
     private func setupConstraints() {
         emailField.snp.makeConstraints { make in
-            make.top.equalTo(Constants.superViewHeight * 0.4)
+            make.top.equalTo(Constants.superViewHeight * 0.2)
             make.leading.trailing.equalToSuperview().inset(Constants.padding)
         }
         passwordField.snp.makeConstraints { make in
@@ -90,7 +87,7 @@ class LoginVC: UIViewController {
             make.trailing.equalToSuperview().inset(Constants.padding)
         }
         loginButton.snp.makeConstraints { make in
-            make.top.equalTo(Constants.superViewHeight * 0.8)
+            make.top.equalTo(idSearchButton.snp.bottom).offset(64)
             make.leading.trailing.equalToSuperview().inset(Constants.padding)
         }
         joinStackView.snp.makeConstraints { make in
@@ -109,10 +106,24 @@ class LoginVC: UIViewController {
         self.view.addGestureRecognizer(tapGesture)
     }
     
+    private func setupNavigationBar() {
+        navigationBarManager.setTitle(to: navigationItem, title: "로그인", textColor: AppColor.black!)
+        navigationBarManager.addBackButton(
+            to: navigationItem,
+            target: self,
+            action: #selector(backButtonTapped),
+            tintColor: AppColor.gray80!
+        )
+    }
+    
+    @objc private func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
+    }
+    
     @objc private func dismissKeyboard() {
         self.view.endEditing(true)
     }
-    
+
     @objc private func emailValidate() {
         
     }
@@ -128,7 +139,7 @@ class LoginVC: UIViewController {
     @objc private func loginButtonTapped() {
         // API 호출
     }
-    
+
     private func goToNextView() {
         if LoginVC.isFirstLogin {
             let enterTasteTestViewController = TestVC()
