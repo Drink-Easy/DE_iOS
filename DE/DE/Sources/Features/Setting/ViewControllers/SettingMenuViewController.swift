@@ -4,13 +4,12 @@ import UIKit
 import CoreModule
 import Network
 
-class ProfileDefaultViC : UIViewController {
+class SettingMenuViewController : UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
     }
-
 
 }
 
