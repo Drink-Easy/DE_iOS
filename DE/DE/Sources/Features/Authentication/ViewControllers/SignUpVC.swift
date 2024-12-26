@@ -5,11 +5,26 @@ import SnapKit
 import Moya
 import SwiftyToaster
 import CoreModule
+import Network
 
 class SignUpVC: UIViewController {
+    
+    private let networkService = AuthService()
+    
     public var userID : String?
     public var userPW : String?
-    var joinDTO : JoinNLoginRequest?
+    
+    //MARK: - TextFields
+    let titleView = UIView()
+    
+    let titleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "가입하기"
+        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.textColor = .white
+        label.textAlignment = .center
+        return label
+    }()
     
     private lazy var emailField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(descriptionImageIcon: "person.fill", descriptionLabelText: "이메일", textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "이메일 형식이 올바르지 않습니다")
@@ -29,6 +44,7 @@ class SignUpVC: UIViewController {
         return field
     }()
     
+    //MARK: - Buttons
     private let signupButton = CustomButton(
         title: "회원가입",
         titleColor: .white,
@@ -47,19 +63,6 @@ class SignUpVC: UIViewController {
         self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         self.navigationController?.navigationBar.tintColor = .white
         
-        let titleLabel = UILabel()
-        titleLabel.text = "가입하기"
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
-        titleLabel.textColor = .white
-        titleLabel.textAlignment = .center
-                
-        let titleView = UIView()
-        titleView.addSubview(titleLabel)
-        titleLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(5)
-        }
-        
         self.navigationItem.titleView = titleView
         
         setupUI()
@@ -72,6 +75,7 @@ class SignUpVC: UIViewController {
     }
     
     private func setupUI() {
+        titleView.addSubview(titleLabel)
         [emailField,passwordField,confirmPasswordField,signupButton].forEach {
             view.addSubview($0)
         }
@@ -79,6 +83,10 @@ class SignUpVC: UIViewController {
     }
     
     private func setupConstraints() {
+        titleLabel.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(5)
+        }
         emailField.snp.makeConstraints { make in
             make.top.equalTo(Constants.superViewHeight * 0.2)
             make.leading.trailing.equalToSuperview().inset(Constants.padding)
@@ -97,25 +105,33 @@ class SignUpVC: UIViewController {
         }
     }
     
-    @objc private func signupButtonTapped() {
-        assignUserData()
-        callJoinAPI { [weak self] isSuccess in
-            if isSuccess {
-                self?.goToLoginView()
-            } else {
-                print("회원가입 실패")
-                Toaster.shared.makeToast("400 Bad Request: Failed to Register", .short)
-            }
-        }
-    }
-
+    //MARK: - Button Funcs
+     @objc private func signupButtonTapped() {
+     // 이거 optional 까줄 이유가 없음
+//         guard let id = self.userID, let pw = self.userPW else {
+//             showAlert(message: "아이디와 비밀번호를 입력해 주세요.")
+//             return
+//         }
+//         
+//         let joinDTO = networkService.makeJoinDTO(username: id, password: pw, rePassword: pw)
+//         setLoading(true)
+//         
+//         networkService.join(data: joinDTO) { [weak self] result in
+//             guard let self = self else { return }
+//             self.setLoading(false)
+//             
+//             switch result {
+//             case .success:
+//                 self.goToLoginView()
+//             case .failure(let error):
+//                 self.handleError(error)
+//             }
+//         }
+     }
+    
     private func goToLoginView() {
         let loginViewController = LoginVC()
         navigationController?.pushViewController(loginViewController, animated: true)
-    }
-    
-    private func assignUserData() {
-        self.joinDTO = JoinNLoginRequest(username: self.userID ?? "", password: self.userPW ?? "")
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -123,28 +139,11 @@ class SignUpVC: UIViewController {
         self.view.endEditing(true)  //firstresponder가 전부 사라짐
     }
     
-    private func callJoinAPI(completion: @escaping (Bool) -> Void) {
-//        if let data = self.joinDTO {
-//            provider.request(.postRegister(data: data)) { result in
-//                switch result {
-//                case .success(let response):
-//                    do {
-//                        let data = try response.map(APIResponseString.self)
-////                        print("User Created: \(data)")
-//                        completion(data.isSuccess)
-//                    } catch {
-//                        print("Failed to map data: \(error)")
-//                        completion(false)
-//                    }
-//                case .failure(let error):
-//                    print("Request failed: \(error)")
-//                    completion(false)
-//                }
-//            }
-//        } else {
-//            print("User Data가 없습니다.")
-//            completion(false)
-//        }
+    private func showAlert(title: String = "알림", message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default))
+        present(alert, animated: true)
     }
+    
 }
 

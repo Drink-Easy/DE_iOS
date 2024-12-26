@@ -2,10 +2,10 @@
 
 import UIKit
 import SnapKit
-import Moya
 import SwiftyToaster
 import CoreModule
 import Then
+import Network
 
 class LoginVC: UIViewController {
     public static var isFirstLogin : Bool = true
@@ -126,6 +126,7 @@ class LoginVC: UIViewController {
     }
     
     @objc private func loginButtonTapped() {
+        // API 호출
     }
     
     private func goToNextView() {
