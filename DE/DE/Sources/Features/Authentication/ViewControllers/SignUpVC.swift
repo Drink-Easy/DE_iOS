@@ -28,7 +28,7 @@ class SignUpVC: UIViewController {
     
     private lazy var emailField: CustomLabelTextFieldView = {
         let field = CustomLabelTextFieldView(descriptionImageIcon: "person.fill", descriptionLabelText: "이메일", textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "이메일 형식이 올바르지 않습니다")
-        field.textField.keyboardType = .emailAddress
+//        field.textField.keyboardType = .emailAddress
         return field
     }()
     private lazy var passwordField: CustomLabelTextFieldView = {
@@ -44,12 +44,7 @@ class SignUpVC: UIViewController {
         return field
     }()
     
-    //MARK: - Buttons
-    private let signupButton = CustomButton(
-        title: "회원가입",
-        titleColor: .white,
-        backgroundColor: AppColor.purple100!
-    ).then {
+    private let signupButton = CustomButton(title: "회원가입", titleColor: .white, backgroundColor: AppColor.purple100!).then {
         $0.addTarget(self, action: #selector(signupButtonTapped), for: .touchUpInside)
     }
     

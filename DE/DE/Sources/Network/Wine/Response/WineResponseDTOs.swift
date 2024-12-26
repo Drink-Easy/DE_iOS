@@ -40,7 +40,7 @@ public struct WineNoteNose : Decodable {
     public let nose3 : String
 }
 
-struct WineReviewResponseDTO: Decodable {
+public struct WineReviewResponseDTO: Decodable {
     let name: String
     let review: String
     let satisfaction: Double

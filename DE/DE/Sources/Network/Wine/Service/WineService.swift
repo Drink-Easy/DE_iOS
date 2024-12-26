@@ -5,10 +5,10 @@ import Moya
 
 public final class WineService: NetworkManager {
     typealias Endpoint = WineEndpoint
-    
+
     // Provider 설정
     let provider: MoyaProvider<WineEndpoint>
-    
+
     public init(provider: MoyaProvider<WineEndpoint>? = nil) {
         // 플러그인 추가
         let plugins: [PluginType] = [
@@ -19,14 +19,14 @@ public final class WineService: NetworkManager {
         // provider 초기화
         self.provider = provider ?? MoyaProvider<WineEndpoint>(plugins: plugins)
     }
-    
+
     //MARK: - API funcs
-    
+
     /// 와인 검색
     public func fetchWines(searchName: String, completion: @escaping (Result<[SearchWineResponseDTO], NetworkError>) -> Void) {
         request(target: .getWines(searchName: searchName), decodingType: [SearchWineResponseDTO].self, completion: completion)
     }
-    
+
     /// 선택 와인 정보 조회
     public func fetchWineInfo(wineId: Int, completion: @escaping (Result<WineResponseWithThreeReviewsDTO, NetworkError>) -> Void) {
         request(target: .getWineInfo(wineId: wineId), decodingType: WineResponseWithThreeReviewsDTO.self, completion: completion)
