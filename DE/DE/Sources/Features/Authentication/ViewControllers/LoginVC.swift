@@ -11,12 +11,11 @@ import Network
 
 class LoginVC: UIViewController {
     // MARK: - Properties
-    private let loginView = LoginView() // LoginView 인스턴스
+    private let loginView = LoginView()
+    
     private let navigationBarManager = NavigationBarManager()
     let validationManager = ValidationManager()
-
-    
-    public static var isFirstLogin : Bool = true
+    let networkService = AuthService()
     
     override func loadView() {
         view = loginView // 커스텀 뷰 사용
@@ -87,28 +86,36 @@ class LoginVC: UIViewController {
     }
     
     private func validateInputs() {
-            let isValid = validationManager.isUsernameValid &&
-                          validationManager.isEmailValid &&
-                          validationManager.isPasswordValid &&
-                          validationManager.isConfirmPasswordValid &&
-                          validationManager.isTermsAgreeValid
-            
-//            signUpButton.isEnabled = isValid
-//            signUpButton.backgroundColor = isValid ? Constants.Colors.skyblue : Constants.Colors.gray600
-        }
+        let isValid = validationManager.isEmailValid &&
+        validationManager.isPasswordValid
+        
+        loginView.loginButton.isEnabled = isValid
+        // TODO : 색상 바꾸기
+//        loginView.loginButton.backgroundColor = isValid ? Constants.Colors.skyblue : Constants.Colors.gray600
+    }
         
     @objc private func emailSaveCheckBoxTapped() {
         loginView.emailSaveCheckBox.isSelected.toggle()
-//        updateAllAgreeState()
-//        termsAgreeValidate()
+        // 이거는 제일 나중에
     }
     
     @objc private func loginButtonTapped() {
-        // API 호출
+        let loginDTO = networkService.makeLoginDTO(username: loginView.emailField.text!, password: loginView.passwordField.text!)
+        
+        networkService.login(data: loginDTO) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let response):
+                self.goToNextView(response.isFirst)
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
         
-    private func goToNextView() {
-        if LoginVC.isFirstLogin {
+    private func goToNextView(_ isFirstLogin: Bool) {
+        if isFirstLogin {
             let enterTasteTestViewController = TestVC()
             navigationController?.pushViewController(enterTasteTestViewController, animated: true)
         } else {
@@ -121,5 +128,4 @@ class LoginVC: UIViewController {
         let joinViewController = SignUpVC()
         navigationController?.pushViewController(joinViewController, animated: true)
     }
-    
 }
