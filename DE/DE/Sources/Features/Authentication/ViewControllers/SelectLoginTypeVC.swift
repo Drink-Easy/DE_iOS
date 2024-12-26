@@ -125,13 +125,13 @@ public class SelectLoginTypeVC: UIViewController {
     }
     
     private func goToNextView() {
-        if LoginVC.isFirstLogin {
-            let enterTasteTestViewController = TestVC()
-            navigationController?.pushViewController(enterTasteTestViewController, animated: true)
-        } else {
-            let homeViewController = TestVC()
-            navigationController?.pushViewController(homeViewController, animated: true)
-        }
+//        if LoginVC.isFirstLogin {
+//            let enterTasteTestViewController = TestVC()
+//            navigationController?.pushViewController(enterTasteTestViewController, animated: true)
+//        } else {
+//            let homeViewController = TestVC()
+//            navigationController?.pushViewController(homeViewController, animated: true)
+//        }
         
     }
     

@@ -37,9 +37,9 @@ extension WineEndpoint: TargetType {
         switch self {
         case .getWines(let searchName):
             return .requestParameters(parameters: ["searchName": searchName], encoding: URLEncoding.queryString)
-        case .getWineInfo(let wineId):
+        case .getWineInfo:
             return .requestPlain
-        case .getWineReview(let wineId):
+        case .getWineReview:
             return .requestPlain
         }
     }

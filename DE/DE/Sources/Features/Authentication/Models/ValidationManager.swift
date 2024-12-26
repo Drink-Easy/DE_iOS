@@ -154,13 +154,13 @@ final class ValidationManager {
         view.updateValidationText(message, isHidden: false)
         view.textField.layer.borderColor = UIColor.red.cgColor
         view.textField.backgroundColor = UIColor.red.withAlphaComponent(0.1)
-        view.imageView.tintColor = .red
+        view.iconImageView.tintColor = .red
     }
     
     private func hideValidationError(_ view: CustomLabelTextFieldView) {
         view.updateValidationText("", isHidden: true)
         view.textField.layer.borderColor = AppColor.purple100?.cgColor
         view.textField.backgroundColor = AppColor.purple10
-        view.imageView.tintColor = AppColor.purple100
+        view.iconImageView.tintColor = AppColor.purple100
     }
 }

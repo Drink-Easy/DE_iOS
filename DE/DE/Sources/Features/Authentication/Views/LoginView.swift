@@ -24,9 +24,9 @@ final class LoginView: UIView {
             descriptionImageIcon: "lock.fill",
             descriptionLabelText: "비밀번호",
             textFieldPlaceholder: "비밀번호를 입력해 주세요",
-            validationText: "8~20자 이내 영문자, 숫자, 특수문자의 조합"
+            validationText: "8~20자 이내 영문자, 숫자, 특수문자의 조합",
+            isPasswordField: true
         )
-        field.textField.isSecureTextEntry = true
         field.textField.textContentType = .newPassword
         return field
     }()

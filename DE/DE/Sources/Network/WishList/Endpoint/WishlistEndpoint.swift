@@ -44,7 +44,7 @@ extension WishlistEndpoint: TargetType {
             return .requestPlain
         case .postWishList(let data):
             return .requestJSONEncodable(data)
-        case .deleteWineLike(wineWishlistId: let wineWishlistId):
+        case .deleteWineLike(let wineWishlistId):
             return .requestPlain
         }
     }
