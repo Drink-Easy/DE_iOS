@@ -171,12 +171,8 @@ let project = Project(
             entitlements: "DE/DE.entitlements",
             scripts: [  ],
             dependencies: [
-                //                .target(name: "CoreModule"),
-                //                .target(name: "Network"),
                 .target(name: "Authentication"),
-                
-                .external(name: "KeychainSwift"),
-//                .external(name: "KakaoSDK")
+                .external(name: "KeychainSwift")
             ]
         ),
         // module
@@ -189,8 +185,6 @@ let project = Project(
             resources: ["DE/Resources/**"],
             dependencies: [
                 .external(name: "SnapKit"),
-//                .external(name: "PinLayout"),
-//                .external(name: "FlexLayout"),
                 .external(name: "SDWebImage"),
                 .external(name: "SwiftyToaster"),
                 .external(name: "Then"),

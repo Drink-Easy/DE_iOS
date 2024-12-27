@@ -3,6 +3,7 @@
 import UIKit
 import CoreModule
 import TastingNote
+import HomeModule
 
 public class MainTabBarController: UITabBarController {
 

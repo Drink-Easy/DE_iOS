@@ -74,7 +74,7 @@ extension AuthorizationEndpoints: TargetType {
         ]
         
         switch self {
-        case .patchMemberInfo, .postReIssueToken:
+        case .patchMemberInfo, .postReIssueToken, .postLogout :
             if let cookies = HTTPCookieStorage.shared.cookies {
                 let cookieHeader = HTTPCookie.requestHeaderFields(with: cookies)
                 for (key, value) in cookieHeader {
