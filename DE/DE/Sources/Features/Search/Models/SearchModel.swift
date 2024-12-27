@@ -1,9 +1,4 @@
-//
-//  ViewController.swift
-//  Basic
-//
-//  Created by 김도연 on 12/17/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
 

@@ -1,9 +1,4 @@
-//
-//  SearchHomeViewController.swift
-//  Drink-EG
-//
-//  Created by 김도연 on 7/20/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
 import CoreModule
