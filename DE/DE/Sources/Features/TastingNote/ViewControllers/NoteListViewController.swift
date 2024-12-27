@@ -83,7 +83,4 @@ public class NoteListViewController: UIViewController, UICollectionViewDataSourc
         navigationController?.pushViewController(nextVC, animated: true)
     }
     
-    
-    
-    
 }

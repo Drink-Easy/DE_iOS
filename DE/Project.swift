@@ -428,8 +428,8 @@ let project = Project(
             sources: ["DE/Sources/Features/Home/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
-//                .target(name: "Network"),
                 .target(name: "SearchModule"),
+                .target(name: "TastingNote"),
             ]
         ),
         .target(
