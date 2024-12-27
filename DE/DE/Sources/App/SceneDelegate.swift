@@ -3,6 +3,7 @@
 import UIKit
 //import TastingNote
 import Authentication
+import Home
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
