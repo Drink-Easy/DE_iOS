@@ -8,7 +8,7 @@ public struct SearchWineResponseDTO: Decodable {
     public let imageUrl : String
     public let sort: String
     public let area: String
-    public let satisfaction: Double
+    public let vivinoRating: Double
     public let price: Int
     public let liked: Bool
 }

@@ -61,8 +61,7 @@ public class SearchHomeViewController : UIViewController {
                             wineName: data.name,
                             imageURL: data.imageUrl,
                             sort: data.sort,
-                            area: data.area,
-                            satisfaction: data.satisfaction
+                            satisfaction: data.vivinoRating
                         )
                     }
                     self.searchHomeView.searchResultTableView.reloadData()

@@ -123,7 +123,7 @@ class SearchResultTableViewCell: UITableViewCell {
             image.image = UIImage(named: "placeholder")
         }
         name.text = model.wineName
-        kind.text = "\(model.sort) > \(model.area)"
+        kind.text = "와인 > \(model.sort)"
         score.text = "★ \(String(format: "%.1f", model.satisfaction))"
     }
 }
