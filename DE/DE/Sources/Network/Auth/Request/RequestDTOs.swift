@@ -11,6 +11,16 @@ public struct AppleLoginRequestDTO : Codable {
     }
 }
 
+public struct KakaoLoginRequestDTO : Codable {
+    public let kakaoName: String
+    public let kakaoEmail: String
+    
+    public init(kakaoName: String, kakaoEmail: String) {
+        self.kakaoName = kakaoName
+        self.kakaoEmail = kakaoEmail
+    }
+}
+
 // 자체 회원가입
 public struct JoinDTO : Codable {
     public let username : String

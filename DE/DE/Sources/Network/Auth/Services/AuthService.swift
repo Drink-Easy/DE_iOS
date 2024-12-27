@@ -30,11 +30,30 @@ public final class AuthService : NetworkManager {
     public func makeJoinDTO(username: String, password: String, rePassword: String) -> JoinDTO {
         return JoinDTO(username: username, password: password, rePassword: rePassword)
     }
+    
+    /// 카카오 로그인 데이터 구조 생성
+    public func makeKakaoDTO(username: String, email: String) -> KakaoLoginRequestDTO {
+        return KakaoLoginRequestDTO(kakaoName: username, kakaoEmail: email)
+    }
+    
+    public func makeAppleDTO(idToken: String) -> AppleLoginRequestDTO {
+        return AppleLoginRequestDTO(identityToken: idToken)
+    }
 
     //MARK: - API funcs
     /// 자체 로그인 API
     public func login(data: LoginDTO, completion: @escaping (Result<LoginResponseDTO, NetworkError>) -> Void) {
         request(target: .postLogin(data: data), decodingType: LoginResponseDTO.self, completion: completion)
+    }
+    
+    /// 카카오 로그인 API
+    public func kakaoLogin(data: KakaoLoginRequestDTO, completion: @escaping (Result<LoginResponseDTO, NetworkError>) -> Void) {
+        request(target: .postKakaoLogin(data: data), decodingType: LoginResponseDTO.self, completion: completion)
+    }
+    
+    /// 애플 로그인 API
+    public func appleLogin(data: AppleLoginRequestDTO, completion: @escaping (Result<LoginResponseDTO, NetworkError>) -> Void) {
+        request(target: .postAppleLogin(data: data), decodingType: LoginResponseDTO.self, completion: completion)
     }
     
     /// 로그아웃 API

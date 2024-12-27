@@ -9,7 +9,7 @@ public enum AuthorizationEndpoints {
     case postLogout
     case postJoin(data : JoinDTO)
     case postAppleLogin(data : AppleLoginRequestDTO)
-    case postKakaoLogin
+    case postKakaoLogin(data : KakaoLoginRequestDTO)
     
     case postReIssueToken
     case patchMemberInfo(data : MemberRequestDTO)
@@ -33,9 +33,8 @@ extension AuthorizationEndpoints: TargetType {
             return "/join"
         case .postAppleLogin:
             return "/login/apple"
-            // TODO : 카카오 로그인 명세서 나오면 수정하기
         case .postKakaoLogin:
-            return ""
+            return "/login/kakao"
         case .postReIssueToken:
             return "/reissue"
         case .patchMemberInfo:
@@ -60,11 +59,10 @@ extension AuthorizationEndpoints: TargetType {
             return .requestPlain
         case .postJoin(let data):
             return .requestJSONEncodable(data)
-        case .postAppleLogin(let data):
+        case .postAppleLogin(let data) :
             return .requestJSONEncodable(data)
-        case .postKakaoLogin:
-            // TODO : 아마도 dto -> return .requestJSONEncodable(data)
-            return .requestPlain
+        case .postKakaoLogin(let data) :
+            return .requestJSONEncodable(data)
         case .patchMemberInfo(let data):
             return .requestJSONEncodable(data)
         }
