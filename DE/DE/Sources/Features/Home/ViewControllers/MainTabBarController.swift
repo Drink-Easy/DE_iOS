@@ -26,7 +26,7 @@ public class MainTabBarController: UITabBarController {
         let nav2 = UINavigationController(rootViewController: HomeViewController())
         let nav3 = UINavigationController(rootViewController: NoteListViewController())
         let nav4 = UINavigationController(rootViewController: HomeViewController())
-        let nav5 = UINavigationController(rootViewController: HomeViewController())
+        let nav5 = UINavigationController(rootViewController: LogoutTestVC())
         
         let home = UIImage(named: "TabHome")?.resize(to: CGSize(width: 35, height: 35))
         let cclass = UIImage(named: "TabClass")?.resize(to: CGSize(width: 35, height: 35))
