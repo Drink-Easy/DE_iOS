@@ -1,69 +1,30 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+
 import SnapKit
 import Moya
-import SwiftyToaster
+
 import CoreModule
+import Network
 
 class SignUpVC: UIViewController {
-    public var userID : String?
-    public var userPW : String?
-    var joinDTO : JoinNLoginRequest?
+    private let signUpView = SignUpView()
     
-    private lazy var emailField: CustomLabelTextFieldView = {
-        let field = CustomLabelTextFieldView(descriptionImageIcon: "person.fill", descriptionLabelText: "이메일", textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "이메일 형식이 올바르지 않습니다")
-        field.textField.keyboardType = .emailAddress
-        return field
-    }()
-    private lazy var passwordField: CustomLabelTextFieldView = {
-        let field = CustomLabelTextFieldView(descriptionImageIcon: "lock.fill", descriptionLabelText: "비밀번호", textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: "8~20자 이내 영문자, 숫자, 특수문자의 조합")
-        field.textField.isSecureTextEntry = true
-        field.textField.textContentType = .newPassword
-        return field
-    }()
-    private lazy var confirmPasswordField: CustomLabelTextFieldView = {
-        let field = CustomLabelTextFieldView(descriptionImageIcon: "lock.fill", descriptionLabelText: "비밀번호 재입력", textFieldPlaceholder: "비밀번호를 다시 입력해 주세요", validationText: "다시 확인해 주세요")
-        field.textField.isSecureTextEntry = true
-        field.textField.textContentType = .newPassword
-        return field
-    }()
+    private let networkService = AuthService()
+    let navigationBarManager = NavigationBarManager()
+    let validationManager = ValidationManager()
     
-    private let signupButton = CustomButton(
-        title: "회원가입",
-        titleColor: .white,
-        backgroundColor: AppColor.purple100!
-    ).then {
-        $0.addTarget(self, action: #selector(signupButtonTapped), for: .touchUpInside)
+    override func loadView() {
+        view = signUpView
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-
-        self.navigationController?.isNavigationBarHidden = false
-        self.navigationController?.navigationBar.backIndicatorImage = UIImage(named:"icon_back")
-        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named:"icon_back")
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        self.navigationController?.navigationBar.tintColor = .white
         
-        let titleLabel = UILabel()
-        titleLabel.text = "가입하기"
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
-        titleLabel.textColor = .white
-        titleLabel.textAlignment = .center
-                
-        let titleView = UIView()
-        titleView.addSubview(titleLabel)
-        titleLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(5)
-        }
-        
-        self.navigationItem.titleView = titleView
-        
-        setupUI()
-        setupConstraints()
+        setupActions()
+        setupNavigationBar()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -71,80 +32,84 @@ class SignUpVC: UIViewController {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
-    private func setupUI() {
-        [emailField,passwordField,confirmPasswordField,signupButton].forEach {
-            view.addSubview($0)
-        }
-
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
-    private func setupConstraints() {
-        emailField.snp.makeConstraints { make in
-            make.top.equalTo(Constants.superViewHeight * 0.2)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
-        }
-        passwordField.snp.makeConstraints { make in
-            make.top.equalTo(emailField.snp.bottom).offset(32)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
-        }
-        confirmPasswordField.snp.makeConstraints { make in
-            make.top.equalTo(passwordField.snp.bottom).offset(32)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
-        }
-        signupButton.snp.makeConstraints { make in
-            make.top.equalTo(Constants.superViewHeight * 0.8)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
-        }
+    private func setupNavigationBar() {
+        navigationBarManager.setTitle(to: navigationItem, title: "가입하기", textColor: AppColor.black!)
+        navigationBarManager.addBackButton(
+            to: navigationItem,
+            target: self,
+            action: #selector(backButtonTapped),
+            tintColor: AppColor.gray80!
+        )
     }
     
+    private func setupActions() {
+        signUpView.emailField.textField.addTarget(self, action: #selector(emailValidate), for: .editingChanged)
+        signUpView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .editingChanged)
+        signUpView.confirmPasswordField.textField.addTarget(self, action: #selector(confirmPasswordValidate), for: .editingChanged)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
+        
+        signUpView.signupButton.addTarget(self, action: #selector(signupButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc private func dismissKeyboard() {
+        self.view.endEditing(true)
+    }
+    
+    //MARK: - Button Funcs
     @objc private func signupButtonTapped() {
-        assignUserData()
-        callJoinAPI { [weak self] isSuccess in
-            if isSuccess {
-                self?.goToLoginView()
-            } else {
-                print("회원가입 실패")
-                Toaster.shared.makeToast("400 Bad Request: Failed to Register", .short)
+        let signUpDTO = networkService.makeJoinDTO(username: signUpView.emailField.text!, password: signUpView.passwordField.text!, rePassword: signUpView.confirmPasswordField.text!)
+        
+        networkService.join(data: signUpDTO) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(_):
+                self.goToLoginView()
+            case .failure(let error):
+                print(error)
             }
         }
     }
-
-    private func goToLoginView() {
+    
+    @objc func emailValidate() {
+        validationManager.isEmailValid = validationManager.validateEmail(signUpView.emailField)
+        validateInputs()
+    }
+    
+    @objc func passwordValidate() {
+        validationManager.isPasswordValid = validationManager.validatePassword(signUpView.passwordField)
+        validateInputs()
+    }
+    
+    @objc func confirmPasswordValidate() {
+        validationManager.isConfirmPasswordValid = validationManager.validateConfirmPassword(signUpView.confirmPasswordField, password: signUpView.passwordField.text)
+        validateInputs()
+    }
+    
+    private func validateInputs() {
+        let isValid = validationManager.isEmailValid &&
+        validationManager.isPasswordValid &&
+        validationManager.isConfirmPasswordValid
+        
+        signUpView.signupButton.isEnabled = isValid
+        signUpView.signupButton.backgroundColor = isValid ? AppColor.purple100 : AppColor.gray80
+    }
+    
+    @objc private func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func goToLoginView() {
         let loginViewController = LoginVC()
         navigationController?.pushViewController(loginViewController, animated: true)
     }
     
-    private func assignUserData() {
-        self.joinDTO = JoinNLoginRequest(username: self.userID ?? "", password: self.userPW ?? "")
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        self.view.endEditing(true)  //firstresponder가 전부 사라짐
-    }
-    
-    private func callJoinAPI(completion: @escaping (Bool) -> Void) {
-//        if let data = self.joinDTO {
-//            provider.request(.postRegister(data: data)) { result in
-//                switch result {
-//                case .success(let response):
-//                    do {
-//                        let data = try response.map(APIResponseString.self)
-////                        print("User Created: \(data)")
-//                        completion(data.isSuccess)
-//                    } catch {
-//                        print("Failed to map data: \(error)")
-//                        completion(false)
-//                    }
-//                case .failure(let error):
-//                    print("Request failed: \(error)")
-//                    completion(false)
-//                }
-//            }
-//        } else {
-//            print("User Data가 없습니다.")
-//            completion(false)
-//        }
-    }
 }
 

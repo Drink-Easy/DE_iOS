@@ -4,19 +4,19 @@ import Foundation
 import UIKit
 import CoreModule
 
-class CustomPageControl: UIView {
-    var numberOfPages: Int = 0 {
+public class CustomPageControl: UIView {
+    public var numberOfPages: Int = 0 {
         didSet { setupIndicators() }
     }
-    var currentPage: Int = 0 {
+    public var currentPage: Int = 0 {
         didSet { updateIndicators() }
     }
-    var indicatorColor: UIColor = .white
-    var currentIndicatorColor: UIColor = .white
+    public var indicatorColor: UIColor = .white
+    public var currentIndicatorColor: UIColor = .white
     
-    private var indicators: [UIView] = []
+    public var indicators: [UIView] = []
 
-    private func setupIndicators() {
+    public func setupIndicators() {
         indicators.forEach { $0.removeFromSuperview() }
         indicators = []
 
@@ -30,7 +30,7 @@ class CustomPageControl: UIView {
         setNeedsLayout()
     }
 
-    private func updateIndicators() {
+    public func updateIndicators() {
         for (index, indicator) in indicators.enumerated() {
             UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseInOut , animations: {
                 if index == self.currentPage {
@@ -47,7 +47,7 @@ class CustomPageControl: UIView {
         setNeedsLayout()
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
 
         let spacing: CGFloat = 10

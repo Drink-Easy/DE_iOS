@@ -12,25 +12,25 @@ class EnterTasteTestViewController: UIViewController {
     let startButton = UIButton(type: .system)
     
     private let hiLabel: UILabel = {
-        let l = UILabel()
-        l.text = "안녕하세요 ,\n만나서 반갑습니다 !"
-        l.textColor = .black
-        l.textAlignment = .left
-        l.font = UIFont.systemFont(ofSize: 32, weight: UIFont.Weight(rawValue: 700))
-        l.numberOfLines = 0
+        let label = UILabel()
+        label.text = "안녕하세요 ,\n만나서 반갑습니다 !"
+        label.textColor = .black
+        label.textAlignment = .left
+        label.font = UIFont.systemFont(ofSize: 32, weight: UIFont.Weight(rawValue: 700))
+        label.numberOfLines = 0
         
-        return l
+        return label
     }()
     
     private let plzLabel: UILabel = {
-        let l = UILabel()
-        l.text = "어플을 더욱 알차게 사용하실 수 있게\n저희에게 몇가지 정보를 알려주세요 !"
-        l.textColor = .black
-        l.textAlignment = .left
-        l.font = UIFont.systemFont(ofSize: 20)
-        l.numberOfLines = 0
+        let label = UILabel()
+        label.text = "어플을 더욱 알차게 사용하실 수 있게\n저희에게 몇가지 정보를 알려주세요 !"
+        label.textColor = .black
+        label.textAlignment = .left
+        label.font = UIFont.systemFont(ofSize: 20)
+        label.numberOfLines = 0
         
-        return l
+        return label
     }()
     
     private let imageView: UIImageView = {

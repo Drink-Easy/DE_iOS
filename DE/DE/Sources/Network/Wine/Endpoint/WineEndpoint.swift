@@ -4,21 +4,21 @@ import Foundation
 import Moya
 import CoreModule
 
-enum WineEndpoint {
+public enum WineEndpoint {
     case getWines(searchName: String)
     case getWineInfo(wineId: Int)
     case getWineReview(wineId: Int)
 }
 
 extension WineEndpoint: TargetType {
-    var baseURL: URL {
+    public var baseURL: URL {
         guard let url = URL(string: Constants.API.wineURL) else {
             fatalError("잘못된 URL")
         }
         return url
     }
     
-    var path: String {
+    public var path: String {
         switch self {
             case .getWines:
                 return ""
@@ -29,22 +29,22 @@ extension WineEndpoint: TargetType {
         }
     }
     
-    var method: Moya.Method {
+    public var method: Moya.Method {
         return .get
     }
     
-    var task: Moya.Task {
+    public var task: Moya.Task {
         switch self {
         case .getWines(let searchName):
             return .requestParameters(parameters: ["searchName": searchName], encoding: URLEncoding.queryString)
-        case .getWineInfo(let wineId):
+        case .getWineInfo:
             return .requestPlain
-        case .getWineReview(let wineId):
+        case .getWineReview:
             return .requestPlain
         }
     }
     
-    var headers: [String : String]? {
+    public var headers: [String : String]? {
         return [
             "Content-type": "application/json"
         ]

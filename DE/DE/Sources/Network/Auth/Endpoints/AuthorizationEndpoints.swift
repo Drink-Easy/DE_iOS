@@ -4,26 +4,26 @@ import CoreModule
 import Foundation
 import Moya
 
-enum AuthorizationEndpoints {
+public enum AuthorizationEndpoints {
     case postLogin(data : LoginDTO)
     case postLogout
     case postJoin(data : JoinDTO)
     case postAppleLogin(data : AppleLoginRequestDTO)
-    case postKakaoLogin
+    case postKakaoLogin(data : KakaoLoginRequestDTO)
     
     case postReIssueToken
     case patchMemberInfo(data : MemberRequestDTO)
 }
 
 extension AuthorizationEndpoints: TargetType {
-    var baseURL: URL {
+    public var baseURL: URL {
         guard let url = URL(string: Constants.API.baseURL) else {
             fatalError("잘못된 URL")
         }
         return url
     }
     
-    var path: String {
+    public var path: String {
         switch self {
         case .postLogin:
             return "/login"
@@ -33,9 +33,8 @@ extension AuthorizationEndpoints: TargetType {
             return "/join"
         case .postAppleLogin:
             return "/login/apple"
-            // TODO : 카카오 로그인 명세서 나오면 수정하기
         case .postKakaoLogin:
-            return ""
+            return "/login/kakao"
         case .postReIssueToken:
             return "/reissue"
         case .patchMemberInfo:
@@ -43,7 +42,7 @@ extension AuthorizationEndpoints: TargetType {
         }
     }
     
-    var method: Moya.Method {
+    public var method: Moya.Method {
         switch self {
         case .patchMemberInfo :
             return .patch
@@ -52,7 +51,7 @@ extension AuthorizationEndpoints: TargetType {
         }
     }
     
-    var task: Task {
+    public var task: Task {
         switch self {
         case .postLogin(let data):
             return .requestJSONEncodable(data)
@@ -60,17 +59,16 @@ extension AuthorizationEndpoints: TargetType {
             return .requestPlain
         case .postJoin(let data):
             return .requestJSONEncodable(data)
-        case .postAppleLogin(let data):
+        case .postAppleLogin(let data) :
             return .requestJSONEncodable(data)
-        case .postKakaoLogin:
-            // TODO : 아마도 dto -> return .requestJSONEncodable(data)
-            return .requestPlain
+        case .postKakaoLogin(let data) :
+            return .requestJSONEncodable(data)
         case .patchMemberInfo(let data):
             return .requestJSONEncodable(data)
         }
     }
     
-    var headers: [String : String]? {
+    public var headers: [String : String]? {
         var headers: [String: String] = [
             "Content-type": "application/json"
         ]
@@ -88,8 +86,5 @@ extension AuthorizationEndpoints: TargetType {
         }
         return headers
     }
-    
-    var validationType: ValidationType {
-        return .successCodes
-    }
+
 }

@@ -4,7 +4,7 @@ import Foundation
 import UIKit
 import SnapKit
 
-public class CustomButton: UIButton {
+open class CustomButton: UIButton {
     public init(
         title: String = "",
         titleColor: UIColor = .black,
