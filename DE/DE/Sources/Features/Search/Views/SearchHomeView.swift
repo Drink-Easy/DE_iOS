@@ -6,25 +6,22 @@
 //
 
 import UIKit
+import CoreModule
 import SnapKit
 import Then
 
 class SearchHomeView: UIView {
     
-    public lazy var backBtn: UIButton = {
-        let b = UIButton()
-        
+    public lazy var backBtn = UIButton().then {
         let config = UIImage.SymbolConfiguration(pointSize: 22, weight: .regular)
         let image = UIImage(systemName: "chevron.backward", withConfiguration: config)
-        b.setImage(image, for: .normal)
-        b.tintColor = UIColor(hex: "#767676")
-        b.backgroundColor = .clear
-        return b
-    }()
-    
-    public lazy var title: UILabel = {
-        let l = UILabel()
-        l.numberOfLines = 0
+        $0.setImage(image, for: .normal)
+        $0.tintColor = Constants.AppColor.gray80
+        $0.backgroundColor = .clear
+    }
+
+    public lazy var title = UILabel().then {
+        $0.numberOfLines = 0
         let text = "검색하고 싶은\n와인을 입력해주세요"
 
         let paragraphStyle = NSMutableParagraphStyle()
@@ -33,22 +30,17 @@ class SearchHomeView: UIView {
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.ptdSemiBoldFont(ofSize: 24),
             .paragraphStyle: paragraphStyle,
-            .foregroundColor: UIColor(hex: "#121212") ?? .black
+            .foregroundColor: Constants.AppColor.DGblack ?? .black
         ]
-        let attributedText = NSAttributedString(string: text, attributes: attributes)
-        l.attributedText = attributedText
-        
-        return l
-    }()
+        $0.attributedText = NSAttributedString(string: text, attributes: attributes)
+    }
 
-    public var searchBar: SearchBar = SearchBar()
-        
-    public lazy var searchResultTableView: UITableView = {
-        let t = UITableView()
-        t.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
-        t.separatorStyle = .none
-        return t
-    }()
+    public var searchBar = SearchBar()
+
+    public lazy var searchResultTableView = UITableView().then {
+        $0.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
+        $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -85,7 +77,7 @@ class SearchHomeView: UIView {
         searchResultTableView.snp.makeConstraints { make in
             make.top.equalTo(searchBar.snp.bottom).offset(18)
             make.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(18)
-            make.bottom.equalTo(<#T##other: any ConstraintRelatableTarget##any ConstraintRelatableTarget#>)
+            make.bottom.equalTo(safeAreaLayoutGuide).offset(-18)
         }
     }
 }

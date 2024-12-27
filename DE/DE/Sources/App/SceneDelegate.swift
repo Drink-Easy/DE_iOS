@@ -3,6 +3,7 @@
 import UIKit
 //import TastingNote
 import Authentication
+import Search
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 

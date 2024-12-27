@@ -44,5 +44,4 @@ extension RecommentEndpoints : TargetType {
             "Content-type": "application/json"
         ]
     }
-    
 }
