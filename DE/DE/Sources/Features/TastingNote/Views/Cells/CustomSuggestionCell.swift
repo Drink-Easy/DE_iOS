@@ -1,9 +1,4 @@
-//
-//  CustomSuggestionCell.swift
-//  Drink-EG
-//
-//  Created by 이수현 on 8/10/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import Foundation
 import UIKit

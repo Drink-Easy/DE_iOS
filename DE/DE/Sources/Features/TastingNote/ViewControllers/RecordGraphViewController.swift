@@ -1,9 +1,4 @@
-//
-//  RecordGraphViewController.swift
-//  Drink-EG
-//
-//  Created by 이수현 on 11/18/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
 
