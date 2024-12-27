@@ -5,6 +5,7 @@ import UIKit
 import SnapKit
 import Then
 
+import HomeModule
 import CoreModule
 import Network
 
@@ -123,7 +124,7 @@ class LoginVC: UIViewController {
             let enterTasteTestViewController = TestVC()
             navigationController?.pushViewController(enterTasteTestViewController, animated: true)
         } else {
-            let homeViewController = TestVC()
+            let homeViewController = MainTabBarController()
             navigationController?.pushViewController(homeViewController, animated: true)
         }
     }

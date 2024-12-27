@@ -1,17 +1,17 @@
 import ProjectDescription
 
-let swiftLintScript = TargetScript.pre(
-    script: """
-    export PATH="$PATH:/opt/homebrew/bin"
-    if which swiftlint >/dev/null; then
-        swiftlint
-    else
-        echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
-    fi
-    """,
-    name: "SwiftLint",
-    basedOnDependencyAnalysis: false
-)
+//let swiftLintScript = TargetScript.pre(
+//    script: """
+//    export PATH="$PATH:/opt/homebrew/bin"
+//    if which swiftlint >/dev/null; then
+//        swiftlint
+//    else
+//        echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
+//    fi
+//    """,
+//    name: "SwiftLint",
+//    basedOnDependencyAnalysis: false
+//)
 
 let bundleId = "io"
 let bundleMid = "DRINKIG"
@@ -28,7 +28,6 @@ let project = Project(
             deploymentTargets: .iOS("17.0"),
             infoPlist: .extendingDefault(
                 with: [
-                    "UILaunchStoryboardName": "",
                     "UIUserInterfaceStyle" : "Light", // 다크모드 제거
                     "UISupportedInterfaceOrientations" : ["UIInterfaceOrientationPortrait"], // 화면 방향 세로 고정
                     "UIApplicationSceneManifest": [ // Scene 설정
@@ -57,12 +56,13 @@ let project = Project(
                     "NSAppTransportSecurity" : [
                         "NSAllowsArbitraryLoads" : true
                     ],
-                    // 런치 스크린
-                    "UILaunchScreen" : [
-                        "UIColorName" : "LaunchScreenBGColor",
-                        "UIImageName" : "LaunchLogo",
-                        "UIImageRespectsSafeAreaInsets" : true
-                    ],
+                    "UILaunchStoryboardName": "",
+//                    // 런치 스크린
+//                    "UILaunchScreen" : [
+//                        "UIColorName" : "LaunchScreenBGColor",
+//                        "UIImageName" : "LaunchLogo",
+//                        "UIImageRespectsSafeAreaInsets" : true
+//                    ],
                     // 카카오 로그인 설정
                     "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink", "kakaoplus"],
                     "CFBundleURLTypes" : [
@@ -78,7 +78,7 @@ let project = Project(
             sources: ["DE/Sources/**"],
             resources: ["DE/Resources/**"],
             entitlements: "DE/DE.entitlements",
-            scripts: [ swiftLintScript ],
+            scripts: [ ],
             dependencies: [
                 //                .target(name: "CoreModule"),
                 //                .target(name: "Network"),
@@ -167,13 +167,14 @@ let project = Project(
             sources: ["DE/Sources/App/**"],
             resources: ["DE/Resources/**"],
             entitlements: "DE/DE.entitlements",
-            scripts: [ swiftLintScript ],
+            scripts: [  ],
             dependencies: [
                 //                .target(name: "CoreModule"),
                 //                .target(name: "Network"),
                 .target(name: "Authentication"),
+                .target(name: "HomeModule"),
                 
-                    .external(name: "KeychainSwift"),
+                .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK")
             ]
         ),
@@ -212,12 +213,7 @@ let project = Project(
                     "NSAppTransportSecurity" : [
                         "NSAllowsArbitraryLoads" : true
                     ],
-                    // 런치 스크린
-                    "UILaunchScreen" : [
-                        "UIColorName" : "LaunchScreenBGColor",
-                        "UIImageName" : "LaunchLogo",
-                        "UIImageRespectsSafeAreaInsets" : true
-                    ],
+                    "UILaunchStoryboardName": "",
                     // 카카오 로그인 설정
                     "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink", "kakaoplus"],
                     "CFBundleURLTypes" : [
@@ -233,11 +229,11 @@ let project = Project(
             sources: ["DE/Sources/App/**"],
             resources: ["DE/Resources/**"],
             entitlements: "DE/DE.entitlements",
-            scripts: [ swiftLintScript ],
+            scripts: [  ],
             dependencies: [
                 .target(name: "TastingNote"),
                 
-                    .external(name: "KeychainSwift"),
+                .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK"),
                 .external(name: "AMPopTip")
             ]
@@ -298,11 +294,11 @@ let project = Project(
             sources: ["DE/Sources/App/**"],
             resources: ["DE/Resources/**"],
             entitlements: "DE/DE.entitlements",
-            scripts: [ swiftLintScript ],
+            scripts: [  ],
             dependencies: [
 //                .target(name: "CoreModule"),
 //                .target(name: "Network"),
-                .target(name: "Home"),
+                .target(name: "HomeModule"),
                 
                 .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK")
@@ -347,7 +343,6 @@ let project = Project(
             sources: ["DE/Sources/Features/Authentication/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
-                .target(name: "CoreModule"),
                 .target(name: "Network")
             ]
         ),
@@ -364,14 +359,13 @@ let project = Project(
             ]
         ),
         .target(
-            name: "Home",
+            name: "HomeModule",
             destinations: .iOS,
             product: .staticFramework,
-            bundleId: "\(bundleId).\(bundleMid).Home",
+            bundleId: "\(bundleId).\(bundleMid).HomeModule",
             sources: ["DE/Sources/Features/Home/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
-                .target(name: "CoreModule"),
                 .target(name: "Network")
             ]
         ),

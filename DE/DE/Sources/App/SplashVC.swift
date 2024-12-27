@@ -13,6 +13,7 @@ import AdSupport
 import Authentication
 import Network
 import CoreModule
+import HomeModule
 
 public class SplashVC : UIViewController {
     
@@ -76,9 +77,11 @@ public class SplashVC : UIViewController {
     }
     
     func navigateToMainScreen() {
-        let mainVC = TestVC()
-        mainVC.modalPresentationStyle = .fullScreen
-        present(mainVC, animated: true, completion: nil)
+        let mainTabBarController = MainTabBarController()
+        if let window = UIApplication.shared.windows.first {
+            window.rootViewController = mainTabBarController
+            UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+        }
     }
     
     func navigateToOnBoaringScreen() {

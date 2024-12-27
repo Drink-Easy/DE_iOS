@@ -5,7 +5,7 @@ import CoreModule
 import Then
 //import Authentication
 
-class HomeViewController: UIViewController {
+public class HomeViewController: UIViewController {
     
     private var adImage: [String] = ["ad4", "ad3", "ad2", "ad1"]
     
@@ -60,7 +60,7 @@ class HomeViewController: UIViewController {
         $0.recomCollectionView.tag = 2
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         
@@ -68,7 +68,7 @@ class HomeViewController: UIViewController {
         constraints()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.isNavigationBarHidden = true
     }
@@ -143,7 +143,7 @@ class HomeViewController: UIViewController {
 //}
 
 extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView.tag == 0 {
             return adImage.count
         } else if collectionView.tag == 1 || collectionView.tag == 2 {
@@ -152,7 +152,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         return 0
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView.tag == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AdCollectionViewCell.identifier, for: indexPath) as! AdCollectionViewCell
             
@@ -174,7 +174,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         return UICollectionViewCell()
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView.tag == 0 {
             return CGSize(width: collectionView.frame.width, height: collectionView.frame.height)
         } else if collectionView.tag == 1 || collectionView.tag == 2 {
