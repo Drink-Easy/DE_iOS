@@ -10,6 +10,8 @@ import UIKit
 public class RatingWineViewController: UIViewController {
     
     let ratingWineView = RatingWineView()
+    private var ratingValue: Double = 2.5
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -28,6 +30,7 @@ public class RatingWineViewController: UIViewController {
     }
     
     private func updateRatingLabel(with rating: Double) {
+        ratingValue = rating
         ratingWineView.ratingLabel.text = String(format: "%.1f / 5.0", rating)
     }
     
@@ -36,10 +39,18 @@ public class RatingWineViewController: UIViewController {
     }
     
     @objc func nextVC() {
+        
+        // UserDefaults에 저장
+        let reviewText = ratingWineView.reviewTextField.text ?? ""
+        let reviewRate = Int(ratingValue)
+        
+        UserDefaults.standard.set(reviewText, forKey: "review")
+        UserDefaults.standard.set(reviewRate, forKey: "satisfaction")
+        
+        print("저장된 데이터: \(reviewText), \(reviewRate)")
+        
         let nextVC = NoteListViewController()
         nextVC.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(nextVC, animated: true)
     }
-    
-    
 }

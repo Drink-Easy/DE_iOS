@@ -10,8 +10,9 @@ import UIKit
 import SnapKit
 import Moya
 import Then
+import CoreModule
 
-public class NoteListViewController: UIViewController, UICollectionViewDataSource {
+public class NoteListViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return TastingNoteModel.dummy().count
@@ -51,7 +52,6 @@ public class NoteListViewController: UIViewController, UICollectionViewDataSourc
             make.top.equalToSuperview()
             make.leading.equalToSuperview()
             make.centerX.equalToSuperview()
-            // make.height.equalTo(100) // 수정 필요
         }
         
         view.addSubview(wineImageStackView)
@@ -66,15 +66,17 @@ public class NoteListViewController: UIViewController, UICollectionViewDataSourc
             make.top.equalTo(wineImageStackView.snp.bottom).offset(24)
             make.leading.trailing.equalToSuperview()
             make.centerX.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
     func setupDelegate() {
         myTastingNote.collectionView.dataSource = self
+        myTastingNote.collectionView.delegate = self
     }
     
     func setupAction() {
-        noteListView.navView.searchButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        myTastingNote.writeButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
     }
     
     @objc func nextVC() {
@@ -82,5 +84,5 @@ public class NoteListViewController: UIViewController, UICollectionViewDataSourc
         nextVC.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(nextVC, animated: true)
     }
-    
+
 }

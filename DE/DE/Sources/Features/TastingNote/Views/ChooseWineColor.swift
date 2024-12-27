@@ -9,6 +9,7 @@ import UIKit
 import CoreModule
 
 class ChooseWineColor: UIView {
+    
 
     let navView: CustomNavigationBar = {
         let n = CustomNavigationBar()
@@ -117,7 +118,7 @@ class ChooseWineColor: UIView {
         wineImage.snp.makeConstraints { make in
             make.top.equalTo(wineNameLabel.snp.bottom).offset(20)
             make.leading.equalTo(wineNameLabel.snp.leading)
-            make.width.height.equalTo(100)
+            make.width.height.equalTo(Constants.superViewHeight*0.1)
         }
         
         addSubview(descriptionView)
@@ -151,7 +152,7 @@ class ChooseWineColor: UIView {
         colorStackView1.snp.makeConstraints { make in
             make.top.equalTo(vector.snp.bottom).offset(24)
             make.leading.equalTo(vector.snp.leading)
-            make.trailing.equalTo(vector.snp.trailing).offset(-62)
+            // make.trailing.equalTo(vector.snp.trailing).offset(-62)
         }
         
         addSubview(colorStackView2)
@@ -174,16 +175,12 @@ class ChooseWineColor: UIView {
         
         addSubview(nextButton)
         nextButton.snp.makeConstraints { make in
-            make.top.equalTo(colorStackView4.snp.bottom).offset(143)
-            make.leading.equalTo(colorStackView4.snp.leading).offset(-3)
+            make.bottom.equalToSuperview().offset(-42)
+            make.leading.equalToSuperview().offset(28)
             make.centerX.equalToSuperview()
-            make.height.equalTo(56)
+            make.height.equalTo(Constants.superViewHeight*0.06)
         }
-        
-        
-        
     }
-    
     
     override init(frame: CGRect) {
         super.init(frame: frame)

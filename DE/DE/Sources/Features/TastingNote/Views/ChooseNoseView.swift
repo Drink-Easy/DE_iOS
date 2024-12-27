@@ -23,6 +23,17 @@ class ChooseNoseView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    let collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        layout.minimumInteritemSpacing = 10
+        layout.minimumLineSpacing = 10
+        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 50)
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = AppColor.gray20
+        return cv
+    }()
+    
     private let scrollView: UIScrollView = {
         let s = UIScrollView()
         s.backgroundColor = .clear
@@ -90,84 +101,6 @@ class ChooseNoseView: UIView {
         n.numberOfLines = 0
         return n
     }()
-    
-    let flowersCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
-        $0.estimatedItemSize = UICollectionViewFlowLayout.automaticSize //.init(width: 89, height: 41)
-        $0.minimumInteritemSpacing = 6
-        $0.minimumLineSpacing = 10
-    }).then {
-        $0.backgroundColor = .clear
-        $0.register(NoseCollectionViewCell.self, forCellWithReuseIdentifier: NoseCollectionViewCell.identifier)
-        $0.register(NoseCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NoseCollectionReusableView.identifer)
-        $0.clipsToBounds = false
-        $0.tag = 0
-    }
-    
-    let fruitsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
-        $0.estimatedItemSize = UICollectionViewFlowLayout.automaticSize //.init(width: 89, height: 41)
-        $0.minimumInteritemSpacing = 6
-        $0.minimumLineSpacing = 10
-    }).then {
-        $0.backgroundColor = .clear
-        $0.register(NoseCollectionViewCell.self, forCellWithReuseIdentifier: NoseCollectionViewCell.identifier)
-        $0.register(NoseCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NoseCollectionReusableView.identifer)
-        $0.tag = 1
-    }
-    
-    let vegetablesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
-        $0.estimatedItemSize = UICollectionViewFlowLayout.automaticSize //.init(width: 89, height: 41)
-        $0.minimumInteritemSpacing = 6
-        $0.minimumLineSpacing = 10
-    }).then {
-        $0.backgroundColor = .clear
-        $0.register(NoseCollectionViewCell.self, forCellWithReuseIdentifier: NoseCollectionViewCell.identifier)
-        $0.register(NoseCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NoseCollectionReusableView.identifer)
-        $0.tag = 2
-    }
-    
-    let spicesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
-        $0.estimatedItemSize = UICollectionViewFlowLayout.automaticSize //.init(width: 89, height: 41)
-        $0.minimumInteritemSpacing = 6
-        $0.minimumLineSpacing = 10
-    }).then {
-        $0.backgroundColor = .clear
-        $0.register(NoseCollectionViewCell.self, forCellWithReuseIdentifier: NoseCollectionViewCell.identifier)
-        $0.register(NoseCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NoseCollectionReusableView.identifer)
-        $0.tag = 3
-    }
-    
-    let chemsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
-        $0.estimatedItemSize = UICollectionViewFlowLayout.automaticSize //.init(width: 89, height: 41)
-        $0.minimumInteritemSpacing = 6
-        $0.minimumLineSpacing = 10
-    }).then {
-        $0.backgroundColor = .clear
-        $0.register(NoseCollectionViewCell.self, forCellWithReuseIdentifier: NoseCollectionViewCell.identifier)
-        $0.register(NoseCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NoseCollectionReusableView.identifer)
-        $0.tag = 4
-    }
-    
-    let animalsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
-        $0.estimatedItemSize = UICollectionViewFlowLayout.automaticSize //.init(width: 89, height: 41)
-        $0.minimumInteritemSpacing = 6
-        $0.minimumLineSpacing = 10
-    }).then {
-        $0.backgroundColor = .clear
-        $0.register(NoseCollectionViewCell.self, forCellWithReuseIdentifier: NoseCollectionViewCell.identifier)
-        $0.register(NoseCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NoseCollectionReusableView.identifer)
-        $0.tag = 5
-    }
-    
-    let burnsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
-        $0.estimatedItemSize = UICollectionViewFlowLayout.automaticSize //.init(width: 89, height: 41)
-        $0.minimumInteritemSpacing = 6
-        $0.minimumLineSpacing = 10
-    }).then {
-        $0.backgroundColor = .clear
-        $0.register(NoseCollectionViewCell.self, forCellWithReuseIdentifier: NoseCollectionViewCell.identifier)
-        $0.register(NoseCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NoseCollectionReusableView.identifer)
-        $0.tag = 6
-    }
     
     let nextButton: UIButton = {
         let n = UIButton()
@@ -241,59 +174,17 @@ class ChooseNoseView: UIView {
             make.trailing.equalTo(vector1.snp.trailing).offset(-37)
         }
         
-        contentView.addSubview(flowersCollectionView)
-        flowersCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(noseDescription.snp.bottom).offset(50)
-            make.leading.equalTo(noseDescription)
+        contentView.addSubview(collectionView)
+        collectionView.snp.makeConstraints { make in
+            make.top.equalTo(noseDescription.snp.bottom).offset(24)
+            make.leading.equalTo(noseDescription.snp.leading).offset(6)
             make.centerX.equalTo(vector1.snp.centerX)
-            make.height.equalTo(142)
-        }
-        
-        contentView.addSubview(fruitsCollectionView)
-        fruitsCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(flowersCollectionView.snp.bottom).offset(50)
-            make.leading.trailing.equalTo(flowersCollectionView)
-            make.height.equalTo(143)
-        }
-        
-        contentView.addSubview(vegetablesCollectionView)
-        vegetablesCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(fruitsCollectionView.snp.bottom).offset(50)
-            make.leading.trailing.equalTo(fruitsCollectionView)
-            make.height.equalTo(143)
-        }
-        
-        contentView.addSubview(spicesCollectionView)
-        spicesCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(vegetablesCollectionView.snp.bottom).offset(50)
-            make.leading.trailing.equalTo(vegetablesCollectionView)
-            make.height.equalTo(143)
-        }
-        
-        contentView.addSubview(chemsCollectionView)
-        chemsCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(spicesCollectionView.snp.bottom).offset(50)
-            make.leading.trailing.equalTo(spicesCollectionView)
-            make.height.equalTo(143)
-        }
-        
-        contentView.addSubview(animalsCollectionView)
-        animalsCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(chemsCollectionView.snp.bottom).offset(50)
-            make.leading.trailing.equalTo(chemsCollectionView)
-            make.height.equalTo(143)
-        }
-        
-        contentView.addSubview(burnsCollectionView)
-        burnsCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(animalsCollectionView.snp.bottom).offset(50)
-            make.leading.trailing.equalTo(animalsCollectionView)
-            make.height.equalTo(143)
+            make.height.equalTo(700)
         }
         
         contentView.addSubview(nextButton)
         nextButton.snp.makeConstraints { make in
-            make.top.equalTo(burnsCollectionView.snp.bottom).offset(60)
+            make.top.equalTo(collectionView.snp.bottom).offset(60)
             make.centerX.equalToSuperview()
             make.leading.equalToSuperview().offset(28)
             make.height.equalTo(56)
