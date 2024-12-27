@@ -172,7 +172,6 @@ let project = Project(
                 //                .target(name: "CoreModule"),
                 //                .target(name: "Network"),
                 .target(name: "Authentication"),
-                .target(name: "HomeModule"),
                 
                 .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK")
@@ -405,7 +404,9 @@ let project = Project(
             sources: ["DE/Sources/Features/Authentication/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
-                .target(name: "Network")
+                .target(name: "Network"),
+                .target(name: "HomeModule"),
+                
             ]
         ),
         .target(
@@ -428,7 +429,7 @@ let project = Project(
             resources: ["DE/Resources/**"],
             dependencies: [
 //                .target(name: "Network"),
-                .target(name: "Search"),
+                .target(name: "SearchModule"),
             ]
         ),
         .target(

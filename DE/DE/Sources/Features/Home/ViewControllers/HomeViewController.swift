@@ -5,8 +5,9 @@ import CoreModule
 import Then
 //import Authentication
 import Network
+import SearchModule
 
-public class HomeViewController: UIViewController {
+public class HomeViewController: UIViewController, HomeTopViewDelegate {
     
     private var adImage: [String] = ["ad4", "ad3", "ad2", "ad1"]
     var wineData: [HomeWineModel] = []
@@ -88,6 +89,8 @@ public class HomeViewController: UIViewController {
         [homeTopView, scrollView].forEach{ view.addSubview($0) }
         scrollView.addSubview(contentView)
         [adCollectionView, likeWineListView, popularWineListView].forEach{ contentView.addSubview($0) }
+        
+        homeTopView.delegate = self
     }
     
     private func constraints() {
@@ -163,6 +166,11 @@ public class HomeViewController: UIViewController {
             color: AppColor.purple100 ?? .purple,
             font: UIFont.ptdSemiBoldFont(ofSize: 26)
         )
+    }
+    
+    func didTapSearchButton() {
+        let searchVC = SearchHomeViewController()
+        navigationController?.pushViewController(searchVC, animated: true)
     }
 }
 

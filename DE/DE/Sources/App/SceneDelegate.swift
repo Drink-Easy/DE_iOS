@@ -1,9 +1,7 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
-//import TastingNote
 import Authentication
-import Search
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 

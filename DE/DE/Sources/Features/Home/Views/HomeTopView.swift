@@ -7,6 +7,8 @@ import CoreModule
 
 class HomeTopView: UIView {
     
+    public weak var delegate: HomeTopViewDelegate? // 델리게이트 선언
+    
     private lazy var icon = UIImageView().then {
         $0.image = UIImage(named: "DGIcon")
         $0.backgroundColor = .clear
@@ -21,6 +23,7 @@ class HomeTopView: UIView {
         $0.setImage(UIImage(named: "searchBarIcon"), for: .normal)
         $0.backgroundColor = .clear
         $0.tintColor = UIColor(hex: "#767676")
+        $0.addTarget(self, action: #selector(didTapSearchButton), for: .touchUpInside)
     }
     
     override init(frame: CGRect) {
@@ -56,4 +59,13 @@ class HomeTopView: UIView {
             $0.trailing.equalTo(safeAreaLayoutGuide).offset(-24)
         }
     }
+    
+    @objc private func didTapSearchButton() {
+            delegate?.didTapSearchButton()
+        }
+    
+}
+
+protocol HomeTopViewDelegate: AnyObject {
+    func didTapSearchButton()
 }
