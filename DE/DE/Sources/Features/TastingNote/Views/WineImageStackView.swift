@@ -19,7 +19,7 @@ class WineImageStackView: UIStackView {
         
         for (imageName, imageLabel) in ImageStackView().images {
             let imageView = UIImageView(image: UIImage(named: imageName))
-            imageView.contentMode = .scaleAspectFit
+            imageView.contentMode = .scaleAspectFill
             imageView.layer.cornerRadius = 10
             
             let label = UILabel()

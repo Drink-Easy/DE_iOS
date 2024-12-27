@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import Cosmos
 import CoreModule
+import Then
 
 class RatingWineView: UIView {
     
@@ -46,13 +47,10 @@ class RatingWineView: UIView {
         return w
     }()
     
-    let descriptionView: DescriptionUIView = {
-        let d = DescriptionUIView()
-        d.layer.cornerRadius = 14
-        d.backgroundColor = .white
-        
-        return d
-    }()
+    let descriptionView = DescriptionUIView().then {
+        $0.layer.cornerRadius = 14
+        $0.backgroundColor = .white
+    }
     
     private let rateLabel: UILabel = {
         let r = UILabel()
@@ -117,14 +115,12 @@ class RatingWineView: UIView {
         return r
     }()
     
-    private let reviewTextField: UITextField = {
-        let r = UITextField()
-        r.placeholder = "추가적으로 기록하고 싶은 것들을 기록해 보세요 !"
+    let reviewTextField: UITextView = {
+        let r = UITextView()
+        // r.placeholder = "추가적으로 기록하고 싶은 것들을 기록해 보세요 !"
         r.textColor = AppColor.gray80
         r.font = .ptdMediumFont(ofSize: 14)
         r.backgroundColor = .white
-        r.leftView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 18.0, height: 18.0))
-        r.leftViewMode = .always
         return r
     }()
     
@@ -172,14 +168,14 @@ class RatingWineView: UIView {
         wineImage.snp.makeConstraints { make in
             make.top.equalTo(wineName.snp.bottom).offset(20)
             make.leading.equalTo(wineName)
-            make.width.height.equalTo(100)
+            make.width.height.equalTo(Constants.superViewHeight*0.1)
         }
         
         contentView.addSubview(descriptionView)
         descriptionView.snp.makeConstraints { make in
-            make.top.equalTo(wineImage)
+            make.top.bottom.equalTo(wineImage)
             make.leading.equalTo(wineImage.snp.trailing).offset(8)
-            make.trailing.equalToSuperview().offset(24)
+            //make.trailing.equalToSuperview().offset(24)
         }
         
         contentView.addSubview(rateLabel)

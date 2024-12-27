@@ -6,6 +6,7 @@ import CoreModule
 class CustomSlider: UISlider {
     
     private var dividers: [UIView] = []
+    private let stepValues: [Float] = [20, 40, 60, 80, 100]
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -22,9 +23,9 @@ class CustomSlider: UISlider {
         
         setThumbImage(UIImage(named: "thumb"), for: .normal)
         
-        minimumValue = 0
-        maximumValue = 4
-        value = 2
+        minimumValue = stepValues.first ?? 20 // 최소값
+        maximumValue = stepValues.last ?? 100 // 최대값
+        value = stepValues[2]
         
         addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
         addTarget(self, action: #selector(sliderDidEnded), for: [.touchUpInside, .touchUpOutside])
@@ -41,12 +42,15 @@ class CustomSlider: UISlider {
     }
     
     @objc private func sliderValueChanged() {
-        let stepValue = round(value)
-        value = stepValue
+        snapToStep()
     }
     
     @objc private func sliderDidEnded() {
-        value = round(value)
+        snapToStep()
     }
     
+    private func snapToStep() {
+        let closestValue = stepValues.min(by: { abs($0 - value) < abs($1 - value) }) ?? value
+        value = closestValue
+    }
 }

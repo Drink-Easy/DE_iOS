@@ -76,7 +76,7 @@ public class NoteListViewController: UIViewController, UICollectionViewDataSourc
     }
     
     func setupAction() {
-        noteListView.navView.searchButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        myTastingNote.writeButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
     }
     
     @objc func nextVC() {

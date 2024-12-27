@@ -8,8 +8,9 @@
 import UIKit
 
 public class RecordGraphViewController: UIViewController {
-
+    
     let recordGraphView = RecordGraphView()
+    private var sliderValues: [String: Float] = [:]
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,9 +28,24 @@ public class RecordGraphViewController: UIViewController {
     }
     
     @objc func nextVC() {
+        saveSliderValues()
+        
         let nextVC = RatingWineViewController()
         nextVC.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(nextVC, animated: true)
     }
-
+    
+    private func saveSliderValues() {
+        // RecordGraphView의 슬라이더 값을 가져옴
+        sliderValues["Sweetness"] = recordGraphView.sweetSlider.value
+        sliderValues["Acidity"] = recordGraphView.acidSlider.value
+        sliderValues["Tannin"] = recordGraphView.tanninSlider.value
+        sliderValues["Body"] = recordGraphView.bodySlider.value
+        sliderValues["Alcohol"] = recordGraphView.alcoholSlider.value
+        
+        // UserDefaults에 저장
+        UserDefaults.standard.set(sliderValues, forKey: "SliderValues")
+        print("저장된 슬라이더 값: \(sliderValues)")
+    }
+    
 }
