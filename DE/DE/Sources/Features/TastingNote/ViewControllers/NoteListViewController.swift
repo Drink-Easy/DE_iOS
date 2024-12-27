@@ -38,6 +38,7 @@ public class NoteListViewController: UIViewController, UICollectionViewDataSourc
     private let myTastingNote = MyTastingNoteView()
     
     public override func viewDidLoad() {
+        self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = UIColor(hex: "F8F8FA")
         super.viewDidLoad()
         setupUI()
@@ -80,7 +81,7 @@ public class NoteListViewController: UIViewController, UICollectionViewDataSourc
     }
     
     @objc func nextVC() {
-        let nextVC = TastedDateViewController()
+        let nextVC = WineSearchMainVC()
         nextVC.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(nextVC, animated: true)
     }

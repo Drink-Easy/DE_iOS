@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import TastingNote
 
 public class MainTabBarController: UITabBarController {
 
@@ -23,7 +24,7 @@ public class MainTabBarController: UITabBarController {
         
         let nav1 = UINavigationController(rootViewController: HomeViewController())
         let nav2 = UINavigationController(rootViewController: HomeViewController())
-        let nav3 = UINavigationController(rootViewController: HomeViewController())
+        let nav3 = UINavigationController(rootViewController: NoteListViewController())
         let nav4 = UINavigationController(rootViewController: HomeViewController())
         let nav5 = UINavigationController(rootViewController: HomeViewController())
         

@@ -16,7 +16,7 @@ public class ChooseWineColorViewController: UIViewController, ColorStackViewDele
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.navigationController?.isNavigationBarHidden = true
         setupUI()
         setupActions()
         setupDelegate()
@@ -64,6 +64,5 @@ public class ChooseWineColorViewController: UIViewController, ColorStackViewDele
     
     func colorStackView(_ stackView: ColorStackView, didSelectColor color: UIColor) {
         selectedColor = color
-        print("선택된 색상: \(color)")
     }
 }

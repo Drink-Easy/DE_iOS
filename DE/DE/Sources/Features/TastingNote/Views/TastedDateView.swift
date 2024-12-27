@@ -93,7 +93,7 @@ class TastedDateView: UIView {
         
         addSubview(nextButton)
         nextButton.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().offset(-42)
+            make.bottom.equalTo(safeAreaLayoutGuide).offset(-42)
             make.centerX.equalToSuperview()
             make.leading.equalToSuperview().offset(28)
             make.height.equalTo(Constants.superViewHeight*0.06)
