@@ -10,7 +10,7 @@ import UIKit
 public class RecordGraphViewController: UIViewController {
     
     let recordGraphView = RecordGraphView()
-    private var sliderValues: [String: Float] = [:]
+    private var sliderValues: [String: Int] = [:]
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,11 +37,11 @@ public class RecordGraphViewController: UIViewController {
     
     private func saveSliderValues() {
         // RecordGraphView의 슬라이더 값을 가져옴
-        sliderValues["Sweetness"] = recordGraphView.sweetSlider.value
-        sliderValues["Acidity"] = recordGraphView.acidSlider.value
-        sliderValues["Tannin"] = recordGraphView.tanninSlider.value
-        sliderValues["Body"] = recordGraphView.bodySlider.value
-        sliderValues["Alcohol"] = recordGraphView.alcoholSlider.value
+        sliderValues["Sweetness"] = Int(recordGraphView.sweetSlider.value)
+        sliderValues["Acidity"] = Int(recordGraphView.acidSlider.value)
+        sliderValues["Tannin"] = Int(recordGraphView.tanninSlider.value)
+        sliderValues["Body"] = Int(recordGraphView.bodySlider.value)
+        sliderValues["Alcohol"] = Int(recordGraphView.alcoholSlider.value)
         
         // UserDefaults에 저장
         UserDefaults.standard.set(sliderValues, forKey: "SliderValues")

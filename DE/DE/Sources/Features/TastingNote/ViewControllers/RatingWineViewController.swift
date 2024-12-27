@@ -42,7 +42,7 @@ public class RatingWineViewController: UIViewController {
         
         // UserDefaults에 저장
         let reviewText = ratingWineView.reviewTextField.text ?? ""
-        let reviewRate = ratingValue
+        let reviewRate = Int(ratingValue)
         
         UserDefaults.standard.set(reviewText, forKey: "review")
         UserDefaults.standard.set(reviewRate, forKey: "satisfaction")
@@ -53,6 +53,4 @@ public class RatingWineViewController: UIViewController {
         nextVC.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(nextVC, animated: true)
     }
-    
-    
 }
