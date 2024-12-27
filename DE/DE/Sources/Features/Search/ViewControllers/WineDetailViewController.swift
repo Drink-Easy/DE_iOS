@@ -14,17 +14,12 @@ class WineDetailViewController: UIViewController {
         constraints()
     }
     
-    private lazy var scrollView: UIScrollView = {
-        let s = UIScrollView()
-        s.showsVerticalScrollIndicator = false
-        s.showsHorizontalScrollIndicator = false
-        return s
-    }()
+    private lazy var scrollView = UIScrollView().then {
+        $0.showsVerticalScrollIndicator = false
+        $0.showsHorizontalScrollIndicator = false
+    }
     
-    private lazy var contentView: UIView = {
-        let v = UIView()
-        return v
-    }()
+    private lazy var contentView = UIView()
     
     private lazy var topNameView = TopNameView().then {
         $0.backBtn.addTarget(self, action: #selector(goToBack), for: .touchUpInside)
@@ -52,7 +47,9 @@ class WineDetailViewController: UIViewController {
     }
     
     private func addView() {
-        [topNameView, wineDetailView, vivinoRateView, averageTastingNoteView, reviewView].forEach{ view.addSubview($0) }
+        [topNameView, wineDetailView, scrollView].forEach{ view.addSubview($0) }
+        scrollView.addSubview(contentView)
+        [vivinoRateView, averageTastingNoteView, reviewView].forEach{ contentView.addSubview($0) }
     }
     
     private func constraints() {
@@ -66,22 +63,32 @@ class WineDetailViewController: UIViewController {
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
         }
         
+        scrollView.snp.makeConstraints {
+            $0.top.equalTo(wineDetailView.snp.bottom).offset(20)
+            $0.horizontalEdges.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        contentView.snp.makeConstraints {
+            $0.edges.equalTo(scrollView)
+            $0.width.equalTo(scrollView.snp.width)
+            $0.bottom.equalTo(reviewView.snp.bottom).offset(50)
+        }
+        
         vivinoRateView.snp.makeConstraints {
-            $0.top.equalTo(wineDetailView.snp.bottom).offset(56)
-            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
+            $0.top.equalToSuperview()
+            $0.horizontalEdges.equalToSuperview()
         }
         
         averageTastingNoteView.snp.makeConstraints { 
             $0.top.equalTo(vivinoRateView.snp.bottom).offset(70)
-            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
+            $0.horizontalEdges.equalToSuperview()
         }
         
         reviewView.snp.makeConstraints {
-            $0.top.equalTo(averageTastingNoteView.snp.bottom).offset(20)
-            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.top.equalTo(averageTastingNoteView.snp.bottom).offset(55)
+            $0.horizontalEdges.equalToSuperview()
+            $0.bottom.equalToSuperview().offset(-50)
         }
-        
     }
 }
 

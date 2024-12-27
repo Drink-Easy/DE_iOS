@@ -64,7 +64,7 @@ class ReviewView: UIView {
     }).then {
         $0.register(ReviewCollectionViewCell.self, forCellWithReuseIdentifier: ReviewCollectionViewCell.identifier)
         $0.backgroundColor = .clear
-        $0.isScrollEnabled = true
+        $0.isScrollEnabled = false
     }
 
     override init(frame: CGRect) {
@@ -101,6 +101,7 @@ class ReviewView: UIView {
         
         reviewCollectionView.snp.makeConstraints {
             $0.top.equalTo(moreBtn.snp.bottom).offset(8)
+            $0.height.equalTo(262)
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(24)
             $0.bottom.equalToSuperview()
         }

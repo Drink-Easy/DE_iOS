@@ -27,7 +27,7 @@ class EntireReviewView: UIView {
     }
     
     private func addComponents() {
-        [].forEach{ self.addSubview($0) }
+        [title, reviewCollectionView].forEach{ self.addSubview($0) }
     }
     
     private func constraints() {
