@@ -2,10 +2,10 @@
 
 import Foundation
 
-struct WineWishlistRequestDTO : Codable {
-    let wineId : Int
+public struct WineWishlistRequestDTO : Codable {
+    public let wineId : Int
     
-    init(wineId: Int) {
+    public init(wineId: Int) {
         self.wineId = wineId
     }
 }

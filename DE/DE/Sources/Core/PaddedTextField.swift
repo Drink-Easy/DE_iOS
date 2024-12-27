@@ -2,27 +2,27 @@
 
 import UIKit
 
-class PaddedTextField: UITextField {
-    var padding: UIEdgeInsets
+open class PaddedTextField: UITextField {
+    public var padding: UIEdgeInsets
     
-    init(padding: UIEdgeInsets) {
+    public init(padding: UIEdgeInsets) {
         self.padding = padding
         super.init(frame: .zero)
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func textRect(forBounds bounds: CGRect) -> CGRect {
+    public override func textRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: padding)
     }
     
-    override func editingRect(forBounds bounds: CGRect) -> CGRect {
+    public override func editingRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: padding)
     }
     
-    override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
+    public override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
         return bounds.inset(by: padding)
     }
 }

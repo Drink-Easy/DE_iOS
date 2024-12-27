@@ -7,9 +7,11 @@ import Moya
 import SwiftyToaster
 import CoreModule
 import Then
+import KeychainSwift
 
 public class SelectLoginTypeVC: UIViewController {
     
+    public static let keychain = KeychainSwift()
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
     
     private let imageView = UIImageView().then {
@@ -55,18 +57,6 @@ public class SelectLoginTypeVC: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        
-        if navigationController == nil {
-            let navigationController = UINavigationController(rootViewController: self)
-            navigationController.modalPresentationStyle = .fullScreen
-            
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
-                keyWindow.rootViewController?.present(navigationController, animated: true)
-            }
-        }
-        
-        self.navigationController?.isNavigationBarHidden = true
         
         view.backgroundColor = AppColor.bgGray
         setupUI()
@@ -125,13 +115,13 @@ public class SelectLoginTypeVC: UIViewController {
     }
     
     private func goToNextView() {
-        if LoginVC.isFirstLogin {
-            let enterTasteTestViewController = TestVC()
-            navigationController?.pushViewController(enterTasteTestViewController, animated: true)
-        } else {
-            let homeViewController = TestVC()
-            navigationController?.pushViewController(homeViewController, animated: true)
-        }
+//        if LoginVC.isFirstLogin {
+//            let enterTasteTestViewController = TestVC()
+//            navigationController?.pushViewController(enterTasteTestViewController, animated: true)
+//        } else {
+//            let homeViewController = TestVC()
+//            navigationController?.pushViewController(homeViewController, animated: true)
+//        }
         
     }
     

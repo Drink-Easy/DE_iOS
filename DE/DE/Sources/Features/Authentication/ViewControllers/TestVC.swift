@@ -1,9 +1,14 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
-import CoreModule
 
-class TestVC: UIViewController {
+import HomeModule
+import CoreModule
+import Network
+
+public class TestVC: UIViewController {
+    
+    let networkService = AuthService()
     
     // MARK: - UI Elements
     private lazy var sampleButton: UIButton = {
@@ -26,7 +31,7 @@ class TestVC: UIViewController {
     }()
     
     // MARK: - Lifecycle
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
     }
@@ -52,9 +57,45 @@ class TestVC: UIViewController {
         ])
     }
     
+    
     // MARK: - Actions
     @objc private func didTapSampleButton() {
-        sampleLabel.text = "Button Clicked!"
+        sampleLabel.text = "취향찾기 더미데이터 전송하기"
         sampleLabel.textColor = .systemRed
+        print("navigationController: \(self.navigationController)")
+        
+        let data = networkService.makeUserInfoDTO(name: "테스터", isNewBie: false, monthPrice: 100000, wineSort: ["레드"], wineArea: ["호주"], wineVariety: [], region: "서울시 마포구")
+        
+        networkService.sendMemberInfo(data: data) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(_):
+                sampleLabel.text = "데이터 전송 성공!"
+                DispatchQueue.main.async {
+                    let homeTabBarController = MainTabBarController()
+                    let navController = UINavigationController(rootViewController: homeTabBarController)
+                    self.navigationController?.pushViewController(navController, animated: true)
+                }
+            case .failure(let error):
+                print("\(error)")
+                sampleLabel.text = "데이터 전송 실패!"
+            }
+        }
+        
+//        networkService.logout { [weak self] result in
+//            guard let self = self else { return }
+//            
+//            switch result {
+//            case .success:
+//                sampleLabel.text = "logout!"
+//                sampleLabel.textColor = .systemRed
+////                let basicVC = SplashVC()
+////                basicVC.modalPresentationStyle = .fullScreen
+////                present(basicVC, animated: true)
+//            case .failure(let error):
+//                sampleLabel.text = "로그아웃 실패!"
+//            }
+//        }
     }
 }

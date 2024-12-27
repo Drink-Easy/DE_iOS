@@ -1,64 +1,41 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+
 import SnapKit
-import Moya
-import SwiftyToaster
-import CoreModule
 import Then
 
+import HomeModule
+import CoreModule
+import Network
+
+
 class LoginVC: UIViewController {
-    public static var isFirstLogin : Bool = true
+    // MARK: - Properties
+    private let loginView = LoginView()
     
-    private lazy var emailField: CustomLabelTextFieldView = {
-        let field = CustomLabelTextFieldView(descriptionImageIcon: "person.fill", descriptionLabelText: "이메일", textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "사용할 수 없는 이메일입니다")
-        field.textField.keyboardType = .emailAddress
-        return field
-    }()
-    private lazy var passwordField: CustomLabelTextFieldView = {
-        let field = CustomLabelTextFieldView(descriptionImageIcon: "lock.fill", descriptionLabelText: "비밀번호", textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: "8~20자 이내 영문자, 숫자, 특수문자의 조합")
-        field.textField.isSecureTextEntry = true
-        field.textField.textContentType = .newPassword
-        return field
-    }()
+    private let navigationBarManager = NavigationBarManager()
+    let validationManager = ValidationManager()
+    let networkService = AuthService()
     
-    private let joinStackView = JoinStackView()
+    var isSavingEmail : Bool = false
+    var emailString : String = ""
     
-    private lazy var emailSaveCheckBox = CustomCheckSquareButton(title: "아이디 저장하기")
-    
-    private let idSearchButton = UIButton().then {
-        $0.setTitle("아이디 / 비밀번호 찾기", for: .normal)
-        $0.setTitleColor(UIColor(hex: "#191919"), for: .normal)
-        $0.titleLabel?.font =  UIFont.ptdMediumFont(ofSize: 14)
-        //        $0.addTarget(self, action: #selector(searchButtonTapped), for: .touchUpInside)
-    }
-    
-    private let loginButton = CustomButton(
-        title: "로그인",
-        titleColor: .white,
-        backgroundColor: AppColor.purple100!
-    ).then {
-        $0.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+    override func loadView() {
+        view = loginView // 커스텀 뷰 사용
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         
-        self.navigationController?.isNavigationBarHidden = false
-        self.navigationController?.navigationBar.backIndicatorImage = UIImage(named:"icon_back")
-        self.navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage(named:"icon_back")
-        self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        self.navigationController?.navigationBar.tintColor = .white
-        
-        
-        let titleView = UIView()
-        
-        self.navigationItem.titleView = titleView
-        
-        setupUI()
-        setupConstraints()
         setupActions()
+        setupNavigationBar()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -66,81 +43,90 @@ class LoginVC: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
-    private func setupUI() {
-        [emailField,passwordField,emailSaveCheckBox,idSearchButton,joinStackView,loginButton].forEach {
-            view.addSubview($0)
-        }
+    // MARK: - 네비게이션 바 설정
+    private func setupNavigationBar() {
+        navigationBarManager.setTitle(
+            to: navigationItem,
+            title: "로그인",
+            textColor: AppColor.black!
+        )
+        navigationBarManager.addBackButton(
+            to: navigationItem,
+            target: self,
+            action: #selector(backButtonTapped),
+            tintColor: AppColor.gray80!
+        )
     }
     
-    private func setupConstraints() {
-        emailField.snp.makeConstraints { make in
-            make.top.equalTo(Constants.superViewHeight * 0.4)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
-        }
-        passwordField.snp.makeConstraints { make in
-            make.top.equalTo(emailField.snp.bottom).offset(32)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
-        }
-        emailSaveCheckBox.snp.makeConstraints { make in
-            make.top.equalTo(passwordField.snp.bottom).offset(32)
-            make.leading.equalToSuperview().inset(Constants.padding)
-        }
-        idSearchButton.snp.makeConstraints { make in
-            make.centerY.equalTo(emailSaveCheckBox)
-            make.trailing.equalToSuperview().inset(Constants.padding)
-        }
-        loginButton.snp.makeConstraints { make in
-            make.top.equalTo(Constants.superViewHeight * 0.8)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
-        }
-        joinStackView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview() // 수평 가운데 정렬
-            make.bottom.equalToSuperview().offset(-50) // 하단에서 위로 50pt
-        }
-    }
-    
-    private func setupActions(){
-        emailField.textField.addTarget(self, action: #selector(emailValidate), for: .editingChanged)
-        passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .editingChanged)
-        emailSaveCheckBox.addTarget(self, action: #selector(emailSaveCheckBoxTapped), for: .touchUpInside)
-        joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
+    // MARK: - Action 설정
+    private func setupActions() {
+        loginView.emailField.textField.addTarget(self, action: #selector(emailValidate), for: .editingChanged)
+        loginView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .editingChanged)
+        loginView.emailSaveCheckBox.addTarget(self, action: #selector(emailSaveCheckBoxTapped), for: .touchUpInside)
+        loginView.joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        self.view.addGestureRecognizer(tapGesture)
+        view.addGestureRecognizer(tapGesture)
+        
+        loginView.loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc private func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
     }
     
     @objc private func dismissKeyboard() {
         self.view.endEditing(true)
     }
-    
-    @objc private func emailValidate() {
-        
+
+    @objc func emailValidate() {
+        validationManager.isEmailValid = validationManager.validateEmail(loginView.emailField)
+        validateInputs()
     }
     
-    @objc private func passwordValidate() {
-        
+    @objc func passwordValidate() {
+        validationManager.isPasswordValid = validationManager.validatePassword(loginView.passwordField)
+        validateInputs()
     }
     
+    private func validateInputs() {
+        let isValid = validationManager.isEmailValid &&
+        validationManager.isPasswordValid
+        
+        loginView.loginButton.isEnabled = isValid
+        loginView.loginButton.backgroundColor = isValid ? AppColor.purple100 : AppColor.gray80
+    }
+        
     @objc private func emailSaveCheckBoxTapped() {
-        
+        loginView.emailSaveCheckBox.isSelected.toggle()
+        isSavingEmail = loginView.emailSaveCheckBox.isSelected
     }
     
     @objc private func loginButtonTapped() {
+        let loginDTO = networkService.makeLoginDTO(username: loginView.emailField.text!, password: loginView.passwordField.text!)
+        emailString = loginDTO.username
+        
+        networkService.login(data: loginDTO) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let response):
+                SelectLoginTypeVC.keychain.set(emailString, forKey: "savedUserEmail")
+                self.goToNextView(response.isFirst)
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
-    
-    private func goToNextView() {
-        if LoginVC.isFirstLogin {
+        
+    private func goToNextView(_ isFirstLogin: Bool) {
+        if isFirstLogin {
             let enterTasteTestViewController = TestVC()
             navigationController?.pushViewController(enterTasteTestViewController, animated: true)
         } else {
-            let homeViewController = TestVC()
+            let homeViewController = MainTabBarController()
             navigationController?.pushViewController(homeViewController, animated: true)
         }
-    }
-    
-    private func goToHomeView() {
-        let homeViewController = TestVC()
-        navigationController?.pushViewController(homeViewController, animated: true)
     }
     
     @objc private func joinButtonTapped() {
@@ -148,9 +134,9 @@ class LoginVC: UIViewController {
         navigationController?.pushViewController(joinViewController, animated: true)
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        self.view.endEditing(true)  //firstresponder가 전부 사라짐
+    func fillSavedEmail() {
+        if let email = SelectLoginTypeVC.keychain.get("savedUserEmail") {
+            loginView.emailField.text = email
+        }
     }
-    
 }

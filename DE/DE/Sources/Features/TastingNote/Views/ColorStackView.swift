@@ -7,9 +7,11 @@
 
 import UIKit
 import SnapKit
+import CoreModule
 
 class ColorStackView: UIStackView {
 
+    weak var delegate: ColorStackViewDelegate?
     var prevButton: UIButton? = nil
     
     init() {
@@ -28,7 +30,7 @@ class ColorStackView: UIStackView {
             self.addArrangedSubview(colorView)
             
             colorView.snp.makeConstraints { make in
-                make.width.height.equalTo(40)
+                make.width.height.equalTo(Constants.superViewWidth*0.1)
             }
             colorView.addTarget(self, action: #selector(didTapColorView), for: .touchUpInside)
         }
@@ -50,7 +52,16 @@ class ColorStackView: UIStackView {
         sender.layer.borderColor = UIColor(hex: "B06FCD")?.cgColor
         
         prevButton = sender
-       
+        
+        if let color = sender.backgroundColor {
+            delegate?.colorStackView(self, didSelectColor: color)
+        }
+        
+        
     }
     
+}
+
+protocol ColorStackViewDelegate: AnyObject {
+    func colorStackView(_ stackView: ColorStackView, didSelectColor color: UIColor)
 }

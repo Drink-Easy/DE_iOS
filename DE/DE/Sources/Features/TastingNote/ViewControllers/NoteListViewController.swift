@@ -10,14 +10,15 @@ import UIKit
 import SnapKit
 import Moya
 import Then
+import CoreModule
 
-class NoteListViewController: UIViewController, UICollectionViewDataSource {
+public class NoteListViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return TastingNoteModel.dummy().count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NoteCollectionViewCell.identifier, for: indexPath) as? NoteCollectionViewCell else {
             return UICollectionViewCell()
         }
@@ -36,27 +37,28 @@ class NoteListViewController: UIViewController, UICollectionViewDataSource {
     private let wineImageStackView = WineImageStackView()
     private let myTastingNote = MyTastingNoteView()
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
+        self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = UIColor(hex: "F8F8FA")
         super.viewDidLoad()
         setupUI()
         setupDelegate()
+        setupAction()
     }
     
     func setupUI() {
         view.addSubview(noteListView)
         noteListView.updateTotalWineCount(count: wineCount)
         noteListView.snp.makeConstraints { make in
-            make.top.equalTo(view.snp.top).offset(106)
-            make.leading.equalTo(view.snp.leading).offset(24)
-            make.centerX.equalTo(view.snp.centerX)
-            make.height.equalTo(100) // 수정 필요
+            make.top.equalToSuperview()
+            make.leading.equalToSuperview()
+            make.centerX.equalToSuperview()
         }
         
         view.addSubview(wineImageStackView)
         wineImageStackView.snp.makeConstraints { make in
             make.top.equalTo(noteListView.snp.bottom).offset(24)
-            make.leading.equalTo(noteListView.snp.leading)
+            make.leading.equalTo(noteListView.snp.leading).offset(24)
             make.centerX.equalTo(noteListView.snp.centerX)
         }
         
@@ -65,14 +67,23 @@ class NoteListViewController: UIViewController, UICollectionViewDataSource {
             make.top.equalTo(wineImageStackView.snp.bottom).offset(24)
             make.leading.trailing.equalToSuperview()
             make.centerX.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
     func setupDelegate() {
         myTastingNote.collectionView.dataSource = self
+        myTastingNote.collectionView.delegate = self
     }
     
+    func setupAction() {
+        myTastingNote.writeButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+    }
     
-    
-    
+    @objc func nextVC() {
+        let nextVC = WineSearchMainVC()
+        nextVC.modalPresentationStyle = .fullScreen
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+
 }

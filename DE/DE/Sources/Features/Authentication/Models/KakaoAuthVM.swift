@@ -25,7 +25,7 @@ class KakaoAuthVM: ObservableObject {
     }
     
     @MainActor
-    func KakaoLogin(completion: @escaping (Bool) -> Void) {
+    func kakaoLogin(completion: @escaping (Bool) -> Void) {
         if UserApi.isKakaoTalkLoginAvailable() {
             UserApi.shared.loginWithKakaoTalk { [weak self] (oauthToken, error) in
                 if let error = error {

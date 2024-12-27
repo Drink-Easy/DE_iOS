@@ -4,7 +4,7 @@ import UIKit
 
 extension String {
     /// 특정 텍스트의 색상을 변경한 `NSAttributedString` 반환
-    func withColor(for text: String, color: UIColor) -> NSAttributedString {
+    public func withColor(for text: String, color: UIColor) -> NSAttributedString {
         let attributedString = NSMutableAttributedString(string: self)
         
         if let range = self.range(of: text) {

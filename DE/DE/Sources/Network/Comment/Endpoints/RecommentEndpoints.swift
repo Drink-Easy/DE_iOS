@@ -4,24 +4,24 @@ import CoreModule
 import Foundation
 import Moya
 
-enum RecommentEndpoints {
+public enum RecommentEndpoints {
     case postRecomments(requestDTO : RecommentRequestDTO)
     case deleteRecomments(recommentId : Int)
 }
 
 extension RecommentEndpoints : TargetType {
-    var baseURL: URL {
+    public var baseURL: URL {
         guard let url = URL(string: Constants.API.recommentURL) else {
             fatalError("잘못된 URL")
         }
         return url
     }
     
-    var path: String {
+    public var path: String {
         return "/"
     }
     
-    var method: Moya.Method {
+    public var method: Moya.Method {
         switch self {
         case .postRecomments:
             return .post
@@ -30,7 +30,7 @@ extension RecommentEndpoints : TargetType {
         }
     }
     
-    var task: Moya.Task {
+    public var task: Moya.Task {
         switch self {
         case .postRecomments(let requestDTO):
             return .requestCompositeParameters(bodyParameters: ["Content": requestDTO.content], bodyEncoding: JSONEncoding.default, urlParameters: ["commentId": requestDTO.commentId])
@@ -39,10 +39,9 @@ extension RecommentEndpoints : TargetType {
         }
     }
     
-    var headers: [String : String]? {
+    public var headers: [String : String]? {
         return [
             "Content-type": "application/json"
         ]
     }
-    
 }

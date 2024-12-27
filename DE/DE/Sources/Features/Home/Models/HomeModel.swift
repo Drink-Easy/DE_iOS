@@ -7,7 +7,15 @@
 
 import UIKit
 
-struct HomeModel {
+struct HomeWineModel {
+    let wineId: Int
+    let wineName: String
+    let imageURL : String
     
+    init(wineId: Int, wineName: String, imageURL: String) {
+        self.wineId = wineId
+        self.wineName = wineName
+        self.imageURL = imageURL
+    }
 }
 
