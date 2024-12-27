@@ -4,12 +4,21 @@ import UIKit
 import CoreModule
 import Then
 //import Authentication
+import Network
 
 public class HomeViewController: UIViewController {
     
     private var adImage: [String] = ["ad4", "ad3", "ad2", "ad1"]
+    var wineData: [HomeWineModel] = []
+    private var userName: String = "" {
+        didSet {
+            updateLikeWineListView()
+        }
+    }
     
     private var homeTopView = HomeTopView()
+    
+    let networkService = HomeService()
     
     private lazy var scrollView: UIScrollView = {
         let s = UIScrollView()
@@ -46,8 +55,8 @@ public class HomeViewController: UIViewController {
 //    }
     
     private lazy var likeWineListView = RecomView().then {
-        $0.title.text = "승주 님이 좋아할 만한 와인"
-        $0.title.setPartialTextStyle(text: $0.title.text ?? "", targetText: "승주", color: AppColor.purple100 ?? .purple, font: UIFont.ptdSemiBoldFont(ofSize: 26))
+        $0.title.text = "\(userName) 님이 좋아할 만한 와인"
+        $0.title.setPartialTextStyle(text: $0.title.text ?? "", targetText: "\(userName)", color: AppColor.purple100 ?? .purple, font: UIFont.ptdSemiBoldFont(ofSize: 26))
         $0.recomCollectionView.delegate = self
         $0.recomCollectionView.dataSource = self
         $0.recomCollectionView.tag = 1
@@ -71,6 +80,8 @@ public class HomeViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.isNavigationBarHidden = true
+        
+        callHomeAPI()
     }
     
     private func addComponents() {
@@ -122,6 +133,37 @@ public class HomeViewController: UIViewController {
             $0.bottom.equalToSuperview().offset(-46)
         }
     }
+    
+    func callHomeAPI() {
+        networkService.fetchHomeInfo { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let responseData) :
+                DispatchQueue.main.async {
+                    self.userName = responseData.name
+                    self.wineData = []
+                    for data in responseData.recommendWineDTOs {
+                        let wine = HomeWineModel(wineId: data.wineId, wineName: data.wineName, imageURL: data.imageUrl)
+                        self.wineData.append(wine)
+                    }
+                    self.likeWineListView.recomCollectionView.reloadData()
+                }
+            case .failure(let error) :
+                print("\(error)")
+            }
+        }
+    }
+    
+    private func updateLikeWineListView() {
+        likeWineListView.title.text = "\(userName) 님이 좋아할 만한 와인"
+        likeWineListView.title.setPartialTextStyle(
+            text: likeWineListView.title.text ?? "",
+            targetText: "\(userName)",
+            color: AppColor.purple100 ?? .purple,
+            font: UIFont.ptdSemiBoldFont(ofSize: 26)
+        )
+    }
 }
 
 //extension HomeViewController: UIScrollViewDelegate {
@@ -146,7 +188,9 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView.tag == 0 {
             return adImage.count
-        } else if collectionView.tag == 1 || collectionView.tag == 2 {
+        } else if collectionView.tag == 1 {
+            return wineData.count
+        }else if collectionView.tag == 2 {
             return 5
         }
         return 0
@@ -162,6 +206,10 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             
         } else if collectionView.tag == 1 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecomCollectionViewCell.identifier, for: indexPath) as! RecomCollectionViewCell
+            
+            let wine = wineData[indexPath.row]
+            
+            cell.configure(imageURL: wine.imageURL, score: "0.0", price: "무료", name: wine.wineName, kind: "모룸")
             
             return cell
             

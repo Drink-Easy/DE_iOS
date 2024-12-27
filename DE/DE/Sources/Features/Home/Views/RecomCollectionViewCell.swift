@@ -4,21 +4,23 @@ import UIKit
 import Then
 import SnapKit
 import CoreModule
+import SDWebImage
 
 class RecomCollectionViewCell: UICollectionViewCell {
     
-    public var score = "4.3"
-    public var price = "34,500"
+//    public var score = "4.3"
+//    public var price = "34,500"
     
-    static let identifier = "AdCollectionViewCell"
+    static let identifier = "RecomCollectionViewCell"
     
     public lazy var image = UIImageView().then {
-        $0.image = UIImage(named: "Dos Copas")
         $0.contentMode = .scaleAspectFit
+        $0.sd_imageIndicator = SDWebImageActivityIndicator.gray // 로딩 인디케이터 추가
+        $0.clipsToBounds = true
     }
     
     public lazy var scoreNprice = UILabel().then {
-        $0.text = "★ \(score)  |  \(price)₩"
+//        $0.text = "★ \(score)  |  \(price)₩"
         $0.textColor = AppColor.purple100
         $0.font = UIFont.ptdMediumFont(ofSize: 8)
     }
@@ -83,5 +85,15 @@ class RecomCollectionViewCell: UICollectionViewCell {
             $0.leading.equalTo(name.snp.leading)
             $0.top.equalTo(name.snp.bottom).offset(3)
         }
+    }
+    
+    func configure(imageURL: String, score: String, price: String, name: String, kind: String) {
+        // SDWebImage를 이용한 이미지 로딩
+        image.sd_setImage(with: URL(string: imageURL), placeholderImage: UIImage(named: "placeholder")) // 로딩 중에는 placeholder 표시
+        
+        // 데이터 설정
+        scoreNprice.text = "★ \(score)  |  \(price)₩"
+        self.name.text = name
+        self.kind.text = kind
     }
 }
