@@ -1,18 +1,24 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+
 import SnapKit
-import AuthenticationServices
-import Moya
-import SwiftyToaster
-import CoreModule
 import Then
+
+import SwiftyToaster
+
 import KeychainSwift
+import KakaoSDKUser
+import AuthenticationServices
+
+import Network
+import CoreModule
 
 public class SelectLoginTypeVC: UIViewController {
     
     public static let keychain = KeychainSwift()
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
+    let networkService = AuthService()
     
     private let imageView = UIImageView().then {
         $0.image = UIImage(named: "logo")
@@ -95,9 +101,46 @@ public class SelectLoginTypeVC: UIViewController {
             make.bottom.equalToSuperview().offset(-50) // 하단에서 위로 50pt
         }
     }
-    
-    @objc private func kakaoButtonTapped() {
-        print("카카오 버튼 눌림")
+
+    @objc func kakaoButtonTapped(_ sender: UIButton) {
+        self.kakaoAuthVM.kakaoLogin { success in
+            if success {
+                UserApi.shared.me { (user, error) in
+                    if let error = error {
+                        print("에러 발생: \(error.localizedDescription)")
+                        DispatchQueue.main.async {
+                            Toaster.shared.makeToast("사용자 정보 가져오기 실패")
+                        }
+                        return
+                    }
+                    
+                    guard let userID = user?.id else {
+                        print("user id가 nil입니다.")
+                        return
+                    }
+                    guard let userEmail = user?.kakaoAccount?.email else {
+                        print("userEmail가 nil입니다.")
+                        return
+                    }
+                    let userIDString = String(userID)
+                    
+                    let kakaoDTO = self.networkService.makeKakaoDTO(username: userIDString, email: userEmail)
+                    self.networkService.kakaoLogin(data: kakaoDTO) { [weak self] result in
+                        guard let self = self else { return }
+                        
+                        switch result {
+                        case .success(let response):
+                            //TODO: 다음 뷰 설정
+                            print("카카오 로그인 성공")
+                        case .failure(let error):
+                            print(error)
+                        }
+                    }
+                }
+            } else {
+                print("카카오 회원가입 실패")
+            }
+        }
     }
     
     @objc private func appleButtonTapped() {
