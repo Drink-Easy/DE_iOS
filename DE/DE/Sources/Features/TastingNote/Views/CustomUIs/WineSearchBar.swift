@@ -24,7 +24,7 @@ class WineSearchBar: UITextField {
     private func setupSearchBar() {
         // 기본 플레이스홀더
         self.attributedPlaceholder = NSAttributedString(
-            string: "검색어 입력",
+            string: "와인 이름을 적어 검색",
             attributes: [
                 .foregroundColor: Constants.AppColor.gray80 ?? .gray,
                 .font: UIFont.ptdRegularFont(ofSize: 14)

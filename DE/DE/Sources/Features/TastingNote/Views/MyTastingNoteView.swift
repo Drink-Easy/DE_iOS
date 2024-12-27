@@ -74,7 +74,7 @@ class MyTastingNoteView: UIView {
         addSubview(writeButton)
         writeButton.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-14)
-            make.bottom.equalToSuperview().offset(-103)
+            make.bottom.equalTo(safeAreaLayoutGuide).offset(-10)
         }
     }
     

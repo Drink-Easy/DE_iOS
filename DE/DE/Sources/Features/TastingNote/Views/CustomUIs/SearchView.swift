@@ -22,7 +22,7 @@ class SearchView: UIView {
 
     public lazy var title = UILabel().then {
         $0.numberOfLines = 0
-        let text = "검색하고 싶은\n와인을 입력해주세요"
+        let text = "먼저,\n기록할 와인을 선택해주세요"
 
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = 1.25 // 줄 간격 설정
@@ -35,7 +35,7 @@ class SearchView: UIView {
         $0.attributedText = NSAttributedString(string: text, attributes: attributes)
     }
 
-    public var searchBar = SearchBar()
+    public var searchBar = WineSearchBar()
 
     public lazy var searchResultTableView = UITableView().then {
         $0.register(SearchTableViewCell.self, forCellReuseIdentifier: "SearchTableViewCell")

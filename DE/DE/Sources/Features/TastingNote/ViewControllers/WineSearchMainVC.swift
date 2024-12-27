@@ -9,6 +9,7 @@ public class WineSearchMainVC : UIViewController, UISearchBarDelegate {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = Constants.AppColor.grayBG
         self.view = searchHomeView
     }
@@ -34,7 +35,7 @@ extension WineSearchMainVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let vc = WineDetailViewController()
-//        navigationController?.pushViewController(vc, animated: true)
+        let vc = TastedDateViewController()
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

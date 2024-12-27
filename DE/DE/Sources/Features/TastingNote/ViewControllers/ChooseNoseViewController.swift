@@ -18,6 +18,7 @@ public class ChooseNoseViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = AppColor.gray20
         setupUI()
         setupCollectionView() // CollectionView 설정
