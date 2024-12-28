@@ -8,7 +8,7 @@
 import UIKit
 import CoreModule
 
-class SearchBar: UITextField {
+public class SearchBar: UITextField {
     
     var placeholderText: String? {
         didSet {

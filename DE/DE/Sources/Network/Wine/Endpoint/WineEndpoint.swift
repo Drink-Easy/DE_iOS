@@ -7,7 +7,7 @@ import CoreModule
 public enum WineEndpoint {
     case getWines(searchName: String)
     case getWineInfo(wineId: Int)
-    case getWineReview(wineId: Int)
+    case getWineReview(wineId: Int, orderByLatest: Bool)
 }
 
 extension WineEndpoint: TargetType {
@@ -24,7 +24,7 @@ extension WineEndpoint: TargetType {
                 return ""
         case .getWineInfo(let wineId):
             return "/\(wineId)"
-        case .getWineReview(let wineId):
+        case .getWineReview(let wineId, _):
             return "/review/\(wineId)"
         }
     }
@@ -39,8 +39,8 @@ extension WineEndpoint: TargetType {
             return .requestParameters(parameters: ["searchName": searchName], encoding: URLEncoding.queryString)
         case .getWineInfo:
             return .requestPlain
-        case .getWineReview:
-            return .requestPlain
+        case .getWineReview(_, let orderByLatest):
+            return .requestParameters(parameters: ["orderByLatest": orderByLatest], encoding: URLEncoding.default)
         }
     }
     

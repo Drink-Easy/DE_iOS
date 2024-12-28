@@ -6,11 +6,10 @@
 //
 
 import UIKit
-import CoreModule
 import SnapKit
 import Then
 
-class SearchHomeView: UIView {
+public class SearchHomeView: UIView {
     
     public lazy var backBtn = UIButton().then {
         let config = UIImage.SymbolConfiguration(pointSize: 22, weight: .regular)
