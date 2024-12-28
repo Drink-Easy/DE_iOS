@@ -21,6 +21,8 @@ class SearchResultTableViewCell: UITableViewCell {
         //$0.text = "루이 로드레 빈티지 브륏"
         $0.textColor = Constants.AppColor.DGblack
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
+        $0.numberOfLines = 1
+        $0.lineBreakMode = .byTruncatingTail
     }
     
     private lazy var kind = UILabel().then {
@@ -105,14 +107,15 @@ class SearchResultTableViewCell: UITableViewCell {
             $0.width.height.equalTo(70)
         }
         
-        labelStackView.snp.makeConstraints {
-            $0.centerY.equalTo(image)
-            $0.leading.equalTo(image.snp.trailing).offset(18)
-        }
-        
         score.snp.makeConstraints {
             $0.trailing.equalToSuperview().offset(-6)
             $0.top.equalTo(labelStackView.snp.top)
+        }
+
+        labelStackView.snp.makeConstraints {
+            $0.centerY.equalTo(image)
+            $0.leading.equalTo(image.snp.trailing).offset(18)
+            $0.width.equalTo(210)
         }
     }
     
