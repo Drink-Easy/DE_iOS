@@ -52,16 +52,14 @@ public struct MemberRequestDTO : Codable {
     let monthPrice : Int
     let wineSort : [String]
     let wineArea : [String]
-    let wineVariety : [String]
     let region : String
     
-    init(name: String, isNewBie: Bool, monthPrice: Int, wineSort: [String], wineArea: [String], wineVariety: [String], region: String) {
+    init(name: String, isNewBie: Bool, monthPrice: Int, wineSort: [String], wineArea: [String], region: String) {
         self.name = name
         self.isNewBie = isNewBie
         self.monthPrice = monthPrice
         self.wineSort = wineSort
         self.wineArea = wineArea
-        self.wineVariety = wineVariety
         self.region = region
     }
 }

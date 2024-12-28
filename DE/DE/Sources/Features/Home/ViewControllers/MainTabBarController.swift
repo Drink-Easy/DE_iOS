@@ -7,7 +7,24 @@ import CommunityModule
 
 public class MainTabBarController: UITabBarController {
     
-    public var userName : String?
+    let homeVC = HomeViewController()
+    let classVC = HomeViewController()
+    
+    public var userName: String? {
+        didSet {
+            updateUserName()
+        }
+    }
+
+    private func updateUserName() {
+        print("User name updated: \(userName ?? "Unknown")") // 디버깅 코드 추가
+        // 여기에 UI 업데이트 코드 추가
+        if let name = userName {
+            homeVC.userName = name
+            classVC.userName = name
+        }
+
+    }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,20 +34,13 @@ public class MainTabBarController: UITabBarController {
     
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        var tabFrame = tabBar.frame
-//        tabFrame.size.height = 110
-//        tabFrame.origin.y = view.frame.size.height - 105
+        let tabFrame = tabBar.frame
         tabBar.frame = tabFrame
     }
     
     public func configureTabs() {
-        let homeVC = HomeViewController()
-        if let name = userName {
-            homeVC.userName = name
-        }
-        
         let nav1 = UINavigationController(rootViewController: homeVC)
-        let nav2 = UINavigationController(rootViewController: homeVC)
+        let nav2 = UINavigationController(rootViewController: classVC)
         let nav3 = UINavigationController(rootViewController: NoteListViewController())
         let nav4 = UINavigationController(rootViewController: CommunityVC())
         let nav5 = UINavigationController(rootViewController: LogoutTestVC())

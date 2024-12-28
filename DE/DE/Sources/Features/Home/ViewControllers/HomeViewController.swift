@@ -10,7 +10,11 @@ import SearchModule
 public class HomeViewController: UIViewController, HomeTopViewDelegate {
     
     private var adImage: [String] = ["ad4", "ad3", "ad2", "ad1"]
-    var wineData: [HomeWineModel] = []
+    var recommendWineDataList: [HomeWineModel] = []
+    var popularWineDataList: [HomeWineModel] = []
+    
+    private let maxShowWineCount = 5
+    
     public var userName: String = "" {
         didSet {
             updateLikeWineListView()
@@ -138,18 +142,45 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     }
     
     func callHomeAPI() {
+        // TODO : SwiftData 연결
         networkService.fetchRecommendWines { [weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(let responseData) :
                 DispatchQueue.main.async {
-                    self.wineData = []
+                    // 저장 전 초기화
+                    self.recommendWineDataList.removeAll()
                     for data in responseData {
-                        let wine = HomeWineModel(wineId: data.wineId, wineName: data.wineName, imageURL: data.imageUrl)
-                        self.wineData.append(wine)
+                        let wine = HomeWineModel(wineId: data.wineId, imageUrl: data.imageUrl, wineName: data.wineName, sort: data.sort, price: data.price, vivinoRating: data.vivinoRating)
+                        self.recommendWineDataList.append(wine)
                     }
                     self.likeWineListView.recomCollectionView.reloadData()
+                    // 데이터 잘 들어오는지 확인
+                    print("Recommend Wines Count: \(self.recommendWineDataList.count)")
+                        
+                }
+            case .failure(let error) :
+                print("\(error)")
+            }
+        }
+        
+        // TODO : 함수 분리 -> 인기 와인은 자주 부를거니까
+        networkService.fetchPopularWines { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let responseData) :
+                DispatchQueue.main.async {
+                    self.popularWineDataList.removeAll()
+                    for data in responseData {
+                        let wine = HomeWineModel(wineId: data.wineId, imageUrl: data.imageUrl, wineName: data.wineName, sort: data.sort, price: data.price, vivinoRating: data.vivinoRating)
+                        self.popularWineDataList.append(wine)
+                    }
+                    self.popularWineListView.recomCollectionView.reloadData()
+                    
+                    // 데이터 잘 들어오는지 확인
+                    print("Popular Wines Count: \(self.popularWineDataList.count)")
                 }
             case .failure(let error) :
                 print("\(error)")
@@ -196,9 +227,11 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         if collectionView.tag == 0 {
             return adImage.count
         } else if collectionView.tag == 1 {
-            return wineData.count
-        }else if collectionView.tag == 2 {
-            return 5
+            // ✅ Out of range 에러 핸들링
+            return min(maxShowWineCount, recommendWineDataList.count)
+        } else if collectionView.tag == 2 {
+            // ✅ Out of range 에러 핸들링
+            return min(maxShowWineCount, popularWineDataList.count)
         }
         return 0
     }
@@ -214,15 +247,25 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         } else if collectionView.tag == 1 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecomCollectionViewCell.identifier, for: indexPath) as! RecomCollectionViewCell
             
-            let wine = wineData[indexPath.row]
+            // ✅ 안전 처리
+            guard indexPath.row < recommendWineDataList.count else { return UICollectionViewCell() }
             
-            cell.configure(imageURL: wine.imageURL, score: "0.0", price: "무료", name: wine.wineName, kind: "모룸")
+            let wine = recommendWineDataList[indexPath.row]
+            let aroundPrice = "\(wine.price / 10000)"
+            
+            cell.configure(imageURL: wine.imageUrl, score: "\(wine.vivinoRating)", price: aroundPrice, name: wine.wineName, kind: wine.sort)
             
             return cell
             
         } else if collectionView.tag == 2 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecomCollectionViewCell.identifier, for: indexPath) as! RecomCollectionViewCell
+            // ✅ 안전 처리
+            guard indexPath.row < popularWineDataList.count else { return UICollectionViewCell() }
             
+            let wine = popularWineDataList[indexPath.row]
+            let aroundPrice = "\(wine.price / 10000)"
+            
+            cell.configure(imageURL: wine.imageUrl, score: "\(wine.vivinoRating)", price: aroundPrice, name: wine.wineName, kind: wine.sort)
             return cell
 
         }

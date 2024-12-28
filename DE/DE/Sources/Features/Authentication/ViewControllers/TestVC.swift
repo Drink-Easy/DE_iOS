@@ -64,7 +64,7 @@ public class TestVC: UIViewController {
         sampleLabel.textColor = .systemRed
         print("navigationController: \(self.navigationController)")
         
-        let data = networkService.makeUserInfoDTO(name: "테스터", isNewBie: false, monthPrice: 100000, wineSort: ["레드"], wineArea: ["호주"], wineVariety: [], region: "서울시 마포구")
+        let data = networkService.makeUserInfoDTO(name: "도연이다", isNewBie: false, monthPrice: 100000, wineSort: ["레드"], wineArea: ["호주", "프랑스"], region: "서울시 마포구")
         
         networkService.sendMemberInfo(data: data) { [weak self] result in
             guard let self = self else { return }
@@ -75,8 +75,14 @@ public class TestVC: UIViewController {
                 DispatchQueue.main.async {
                     let homeTabBarController = MainTabBarController()
                     homeTabBarController.userName = data.name
-                    let navController = UINavigationController(rootViewController: homeTabBarController)
-                    self.navigationController?.pushViewController(navController, animated: true)
+                    
+                    print("User name set: \(homeTabBarController.userName)")
+
+                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                       let window = windowScene.windows.first {
+                        window.rootViewController = homeTabBarController
+                        UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+                    }
                 }
             case .failure(let error):
                 print("\(error)")
