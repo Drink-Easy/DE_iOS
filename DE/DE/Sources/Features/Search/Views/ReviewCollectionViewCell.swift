@@ -9,19 +9,19 @@ class ReviewCollectionViewCell: UICollectionViewCell {
     static let identifier = "ReviewCollectionViewCell"
     
     public lazy var nickname = UILabel().then {
-        $0.text = "eoiwod"
+        //$0.text = "eoiwod"
         $0.textColor = .black
         $0.font = UIFont.ptdMediumFont(ofSize: 16)
     }
     
     public lazy var score = UILabel().then {
-        $0.text = "★ 4.0"
+        //$0.text = "★ 4.0"
         $0.textColor = Constants.AppColor.purple100
         $0.font = UIFont.ptdMediumFont(ofSize: 14)
     }
     
     public lazy var review = UILabel().then {
-        $0.text = "가볍게 즐길 수 있는 와인이에요. 추천합니다."
+        //$0.text = "가볍게 즐길 수 있는 와인이에요. 추천합니다."
         $0.numberOfLines = 0
         $0.textColor = Constants.AppColor.gray80
         $0.font = UIFont.ptdMediumFont(ofSize: 14)
@@ -59,5 +59,11 @@ class ReviewCollectionViewCell: UICollectionViewCell {
             $0.leading.equalTo(nickname.snp.leading)
             $0.top.equalTo(nickname.snp.bottom).offset(4)
         }
+    }
+    
+    public func configure(model: WineReviewModel) {
+        nickname.text = model.name
+        score.text = "★ \(String(model.rating))"
+        review.text = model.contents
     }
 }

@@ -61,4 +61,8 @@ class TopNameView: UIView {
             $0.bottom.equalToSuperview()
         }
     }
+    
+    public func configure(_ model: WineDetailTopModel) {
+        name.text = model.wineName
+    }
 }

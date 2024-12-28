@@ -3,8 +3,14 @@
 import UIKit
 import CoreModule
 import Then
+import Network
 
 class WineDetailViewController: UIViewController {
+    
+    var wineId: Int = 0
+    let networkService = WineService()
+    var reviewData: [WineReviewModel] = []
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -12,6 +18,7 @@ class WineDetailViewController: UIViewController {
         
         addView()
         constraints()
+        callSearchAPI(query: self.wineId)
     }
     
     private lazy var scrollView = UIScrollView().then {
@@ -90,15 +97,63 @@ class WineDetailViewController: UIViewController {
             $0.bottom.equalToSuperview().offset(-50)
         }
     }
+    
+    func transformResponseData(_ responseData : WineResponseWithThreeReviewsDTO) {
+        let wineResponse = responseData.wineResponseDTO
+        
+        let noseNotes = [
+            wineResponse.wineNoteNose?.nose1 ?? "nose1",
+            wineResponse.wineNoteNose?.nose2 ?? "nose2",
+            wineResponse.wineNoteNose?.nose3 ?? "nose3"
+        ]
+
+        let tastingNoteString = noseNotes.joined(separator: ", ")
+        
+        let topData = WineDetailTopModel(isLiked: wineResponse.liked, wineName: wineResponse.name)
+        let infoData = WineDetailInfoModel(image: wineResponse.imageUrl, sort: wineResponse.sort, area: wineResponse.area)
+        let rateData = WineViVinoRatingModel(vivinoRating: wineResponse.vivinoRating)
+        let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString)
+        let reviewData = WineAverageReviewModel(avgMemberRating: wineResponse.avgMemberRating)
+        if let reviewResponse = responseData.recentReviews {
+            for data in reviewResponse {
+                let review = WineReviewModel(name: data.name, contents: data.review, rating: data.rating)
+                self.reviewData.append(review)
+            }
+        }
+        DispatchQueue.main.async {
+            self.topNameView.configure(topData)
+            self.wineDetailView.configure(infoData)
+            self.vivinoRateView.configure(rateData)
+            self.averageTastingNoteView.configure(avgData)
+            self.reviewView.configure(reviewData)
+            self.reviewView.reviewCollectionView.reloadData()
+        }
+    }
+    
+    func callSearchAPI(query: Int) {
+        networkService.fetchWineInfo(wineId: self.wineId) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let responseData) :
+                self.transformResponseData(responseData)
+            case .failure(let error) :
+                print("\(error)")
+            }
+        }
+    }
 }
 
 extension WineDetailViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return reviewData.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReviewCollectionViewCell.identifier, for: indexPath) as! ReviewCollectionViewCell
+        
+        let review = reviewData[indexPath.row]
+        cell.configure(model: review)
         
         return cell
     }
