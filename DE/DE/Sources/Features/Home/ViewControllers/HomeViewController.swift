@@ -19,7 +19,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     
     private var homeTopView = HomeTopView()
     
-    let networkService = HomeService()
+    let networkService = WineService()
     
     private lazy var scrollView: UIScrollView = {
         let s = UIScrollView()
@@ -138,15 +138,14 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     }
     
     func callHomeAPI() {
-        networkService.fetchHomeInfo { [weak self] result in
+        networkService.fetchRecommendWines { [weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(let responseData) :
                 DispatchQueue.main.async {
-                    self.userName = responseData.name
                     self.wineData = []
-                    for data in responseData.recommendWineDTOs {
+                    for data in responseData {
                         let wine = HomeWineModel(wineId: data.wineId, wineName: data.wineName, imageURL: data.imageUrl)
                         self.wineData.append(wine)
                     }
