@@ -88,6 +88,9 @@ extension EntireReviewViewController: UICollectionViewDataSource, UICollectionVi
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReviewCollectionViewCell.identifier, for: indexPath) as! ReviewCollectionViewCell
         
+        let review = reviewResults[indexPath.row]
+        cell.configure(model: review)
+        
         return cell
     }
     
