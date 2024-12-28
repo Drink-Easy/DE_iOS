@@ -1,6 +1,7 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+import CoreModule
 
 class NoseCollectionReusableView: UICollectionReusableView {
     
@@ -20,10 +21,17 @@ class NoseCollectionReusableView: UICollectionReusableView {
     // 화살표 아이콘 - 열려있을 떄만 보이게. 기본 값이 안보기에
     private let iconImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "chevron.down") // 시스템 아이콘
+        imageView.image = UIImage(systemName: "chevron.up") // 시스템 아이콘
         imageView.tintColor = .black
         imageView.isHidden = true // 기본 상태에서 숨김 처리
         return imageView
+    }()
+    
+    // 구분선 뷰
+    private let separatorView: UIView = {
+        let view = UIView()
+        view.backgroundColor = AppColor.gray60 // 구분선 색상
+        return view
     }()
     
     // MARK: - 초기화
@@ -41,6 +49,7 @@ class NoseCollectionReusableView: UICollectionReusableView {
     private func setupUI() {
         addSubview(titleLabel)
         addSubview(iconImageView)
+        addSubview(separatorView)
         
         titleLabel.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16)
@@ -53,6 +62,13 @@ class NoseCollectionReusableView: UICollectionReusableView {
             make.centerY.equalToSuperview()
             make.width.height.equalTo(20) // 아이콘 크기 20x20
         }
+        
+        separatorView.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(12)
+            make.leading.equalTo(titleLabel.snp.leading).offset(-5)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(1)
+        }
     }
     
     // MARK: - 데이터 설정
@@ -62,6 +78,7 @@ class NoseCollectionReusableView: UICollectionReusableView {
         self.delegate = delegate
         
         iconImageView.isHidden = !isExpanded
+        separatorView.isHidden = isExpanded
     }
     
     // MARK: - 액션 처리

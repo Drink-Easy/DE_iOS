@@ -1,9 +1,4 @@
-//
-//  WineInfoView.swift
-//  Drink-EG
-//
-//  Created by 이수현 on 10/30/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
 import SnapKit
@@ -12,12 +7,6 @@ import CoreModule
 import Then
 
 class RatingWineView: UIView {
-    
-    let navView: CustomNavigationBar = {
-        let n = CustomNavigationBar()
-        n.backgroundColor = AppColor.gray20
-        return n
-    }()
     
     let scrollView: UIScrollView = {
         let s = UIScrollView()
@@ -137,17 +126,9 @@ class RatingWineView: UIView {
     func setupUI() {
         backgroundColor = AppColor.gray20
         
-        addSubview(navView)
-        addSubview(navView)
-        navView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.top.equalTo(safeAreaLayoutGuide)
-            make.height.equalTo(56)
-        }
-        
         addSubview(scrollView)
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(navView.snp.bottom)
+            make.top.equalTo(safeAreaLayoutGuide)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
