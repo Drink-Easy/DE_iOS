@@ -1,9 +1,4 @@
-//
-//  ChooseWineColor.swift
-//  Drink-EG
-//
-//  Created by 이수현 on 11/11/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
 import CoreModule

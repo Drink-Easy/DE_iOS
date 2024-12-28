@@ -1,9 +1,4 @@
-//
-//  SearchHomeView.swift
-//  Drink-EG
-//
-//  Created by 이현주 on 10/30/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
 import CoreModule
