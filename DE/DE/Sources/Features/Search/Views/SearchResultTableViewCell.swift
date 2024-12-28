@@ -53,7 +53,7 @@ class SearchResultTableViewCell: UITableViewCell {
             contentView.backgroundColor = Constants.AppColor.purple10 // 선택된 배경색
             borderLayer.borderColor = Constants.AppColor.purple50?.cgColor // 선택된 테두리색
         } else {
-            contentView.backgroundColor = .white // 기본 배경색
+            contentView.backgroundColor = Constants.AppColor.grayBG // 기본 배경색
             borderLayer.borderColor = UIColor.clear.cgColor // 기본 테두리 없음
         }
     }
@@ -79,7 +79,7 @@ class SearchResultTableViewCell: UITableViewCell {
     
     private func setupView() {
         // 기본 셀 스타일 설정
-        contentView.backgroundColor = .white
+        contentView.backgroundColor = Constants.AppColor.grayBG
         selectionStyle = .none // 기본 선택 스타일 제거
         
         // 테두리 설정

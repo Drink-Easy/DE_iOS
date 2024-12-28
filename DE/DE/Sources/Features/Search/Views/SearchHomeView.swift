@@ -19,14 +19,14 @@ class SearchHomeView: UIView {
         $0.tintColor = Constants.AppColor.gray80
         $0.backgroundColor = .clear
     }
-
+    
     public lazy var title = UILabel().then {
         $0.numberOfLines = 0
         let text = "검색하고 싶은\n와인을 입력해주세요"
-
+        
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = 1.25 // 줄 간격 설정
-
+        
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.ptdSemiBoldFont(ofSize: 24),
             .paragraphStyle: paragraphStyle,
@@ -40,24 +40,29 @@ class SearchHomeView: UIView {
     public lazy var searchResultTableView = UITableView().then {
         $0.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
+        $0.backgroundColor = Constants.AppColor.grayBG
     }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        backgroundColor = .white
-        self.addComponents()
-        self.constraints()
+
+    init(titleText: String, placeholder: String) {
+        super.init(frame: .zero)
+        backgroundColor = Constants.AppColor.grayBG
+
+        title.text = titleText
+        searchBar.placeholderText = placeholder
+
+        addComponents()
+        setConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-    
+
     private func addComponents() {
-        [backBtn, title, searchBar, searchResultTableView].forEach{ self.addSubview($0) }
+        [backBtn, title, searchBar, searchResultTableView].forEach { self.addSubview($0) }
     }
-    
-    private func constraints() {
+
+    private func setConstraints() {
         backBtn.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide).offset(19)
             make.leading.equalTo(safeAreaLayoutGuide).offset(31)
@@ -81,3 +86,4 @@ class SearchHomeView: UIView {
         }
     }
 }
+

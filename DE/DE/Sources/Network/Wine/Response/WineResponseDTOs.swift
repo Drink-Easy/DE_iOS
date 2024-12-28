@@ -25,13 +25,15 @@ public struct WineResponseDTO : Decodable {
     public let price: Int
     public let sort: String
     public let area: String
-    public let satisfaction: Double
+    public let vivinoRating: Double
     public let avgSugarContent: Double
     public let avgAcidity: Double
     public let avgTanin: Double
     public let avgBody: Double
     public let avgAlcohol: Double
     public let wineNoteNose: WineNoteNose
+    public let avgMemberRating: Double
+    public let liked: Bool
 }
 
 public struct WineNoteNose : Decodable {

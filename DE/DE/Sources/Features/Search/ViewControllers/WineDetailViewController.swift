@@ -3,8 +3,12 @@
 import UIKit
 import CoreModule
 import Then
+import Network
 
 class WineDetailViewController: UIViewController {
+    
+    var wineId: Int = 0
+    let networkService = WineService()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -88,6 +92,27 @@ class WineDetailViewController: UIViewController {
             $0.top.equalTo(averageTastingNoteView.snp.bottom).offset(55)
             $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalToSuperview().offset(-50)
+        }
+    }
+    
+    func callSearchAPI(query: String) {
+        networkService.fetchWineInfo(wineId: self.wineId) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let responseData) :
+                DispatchQueue.main.async {
+                    self.topNameView.name.text = responseData.wineResponseDTO.name
+                    self.wineDetailView.kindContents.text = responseData.wineResponseDTO.sort
+                    //wineDetailView.countryContents.text
+                    //wineDetailView.typeContents.text
+                    self.vivinoRateView.score = responseData.wineResponseDTO.vivinoRating
+                    self.averageTastingNoteView.noseContents.text = "\(responseData.wineResponseDTO.wineNoteNose.nose1), \(responseData.wineResponseDTO.wineNoteNose.nose2), \(responseData.wineResponseDTO.wineNoteNose.nose3)"
+                    //self.reviewView.score = responseData.
+                }
+            case .failure(let error) :
+                print("\(error)")
+            }
         }
     }
 }

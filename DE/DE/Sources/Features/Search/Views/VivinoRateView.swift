@@ -38,7 +38,7 @@ class VivinoRateView: UIView {
     }
     
     public lazy var scoreStar = CosmosView().then {
-        $0.rating = 4
+        $0.rating = score
         $0.settings.updateOnTouch = false
         $0.settings.starSize = 25
         $0.settings.starMargin = 6.14

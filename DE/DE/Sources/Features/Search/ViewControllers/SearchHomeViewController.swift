@@ -22,7 +22,10 @@ public class SearchHomeViewController : UIViewController {
         self.view = searchHomeView
     }
     
-    private lazy var searchHomeView = SearchHomeView().then {
+    private lazy var searchHomeView = SearchHomeView(
+        titleText: "검색하고 싶은\n와인을 입력해주세요",
+        placeholder: "검색어 입력"
+    ).then {
         $0.searchResultTableView.dataSource = self
         $0.searchResultTableView.delegate = self
         $0.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
@@ -91,6 +94,7 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = WineDetailViewController()
+        vc.wineId = wineResults[indexPath.row].wineId
         navigationController?.pushViewController(vc, animated: true)
     }
 }
