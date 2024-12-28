@@ -11,6 +11,8 @@ import Network
 public class NoteListViewController: UIViewController {
     
     var wineCount: Int = 0
+    private var allNotesData: AllTastingNoteResponseDTO?
+    private var notePreviewList: [TastingNotePreviewResponseDTO] = []
     
     // Source -> cells -> TastingNote
     private let noteListView = NoteListView()
@@ -20,9 +22,17 @@ public class NoteListViewController: UIViewController {
     
     let noteService = TastingNoteService()
     
-    /*func callGet() {
-        noteService.fetchAllNotes(sort: <#T##String#>, completion: <#T##(Result<AllTastingNoteResponseDTO, NetworkError>) -> Void#>)
-    }*/
+    func callAllNote() {
+        noteService.fetchAllNotes(sort: "all", completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case.success(let data):
+                handleResponse(data)
+            case.failure(let error):
+                print(error)
+            }
+        })
+    }
     
     public override func viewDidLoad() {
         self.navigationController?.isNavigationBarHidden = true
@@ -31,6 +41,7 @@ public class NoteListViewController: UIViewController {
         setupUI()
         setupDelegate()
         setupAction()
+        callAllNote()
     }
     
     func setupUI() {
@@ -67,6 +78,31 @@ public class NoteListViewController: UIViewController {
         myTastingNote.writeButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
     }
     
+    private func handleResponse(_ data: AllTastingNoteResponseDTO) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            // 데이터 저장
+            self.allNotesData = data
+            self.notePreviewList = data.notePriviewList
+            
+            // WineImageStackView 업데이트
+            self.wineImageStackView.updateCounts(
+                red: data.red,
+                white: data.white,
+                sparkling: data.sparkling,
+                rose: data.rose,
+                etc: data.etc
+            )
+            
+            // Total Wine Count 업데이트
+            self.noteListView.updateTotalWineCount(count: data.total)
+            
+            // MyTastingNoteView 컬렉션 뷰 업데이트
+            self.myTastingNote.collectionView.reloadData()
+        }
+    }
+    
     @objc func nextVC() {
         let nextVC = WineSearchMainVC()
         navigationController?.pushViewController(nextVC, animated: true)
@@ -76,16 +112,23 @@ public class NoteListViewController: UIViewController {
 
 extension NoteListViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return TastingNoteModel.dummy().count
+        return notePreviewList.count
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NoteCollectionViewCell.identifier, for: indexPath) as? NoteCollectionViewCell else {
             return UICollectionViewCell()
         }
-        let list = TastingNoteModel.dummy()
-        cell.imageView.image = list[indexPath.row].images
-        cell.nameLabel.text = list[indexPath.row].label
+        let note = notePreviewList[indexPath.row]
+        
+        cell.imageView.sd_setImage(
+            with: URL(string: note.imageUrl),
+            placeholderImage: UIImage(named: "placeholder"), // 로드 중 보여줄 기본 이미지
+            options: .highPriority, // 우선순위 높은 옵션
+            completed: nil
+        )
+        
+        cell.nameLabel.text = note.wineName
         return cell
     }
 }
