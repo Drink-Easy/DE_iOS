@@ -12,14 +12,14 @@ public class ChooseWineColorViewController: UIViewController, ColorStackViewDele
     
     var selectedColor: UIColor?
     let chooseWineColor = ChooseWineColor()
-    
+    let navigationBarManager = NavigationBarManager()
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.isNavigationBarHidden = true
         setupUI()
         setupActions()
         setupDelegate()
+        setupNavigationBar()
     }
     
     func setupUI() {
@@ -32,7 +32,6 @@ public class ChooseWineColorViewController: UIViewController, ColorStackViewDele
     }
     
     func setupActions() {
-        chooseWineColor.navView.backButton.addTarget(self, action: #selector(prevVC), for: .touchUpInside)
         chooseWineColor.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
     }
     
@@ -41,6 +40,15 @@ public class ChooseWineColorViewController: UIViewController, ColorStackViewDele
         chooseWineColor.colorStackView2.delegate = self
         chooseWineColor.colorStackView3.delegate = self
         chooseWineColor.colorStackView4.delegate = self
+    }
+    
+    private func setupNavigationBar() {
+        navigationBarManager.addBackButton(
+            to: navigationItem,
+            target: self,
+            action: #selector(prevVC),
+            tintColor: AppColor.gray80!
+        )
     }
     
     @objc func prevVC() {

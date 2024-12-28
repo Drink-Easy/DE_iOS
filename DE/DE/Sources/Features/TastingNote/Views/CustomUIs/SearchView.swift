@@ -11,14 +11,6 @@ import SnapKit
 import Then
 
 class SearchView: UIView {
-    
-    public lazy var backBtn = UIButton().then {
-        let config = UIImage.SymbolConfiguration(pointSize: 22, weight: .regular)
-        let image = UIImage(systemName: "chevron.backward", withConfiguration: config)
-        $0.setImage(image, for: .normal)
-        $0.tintColor = Constants.AppColor.gray80
-        $0.backgroundColor = .clear
-    }
 
     public lazy var title = UILabel().then {
         $0.numberOfLines = 0
@@ -54,17 +46,12 @@ class SearchView: UIView {
     }
     
     private func addComponents() {
-        [backBtn, title, searchBar, searchResultTableView].forEach{ self.addSubview($0) }
+        [title, searchBar, searchResultTableView].forEach{ self.addSubview($0) }
     }
     
     private func constraints() {
-        backBtn.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide).offset(19)
-            make.leading.equalTo(safeAreaLayoutGuide).offset(31)
-        }
-        
         title.snp.makeConstraints { make in
-            make.top.equalTo(backBtn.snp.bottom).offset(29)
+            make.top.equalTo(safeAreaLayoutGuide).offset(20)
             make.leading.equalTo(safeAreaLayoutGuide).offset(25)
         }
         

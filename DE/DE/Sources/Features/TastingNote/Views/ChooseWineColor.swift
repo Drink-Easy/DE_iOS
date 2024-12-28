@@ -10,13 +10,6 @@ import CoreModule
 
 class ChooseWineColor: UIView {
     
-
-    let navView: CustomNavigationBar = {
-        let n = CustomNavigationBar()
-        n.backgroundColor = AppColor.gray20
-        return n
-    }()
-    
     let pageLabel: UILabel = {
         let p = UILabel()
         p.textColor = AppColor.gray80
@@ -95,16 +88,9 @@ class ChooseWineColor: UIView {
     func setupUI() {
         backgroundColor = AppColor.gray20
         
-        addSubview(navView)
-        navView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.top.equalTo(safeAreaLayoutGuide)
-            make.height.equalTo(56)
-        }
-        
         addSubview(pageLabel)
         pageLabel.snp.makeConstraints { make in
-            make.top.equalTo(navView.snp.bottom).offset(10)
+            make.top.equalTo(safeAreaLayoutGuide).offset(10)
             make.leading.equalToSuperview().offset(24)
         }
         

@@ -11,10 +11,6 @@ import Then
 
 class TastedDateView: UIView {
 
-    let navView = CustomNavigationBar().then {
-        $0.backgroundColor = AppColor.gray20
-    }
-    
     let pageLabel = UILabel().then {
         $0.textColor = AppColor.gray80
         let fullText = "1/5"
@@ -57,16 +53,9 @@ class TastedDateView: UIView {
     func setupUI() {
         backgroundColor = AppColor.gray20
         
-        addSubview(navView)
-        navView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.top.equalTo(safeAreaLayoutGuide)
-            make.height.equalTo(56)
-        }
-        
         addSubview(pageLabel)
         pageLabel.snp.makeConstraints { make in
-            make.top.equalTo(navView.snp.bottom).offset(10)
+            make.top.equalTo(safeAreaLayoutGuide).offset(10)
             make.leading.equalToSuperview().offset(24)
         }
         
@@ -88,7 +77,7 @@ class TastedDateView: UIView {
             make.top.equalTo(label.snp.bottom).offset(36)
             make.leading.equalToSuperview().offset(21)
             make.centerX.equalToSuperview()
-            make.height.equalTo(Constants.superViewHeight*0.4)
+            make.height.equalTo(Constants.superViewHeight*0.5)
         }
         
         addSubview(nextButton)

@@ -37,7 +37,7 @@ class CustomSlider: UISlider {
         // 기존 UISlider의 Thumb 위치 계산
         let originalThumbRect = super.thumbRect(forBounds: bounds, trackRect: rect, value: value)
         
-        let yOffset: CGFloat = -18
+        let yOffset: CGFloat = -19
         
         return originalThumbRect.offsetBy(dx: 0, dy: yOffset)
     }

@@ -7,35 +7,32 @@ import Then
 
 public class WineSearchMainVC : UIViewController, UISearchBarDelegate {
     
+    let navigationBarManager = NavigationBarManager()
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.isNavigationBarHidden = true
+        self.navigationController?.isNavigationBarHidden = false
         view.backgroundColor = Constants.AppColor.grayBG
         self.view = searchHomeView
+        setupNavigationBar()
     }
     
     private lazy var searchHomeView = SearchView().then {
         $0.searchResultTableView.dataSource = self
         $0.searchResultTableView.delegate = self
     }
-}
-
-extension WineSearchMainVC: UITableViewDelegate, UITableViewDataSource {
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20
+    
+    private func setupNavigationBar() {
+        navigationBarManager.setTitle(to: navigationItem, title: "", textColor: AppColor.black!)
+        navigationBarManager.addBackButton(
+            to: navigationItem,
+            target: self,
+            action: #selector(prevVC),
+            tintColor: AppColor.gray80!
+        )
     }
     
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "SearchTableViewCell", for: indexPath) as? SearchTableViewCell else {
-            return UITableViewCell()
-        }
-        
-//        cell.configure(model: data[indexPath.row])
-        return cell
-    }
-    
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = TastedDateViewController()
-        navigationController?.pushViewController(vc, animated: true)
+    @objc func prevVC() {
+        navigationController?.popViewController(animated: true)
     }
 }

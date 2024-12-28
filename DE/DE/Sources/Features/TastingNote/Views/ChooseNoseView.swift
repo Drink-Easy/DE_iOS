@@ -12,8 +12,6 @@ import SnapKit
 // 계열 선택 뷰
 class ChooseNoseView: UIView {
 
-    var flowersCollectionViewHeightConstraint: Constraint? = nil
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -22,18 +20,6 @@ class ChooseNoseView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    let collectionView: UICollectionView = {
-        let layout = LeftAlignedCollectionViewFlowLayout()
-        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-        layout.minimumInteritemSpacing = 10
-        layout.minimumLineSpacing = 10
-        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 50)
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = AppColor.gray20
-        return cv
-    }()
     
     private let scrollView: UIScrollView = {
         let s = UIScrollView()
@@ -45,12 +31,6 @@ class ChooseNoseView: UIView {
         let c = UIView()
         c.backgroundColor = AppColor.gray20
         return c
-    }()
-    
-    let navView: CustomNavigationBar = {
-        let n = CustomNavigationBar()
-        n.backgroundColor = AppColor.gray20
-        return n
     }()
     
     let pageLabel: UILabel = {
@@ -103,6 +83,40 @@ class ChooseNoseView: UIView {
         return n
     }()
     
+    private let selectedLabel: UILabel = {
+        let s = UILabel()
+        s.text = "선택된 항목"
+        s.font = .ptdSemiBoldFont(ofSize: 14)
+        s.textColor = AppColor.purple100
+        return s
+    }()
+    
+    let selectedCollectionView: UICollectionView = {
+        let layout = LeftAlignedCollectionViewFlowLayout()
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        layout.minimumInteritemSpacing = 10
+        layout.minimumLineSpacing = 10
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 50)
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = AppColor.gray20
+        cv.tag = 1
+        return cv
+    }()
+    
+    let collectionView: UICollectionView = {
+        let layout = LeftAlignedCollectionViewFlowLayout()
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        layout.minimumInteritemSpacing = 10
+        layout.minimumLineSpacing = 10
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 50)
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = AppColor.gray20
+        cv.tag = 0
+        return cv
+    }()
+    
     let nextButton: UIButton = {
         let n = UIButton()
         n.setTitle("다음", for: .normal)
@@ -116,16 +130,9 @@ class ChooseNoseView: UIView {
     func setupUI() {
         backgroundColor = AppColor.gray20
         
-        addSubview(navView)
-        navView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.top.equalTo(safeAreaLayoutGuide)
-            make.height.equalTo(56)
-        }
-        
         addSubview(scrollView)
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(navView.snp.bottom)
+            make.top.equalTo(safeAreaLayoutGuide)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
@@ -175,12 +182,26 @@ class ChooseNoseView: UIView {
             make.trailing.equalTo(vector1.snp.trailing).offset(-37)
         }
         
-        contentView.addSubview(collectionView)
-        collectionView.snp.makeConstraints { make in
+        contentView.addSubview(selectedLabel)
+        selectedLabel.snp.makeConstraints { make in
             make.top.equalTo(noseDescription.snp.bottom).offset(24)
             make.leading.equalTo(noseDescription.snp.leading).offset(6)
+        }
+        
+        contentView.addSubview(selectedCollectionView)
+        selectedCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(selectedLabel.snp.bottom).offset(6)
+            make.leading.equalTo(selectedLabel.snp.leading).offset(-6)
             make.centerX.equalTo(vector1.snp.centerX)
-            make.height.equalTo(700)
+            make.height.equalTo(1)
+        }
+        
+        contentView.addSubview(collectionView)
+        collectionView.snp.makeConstraints { make in
+            make.top.equalTo(selectedCollectionView.snp.bottom).offset(24)
+            make.leading.equalTo(selectedCollectionView.snp.leading).offset(6)
+            make.centerX.equalTo(vector1.snp.centerX)
+            make.height.equalTo(400)
         }
         
         contentView.addSubview(nextButton)
@@ -197,6 +218,21 @@ class ChooseNoseView: UIView {
         
     }
 
+    func updateSelectedCollectionViewHeight() {
+        selectedCollectionView.layoutIfNeeded() // 레이아웃 업데이트
+        let contentHeight = selectedCollectionView.contentSize.height
+        selectedCollectionView.snp.updateConstraints { make in
+            make.height.equalTo(contentHeight)
+        }
+    }
+    
+    func updateNoseCollectionViewHeight() {
+        collectionView.layoutIfNeeded() // 레이아웃 업데이트
+        let contentHeight = collectionView.contentSize.height
+        collectionView.snp.updateConstraints { make in
+            make.height.equalTo(contentHeight)
+        }
+    }
     
 }
 
