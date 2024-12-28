@@ -14,95 +14,35 @@ import AuthenticationServices
 import Network
 import CoreModule
 
-public class SelectLoginTypeVC: UIViewController {
+class SelectLoginTypeVC: UIViewController {
     
     public static let keychain = KeychainSwift()
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
     let networkService = AuthService()
     
-    private let imageView = UIImageView().then {
-        $0.image = UIImage(named: "logo")
-    }
+    private let mainView = SelectLoginTypeView()
     
-    let kakaoButton: UIButton = {
-        let button = UIButton()
-        button.backgroundColor = UIColor(hex: "#FEE500")
-        button.setTitle("   카카오로 시작하기", for: .normal)
-        button.setTitleColor(UIColor(hex: "#191919"), for: .normal)
-        //        button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 22)
-        button.layer.cornerRadius = 15
-        button.addTarget(self, action: #selector(kakaoButtonTapped), for: .touchUpInside)
-        return button
-    }()
-    
-    let appleButton: UIButton = {
-        let button = UIButton()
-        button.backgroundColor = UIColor(hex: "#FEE500")
-        button.setTitle("   애플로 시작하기", for: .normal)
-        button.setTitleColor(UIColor(hex: "#191919"), for: .normal)
-        //        button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 22)
-        button.layer.cornerRadius = 15
-        button.addTarget(self, action: #selector(appleButtonTapped), for: .touchUpInside)
-        return button
-    }()
-    
-    
-    private let loginButton = CustomButton(
-        title: "로그인",
-        titleColor: .white,
-        backgroundColor: AppColor.purple100!
-    ).then {
-        $0.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
-    }
-    
-    private let joinStackView = JoinStackView()
-    
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    // MARK: - Life Cycle
+    public override func loadView() {
+        self.view = mainView
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        
         view.backgroundColor = AppColor.bgGray
-        setupUI()
-        setupConstraints()
-        joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
+        setupActions()
     }
     
-    private func setupUI() {
-        [imageView,kakaoButton,appleButton,loginButton,joinStackView].forEach {
-            view.addSubview($0)
-        }
+    // MARK: - Setup Methods
+    private func setupActions() {
+        mainView.kakaoButton.addTarget(self, action: #selector(kakaoButtonTapped), for: .touchUpInside)
+        mainView.appleButton.addTarget(self, action: #selector(appleButtonTapped), for: .touchUpInside)
+        mainView.loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+        mainView.joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
     }
     
-    private func setupConstraints() {
-        imageView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(Constants.superViewHeight * 0.4)
-            make.width.lessThanOrEqualTo(Constants.superViewWidth * 0.6)
-        }
-        kakaoButton.snp.makeConstraints { make in
-            make.top.equalTo(Constants.superViewHeight * 0.6)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
-            make.height.equalTo(60)
-        }
-        appleButton.snp.makeConstraints { make in
-            make.top.equalTo(kakaoButton.snp.bottom).offset(10)
-            make.height.equalTo(60)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
-        }
-        loginButton.snp.makeConstraints { make in
-            make.top.equalTo(appleButton.snp.bottom).offset(10)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
-        }
-        joinStackView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview() // 수평 가운데 정렬
-            make.bottom.equalToSuperview().offset(-50) // 하단에서 위로 50pt
-        }
-    }
-
-    @objc func kakaoButtonTapped(_ sender: UIButton) {
+    // MARK: - Actions
+    @objc private func kakaoButtonTapped() {
         self.kakaoAuthVM.kakaoLogin { success in
             if success {
                 UserApi.shared.me { (user, error) in
@@ -124,18 +64,7 @@ public class SelectLoginTypeVC: UIViewController {
                     }
                     let userIDString = String(userID)
                     
-                    let kakaoDTO = self.networkService.makeKakaoDTO(username: userIDString, email: userEmail)
-                    self.networkService.kakaoLogin(data: kakaoDTO) { [weak self] result in
-                        guard let self = self else { return }
-                        
-                        switch result {
-                        case .success(let response):
-                            //TODO: 다음 뷰 설정
-                            print("카카오 로그인 성공")
-                        case .failure(let error):
-                            print(error)
-                        }
-                    }
+                    self.kakaoLoginProceed(userIDString, userEmail: userEmail)
                 }
             } else {
                 print("카카오 회원가입 실패")
@@ -145,6 +74,21 @@ public class SelectLoginTypeVC: UIViewController {
     
     @objc private func appleButtonTapped() {
         print("애플 버튼 눌림")
+    }
+    
+    private func kakaoLoginProceed(_ userIDString: String, userEmail: String) {
+        let kakaoDTO = self.networkService.makeKakaoDTO(username: userIDString, email: userEmail)
+        self.networkService.kakaoLogin(data: kakaoDTO) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let response):
+                // TODO: 다음 뷰 설정
+                print("카카오 로그인 성공")
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
     
     @objc private func loginButtonTapped() {
@@ -167,5 +111,4 @@ public class SelectLoginTypeVC: UIViewController {
 //        }
         
     }
-    
 }

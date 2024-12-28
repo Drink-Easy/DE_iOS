@@ -9,7 +9,6 @@ import HomeModule
 import CoreModule
 import Network
 
-
 class LoginVC: UIViewController {
     // MARK: - Properties
     private let loginView = LoginView()
@@ -32,7 +31,7 @@ class LoginVC: UIViewController {
         setupActions()
         setupNavigationBar()
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
@@ -78,7 +77,7 @@ class LoginVC: UIViewController {
     @objc private func dismissKeyboard() {
         self.view.endEditing(true)
     }
-
+    
     @objc func emailValidate() {
         validationManager.isEmailValid = validationManager.validateEmail(loginView.emailField)
         validateInputs()
@@ -96,7 +95,7 @@ class LoginVC: UIViewController {
         loginView.loginButton.isEnabled = isValid
         loginView.loginButton.backgroundColor = isValid ? AppColor.purple100 : AppColor.gray80
     }
-        
+    
     @objc private func emailSaveCheckBoxTapped() {
         loginView.emailSaveCheckBox.isSelected.toggle()
         isSavingEmail = loginView.emailSaveCheckBox.isSelected
@@ -118,7 +117,7 @@ class LoginVC: UIViewController {
             }
         }
     }
-        
+    
     private func goToNextView(_ isFirstLogin: Bool) {
         if isFirstLogin {
             let enterTasteTestViewController = TestVC()

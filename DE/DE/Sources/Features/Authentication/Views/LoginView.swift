@@ -1,35 +1,33 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
-import CoreModule
-import Then
+
 import SnapKit
+import Then
+
+import CoreModule
 
 final class LoginView: UIView {
     
     // MARK: - UI Components
-    lazy var emailField: CustomLabelTextFieldView = {
-        let field = CustomLabelTextFieldView(
-            descriptionImageIcon: "person.fill",
-            descriptionLabelText: "이메일",
-            textFieldPlaceholder: "이메일을 입력해 주세요",
-            validationText: "사용할 수 없는 이메일입니다"
-        )
-        field.textField.keyboardType = .emailAddress
-        return field
-    }()
-    
-    lazy var passwordField: CustomLabelTextFieldView = {
-        let field = CustomLabelTextFieldView(
-            descriptionImageIcon: "lock.fill",
-            descriptionLabelText: "비밀번호",
-            textFieldPlaceholder: "비밀번호를 입력해 주세요",
-            validationText: "8~20자 이내 영문자, 숫자, 특수문자의 조합",
-            isPasswordField: true
-        )
-        field.textField.textContentType = .newPassword
-        return field
-    }()
+    lazy var emailField = CustomLabelTextFieldView(
+        descriptionImageIcon: "person.fill",
+        descriptionLabelText: "이메일",
+        textFieldPlaceholder: "이메일을 입력해 주세요",
+        validationText: "사용할 수 없는 이메일입니다"
+    ).then {
+        $0.textField.keyboardType = .emailAddress
+    }
+
+    lazy var passwordField = CustomLabelTextFieldView(
+        descriptionImageIcon: "lock.fill",
+        descriptionLabelText: "비밀번호",
+        textFieldPlaceholder: "비밀번호를 입력해 주세요",
+        validationText: "8~20자 이내 영문자, 숫자, 특수문자의 조합",
+        isPasswordField: true
+    ).then {
+        $0.textField.textContentType = .newPassword
+    }
     
     let joinStackView = JoinStackView()
     lazy var emailSaveCheckBox = CustomCheckSquareButton(title: "아이디 저장하기")

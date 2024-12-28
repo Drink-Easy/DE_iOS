@@ -19,6 +19,7 @@ public struct AppColor {
     
     static public let black = UIColor(hex: "#121212")
     static public let bgGray = UIColor(hex: "#F8F8FA")
+    static public let red = UIColor(hex: "FF2A2A")
 }
 
 public extension UIColor {

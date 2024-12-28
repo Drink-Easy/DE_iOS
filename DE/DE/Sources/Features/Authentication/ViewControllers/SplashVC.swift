@@ -10,7 +10,6 @@ import SwiftyToaster
 import AppTrackingTransparency
 import AdSupport
 
-import Authentication
 import Network
 import CoreModule
 import HomeModule

@@ -44,6 +44,8 @@ public struct Constants {
         static public let gray60 = UIColor(hex: "#DADADA")
         static public let gray40 = UIColor(hex: "#E9E9E9")
         static public let gray20 = UIColor(hex: "#F8F8F8")
+        
+        static public let red = UIColor(hex: "FF6F6F")
     }
     
     public struct Policy {

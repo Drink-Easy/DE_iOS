@@ -66,9 +66,9 @@ public class LogoutTestVC: UIViewController {
             case .success:
                 sampleLabel.text = "logout!"
                 sampleLabel.textColor = .systemRed
-                let splashVC = SplashVC()
-                splashVC.modalPresentationStyle = .fullScreen
-                present(splashVC, animated: true)
+//                let splashVC = SplashVC()
+//                splashVC.modalPresentationStyle = .fullScreen
+//                present(splashVC, animated: true)
             case .failure(let error):
                 sampleLabel.text = "로그아웃 실패!"
             }
