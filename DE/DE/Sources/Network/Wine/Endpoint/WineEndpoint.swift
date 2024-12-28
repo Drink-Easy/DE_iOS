@@ -8,6 +8,8 @@ public enum WineEndpoint {
     case getWines(searchName: String)
     case getWineInfo(wineId: Int)
     case getWineReview(wineId: Int, orderByLatest: Bool)
+    case getRecommendWines
+    case getMostLikedWines
 }
 
 extension WineEndpoint: TargetType {
@@ -26,6 +28,10 @@ extension WineEndpoint: TargetType {
             return "/\(wineId)"
         case .getWineReview(let wineId, _):
             return "/review/\(wineId)"
+        case .getRecommendWines:
+            return "/recommend"
+        case .getMostLikedWines:
+            return "/most-liked"
         }
     }
     
@@ -37,7 +43,7 @@ extension WineEndpoint: TargetType {
         switch self {
         case .getWines(let searchName):
             return .requestParameters(parameters: ["searchName": searchName], encoding: URLEncoding.queryString)
-        case .getWineInfo:
+        case .getWineInfo, .getRecommendWines, .getMostLikedWines:
             return .requestPlain
         case .getWineReview(_, let orderByLatest):
             return .requestParameters(parameters: ["orderByLatest": orderByLatest], encoding: URLEncoding.default)
