@@ -436,6 +436,7 @@ let project = Project(
             dependencies: [
                 .target(name: "SearchModule"),
                 .target(name: "TastingNote"),
+                .target(name: "CommunityModule")
             ]
         ),
         .target(
@@ -444,6 +445,17 @@ let project = Project(
             product: .staticFramework,
             bundleId: "\(bundleId).\(bundleMid).SearchModule",
             sources: ["DE/Sources/Features/Search/**"],
+            resources: ["DE/Resources/**"],
+            dependencies: [
+                .target(name: "Network")
+            ]
+        ),
+        .target(
+            name: "CommunityModule",
+            destinations: .iOS,
+            product: .staticFramework,
+            bundleId: "\(bundleId).\(bundleMid).CommunityModule",
+            sources: ["DE/Sources/Features/Community/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
                 .target(name: "Network")

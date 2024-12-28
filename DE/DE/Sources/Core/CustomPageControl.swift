@@ -2,7 +2,6 @@
 
 import Foundation
 import UIKit
-import CoreModule
 
 public class CustomPageControl: UIView {
     public var numberOfPages: Int = 0 {
