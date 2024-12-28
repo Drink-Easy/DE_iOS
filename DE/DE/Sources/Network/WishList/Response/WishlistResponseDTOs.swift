@@ -2,7 +2,7 @@
 
 import Foundation
 
-struct WineWishlistResponseDTO : Decodable {
-    let id : Int
-    let wine : SearchWineResponseDTO
+public struct WineWishlistResponseDTO : Decodable {
+    public  let id : Int
+    public let wine : SearchWineResponseDTO
 }

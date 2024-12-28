@@ -3,7 +3,7 @@
 import Foundation
 import Moya
 
-final class CookiePlugin: PluginType {
+class CookiePlugin: PluginType {
     func prepare(_ request: URLRequest, target: TargetType) -> URLRequest {
         var request = request
         

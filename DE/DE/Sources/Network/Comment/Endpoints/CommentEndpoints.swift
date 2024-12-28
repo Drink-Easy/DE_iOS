@@ -4,7 +4,7 @@ import CoreModule
 import Foundation
 import Moya
 
-enum CommentEndpoints {
+public enum CommentEndpoints {
     case postComments(data : CommentRequestDTO)
     case deleteComments(commentId : Int)
     case patchComments(commentId : Int)
@@ -13,14 +13,14 @@ enum CommentEndpoints {
 }
 
 extension CommentEndpoints : TargetType {
-    var baseURL: URL {
+    public var baseURL: URL {
         guard let url = URL(string: Constants.API.commentURL) else {
             fatalError("잘못된 URL")
         }
         return url
     }
     
-    var path: String {
+    public var path: String {
         switch self {
         case .deleteComments(let commentId), .patchComments(let commentId):
             return "/\(commentId)"
@@ -33,7 +33,7 @@ extension CommentEndpoints : TargetType {
         }
     }
     
-    var method: Moya.Method {
+    public var method: Moya.Method {
         switch self {
         case .postComments:
             return .post
@@ -46,7 +46,7 @@ extension CommentEndpoints : TargetType {
         }
     }
     
-    var task: Moya.Task {
+    public var task: Moya.Task {
         switch self {
         case .postComments(let data):
             return .requestJSONEncodable(data)
@@ -55,7 +55,7 @@ extension CommentEndpoints : TargetType {
         }
     }
     
-    var headers: [String : String]? {
+    public var headers: [String : String]? {
         return [
             "Content-type": "application/json"
         ]

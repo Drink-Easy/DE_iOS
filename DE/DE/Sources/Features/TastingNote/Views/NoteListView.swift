@@ -7,31 +7,31 @@
 
 import UIKit
 import SnapKit
+import CoreModule
+import Then
 
 class NoteListView: UIView {
     
-    private let noteListLabel: UILabel = {
-        let label = UILabel()
-        label.text = "노트 보관함"
-        label.textColor = .black
-        label.textAlignment = .center
-        label.font = UIFont(name: "Pretendard-SemiBold", size: 24)
-        return label
-    }()
+    let navView = CustomSearchNavigationBar().then {
+        $0.backgroundColor = AppColor.gray20
+    }
     
-    private let vectorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(hex: "7E13B1")
-        return view
-    }()
+    private let noteListLabel =  UILabel().then {
+        $0.text = "노트 보관함"
+        $0.textColor = .black
+        $0.textAlignment = .center
+        $0.font = .ptdSemiBoldFont(ofSize: 24)
+    }
     
-    private let totalWineLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .black
-        label.textAlignment = .center
-        label.font = UIFont(name: "Pretendard-SemiBold", size: 20)
-        return label
-    }()
+    private let vectorView = UIView().then {
+        $0.backgroundColor = AppColor.purple100
+    }
+    
+    private let totalWineLabel = UILabel().then {
+        $0.textColor = .black
+        $0.textAlignment = .center
+        $0.font = .ptdSemiBoldFont(ofSize: 20)
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -46,10 +46,16 @@ class NoteListView: UIView {
         addSubview(noteListLabel)
         addSubview(vectorView)
         addSubview(totalWineLabel)
+        addSubview(navView)
+        
+        navView.snp.makeConstraints { make in
+            make.top.equalTo(safeAreaLayoutGuide)
+            make.leading.trailing.equalToSuperview()
+        }
         
         noteListLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.equalToSuperview()
+            make.top.equalTo(navView.snp.bottom).offset(6)
+            make.leading.equalTo(navView.snp.leading).offset(24)
         }
         
         vectorView.snp.makeConstraints { make in
@@ -63,6 +69,12 @@ class NoteListView: UIView {
             make.top.equalTo(vectorView.snp.bottom).offset(36)
             make.leading.equalTo(vectorView.snp.leading)
         }
+        
+        self.snp.makeConstraints { make in
+            make.bottom.equalTo(totalWineLabel.snp.bottom)
+        }
+        
+        
     }
     
     func updateTotalWineCount(count: Int) {

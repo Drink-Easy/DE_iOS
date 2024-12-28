@@ -6,6 +6,7 @@ struct NoseSectionModel {
     let sectionTitle: String
     var items: [NoseModel]
     var isExpanded: Bool
+    var selectedItems: [NoseModel] = []
 }
 
 extension NoseSectionModel {
@@ -22,7 +23,7 @@ extension NoseSectionModel {
     }
 }
 
-struct NoseModel {
+struct NoseModel: Codable {
     let type: String
 }
 

@@ -2,11 +2,11 @@
 
 import Foundation
 
-struct RecommentRequestDTO: Encodable {
-    let commentId : Int
-    let content : String
+public struct RecommentRequestDTO: Encodable {
+    public let commentId : Int
+    public let content : String
     
-    init(commentId: Int, content: String) {
+    public init(commentId: Int, content: String) {
         self.commentId = commentId
         self.content = content
     }

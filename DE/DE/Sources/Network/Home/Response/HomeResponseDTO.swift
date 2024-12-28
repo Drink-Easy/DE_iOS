@@ -2,13 +2,13 @@
 
 import Foundation
 
-struct HomeResponseDTO: Decodable {
-    let name: String
-    let recommendWineDTOs: [RecommendWineDTO]
+public struct HomeResponseDTO: Decodable {
+    public let name: String
+    public let recommendWineDTOs: [RecommendWineDTO]
 }
 
-struct RecommendWineDTO : Decodable {
-    let wineId: Int
-    let wineName: String
-    let imageUrl: String
+public struct RecommendWineDTO : Decodable {
+    public let wineId: Int
+    public let wineName: String
+    public let imageUrl: String
 }
