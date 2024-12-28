@@ -71,4 +71,8 @@ class AverageTastingNoteView: UIView {
             $0.bottom.equalToSuperview()
         }
     }
+    
+    public func configure(_ model: WineAverageTastingNoteModel) {
+        noseContents.text = model.wineNoseText
+    }
 }

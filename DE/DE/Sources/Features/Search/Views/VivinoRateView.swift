@@ -7,7 +7,16 @@ import CoreModule
 
 class VivinoRateView: UIView {
     
-    public var score = 4.0
+    public var score = 4.0 {
+        didSet {
+            updateScore()
+        }
+    }
+    
+    public func updateScore() {
+        scoreLabel.text = "\(score) / 5.0"
+        scoreStar.rating = score
+    }
     
     private let title = TitleWithBarView(title: "Vivino Rate", subTitle: "비비노 평점")
     
@@ -79,5 +88,9 @@ class VivinoRateView: UIView {
             $0.leading.equalTo(scoreLabel.snp.trailing).offset(26)
             $0.bottom.equalToSuperview()
         }
+    }
+    
+    public func configure(_ model: WineViVinoRatingModel) {
+        self.score = model.vivinoRating
     }
 }

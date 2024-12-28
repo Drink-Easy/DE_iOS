@@ -6,9 +6,17 @@ import Then
 
 class ReviewView: UIView {
     
-    public var score = 4.0
+    public var score = 4.0 {
+        didSet {
+            updateScore()
+        }
+    }
     
     private let title = TitleWithBarView(title: "Review", subTitle: "리뷰")
+    
+    public func updateScore() {
+        scoreLabel.text = "\(score) / 5.0"
+    }
     
     public lazy var scoreLabel = UILabel().then {
         let text = "\(score) / 5.0"
@@ -105,5 +113,9 @@ class ReviewView: UIView {
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(24)
             $0.bottom.equalToSuperview()
         }
+    }
+    
+    public func configure(_ model: WineAverageReviewModel) {
+        score = model.avgMemberRating
     }
 }

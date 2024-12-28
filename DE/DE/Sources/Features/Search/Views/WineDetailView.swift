@@ -3,6 +3,7 @@
 import UIKit
 import Then
 import CoreModule
+import SDWebImage
 
 class WineDetailView: UIView {
     
@@ -93,5 +94,16 @@ class WineDetailView: UIView {
             $0.centerY.equalToSuperview()
             $0.leading.equalTo(titleStackView.snp.trailing).offset(18)
         }
+    }
+    
+    public func configure(_ model: WineDetailInfoModel) {
+        if let url = URL(string: model.image) {
+            image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+        } else {
+            image.image = UIImage(named: "placeholder")
+        }
+        kindContents.text = model.sort
+        typeContents.text = model.variety
+        countryContents.text = model.area
     }
 }
