@@ -28,13 +28,13 @@ public final class WineService: NetworkManager {
     }
 
     /// 선택 와인 정보 조회
-    public func fetchWineInfo(wineId: Int, completion: @escaping (Result<WineResponseWithThreeReviewsDTO, NetworkError>) -> Void) {
-        request(target: .getWineInfo(wineId: wineId), decodingType: WineResponseWithThreeReviewsDTO.self, completion: completion)
+    public func fetchWineInfo(wineId: Int, completion: @escaping (Result<WineResponseWithThreeReviewsDTO?, NetworkError>) -> Void) {
+        requestOptional(target: .getWineInfo(wineId: wineId), decodingType: WineResponseWithThreeReviewsDTO.self, completion: completion)
     }
     
     /// 선택 와인 리뷰 조회
-    public func fetchWineReviews(wineId: Int, orderByLatest: Bool, completion: @escaping (Result<[WineReviewResponseDTO], NetworkError>) -> Void) {
-        request(target: .getWineReview(wineId: wineId, orderByLatest: orderByLatest), decodingType: [WineReviewResponseDTO].self, completion: completion)
+    public func fetchWineReviews(wineId: Int, orderByLatest: Bool, completion: @escaping (Result<[WineReviewResponseDTO]?, NetworkError>) -> Void) {
+        requestOptional(target: .getWineReview(wineId: wineId, orderByLatest: orderByLatest), decodingType: [WineReviewResponseDTO].self, completion: completion)
     }
     
 }

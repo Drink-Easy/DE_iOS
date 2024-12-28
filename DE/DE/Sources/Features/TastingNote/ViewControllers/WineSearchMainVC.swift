@@ -8,6 +8,7 @@ import Then
 
 public class WineSearchMainVC : UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
     let navigationBarManager = NavigationBarManager()
+    // TODO : 상단 네비게이션 바 추가하는거 하셈!!
     var wineResults: [SearchResultModel] = []
     let networkService = WineService()
     let noteService = TastingNoteService()
@@ -15,9 +16,7 @@ public class WineSearchMainVC : UIViewController, UISearchBarDelegate, UITableVi
     func callPost() {
         let d = noteService.makePostNoteDTO(wineId: 584297, color: "#892222", tasteDate: "2024-12-18", sugarContent: 5, acidity: 5, tannin: 5, body: 5, alcohol: 5, nose: ["붓꽃", "장미", "금작화"], rating: 5.0, review: "첫번째 리뷰에용")
         
-        noteService.postNote(data: d) { [weak self] result in
-            guard let self = self else { return }
-            
+        noteService.postNote(data: d) { result in
             switch result {
             case .success(let str):
                 print(str)
