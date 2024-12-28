@@ -59,12 +59,13 @@ class EntireReviewViewController: UIViewController {
             
             switch result {
             case .success(let responseData) :
-                DispatchQueue.main.async {
-                    self.reviewResults = responseData.map { data in
-                        WineReviewModel(name: data.name, contents: data.review, rating: data.rating, createdAt: data.createdAt)
-                    }
-                    self.entireReviewView.reviewCollectionView.reloadData()
-                }
+                print(responseData)
+//                DispatchQueue.main.async {
+//                    self.reviewResults = responseData.map { data in
+//                        WineReviewModel(name: data.name, contents: data.review, rating: data.rating, createdAt: data.createdAt)
+//                    }
+//                    self.entireReviewView.reviewCollectionView.reloadData()
+//                }
             case .failure(let error) :
                 print("\(error)")
             }

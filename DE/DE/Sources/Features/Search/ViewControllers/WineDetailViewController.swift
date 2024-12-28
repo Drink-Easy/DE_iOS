@@ -120,8 +120,8 @@ class WineDetailViewController: UIViewController {
         let reviewData = WineAverageReviewModel(avgMemberRating: wineResponse.avgMemberRating)
         if let reviewResponse = responseData.recentReviews {
             for data in reviewResponse {
-                let review = WineReviewModel(name: data.name, contents: data.review, rating: data.rating, createdAt: data.createdAt)
-                self.reviewData.append(review)
+//                let review = WineReviewModel(name: data.name, contents: data.review, rating: data.rating, createdAt: data.createdAt)
+//                self.reviewData.append(review)
             }
         }
         DispatchQueue.main.async {
