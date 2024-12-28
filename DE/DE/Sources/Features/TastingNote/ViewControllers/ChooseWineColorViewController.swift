@@ -56,12 +56,11 @@ public class ChooseWineColorViewController: UIViewController, ColorStackViewDele
             return
         }
         
-        UserDefaults.standard.set(hexColor, forKey: "selectedColorHex")
+        UserDefaults.standard.set(hexColor, forKey: "color")
         print("선택된 색상 헥스 코드 저장 완료: \(hexColor)")
         
         
         let nextVC = ChooseNoseViewController()
-        nextVC.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(nextVC, animated: true)
     }
     

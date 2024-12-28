@@ -6,23 +6,9 @@ import SnapKit
 import Moya
 import Then
 import CoreModule
+import Network
 
-public class NoteListViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
-    
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return TastingNoteModel.dummy().count
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NoteCollectionViewCell.identifier, for: indexPath) as? NoteCollectionViewCell else {
-            return UICollectionViewCell()
-        }
-        let list = TastingNoteModel.dummy()
-        cell.imageView.image = list[indexPath.row].images
-        cell.nameLabel.text = list[indexPath.row].label
-        return cell
-    }
-    
+public class NoteListViewController: UIViewController {
     
     var wineCount: Int = 0
     
@@ -31,6 +17,12 @@ public class NoteListViewController: UIViewController, UICollectionViewDataSourc
     // Source -> cells -> TastingNote
     private let wineImageStackView = WineImageStackView()
     private let myTastingNote = MyTastingNoteView()
+    
+    let noteService = TastingNoteService()
+    
+    /*func callGet() {
+        noteService.fetchAllNotes(sort: <#T##String#>, completion: <#T##(Result<AllTastingNoteResponseDTO, NetworkError>) -> Void#>)
+    }*/
     
     public override func viewDidLoad() {
         self.navigationController?.isNavigationBarHidden = true
@@ -80,4 +72,20 @@ public class NoteListViewController: UIViewController, UICollectionViewDataSourc
         navigationController?.pushViewController(nextVC, animated: true)
     }
 
+}
+
+extension NoteListViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return TastingNoteModel.dummy().count
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: NoteCollectionViewCell.identifier, for: indexPath) as? NoteCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        let list = TastingNoteModel.dummy()
+        cell.imageView.image = list[indexPath.row].images
+        cell.nameLabel.text = list[indexPath.row].label
+        return cell
+    }
 }
