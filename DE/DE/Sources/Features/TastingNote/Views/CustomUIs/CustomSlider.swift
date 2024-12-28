@@ -21,11 +21,13 @@ class CustomSlider: UISlider {
         minimumTrackTintColor = AppColor.purple20
         maximumTrackTintColor = AppColor.purple20
         
-        setThumbImage(UIImage(named: "thumb"), for: .normal)
+        setThumbImage(UIImage(named: "sliderThumb"), for: .normal)
         
         minimumValue = stepValues.first ?? 20 // 최소값
         maximumValue = stepValues.last ?? 100 // 최대값
         value = stepValues[2]
+        
+        updateThumbImage()
         
         addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
         addTarget(self, action: #selector(sliderDidEnded), for: [.touchUpInside, .touchUpOutside])
@@ -35,8 +37,7 @@ class CustomSlider: UISlider {
         // 기존 UISlider의 Thumb 위치 계산
         let originalThumbRect = super.thumbRect(forBounds: bounds, trackRect: rect, value: value)
         
-        // Thumb의 Y축 위치를 올림 (현재 위치에서 10포인트 위로)
-        let yOffset: CGFloat = -18 // 원하는 만큼 올릴 수 있음
+        let yOffset: CGFloat = -18
         
         return originalThumbRect.offsetBy(dx: 0, dy: yOffset)
     }
@@ -47,10 +48,46 @@ class CustomSlider: UISlider {
     
     @objc private func sliderDidEnded() {
         snapToStep()
+        updateThumbImage()
     }
     
     private func snapToStep() {
         let closestValue = stepValues.min(by: { abs($0 - value) < abs($1 - value) }) ?? value
         value = closestValue
+    }
+    
+    private func updateThumbImage() {
+        // 현재 슬라이더 값에 해당하는 텍스트 생성
+        let text = "\(Int(value))"
+        
+        // 기존 Thumb 이미지를 로드
+        guard let baseImage = UIImage(named: "sliderThumb") else {
+            print("Thumb base image not found")
+            return
+        }
+        
+        // Thumb 이미지 위에 텍스트 추가
+        let renderer = UIGraphicsImageRenderer(size: baseImage.size)
+        let thumbImageWithText = renderer.image { context in
+            // 원래 Thumb 이미지 그리기
+            baseImage.draw(at: .zero)
+            
+            // 텍스트 그리기
+            let attributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.boldSystemFont(ofSize: 14),
+                .foregroundColor: UIColor.white
+            ]
+            let textSize = text.size(withAttributes: attributes)
+            let textRect = CGRect(
+                x: (baseImage.size.width - textSize.width) / 2,
+                y: (baseImage.size.height - textSize.height) / 2 - 10,
+                width: textSize.width,
+                height: textSize.height
+            )
+            text.draw(in: textRect, withAttributes: attributes)
+        }
+        
+        // Thumb에 이미지 설정
+        setThumbImage(thumbImageWithText, for: .normal)
     }
 }

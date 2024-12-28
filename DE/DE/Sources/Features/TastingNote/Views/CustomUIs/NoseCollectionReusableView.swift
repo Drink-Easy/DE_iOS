@@ -20,7 +20,7 @@ class NoseCollectionReusableView: UICollectionReusableView {
     // 화살표 아이콘 - 열려있을 떄만 보이게. 기본 값이 안보기에
     private let iconImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "chevron.down") // 시스템 아이콘
+        imageView.image = UIImage(systemName: "chevron.up") // 시스템 아이콘
         imageView.tintColor = .black
         imageView.isHidden = true // 기본 상태에서 숨김 처리
         return imageView

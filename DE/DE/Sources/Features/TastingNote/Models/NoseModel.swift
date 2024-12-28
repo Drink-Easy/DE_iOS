@@ -40,7 +40,6 @@ extension NoseModel {
             NoseModel(type: "시든 장미"),
             NoseModel(type: "제비 꽃"),
             NoseModel(type: "소나무"),
-            NoseModel(type: "직접 추가"),
         ]
     }
     
@@ -70,7 +69,6 @@ extension NoseModel {
             NoseModel(type: "사과"),
             NoseModel(type: "자두"),
             NoseModel(type: "꿀"),
-            NoseModel(type: "직접 추가"),
         ]
     }
     
@@ -87,7 +85,6 @@ extension NoseModel {
             NoseModel(type: "허브"),
             NoseModel(type: "민트"),
             NoseModel(type: "짚"),
-            NoseModel(type: "직접 추가"),
         ]
     }
     
@@ -100,7 +97,6 @@ extension NoseModel {
             NoseModel(type: "바닐라"),
             NoseModel(type: "감초"),
             NoseModel(type: "소금"),
-            NoseModel(type: "직접 추가"),
         ]
     }
     
@@ -117,7 +113,6 @@ extension NoseModel {
             NoseModel(type: "발효제"),
             NoseModel(type: "우유"),
             NoseModel(type: "빵"),
-            NoseModel(type: "직접 추가"),
         ]
     }
     
@@ -126,7 +121,6 @@ extension NoseModel {
             NoseModel(type: "가죽"),
             NoseModel(type: "모피"),
             NoseModel(type: "육즙"),
-            NoseModel(type: "직접 추가"),
         ]
     }
     
@@ -139,7 +133,6 @@ extension NoseModel {
             NoseModel(type: "토스트한 빵"),
             NoseModel(type: "커피"),
             NoseModel(type: "차"),
-            NoseModel(type: "직접 추가"),
         ]
     }
 }
