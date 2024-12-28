@@ -4,6 +4,7 @@ import Moya
 import Foundation
 
 extension NetworkManager {
+    // ✅ 1. 필수 데이터 요청
     func request<T: Decodable>(
         target: Endpoint,
         decodingType: T.Type,
@@ -12,16 +13,34 @@ extension NetworkManager {
         provider.request(target) { result in
             switch result {
             case .success(let response):
-                let result: Result<T, NetworkError> = handleResponse(response, decodingType: decodingType)
+                let result: Result<T, NetworkError> = self.handleResponse(response, decodingType: decodingType)
                 completion(result)
-                
             case .failure(let error):
-                let networkError = handleNetworkError(error)
+                let networkError = self.handleNetworkError(error)
                 completion(.failure(networkError))
             }
         }
     }
     
+    // ✅ 2. 옵셔널 데이터 요청
+    func requestOptional<T: Decodable>(
+        target: Endpoint,
+        decodingType: T.Type,
+        completion: @escaping (Result<T?, NetworkError>) -> Void
+    ) {
+        provider.request(target) { result in
+            switch result {
+            case .success(let response):
+                let result: Result<T?, NetworkError> = self.handleResponseOptional(response, decodingType: decodingType)
+                completion(result)
+            case .failure(let error):
+                let networkError = self.handleNetworkError(error)
+                completion(.failure(networkError))
+            }
+        }
+    }
+    
+    // ✅ 3. 상태 코드만 확인
     func requestStatusCode(
         target: Endpoint,
         completion: @escaping (Result<Void, NetworkError>) -> Void
@@ -29,21 +48,18 @@ extension NetworkManager {
         provider.request(target) { result in
             switch result {
             case .success(let response):
-                // ✅ 빈 데이터를 처리하는 ApiResponse 타입으로 요청
-                let result: Result<ApiResponse<String?>, NetworkError> = handleResponse(
+                let result: Result<ApiResponse<String?>?, NetworkError> = self.handleResponseOptional(
                     response,
                     decodingType: ApiResponse<String?>.self
                 )
-                
                 switch result {
                 case .success:
-                    completion(.success(())) // 성공 처리
+                    completion(.success(()))
                 case .failure(let error):
-                    completion(.failure(error)) // 실패 처리
+                    completion(.failure(error))
                 }
-
             case .failure(let error):
-                let networkError = handleNetworkError(error)
+                let networkError = self.handleNetworkError(error)
                 completion(.failure(networkError))
             }
         }
@@ -53,7 +69,47 @@ extension NetworkManager {
     private func handleResponse<T: Decodable>(
         _ response: Response,
         decodingType: T.Type
-    ) -> Result<T, NetworkError> {
+    ) -> Result<T, NetworkError> { // ✅ 옵셔널 미지원
+        do {
+            // 1. 상태 코드 확인
+            guard (200...299).contains(response.statusCode) else {
+                let errorMessage: String
+                switch response.statusCode {
+                case 300..<400:
+                    errorMessage = "리다이렉션 오류 발생: \(response.statusCode)"
+                case 400..<500:
+                    errorMessage = "클라이언트 오류 발생: \(response.statusCode)"
+                case 500..<600:
+                    errorMessage = "서버 오류 발생: \(response.statusCode)"
+                default:
+                    errorMessage = "알 수 없는 오류 발생: \(response.statusCode)"
+                }
+
+                // 2. 서버 응답 메시지 처리
+                let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: response.data)
+                let finalMessage = errorResponse?.message ?? errorMessage
+                return .failure(.serverError(statusCode: response.statusCode, message: finalMessage))
+            }
+
+            // 3. 응답 디코딩
+            let apiResponse = try JSONDecoder().decode(ApiResponse<T>.self, from: response.data)
+
+            // 4. result 처리 (빈 데이터 불허)
+            guard let result = apiResponse.result else {
+                return .failure(.serverError(statusCode: response.statusCode, message: "결과 데이터가 없습니다."))
+            }
+
+            return .success(result) // ✅ 반드시 데이터가 필요함
+
+        } catch {
+            return .failure(.decodingError) // 디코딩 실패
+        }
+    }
+    
+    private func handleResponseOptional<T: Decodable>(
+        _ response: Response,
+        decodingType: T.Type
+    ) -> Result<T?, NetworkError> { // ✅ 옵셔널 지원
         do {
             // 1. 상태 코드 확인
             guard (200...299).contains(response.statusCode) else {
@@ -75,20 +131,19 @@ extension NetworkManager {
                 return .failure(.serverError(statusCode: response.statusCode, message: finalMessage))
             }
 
-            // 2. 응답 디코딩
-            let apiResponse = try JSONDecoder().decode(ApiResponse<T>.self, from: response.data)
-
-            // ✅ result가 없는 경우 처리 (옵셔널 대응)
-            if let result = apiResponse.result {
-                return .success(result)
-            } else if T.self == String?.self { // 빈 데이터일 경우 허용
-                return .success("" as! T)
-            } else {
-                return .failure(.serverError(statusCode: response.statusCode, message: "결과 데이터가 없습니다."))
+            // 2. 빈 데이터 처리
+            if response.data.isEmpty {
+                return .success(nil) // ✅ 빈 데이터 처리 (옵셔널 허용)
             }
 
+            // 3. 응답 디코딩
+            let apiResponse = try JSONDecoder().decode(ApiResponse<T>.self, from: response.data)
+
+            // 4. result 처리
+            return .success(apiResponse.result) // ✅ result가 옵셔널이라면 nil 반환 가능
+
         } catch {
-            return .failure(.decodingError)
+            return .failure(.decodingError) // 디코딩 에러 처리
         }
     }
     

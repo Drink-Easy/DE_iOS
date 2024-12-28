@@ -8,14 +8,20 @@
 import UIKit
 
 struct HomeWineModel {
-    let wineId: Int
+    let wineId : Int
+    let imageUrl: String
     let wineName: String
-    let imageURL : String
+    let sort : String
+    let price : Int
+    let vivinoRating: Double
     
-    init(wineId: Int, wineName: String, imageURL: String) {
+    init(wineId: Int, imageUrl: String, wineName: String, sort: String, price: Int, vivinoRating: Double) {
         self.wineId = wineId
+        self.imageUrl = imageUrl
         self.wineName = wineName
-        self.imageURL = imageURL
+        self.sort = sort
+        self.price = price
+        self.vivinoRating = vivinoRating
     }
 }
 

@@ -49,3 +49,12 @@ public struct WineReviewResponseDTO: Decodable {
     public let rating: Double?
     public let createdAt: String?
 }
+
+public struct HomeWineDTO : Decodable {
+    public let wineId : Int
+    public let imageUrl: String
+    public let wineName: String
+    public let sort : String
+    public let price : Int
+    public let vivinoRating: Double
+}

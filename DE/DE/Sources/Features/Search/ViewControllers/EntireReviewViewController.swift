@@ -58,19 +58,26 @@ class EntireReviewViewController: UIViewController {
             guard let self = self else { return }
             
             switch result {
-            case .success(let responseData) :
-                print(responseData)
-//                DispatchQueue.main.async {
-//                    self.reviewResults = responseData.map { data in
-//                        WineReviewModel(name: data.name, contents: data.review, rating: data.rating, createdAt: data.createdAt)
-//                    }
-//                    self.entireReviewView.reviewCollectionView.reloadData()
-//                }
-            case .failure(let error) :
-                print("\(error)")
+            case .success(let response):
+                DispatchQueue.main.async {
+                    self.reviewResults = response?.compactMap { data in
+                        guard let name = data.name,
+                              let review = data.review,
+                              let rating = data.rating,
+                              let createdAt = data.createdAt else {
+                            print("작성된 리뷰가 없습니다.")
+                            return nil
+                        }
+                        return WineReviewModel(name: name, contents: review, rating: rating, createdAt: createdAt)
+                    } ?? []
+                    self.entireReviewView.reviewCollectionView.reloadData()
+                }
+            case .failure(let error):
+                print("Error fetching reviews: \(error)")
             }
         }
     }
+
 }
 
 extension EntireReviewViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -80,6 +87,9 @@ extension EntireReviewViewController: UICollectionViewDataSource, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReviewCollectionViewCell.identifier, for: indexPath) as! ReviewCollectionViewCell
+        
+        let review = reviewResults[indexPath.row]
+        cell.configure(model: review)
         
         return cell
     }

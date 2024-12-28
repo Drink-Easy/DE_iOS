@@ -120,8 +120,15 @@ class WineDetailViewController: UIViewController {
         let reviewData = WineAverageReviewModel(avgMemberRating: wineResponse.avgMemberRating)
         if let reviewResponse = responseData.recentReviews {
             for data in reviewResponse {
-//                let review = WineReviewModel(name: data.name, contents: data.review, rating: data.rating, createdAt: data.createdAt)
-//                self.reviewData.append(review)
+                if let name = data.name,
+                       let review = data.review,
+                   let rating = data.rating,
+                   let createdAt = data.createdAt {
+                    let reviewModel = WineReviewModel(name: name, contents: review, rating: rating, createdAt: createdAt)
+                    self.reviewData.append(reviewModel)
+                } else {
+                    print("작성된 리뷰가 없습니다.")
+                }
             }
         }
         DispatchQueue.main.async {
@@ -140,7 +147,9 @@ class WineDetailViewController: UIViewController {
             
             switch result {
             case .success(let responseData) :
-                self.transformResponseData(responseData)
+                if let data = responseData {
+                    self.transformResponseData(data)
+                }
             case .failure(let error) :
                 print("\(error)")
             }

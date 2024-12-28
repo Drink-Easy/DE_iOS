@@ -58,7 +58,6 @@ struct WineAverageTastingNoteModel {
 
 struct WineAverageReviewModel {
     let avgMemberRating: Double
-    //let last3Review: [WineReviewModel]
 }
 
 struct WineData {
