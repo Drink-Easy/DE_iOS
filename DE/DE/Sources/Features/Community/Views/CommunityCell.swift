@@ -32,11 +32,11 @@ class CommunityCell: UICollectionViewCell {
         $0.textColor = .black
     }
 
-    private let bookmarkIcon = UIImageView().then {
-        $0.image = UIImage(systemName: "bookmark")?.withTintColor(AppColor.gray60 ?? .gray, renderingMode: .alwaysOriginal)
-        $0.contentMode = .scaleAspectFill
+    private let bookmarkButton = UIButton().then {
+        $0.setImage(UIImage(systemName: "bookmark")?.withTintColor(AppColor.gray60 ?? .gray, renderingMode: .alwaysOriginal), for: .normal)
+        $0.setImage(UIImage(systemName: "bookmark.fill")?.withTintColor(AppColor.purple100 ?? .gray, renderingMode: .alwaysOriginal), for: .selected)
+        $0.isSelected = false
     }
-
     let timeIconLabel = IconLabelView()
     let locationIconLabel = IconLabelView()
     let peopleIconLabel = IconLabelView()
@@ -60,7 +60,7 @@ class CommunityCell: UICollectionViewCell {
         contentView.addSubview(pieceView)
         pieceView.addSubview(imageView)
         pieceView.addSubview(sideBar)
-        [titleLabel, bookmarkIcon, timeIconLabel, locationIconLabel, peopleIconLabel, priceIconLabel].forEach {
+        [titleLabel, bookmarkButton, timeIconLabel, locationIconLabel, peopleIconLabel, priceIconLabel].forEach {
             sideBar.addSubview($0)
         }
     }
@@ -80,7 +80,7 @@ class CommunityCell: UICollectionViewCell {
         titleLabel.snp.makeConstraints { make in
             make.top.leading.equalToSuperview().offset(16)
         }
-        bookmarkIcon.snp.makeConstraints { make in
+        bookmarkButton.snp.makeConstraints { make in
             make.centerY.equalTo(titleLabel)
             make.trailing.equalToSuperview().inset(16)
         }
@@ -103,7 +103,7 @@ class CommunityCell: UICollectionViewCell {
     }
     
     // MARK: - Configuration
-    func configure(mediaURL: String, title: String, memberCount: String, price: String, location: String, createdAt: String) {
+    func configure(mediaURL: String, title: String, memberCount: String, price: String, location: String, createdAt: String, bookmarked: Bool) {
         titleLabel.text = title
         timeIconLabel.configure(systemName: "calendar", labelText: createdAt)
         locationIconLabel.configure(systemName: "mappin.and.ellipse", labelText: location)
@@ -112,5 +112,6 @@ class CommunityCell: UICollectionViewCell {
         if let imageUrl = URL(string: mediaURL) {
             imageView.sd_setImage(with: imageUrl, placeholderImage: UIImage(named: "pieceImagePlaceholder"))
         }
+        bookmarkButton.isSelected = bookmarked
     }
 }

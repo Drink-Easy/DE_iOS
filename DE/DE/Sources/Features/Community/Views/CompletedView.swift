@@ -1,14 +1,14 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+
 import SnapKit
 import Then
-import AuthenticationServices
-import Moya
+
 import SwiftyToaster
 import CoreModule
 
-class ExploreVC: UIViewController {
+class CompletedVC: UIViewController {
     
     // MARK: - UI Elements
     private lazy var sampleButton: UIButton = {

@@ -1,11 +1,10 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+
 import SnapKit
 import Then
-import AuthenticationServices
-import Moya
-import SwiftyToaster
+
 import CoreModule
 
 class ScrapVC: UIViewController {
