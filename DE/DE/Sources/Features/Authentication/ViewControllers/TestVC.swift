@@ -74,6 +74,7 @@ public class TestVC: UIViewController {
                 sampleLabel.text = "데이터 전송 성공!"
                 DispatchQueue.main.async {
                     let homeTabBarController = MainTabBarController()
+                    homeTabBarController.userName = data.name
                     let navController = UINavigationController(rootViewController: homeTabBarController)
                     self.navigationController?.pushViewController(navController, animated: true)
                 }

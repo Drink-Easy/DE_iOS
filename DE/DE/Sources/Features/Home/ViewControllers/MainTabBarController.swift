@@ -6,6 +6,8 @@ import TastingNote
 import CommunityModule
 
 public class MainTabBarController: UITabBarController {
+    
+    public var userName : String?
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,9 +24,13 @@ public class MainTabBarController: UITabBarController {
     }
     
     public func configureTabs() {
+        let homeVC = HomeViewController()
+        if let name = userName {
+            homeVC.userName = name
+        }
         
-        let nav1 = UINavigationController(rootViewController: HomeViewController())
-        let nav2 = UINavigationController(rootViewController: HomeViewController())
+        let nav1 = UINavigationController(rootViewController: homeVC)
+        let nav2 = UINavigationController(rootViewController: homeVC)
         let nav3 = UINavigationController(rootViewController: NoteListViewController())
         let nav4 = UINavigationController(rootViewController: CommunityVC())
         let nav5 = UINavigationController(rootViewController: LogoutTestVC())

@@ -11,7 +11,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     
     private var adImage: [String] = ["ad4", "ad3", "ad2", "ad1"]
     var wineData: [HomeWineModel] = []
-    private var userName: String = "" {
+    public var userName: String = "" {
         didSet {
             updateLikeWineListView()
         }

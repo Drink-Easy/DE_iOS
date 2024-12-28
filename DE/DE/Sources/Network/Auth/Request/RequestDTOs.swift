@@ -47,7 +47,7 @@ public struct LoginDTO : Codable {
 
 // 사용자 초기 정보 추가
 public struct MemberRequestDTO : Codable {
-    let name : String
+    public let name : String
     let isNewBie : Bool
     let monthPrice : Int
     let wineSort : [String]
