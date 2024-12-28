@@ -77,7 +77,6 @@ public class NoteListViewController: UIViewController, UICollectionViewDataSourc
     
     @objc func nextVC() {
         let nextVC = WineSearchMainVC()
-        nextVC.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(nextVC, animated: true)
     }
 

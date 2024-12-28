@@ -3,8 +3,14 @@
 import UIKit
 import Then
 import CoreModule
+import Network
 
 class EntireReviewViewController: UIViewController {
+    
+    var wineId: Int = 0
+    var wineName: String = ""
+    var reviewResults: [WineReviewModel] = []
+    let networkService = WineService()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -12,9 +18,11 @@ class EntireReviewViewController: UIViewController {
         
         addView()
         constraints()
+        callEntireReviewAPI(wineId: self.wineId, orderByLatest: true)
     }
     
     private lazy var topNameView = TopNameView().then {
+        $0.name.text = self.wineName
         $0.backBtn.addTarget(self, action: #selector(goToBack), for: .touchUpInside)
     }
     
@@ -44,12 +52,30 @@ class EntireReviewViewController: UIViewController {
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
-
+    
+    func callEntireReviewAPI(wineId: Int, orderByLatest: Bool) {
+        networkService.fetchWineReviews(wineId: wineId, orderByLatest: orderByLatest) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let responseData) :
+                print(responseData)
+//                DispatchQueue.main.async {
+//                    self.reviewResults = responseData.map { data in
+//                        WineReviewModel(name: data.name, contents: data.review, rating: data.rating, createdAt: data.createdAt)
+//                    }
+//                    self.entireReviewView.reviewCollectionView.reloadData()
+//                }
+            case .failure(let error) :
+                print("\(error)")
+            }
+        }
+    }
 }
 
 extension EntireReviewViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 20
+        return reviewResults.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

@@ -31,10 +31,10 @@ public final class TastingNoteService: NetworkManager {
                          body : Int,
                          alcohol : Int,
                          nose : [String],
-                         satisfaction : Double,
+                         rating : Double,
                          review : String
     ) -> TastingNoteRequestDTO {
-        return TastingNoteRequestDTO(wineId: wineId, color: color, tasteDate: tasteDate, sugarContent: sugarContent, acidity: acidity, tannin: tannin, body: body, alcohol: alcohol, nose: nose, satisfaction: satisfaction, review: review)
+        return TastingNoteRequestDTO(wineId: wineId, color: color, tasteDate: tasteDate, sugarContent: sugarContent, acidity: acidity, tannin: tannin, body: body, alcohol: alcohol, nose: nose, rating: rating, review: review)
     }
     
     /// 노트 수정을 위한 DTO 생성 함수

@@ -6,7 +6,7 @@ import Then
 import SDWebImage
 import CoreModule
 
-class SearchResultTableViewCell: UITableViewCell {
+public class SearchResultTableViewCell: UITableViewCell {
     
     private let borderLayer = CALayer()
     
@@ -44,12 +44,12 @@ class SearchResultTableViewCell: UITableViewCell {
         $0.font = UIFont.ptdRegularFont(ofSize: 14)
     }
 
-    override func awakeFromNib() {
+    public override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
+    public override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         if selected {
             contentView.backgroundColor = Constants.AppColor.purple10 // 선택된 배경색
@@ -67,7 +67,7 @@ class SearchResultTableViewCell: UITableViewCell {
         constraints()
     }
     
-    override func prepareForReuse() {
+    public override func prepareForReuse() {
         super.prepareForReuse()
         self.image.image = nil
         self.name.text = nil
@@ -91,7 +91,7 @@ class SearchResultTableViewCell: UITableViewCell {
         contentView.layer.addSublayer(borderLayer)
     }
     
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         borderLayer.frame = contentView.bounds // 레이아웃 변경 시 테두리 업데이트
     }

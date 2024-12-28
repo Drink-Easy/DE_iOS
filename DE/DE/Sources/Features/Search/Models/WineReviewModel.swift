@@ -6,11 +6,13 @@ struct WineReviewModel {
     let name: String
     let contents: String
     let rating: Double
+    let createdAt: String
     
-    init(name: String, contents: String, rating: Double) {
+    init(name: String, contents: String, rating: Double, createdAt: String) {
         self.name = name
         self.contents = contents
         self.rating = rating
+        self.createdAt = createdAt
     }
 }
 

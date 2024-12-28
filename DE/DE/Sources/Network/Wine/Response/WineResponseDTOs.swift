@@ -44,8 +44,8 @@ public struct WineNoteNose : Decodable {
 }
 
 public struct WineReviewResponseDTO: Decodable {
-    public let name: String
-    public let review: String
-    public let rating: Double
-    public let createdAt: String
+    public let name: String?
+    public let review: String?
+    public let rating: Double?
+    public let createdAt: String?
 }

@@ -2,6 +2,23 @@
 
 import Foundation
 
+/*
+ {
+   "wineId": 0,
+   "color": "string",
+   "tasteDate": "2024-12-28",
+   "sugarContent": 10,
+   "acidity": 10,
+   "tannin": 10,
+   "body": 10,
+   "alcohol": 10,
+   "nose": [
+     "string"
+   ],
+   "rating": 5,
+   "review": "string"
+ }*/
+
 public struct TastingNoteRequestDTO : Codable {
     let wineId : Int
     let color : String
@@ -12,10 +29,10 @@ public struct TastingNoteRequestDTO : Codable {
     let body : Int
     let alcohol : Int
     let nose : [String]
-    let satisfaction : Double
+    let rating : Double
     let review : String
     
-    public init(wineId: Int, color: String, tasteDate: String, sugarContent: Int, acidity: Int, tannin: Int, body: Int, alcohol: Int, nose: [String], satisfaction: Double, review: String) {
+    public init(wineId: Int, color: String, tasteDate: String, sugarContent: Int, acidity: Int, tannin: Int, body: Int, alcohol: Int, nose: [String], rating: Double, review: String) {
         self.wineId = wineId
         self.color = color
         self.tasteDate = tasteDate
@@ -25,7 +42,7 @@ public struct TastingNoteRequestDTO : Codable {
         self.body = body
         self.alcohol = alcohol
         self.nose = nose
-        self.satisfaction = satisfaction
+        self.rating = rating
         self.review = review
     }
 }

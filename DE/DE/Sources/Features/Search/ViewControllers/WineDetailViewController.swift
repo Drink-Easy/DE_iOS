@@ -8,6 +8,7 @@ import Network
 class WineDetailViewController: UIViewController {
     
     var wineId: Int = 0
+    var wineName: String = ""
     let networkService = WineService()
     var reviewData: [WineReviewModel] = []
 
@@ -18,7 +19,7 @@ class WineDetailViewController: UIViewController {
         
         addView()
         constraints()
-        callSearchAPI(query: self.wineId)
+        callWineDetailAPI(wineId: self.wineId)
     }
     
     private lazy var scrollView = UIScrollView().then {
@@ -50,6 +51,8 @@ class WineDetailViewController: UIViewController {
     @objc
     private func goToEntireReview() {
         let vc = EntireReviewViewController()
+        vc.wineId = self.wineId
+        vc.wineName = self.wineName
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -100,7 +103,8 @@ class WineDetailViewController: UIViewController {
     
     func transformResponseData(_ responseData : WineResponseWithThreeReviewsDTO) {
         let wineResponse = responseData.wineResponseDTO
-        
+        self.wineId = wineResponse.wineId
+        self.wineName = wineResponse.name
         let noseNotes = [
             wineResponse.wineNoteNose?.nose1 ?? "nose1",
             wineResponse.wineNoteNose?.nose2 ?? "nose2",
@@ -116,8 +120,8 @@ class WineDetailViewController: UIViewController {
         let reviewData = WineAverageReviewModel(avgMemberRating: wineResponse.avgMemberRating)
         if let reviewResponse = responseData.recentReviews {
             for data in reviewResponse {
-                let review = WineReviewModel(name: data.name, contents: data.review, rating: data.rating)
-                self.reviewData.append(review)
+//                let review = WineReviewModel(name: data.name, contents: data.review, rating: data.rating, createdAt: data.createdAt)
+//                self.reviewData.append(review)
             }
         }
         DispatchQueue.main.async {
@@ -130,7 +134,7 @@ class WineDetailViewController: UIViewController {
         }
     }
     
-    func callSearchAPI(query: Int) {
+    func callWineDetailAPI(wineId: Int) {
         networkService.fetchWineInfo(wineId: self.wineId) { [weak self] result in
             guard let self = self else { return }
             
