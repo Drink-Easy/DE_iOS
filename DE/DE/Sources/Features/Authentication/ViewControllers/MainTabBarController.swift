@@ -4,6 +4,7 @@ import UIKit
 import CoreModule
 import TastingNote
 import CommunityModule
+import HomeModule
 
 public class MainTabBarController: UITabBarController {
     
@@ -22,6 +23,10 @@ public class MainTabBarController: UITabBarController {
         if let name = userName {
             homeVC.userName = name
             classVC.userName = name
+        } else {
+            guard let savedName = SelectLoginTypeVC.keychain.get("userNickname") else {return }
+            homeVC.userName = savedName
+            classVC.userName = savedName
         }
 
     }
