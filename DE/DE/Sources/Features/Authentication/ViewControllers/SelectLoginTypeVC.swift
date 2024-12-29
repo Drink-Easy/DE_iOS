@@ -9,11 +9,13 @@ import KakaoSDKUser
 import Network
 import CoreModule
 import AuthenticationServices
+import HomeModule
 
 public class SelectLoginTypeVC: UIViewController {
     
     public static let keychain = KeychainSwift()
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
+    public var appleLoginDto : AppleLoginRequestDTO?
     let networkService = AuthService()
     
     private let mainView = SelectLoginTypeView()
@@ -69,7 +71,7 @@ public class SelectLoginTypeVC: UIViewController {
     }
     
     @objc private func appleButtonTapped() {
-        print("애플 버튼 눌림")
+        startAppleLoginProcess()
     }
     
     private func kakaoLoginProceed(_ userIDString: String, userEmail: String) {
@@ -79,8 +81,8 @@ public class SelectLoginTypeVC: UIViewController {
             
             switch result {
             case .success(let response):
-                // TODO: 다음 뷰 설정
                 print("카카오 로그인 성공")
+                self.goToNextView(response.isFirst)
             case .failure(let error):
                 print(error)
             }
@@ -97,14 +99,13 @@ public class SelectLoginTypeVC: UIViewController {
         navigationController?.pushViewController(joinViewController, animated: true)
     }
     
-    private func goToNextView() {
-//        if LoginVC.isFirstLogin {
-//            let enterTasteTestViewController = TestVC()
-//            navigationController?.pushViewController(enterTasteTestViewController, animated: true)
-//        } else {
-//            let homeViewController = TestVC()
-//            navigationController?.pushViewController(homeViewController, animated: true)
-//        }
-        
+    func goToNextView(_ isFirstLogin: Bool) {
+        if isFirstLogin {
+            let enterTasteTestViewController = TestVC()
+            navigationController?.pushViewController(enterTasteTestViewController, animated: true)
+        } else {
+            let homeViewController = MainTabBarController()
+            navigationController?.pushViewController(homeViewController, animated: true)
+        }
     }
 }

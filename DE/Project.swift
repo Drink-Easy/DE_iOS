@@ -115,7 +115,7 @@ let project = Project(
             name: "JoinApp",
             destinations: .iOS,
             product: .app,
-            bundleId: "\(bundleId).\(bundleMid).JoinApp",
+            bundleId: "\(bundleId).\(bundleMid).drinkig",
             infoPlist: .extendingDefault(
                 with: [
                     "UIUserInterfaceStyle" : "Light", // 다크모드 제거
