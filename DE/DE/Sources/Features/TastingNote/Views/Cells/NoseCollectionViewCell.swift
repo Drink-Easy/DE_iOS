@@ -1,6 +1,7 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+import CoreModule
 
 class NoseCollectionViewCell: UICollectionViewCell {
     
@@ -8,17 +9,17 @@ class NoseCollectionViewCell: UICollectionViewCell {
     
     let menuView: UIView = {
         let m = UIView()
-        m.backgroundColor = .clear
+        m.backgroundColor = AppColor.gray40
         m.layer.cornerRadius = 20
         m.layer.borderWidth = 1
-        m.layer.borderColor = UIColor(hex: "#7E13B1")?.cgColor
+        m.layer.borderColor = UIColor.clear.cgColor
         return m
     }()
     
     let menuLabel: UILabel = {
         let m = UILabel()
         m.text = ""
-        m.textColor = UIColor(hex: "#7E13B1")
+        m.textColor = AppColor.gray100
         m.font = .ptdMediumFont(ofSize: 14)
         m.textAlignment = .center
         return m

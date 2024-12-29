@@ -1,9 +1,4 @@
-//
-//  WineImageStackView.swift
-//  Drink-EG
-//
-//  Created by 이수현 on 9/28/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
 import SnapKit
@@ -19,7 +14,7 @@ class WineImageStackView: UIStackView {
         
         for (imageName, imageLabel) in ImageStackView().images {
             let imageView = UIImageView(image: UIImage(named: imageName))
-            imageView.contentMode = .scaleAspectFit
+            imageView.contentMode = .scaleAspectFill
             imageView.layer.cornerRadius = 10
             
             let label = UILabel()
@@ -33,6 +28,17 @@ class WineImageStackView: UIStackView {
             subStackView.spacing = 8
             subStackView.addArrangedSubview(imageView)
             subStackView.addArrangedSubview(label)
+            
+            imageView.snp.makeConstraints { make in
+                make.width.equalToSuperview()
+                make.height.equalTo(imageView.snp.width)
+            }
+            
+            label.snp.makeConstraints { make in
+                make.top.equalTo(imageView.snp.bottom).offset(8)
+                // make.leading.equalTo(imageView.snp.leading).offset(13)
+                make.centerX.equalTo(imageView.snp.centerX)
+            }
             
             self.addArrangedSubview(subStackView)
         }

@@ -2,7 +2,7 @@
 
 import Foundation
 
-struct TastingNoteResponsesDTO : Decodable {
+public struct TastingNoteResponsesDTO : Decodable {
     let noteId : Int
     let wineId : Int
     let wineName : String
@@ -21,18 +21,18 @@ struct TastingNoteResponsesDTO : Decodable {
     let review : String
 }
 
-struct AllTastingNoteResponseDTO : Decodable {
+public struct AllTastingNoteResponseDTO : Decodable {
     let total : Int
     let red : Int
     let white : Int
     let sparkling : Int
     let rose : Int
     let etc : Int
-    let notePriviewList : [TastingNotePreviewResponseDTO]
+    let notePriviewList : [TastingNotePreviewResponseDTO]?
 }
 
-struct TastingNotePreviewResponseDTO : Decodable {
-    let noteId : Int
-    let wineName : String
-    let imageUrl : String
+public struct TastingNotePreviewResponseDTO : Decodable {
+    let noteId : Int?
+    let wineName : String?
+    let imageUrl : String?
 }

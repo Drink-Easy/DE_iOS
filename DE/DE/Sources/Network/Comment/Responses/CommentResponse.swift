@@ -2,13 +2,13 @@
 
 import Foundation
 
-struct CommentResponseDTO : Decodable {
-    let id : Int
-    let partyId : Int
-    let memeberName : String
-    let content : String
-    let recomments : [RecommentResponseDTO]
-    let timeAgo : String
-    let createdDate : String
-    let deleted : Bool
+public struct CommentResponseDTO : Decodable {
+    public let id : Int
+    public let partyId : Int
+    public let memeberName : String
+    public let content : String
+    public let recomments : [RecommentResponseDTO]
+    public let timeAgo : String
+    public let createdDate : String
+    public let deleted : Bool
 }

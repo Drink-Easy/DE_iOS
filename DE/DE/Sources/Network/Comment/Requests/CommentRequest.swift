@@ -2,11 +2,11 @@
 
 import Foundation
 
-struct CommentRequestDTO : Codable {
-    let partId : Int
-    let content : String
+public struct CommentRequestDTO : Codable {
+    public let partId : Int
+    public let content : String
     
-    init(partId: Int, content: String) {
+    public init(partId: Int, content: String) {
         self.partId = partId
         self.content = content
     }

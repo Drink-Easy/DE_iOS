@@ -1,21 +1,10 @@
-//
-//  RecordGraphView.swift
-//  Drink-EG
-//
-//  Created by 이수현 on 11/18/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
 import CoreModule
 import AMPopTip
 
 class RecordGraphView: UIView, UIScrollViewDelegate {
-    
-    let navView: CustomNavigationBar = {
-        let n = CustomNavigationBar()
-        n.backgroundColor = AppColor.gray20
-        return n
-    }()
     
     let scrollView: UIScrollView = {
         let s = UIScrollView()
@@ -260,16 +249,9 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
     }()
     
     func setupUI() {
-        addSubview(navView)
-        navView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.top.equalTo(safeAreaLayoutGuide)
-            make.height.equalTo(56)
-        }
-        
         addSubview(scrollView)
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(navView.snp.bottom)
+            make.top.equalTo(safeAreaLayoutGuide)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
@@ -277,7 +259,7 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         scrollView.addSubview(contentView)
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-            make.width.equalToSuperview()
+            make.width.equalTo(scrollView)
         }
         
         contentView.addSubview(pageLabel)
@@ -384,7 +366,7 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         contentView.addSubview(acidSlider)
         acidSlider.snp.makeConstraints { make in
             make.top.equalTo(acidToolTip.snp.top).offset(3)
-            make.leading.equalTo(acidToolTip.snp.trailing).offset(23)
+            make.leading.trailing.equalTo(sweetSlider)
             make.centerY.equalTo(acidToolTip.snp.centerY)
             make.trailing.equalTo(sweetSlider.snp.trailing)
         }
@@ -405,7 +387,7 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         contentView.addSubview(tanninSlider)
         tanninSlider.snp.makeConstraints { make in
             make.top.equalTo(tanninToolTip.snp.top).offset(3)
-            make.leading.equalTo(tanninToolTip.snp.trailing).offset(23)
+            make.leading.trailing.equalTo(acidSlider)
             make.centerY.equalTo(tanninToolTip.snp.centerY)
             make.trailing.equalTo(acidSlider.snp.trailing)
         }
@@ -426,7 +408,7 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         contentView.addSubview(bodySlider)
         bodySlider.snp.makeConstraints { make in
             make.top.equalTo(bodyToolTip.snp.top).offset(3)
-            make.leading.equalTo(bodyToolTip.snp.trailing).offset(23)
+            make.leading.trailing.equalTo(tanninSlider)
             make.centerY.equalTo(bodyToolTip.snp.centerY)
             make.trailing.equalTo(tanninSlider.snp.trailing)
         }
@@ -447,7 +429,7 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         contentView.addSubview(alcoholSlider)
         alcoholSlider.snp.makeConstraints { make in
             make.top.equalTo(alcoholToolTip.snp.top).offset(3)
-            make.leading.equalTo(alcoholToolTip.snp.trailing).offset(23)
+            make.leading.trailing.equalTo(bodySlider)
             make.centerY.equalTo(alcoholToolTip.snp.centerY)
             make.trailing.equalTo(bodySlider.snp.trailing)
         }

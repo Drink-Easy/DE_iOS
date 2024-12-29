@@ -2,7 +2,7 @@
 
 import Foundation
 
-enum NetworkError: Error {
+public enum NetworkError: Error {
     case networkError(message: String)
     case decodingError
     case serverError(statusCode: Int, message: String)
@@ -10,7 +10,7 @@ enum NetworkError: Error {
 }
 
 extension NetworkError: LocalizedError {
-    var errorDescription: String? {
+    public var errorDescription: String? {
         switch self {
         case .networkError(let message):
             return "네트워크 오류: \(message)"
@@ -25,6 +25,6 @@ extension NetworkError: LocalizedError {
 }
 
 
-struct ErrorResponse: Decodable {
+public struct ErrorResponse: Decodable {
     let message: String
 }

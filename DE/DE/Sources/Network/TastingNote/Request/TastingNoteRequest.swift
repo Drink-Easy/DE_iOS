@@ -2,7 +2,24 @@
 
 import Foundation
 
-struct TastingNoteRequestDTO : Codable {
+/*
+ {
+   "wineId": 0,
+   "color": "string",
+   "tasteDate": "2024-12-28",
+   "sugarContent": 10,
+   "acidity": 10,
+   "tannin": 10,
+   "body": 10,
+   "alcohol": 10,
+   "nose": [
+     "string"
+   ],
+   "rating": 5,
+   "review": "string"
+ }*/
+
+public struct TastingNoteRequestDTO : Codable {
     let wineId : Int
     let color : String
     let tasteDate : String
@@ -12,10 +29,10 @@ struct TastingNoteRequestDTO : Codable {
     let body : Int
     let alcohol : Int
     let nose : [String]
-    let satisfaction : Double
+    let rating : Double
     let review : String
     
-    init(wineId: Int, color: String, tasteDate: String, sugarContent: Int, acidity: Int, tannin: Int, body: Int, alcohol: Int, nose: [String], satisfaction: Double, review: String) {
+    public init(wineId: Int, color: String, tasteDate: String, sugarContent: Int, acidity: Int, tannin: Int, body: Int, alcohol: Int, nose: [String], rating: Double, review: String) {
         self.wineId = wineId
         self.color = color
         self.tasteDate = tasteDate
@@ -25,22 +42,22 @@ struct TastingNoteRequestDTO : Codable {
         self.body = body
         self.alcohol = alcohol
         self.nose = nose
-        self.satisfaction = satisfaction
+        self.rating = rating
         self.review = review
     }
 }
 
-struct TastingNotePatchRequestDTO : Codable {
+public struct TastingNotePatchRequestDTO : Codable {
     let noteId : Int
     let body : TastingNoteUpdateRequestDTO
     
-    init(noteId: Int, body: TastingNoteUpdateRequestDTO) {
+    public init(noteId: Int, body: TastingNoteUpdateRequestDTO) {
         self.noteId = noteId
         self.body = body
     }
 }
 
-struct TastingNoteUpdateRequestDTO : Codable {
+public struct TastingNoteUpdateRequestDTO : Codable {
     let color : String?
     let tastingDate : String?
     let sugarContent: Int?
@@ -53,7 +70,7 @@ struct TastingNoteUpdateRequestDTO : Codable {
     let satisfaction : Double?
     let review : String?
     
-    init(color: String?, tastingDate: String?, sugarContent: Int?, acidity: Int?, tannin: Int?, body: Int?, alcohol: Int?, addNoseList: [String]?, removeNoseList: [Int]?, satisfaction: Double?, review: String?) {
+    public init(color: String?, tastingDate: String?, sugarContent: Int?, acidity: Int?, tannin: Int?, body: Int?, alcohol: Int?, addNoseList: [String]?, removeNoseList: [Int]?, satisfaction: Double?, review: String?) {
         self.color = color
         self.tastingDate = tastingDate
         self.sugarContent = sugarContent

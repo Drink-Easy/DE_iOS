@@ -1,9 +1,4 @@
-//
-//  ChooseNoseView.swift
-//  Drink-EG
-//
-//  Created by 이수현 on 12/17/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
 import CoreModule
@@ -12,8 +7,6 @@ import SnapKit
 // 계열 선택 뷰
 class ChooseNoseView: UIView {
 
-    var flowersCollectionViewHeightConstraint: Constraint? = nil
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -33,12 +26,6 @@ class ChooseNoseView: UIView {
         let c = UIView()
         c.backgroundColor = AppColor.gray20
         return c
-    }()
-    
-    let navView: CustomNavigationBar = {
-        let n = CustomNavigationBar()
-        n.backgroundColor = AppColor.gray20
-        return n
     }()
     
     let pageLabel: UILabel = {
@@ -91,83 +78,39 @@ class ChooseNoseView: UIView {
         return n
     }()
     
-    let flowersCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
-        $0.estimatedItemSize = UICollectionViewFlowLayout.automaticSize //.init(width: 89, height: 41)
-        $0.minimumInteritemSpacing = 6
-        $0.minimumLineSpacing = 10
-    }).then {
-        $0.backgroundColor = .clear
-        $0.register(NoseCollectionViewCell.self, forCellWithReuseIdentifier: NoseCollectionViewCell.identifier)
-        $0.register(NoseCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NoseCollectionReusableView.identifer)
-        $0.clipsToBounds = false
-        $0.tag = 0
-    }
+    private let selectedLabel: UILabel = {
+        let s = UILabel()
+        s.text = "선택된 항목"
+        s.font = .ptdSemiBoldFont(ofSize: 14)
+        s.textColor = AppColor.purple100
+        return s
+    }()
     
-    let fruitsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
-        $0.estimatedItemSize = UICollectionViewFlowLayout.automaticSize //.init(width: 89, height: 41)
-        $0.minimumInteritemSpacing = 6
-        $0.minimumLineSpacing = 10
-    }).then {
-        $0.backgroundColor = .clear
-        $0.register(NoseCollectionViewCell.self, forCellWithReuseIdentifier: NoseCollectionViewCell.identifier)
-        $0.register(NoseCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NoseCollectionReusableView.identifer)
-        $0.tag = 1
-    }
+    let selectedCollectionView: UICollectionView = {
+        let layout = LeftAlignedCollectionViewFlowLayout()
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        layout.minimumInteritemSpacing = 10
+        layout.minimumLineSpacing = 10
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 50)
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = AppColor.gray20
+        cv.tag = 1
+        return cv
+    }()
     
-    let vegetablesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
-        $0.estimatedItemSize = UICollectionViewFlowLayout.automaticSize //.init(width: 89, height: 41)
-        $0.minimumInteritemSpacing = 6
-        $0.minimumLineSpacing = 10
-    }).then {
-        $0.backgroundColor = .clear
-        $0.register(NoseCollectionViewCell.self, forCellWithReuseIdentifier: NoseCollectionViewCell.identifier)
-        $0.register(NoseCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NoseCollectionReusableView.identifer)
-        $0.tag = 2
-    }
-    
-    let spicesCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
-        $0.estimatedItemSize = UICollectionViewFlowLayout.automaticSize //.init(width: 89, height: 41)
-        $0.minimumInteritemSpacing = 6
-        $0.minimumLineSpacing = 10
-    }).then {
-        $0.backgroundColor = .clear
-        $0.register(NoseCollectionViewCell.self, forCellWithReuseIdentifier: NoseCollectionViewCell.identifier)
-        $0.register(NoseCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NoseCollectionReusableView.identifer)
-        $0.tag = 3
-    }
-    
-    let chemsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
-        $0.estimatedItemSize = UICollectionViewFlowLayout.automaticSize //.init(width: 89, height: 41)
-        $0.minimumInteritemSpacing = 6
-        $0.minimumLineSpacing = 10
-    }).then {
-        $0.backgroundColor = .clear
-        $0.register(NoseCollectionViewCell.self, forCellWithReuseIdentifier: NoseCollectionViewCell.identifier)
-        $0.register(NoseCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NoseCollectionReusableView.identifer)
-        $0.tag = 4
-    }
-    
-    let animalsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
-        $0.estimatedItemSize = UICollectionViewFlowLayout.automaticSize //.init(width: 89, height: 41)
-        $0.minimumInteritemSpacing = 6
-        $0.minimumLineSpacing = 10
-    }).then {
-        $0.backgroundColor = .clear
-        $0.register(NoseCollectionViewCell.self, forCellWithReuseIdentifier: NoseCollectionViewCell.identifier)
-        $0.register(NoseCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NoseCollectionReusableView.identifer)
-        $0.tag = 5
-    }
-    
-    let burnsCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
-        $0.estimatedItemSize = UICollectionViewFlowLayout.automaticSize //.init(width: 89, height: 41)
-        $0.minimumInteritemSpacing = 6
-        $0.minimumLineSpacing = 10
-    }).then {
-        $0.backgroundColor = .clear
-        $0.register(NoseCollectionViewCell.self, forCellWithReuseIdentifier: NoseCollectionViewCell.identifier)
-        $0.register(NoseCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NoseCollectionReusableView.identifer)
-        $0.tag = 6
-    }
+    let collectionView: UICollectionView = {
+        let layout = LeftAlignedCollectionViewFlowLayout()
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        layout.minimumInteritemSpacing = 10
+        layout.minimumLineSpacing = 10
+        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 50)
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = AppColor.gray20
+        cv.tag = 0
+        return cv
+    }()
     
     let nextButton: UIButton = {
         let n = UIButton()
@@ -182,16 +125,9 @@ class ChooseNoseView: UIView {
     func setupUI() {
         backgroundColor = AppColor.gray20
         
-        addSubview(navView)
-        navView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.top.equalTo(safeAreaLayoutGuide)
-            make.height.equalTo(56)
-        }
-        
         addSubview(scrollView)
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(navView.snp.bottom)
+            make.top.equalTo(safeAreaLayoutGuide)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
@@ -241,59 +177,31 @@ class ChooseNoseView: UIView {
             make.trailing.equalTo(vector1.snp.trailing).offset(-37)
         }
         
-        contentView.addSubview(flowersCollectionView)
-        flowersCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(noseDescription.snp.bottom).offset(50)
-            make.leading.equalTo(noseDescription)
+        contentView.addSubview(selectedLabel)
+        selectedLabel.snp.makeConstraints { make in
+            make.top.equalTo(noseDescription.snp.bottom).offset(24)
+            make.leading.equalTo(noseDescription.snp.leading).offset(6)
+        }
+        
+        contentView.addSubview(selectedCollectionView)
+        selectedCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(selectedLabel.snp.bottom).offset(6)
+            make.leading.equalTo(selectedLabel.snp.leading).offset(-6)
             make.centerX.equalTo(vector1.snp.centerX)
-            make.height.equalTo(142)
+            make.height.equalTo(1)
         }
         
-        contentView.addSubview(fruitsCollectionView)
-        fruitsCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(flowersCollectionView.snp.bottom).offset(50)
-            make.leading.trailing.equalTo(flowersCollectionView)
-            make.height.equalTo(143)
-        }
-        
-        contentView.addSubview(vegetablesCollectionView)
-        vegetablesCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(fruitsCollectionView.snp.bottom).offset(50)
-            make.leading.trailing.equalTo(fruitsCollectionView)
-            make.height.equalTo(143)
-        }
-        
-        contentView.addSubview(spicesCollectionView)
-        spicesCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(vegetablesCollectionView.snp.bottom).offset(50)
-            make.leading.trailing.equalTo(vegetablesCollectionView)
-            make.height.equalTo(143)
-        }
-        
-        contentView.addSubview(chemsCollectionView)
-        chemsCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(spicesCollectionView.snp.bottom).offset(50)
-            make.leading.trailing.equalTo(spicesCollectionView)
-            make.height.equalTo(143)
-        }
-        
-        contentView.addSubview(animalsCollectionView)
-        animalsCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(chemsCollectionView.snp.bottom).offset(50)
-            make.leading.trailing.equalTo(chemsCollectionView)
-            make.height.equalTo(143)
-        }
-        
-        contentView.addSubview(burnsCollectionView)
-        burnsCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(animalsCollectionView.snp.bottom).offset(50)
-            make.leading.trailing.equalTo(animalsCollectionView)
-            make.height.equalTo(143)
+        contentView.addSubview(collectionView)
+        collectionView.snp.makeConstraints { make in
+            make.top.equalTo(selectedCollectionView.snp.bottom).offset(24)
+            make.leading.equalTo(selectedCollectionView.snp.leading).offset(6)
+            make.centerX.equalTo(vector1.snp.centerX)
+            make.height.equalTo(400)
         }
         
         contentView.addSubview(nextButton)
         nextButton.snp.makeConstraints { make in
-            make.top.equalTo(burnsCollectionView.snp.bottom).offset(60)
+            make.top.equalTo(collectionView.snp.bottom).offset(60)
             make.centerX.equalToSuperview()
             make.leading.equalToSuperview().offset(28)
             make.height.equalTo(56)
@@ -305,5 +213,45 @@ class ChooseNoseView: UIView {
         
     }
 
+    func updateSelectedCollectionViewHeight() {
+        selectedCollectionView.layoutIfNeeded() // 레이아웃 업데이트
+        let contentHeight = selectedCollectionView.contentSize.height
+        selectedCollectionView.snp.updateConstraints { make in
+            make.height.equalTo(contentHeight)
+        }
+    }
     
+    func updateNoseCollectionViewHeight() {
+        collectionView.layoutIfNeeded() // 레이아웃 업데이트
+        let contentHeight = collectionView.contentSize.height
+        collectionView.snp.updateConstraints { make in
+            make.height.equalTo(contentHeight)
+        }
+    }
+    
+}
+
+class LeftAlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        guard let attributes = super.layoutAttributesForElements(in: rect) else { return nil }
+        
+        var leftMargin: CGFloat = sectionInset.left
+        var maxY: CGFloat = -1.0
+        
+        attributes.forEach { layoutAttribute in
+            // 헤더와 푸터는 정렬 대상에서 제외
+            if layoutAttribute.representedElementCategory == .cell {
+                // 같은 행인지 확인
+                if layoutAttribute.frame.origin.y >= maxY {
+                    leftMargin = sectionInset.left
+                }
+                
+                layoutAttribute.frame.origin.x = leftMargin
+                leftMargin += layoutAttribute.frame.width + minimumInteritemSpacing
+                maxY = max(layoutAttribute.frame.maxY, maxY)
+            }
+        }
+        
+        return attributes
+    }
 }

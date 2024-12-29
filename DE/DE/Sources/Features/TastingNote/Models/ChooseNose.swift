@@ -1,9 +1,4 @@
-//
-//  ChooseNose.swift
-//  Drink-EG
-//
-//  Created by 이수현 on 12/17/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import Foundation
 
