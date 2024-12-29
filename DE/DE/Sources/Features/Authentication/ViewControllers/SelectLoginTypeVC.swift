@@ -5,11 +5,14 @@ import SnapKit
 import Then
 import SwiftyToaster
 import KeychainSwift
-import KakaoSDKUser
+
 import Network
 import CoreModule
-import AuthenticationServices
 import HomeModule
+
+import AuthenticationServices
+import KakaoSDKUser
+
 
 public class SelectLoginTypeVC: UIViewController {
     
