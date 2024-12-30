@@ -73,6 +73,6 @@ class NoteListView: UIView {
     }
     
     func updateTotalWineCount(count: Int) {
-        totalWineLabel.text = "Total \(count)병"
+        totalWineLabel.text = "전체 \(count)병"
     }
 }

@@ -13,6 +13,7 @@ public class WineSearchMainVC : UIViewController, UISearchBarDelegate, UITableVi
     let networkService = WineService()
     let noteService = TastingNoteService()
     
+    /*
     func callPost() {
         let d = noteService.makePostNoteDTO(wineId: 584297, color: "#892222", tasteDate: "2024-12-18", sugarContent: 5, acidity: 5, tannin: 5, body: 5, alcohol: 5, nose: ["붓꽃", "장미", "금작화"], rating: 5.0, review: "첫번째 리뷰에용")
         
@@ -24,7 +25,7 @@ public class WineSearchMainVC : UIViewController, UISearchBarDelegate, UITableVi
                 print(error)
             }
         }
-    }
+    }*/
     
     public override func viewDidLoad() {
         super.viewDidLoad()

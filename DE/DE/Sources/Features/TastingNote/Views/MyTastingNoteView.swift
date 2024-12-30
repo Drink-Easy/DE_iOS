@@ -9,6 +9,8 @@ import CoreModule
 // 테이스팅 목록 표시 뷰
 class MyTastingNoteView: UIView {
     
+    private var tastingNotes: [TastingNoteModel] = []
+    
     let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.itemSize = .init(width: Constants.superViewWidth*0.27, height: Constants.superViewWidth*0.35)
         $0.minimumInteritemSpacing = 10
@@ -71,6 +73,11 @@ class MyTastingNoteView: UIView {
             make.trailing.equalToSuperview().offset(-14)
             make.bottom.equalTo(safeAreaLayoutGuide).offset(-10)
         }
+    }
+    
+    func updateData(notes: [TastingNoteModel]) {
+        self.tastingNotes = notes
+        collectionView.reloadData()
     }
     
     required init? (coder: NSCoder) {
