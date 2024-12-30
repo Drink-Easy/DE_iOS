@@ -10,7 +10,6 @@ public struct SearchWineResponseDTO: Decodable {
     public let area: String
     public let vivinoRating: Double
     public let price: Int
-    public let liked: Bool
 }
 
 public struct WineResponseWithThreeReviewsDTO: Decodable {

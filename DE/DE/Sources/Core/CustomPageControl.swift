@@ -4,12 +4,27 @@ import Foundation
 import UIKit
 
 public class CustomPageControl: UIView {
+    
+    public init(indicatorColor: UIColor, currentIndicatorColor: UIColor) {
+        super.init(frame: .zero)
+
+        self.indicatorColor = indicatorColor
+        self.currentIndicatorColor = currentIndicatorColor
+
+        setupIndicators()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
+    
     public var numberOfPages: Int = 0 {
         didSet { setupIndicators() }
     }
     public var currentPage: Int = 0 {
         didSet { updateIndicators() }
     }
+    
     public var indicatorColor: UIColor = .white
     public var currentIndicatorColor: UIColor = .white
     

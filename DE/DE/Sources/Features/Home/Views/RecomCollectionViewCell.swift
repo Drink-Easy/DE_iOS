@@ -71,13 +71,13 @@ class RecomCollectionViewCell: UICollectionViewCell {
         }
         
         image.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.bottom.equalTo(scoreNprice.snp.top)
+            $0.top.equalToSuperview().offset(5)
+            $0.bottom.equalTo(scoreNprice.snp.top).offset(-5)
             $0.centerX.equalToSuperview()
         }
         
         name.snp.makeConstraints {
-            $0.leading.equalTo(scoreNprice.snp.leading)
+            $0.horizontalEdges.equalToSuperview().inset(12)
             $0.top.equalTo(scoreNprice.snp.bottom).offset(6)
         }
         
