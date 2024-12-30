@@ -72,6 +72,7 @@ public class NoteListViewController: UIViewController {
     func setupDelegate() {
         myTastingNote.collectionView.dataSource = self
         myTastingNote.collectionView.delegate = self
+        wineImageStackView.delegate = self
     }
     
     func setupAction() {
@@ -130,5 +131,20 @@ extension NoteListViewController: UICollectionViewDelegate, UICollectionViewData
         
         cell.nameLabel.text = note.wineName
         return cell
+    }
+}
+
+extension NoteListViewController: WineImageStackViewDelegate {
+    func didSelectWineSort(sort: String) {
+        print(sort)
+//        noteService.fetchAllNotes(sort: "all", completion: { [weak self] result in
+//            guard let self = self else { return }
+//            switch result {
+//            case.success(let data):
+//                handleResponse(data)
+//            case.failure(let error):
+//                print(error)
+//            }
+//        })
     }
 }

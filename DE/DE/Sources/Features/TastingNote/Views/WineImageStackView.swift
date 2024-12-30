@@ -14,6 +14,8 @@ class WineImageStackView: UIStackView {
         "기타": 0
     ]
     
+    weak var delegate: WineImageStackViewDelegate?
+    
     init() {
         super.init(frame: .zero)
         self.axis = .horizontal
@@ -36,6 +38,11 @@ class WineImageStackView: UIStackView {
             let imageView = UIImageView(image: UIImage(named: imageName))
             imageView.contentMode = .scaleAspectFill
             imageView.layer.cornerRadius = 10
+            imageView.isUserInteractionEnabled = true
+            
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+            imageView.addGestureRecognizer(tapGesture) // 탭 제스처 추가
+            imageView.accessibilityLabel = imageLabel
             
             let label = UILabel()
             let count = counts[imageLabel] ?? 0
@@ -81,8 +88,20 @@ class WineImageStackView: UIStackView {
         updateUI()
     }
     
+    @objc private func handleTap(_ gesture: UITapGestureRecognizer) {
+        guard let tappedImageView = gesture.view as? UIImageView,
+              let category = tappedImageView.accessibilityLabel else { return }
+        
+        // 델리게이트 메서드 호출
+        delegate?.didSelectWineSort(sort: category)
+    }
+    
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+}
+
+protocol WineImageStackViewDelegate: AnyObject {
+    func didSelectWineSort(sort: String)
 }
