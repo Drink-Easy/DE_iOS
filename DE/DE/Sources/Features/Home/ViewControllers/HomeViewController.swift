@@ -21,9 +21,10 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     }
     
     private var homeTopView = HomeTopView()
-    
+    let dataManger = WineDataManager.shared
     let networkService = WineService()
     
+    // View 세팅
     private lazy var scrollView: UIScrollView = {
         let s = UIScrollView()
         s.showsVerticalScrollIndicator = false
@@ -83,7 +84,8 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         super.viewWillAppear(animated)
         self.navigationController?.isNavigationBarHidden = true
         
-        callHomeAPI()
+        fetchWines(type: .recommended)
+        fetchWines(type: .popular)
     }
     
     private func addComponents() {
@@ -139,52 +141,92 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         }
     }
     
-    func callHomeAPI() {
-        // TODO : SwiftData 연결
-        networkService.fetchRecommendWines { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let responseData) :
-                DispatchQueue.main.async {
-                    // 저장 전 초기화
-                    self.recommendWineDataList.removeAll()
-                    for data in responseData {
-                        let wine = HomeWineModel(wineId: data.wineId, imageUrl: data.imageUrl, wineName: data.wineName, sort: data.sort, price: data.price, vivinoRating: data.vivinoRating)
-                        self.recommendWineDataList.append(wine)
-                    }
-                    self.likeWineListView.recomCollectionView.reloadData()
-                    // 데이터 잘 들어오는지 확인
-                    print("Recommend Wines Count: \(self.recommendWineDataList.count)")
-                        
-                }
-            case .failure(let error) :
-                print("\(error)")
-            }
-        }
+    // MARK: - 컬렉션뷰 업데이트 함수
+    func updateCollectionView(type: WineListType, with wines: [WineData]) {
+        let maxDisplayCount = 5
+        let homeWineModels = toHomeWineModels(Array(wines.prefix(maxDisplayCount)))
         
-        // TODO : 함수 분리 -> 인기 와인은 자주 부를거니까
-        networkService.fetchPopularWines { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let responseData) :
-                DispatchQueue.main.async {
-                    self.popularWineDataList.removeAll()
-                    for data in responseData {
-                        let wine = HomeWineModel(wineId: data.wineId, imageUrl: data.imageUrl, wineName: data.wineName, sort: data.sort, price: data.price, vivinoRating: data.vivinoRating)
-                        self.popularWineDataList.append(wine)
-                    }
-                    self.popularWineListView.recomCollectionView.reloadData()
-                    
-                    // 데이터 잘 들어오는지 확인
-                    print("Popular Wines Count: \(self.popularWineDataList.count)")
-                }
-            case .failure(let error) :
-                print("\(error)")
-            }
+        if type == .recommended {
+            recommendWineDataList = homeWineModels
+            likeWineListView.recomCollectionView.reloadData()
+        } else if type == .popular {
+            popularWineDataList = homeWineModels
+            popularWineListView.recomCollectionView.reloadData()
         }
     }
+    
+    // MARK: - WineData → HomeWineModel 변환
+    func toHomeWineModel(_ wine: WineData) -> HomeWineModel {
+        return HomeWineModel(
+            wineId: wine.wineId,
+            imageUrl: wine.imageUrl,
+            wineName: wine.wineName,
+            sort: wine.sort,
+            price: wine.price,
+            vivinoRating: wine.vivinoRating
+        )
+    }
+    
+    func toHomeWineModels(_ wines: [WineData]) -> [HomeWineModel] {
+        return wines.map { toHomeWineModel($0) }
+    }
+    
+    // 와인 데이터 불러오기
+    func fetchWines(type: WineListType) {
+        Task {
+            // 1. 캐시 데이터 확인
+            let cachedWines = await WineDataManager.shared.fetchWines(type: type)
+            if !cachedWines.isEmpty {
+                print("✅ 캐시된 \(type.rawValue) 데이터 사용: \(cachedWines.count)개")
+                updateCollectionView(type: type, with: cachedWines)
+                return
+            }
+
+            // 2. 네트워크 요청 함수 호출
+            fetchWinesFromNetwork(type: type)
+        }
+    }
+
+    // MARK: - 네트워크 요청 처리
+    private func fetchWinesFromNetwork(type: WineListType) {
+        let fetchFunction: (@escaping (Result<[HomeWineDTO], NetworkError>) -> Void) -> Void
+
+        switch type {
+        case .recommended:
+            fetchFunction = networkService.fetchRecommendWines
+        case .popular:
+            fetchFunction = networkService.fetchPopularWines
+        }
+
+        fetchFunction { [weak self] result in
+            guard let self = self else { return }
+
+            switch result {
+            case .success(let responseData):
+                Task {
+                    let wines = responseData.map {
+                        WineData(wineId: $0.wineId,
+                                 imageUrl: $0.imageUrl,
+                                 wineName: $0.wineName,
+                                 sort: $0.sort,
+                                 price: $0.price,
+                                 vivinoRating: $0.vivinoRating)
+                    }
+                    
+                    do {
+                        try await WineDataManager.shared.deleteWineList(type: type)
+                        try await WineDataManager.shared.saveWines(wines, type: type)
+                        print("✅ \(type.rawValue) 저장 완료: \(wines.count)개")
+                        self.updateCollectionView(type: type, with: wines)
+                    } catch {
+                        print("❌ 데이터 저장 중 오류 발생: \(error)")
+                    }
+                } // : Task
+            case .failure(let error):
+                print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
+            } // : switch
+        } // : closure
+    } // : func
     
     private func updateLikeWineListView() {
         likeWineListView.title.text = "\(userName) 님이 좋아할 만한 와인"
