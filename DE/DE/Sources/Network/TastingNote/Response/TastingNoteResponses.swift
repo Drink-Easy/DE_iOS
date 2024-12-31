@@ -16,7 +16,7 @@ public struct TastingNoteResponsesDTO : Decodable {
     public let tannin : Int
     public let body : Int
     public let alcohol : Int
-    public let noseMapList : [String: String]
+    public let noseMapList : [[String: String]]
     public let rating : Double
     public let review : String
 }
