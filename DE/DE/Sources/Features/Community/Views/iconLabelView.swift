@@ -27,12 +27,29 @@ class IconLabelView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure(systemName: String, labelText: String) {
-        if let image = UIImage(systemName: systemName)?.withTintColor(AppColor.black ?? .black, renderingMode: .alwaysOriginal) {
-            iconView.image = image
+    func configure(
+            systemName: String,
+            labelText: String,
+            iconSize: CGFloat,
+            fontSize: CGFloat = 14,
+            color: UIColor = AppColor.black ?? .black // 색상 기본값
+        ) {
+            // 아이콘 이미지 설정
+            if let image = UIImage(systemName: systemName)?.withRenderingMode(.alwaysTemplate) {
+                iconView.image = image
+                iconView.tintColor = color // 아이콘 색상 설정
+            }
+            
+            // 텍스트 설정
+            descriptionLabel.text = labelText
+            descriptionLabel.font = UIFont.ptdSemiBoldFont(ofSize: fontSize)
+            descriptionLabel.textColor = color // 레이블 색상 설정
+            
+            // 아이콘 크기 동적 설정
+            iconView.snp.updateConstraints { make in
+                make.size.equalTo(iconSize)
+            }
         }
-        descriptionLabel.text = labelText
-    }
     
     private func setupUI() {
         addSubview(iconView)
@@ -44,7 +61,7 @@ class IconLabelView: UIView {
         }
         
         descriptionLabel.snp.makeConstraints { make in
-            make.leading.equalTo(iconView.snp.trailing).offset(8)
+            make.leading.equalTo(iconView.snp.trailing).offset(4)
             make.centerY.equalTo(iconView)
             make.trailing.equalToSuperview()
         }

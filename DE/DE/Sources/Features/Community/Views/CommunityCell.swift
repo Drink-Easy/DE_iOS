@@ -37,6 +37,7 @@ class CommunityCell: UICollectionViewCell {
         $0.setImage(UIImage(systemName: "bookmark.fill")?.withTintColor(AppColor.purple100 ?? .gray, renderingMode: .alwaysOriginal), for: .selected)
         $0.isSelected = false
     }
+    
     let timeIconLabel = IconLabelView()
     let locationIconLabel = IconLabelView()
     let peopleIconLabel = IconLabelView()
@@ -93,7 +94,7 @@ class CommunityCell: UICollectionViewCell {
             make.leading.equalTo(peopleIconLabel.snp.trailing).offset(8)
         }
         locationIconLabel.snp.makeConstraints { make in
-            make.top.equalTo(peopleIconLabel.snp.bottom).offset(8)
+            make.bottom.equalTo(sideBar.snp.bottom).inset(16)
             make.leading.equalTo(titleLabel.snp.leading)
         }
         timeIconLabel.snp.makeConstraints { make in
@@ -105,10 +106,11 @@ class CommunityCell: UICollectionViewCell {
     // MARK: - Configuration
     func configure(mediaURL: String, title: String, memberCount: String, price: String, location: String, createdAt: String, bookmarked: Bool) {
         titleLabel.text = title
-        timeIconLabel.configure(systemName: "calendar", labelText: createdAt)
-        locationIconLabel.configure(systemName: "mappin.and.ellipse", labelText: location)
-        peopleIconLabel.configure(systemName: "person.fill", labelText: memberCount)
-        priceIconLabel.configure(systemName: "wonsign.circle.fill", labelText: price)
+        peopleIconLabel.configure(systemName: "person.fill", labelText: memberCount, iconSize: 10, fontSize: 12, color: AppColor.purple100!)
+        priceIconLabel.configure(systemName: "wonsign.circle.fill", labelText: price, iconSize: 10, fontSize: 12, color: AppColor.purple100!)
+        timeIconLabel.configure(systemName: "calendar", labelText: createdAt, iconSize: 10, fontSize: 12, color: AppColor.black!)
+        locationIconLabel.configure(systemName: "mappin.and.ellipse", labelText: location, iconSize: 10, fontSize: 12, color: AppColor.black!)
+        
         if let imageUrl = URL(string: mediaURL) {
             imageView.sd_setImage(with: imageUrl, placeholderImage: UIImage(named: "pieceImagePlaceholder"))
         }
