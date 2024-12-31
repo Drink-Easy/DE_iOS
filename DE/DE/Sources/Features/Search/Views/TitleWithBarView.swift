@@ -8,12 +8,12 @@ import CoreModule
 class TitleWithBarView: UIView {
     private let titleLabel = UILabel().then {
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 20)
-        $0.textColor = Constants.AppColor.DGblack
+        $0.textColor = AppColor.black
     }
 
     private let subTitleLabel = UILabel().then {
         $0.font = UIFont.ptdRegularFont(ofSize: 14)
-        $0.textColor = Constants.AppColor.gray80
+        $0.textColor = AppColor.gray70
     }
 
     private let separatorView = UIView().then {

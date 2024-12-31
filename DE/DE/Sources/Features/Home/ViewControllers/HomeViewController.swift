@@ -3,7 +3,6 @@
 import UIKit
 import CoreModule
 import Then
-//import Authentication
 import Network
 import SearchModule
 
@@ -52,12 +51,10 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         $0.tag = 0
     }
     
-//    private lazy var pageControl = CustomPageControl().then {
-//        $0.numberOfPages = adImage.count
-//        $0.currentPage = 0
-//        $0.indicatorColor = UIColor(hex: "#D9D9D9") ?? .lightGray
-//        $0.currentIndicatorColor = AppColor.purple100 ?? .purple
-//    }
+    private lazy var pageControl = CustomPageControl(indicatorColor: UIColor(hex: "#D9D9D9") ?? .lightGray, currentIndicatorColor: AppColor.purple50 ?? .purple).then {
+        $0.numberOfPages = adImage.count
+        $0.currentPage = 0
+    }
     
     private lazy var likeWineListView = RecomView().then {
         $0.title.text = "\(userName) 님이 좋아할 만한 와인"
@@ -92,7 +89,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     private func addComponents() {
         [homeTopView, scrollView].forEach{ view.addSubview($0) }
         scrollView.addSubview(contentView)
-        [adCollectionView, likeWineListView, popularWineListView].forEach{ contentView.addSubview($0) }
+        [adCollectionView, pageControl, likeWineListView, popularWineListView].forEach{ contentView.addSubview($0) }
         
         homeTopView.delegate = self
     }
@@ -120,14 +117,15 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
             $0.height.equalTo(view.snp.width).multipliedBy(282.0 / 393.0)
         }
         
-//        pageControl.snp.makeConstraints {
-//            $0.centerX.equalTo(view.safeAreaLayoutGuide)
-//            $0.bottom.equalTo(adCollectionView.snp.bottom).inset(20)
-//        }
+        pageControl.snp.makeConstraints {
+            $0.centerX.equalTo(view.safeAreaLayoutGuide)
+            $0.bottom.equalTo(adCollectionView.snp.bottom).inset(20)
+            //$0.width.equalTo(200)
+        }
         
-//        view.layoutIfNeeded()
-//        pageControl.setNeedsLayout()
-//        pageControl.layoutIfNeeded()
+        view.layoutIfNeeded()
+        pageControl.setNeedsLayout()
+        pageControl.layoutIfNeeded()
         
         likeWineListView.snp.makeConstraints {
             $0.top.equalTo(adCollectionView.snp.bottom).offset(32)
@@ -204,23 +202,23 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     }
 }
 
-//extension HomeViewController: UIScrollViewDelegate {
-//    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        
-//        let pageIndex = Int(scrollView.contentOffset.x / view.frame.width)
-//        pageControl.currentPage = pageIndex
-//        
-//        if pageIndex == 0 && scrollView.contentOffset.x < 0 {
-//                scrollView.contentOffset.x = 0
-//            }
-//        if pageIndex == adImage.count - 1 {
-//            let maxOffsetX = CGFloat(adImage.count - 1) * view.frame.width
-//            if scrollView.contentOffset.x > maxOffsetX {
-//                scrollView.contentOffset.x = maxOffsetX
-//            }
-//        }
-//    }
-//}
+extension HomeViewController: UIScrollViewDelegate {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        let pageIndex = Int(scrollView.contentOffset.x / view.frame.width)
+        pageControl.currentPage = pageIndex
+        
+        if pageIndex == 0 && scrollView.contentOffset.x < 0 {
+            scrollView.contentOffset.x = 0
+        }
+        if pageIndex == adImage.count - 1 {
+            let maxOffsetX = CGFloat(adImage.count - 1) * view.frame.width
+            if scrollView.contentOffset.x > maxOffsetX {
+                scrollView.contentOffset.x = maxOffsetX
+            }
+        }
+    }
+}
 
 extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -270,6 +268,12 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
 
         }
         return UICollectionViewCell()
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView.tag == 1 || collectionView.tag == 2 {
+            //let vc = WineDetailViewController
+        }
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

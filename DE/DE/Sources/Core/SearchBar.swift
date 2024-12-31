@@ -10,11 +10,8 @@ import CoreModule
 
 public class SearchBar: UITextField {
     
-    var placeholderText: String? {
-        didSet {
-            updatePlaceholder()
-        }
-    }
+    var placeholderText: String?
+    private let imageView = UIImageView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -31,14 +28,17 @@ public class SearchBar: UITextField {
         self.attributedPlaceholder = NSAttributedString(
             string: "검색어 입력",
             attributes: [
-                .foregroundColor: UIColor(hex: "#767676") ?? .gray,
+                .foregroundColor: AppColor.gray70 ?? .gray,
                 .font: UIFont.ptdRegularFont(ofSize: 14)
             ]
         )
+        self.textColor = AppColor.gray100
+        self.tintColor = AppColor.purple100
+        //self.font = UIFont.ptdSemiBoldFont(ofSize: 14)
         
-        let icon = UIImage(named: "searchBarIcon")
-        let imageView = UIImageView(image: icon)
-        imageView.tintColor = UIColor(hex: "#767676") ?? .gray
+        let icon = UIImage(named: "searchBarIcon")?.withRenderingMode(.alwaysTemplate)
+        imageView.image = icon
+        imageView.tintColor = AppColor.gray70 ?? .gray
         imageView.contentMode = .scaleAspectFit
         
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 24))
@@ -50,20 +50,31 @@ public class SearchBar: UITextField {
         
         self.layer.cornerRadius = 10
         self.layer.masksToBounds = true
-        self.backgroundColor = UIColor(hex: "#F1F1F1")
+        self.backgroundColor = AppColor.gray10
         self.contentHorizontalAlignment = .left
+        self.clearButtonMode = .whileEditing
     }
     
-    // 플레이스홀더 업데이트 func
-    private func updatePlaceholder() {
-        if let text = placeholderText {
-            self.attributedPlaceholder = NSAttributedString(
-                string: text,
-                attributes: [
-                    .foregroundColor: UIColor(hex: "#767676") ?? .gray,
-                    .font: UIFont.systemFont(ofSize: 13.5, weight: .regular)
-                ]
-            )
+    public override func becomeFirstResponder() -> Bool {
+        let didBecomeFirstResponder = super.becomeFirstResponder()
+        if didBecomeFirstResponder {
+            self.backgroundColor = AppColor.bgGray
+            self.layer.borderWidth = 1
+            self.layer.borderColor = AppColor.purple100?.cgColor
+            self.imageView.tintColor = AppColor.purple100
         }
+        return didBecomeFirstResponder
+    }
+    
+    public override func resignFirstResponder() -> Bool {
+        let didResignFirstResponder = super.resignFirstResponder()
+        if didResignFirstResponder {
+            self.backgroundColor = AppColor.gray10
+            self.layer.borderWidth = 0
+            
+            // 아이콘 색상 원래대로
+            imageView.tintColor = AppColor.gray70
+        }
+        return didResignFirstResponder
     }
 }

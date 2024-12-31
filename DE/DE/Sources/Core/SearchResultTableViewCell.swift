@@ -26,13 +26,13 @@ public class SearchResultTableViewCell: UITableViewCell {
     
     private lazy var kind = UILabel().then {
         //$0.text = "와인 > 스파클링, 샴페인"
-        $0.textColor = Constants.AppColor.gray60
+        $0.textColor = AppColor.gray100
         $0.font = UIFont.ptdRegularFont(ofSize: 14)
     }
     
     private lazy var labelStackView = UIStackView(arrangedSubviews: [name, kind]).then {
         $0.axis = .vertical
-        $0.spacing = 8
+        $0.spacing = 26
         $0.alignment = .fill
         $0.distribution = .fill
     }
@@ -51,8 +51,15 @@ public class SearchResultTableViewCell: UITableViewCell {
     public override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         if selected {
+            borderLayer.cornerRadius = 8
             contentView.backgroundColor = Constants.AppColor.purple10 // 선택된 배경색
-            borderLayer.borderColor = Constants.AppColor.purple50?.cgColor // 선택된 테두리색
+            borderLayer.borderColor = Constants.AppColor.purple70?.cgColor // 선택된 테두리색
+            // 1초 후 기본 상태로 복원
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+                guard let self = self else { return }
+                self.contentView.backgroundColor = Constants.AppColor.grayBG // 기본 배경색
+                self.borderLayer.borderColor = UIColor.clear.cgColor // 기본 테두리 없음
+            }
         } else {
             contentView.backgroundColor = Constants.AppColor.grayBG // 기본 배경색
             borderLayer.borderColor = UIColor.clear.cgColor // 기본 테두리 없음
@@ -101,20 +108,20 @@ public class SearchResultTableViewCell: UITableViewCell {
     
     private func constraints() {
         image.snp.makeConstraints {
-            $0.verticalEdges.equalToSuperview().inset(6)
+            $0.verticalEdges.equalToSuperview().inset(11)
             $0.leading.equalToSuperview().offset(6)
             $0.width.height.equalTo(70)
-        }
-        
-        score.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-6)
-            $0.top.equalTo(labelStackView.snp.top)
         }
 
         labelStackView.snp.makeConstraints {
             $0.centerY.equalTo(image)
             $0.leading.equalTo(image.snp.trailing).offset(18)
-            $0.width.equalTo(210)
+            $0.trailing.equalToSuperview().offset(-6)
+        }
+        
+        score.snp.makeConstraints {
+            $0.trailing.equalToSuperview().offset(-6)
+            $0.centerY.equalTo(kind)
         }
     }
     

@@ -16,6 +16,12 @@ public class SearchHomeViewController : UIViewController {
         super.viewDidLoad()
         view.backgroundColor = Constants.AppColor.grayBG
         self.view = searchHomeView
+        setupNavigationBar()
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     private lazy var searchHomeView = SearchHomeView(
@@ -45,6 +51,19 @@ public class SearchHomeViewController : UIViewController {
         } else {
             callSearchAPI(query: query)
         }
+    }
+    
+    private func setupNavigationBar() {
+        navigationBarManager.addBackButton(
+            to: navigationItem,
+            target: self,
+            action: #selector(prevVC),
+            tintColor: AppColor.gray70!
+        )
+    }
+    
+    @objc func prevVC() {
+        navigationController?.popViewController(animated: true)
     }
     
     func callSearchAPI(query: String) {
