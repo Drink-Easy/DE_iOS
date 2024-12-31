@@ -41,7 +41,7 @@ public class NoteListViewController: UIViewController {
     
     func callSelectedNote(noteId: Int) {
         print("NoteID \(noteId)")
-        noteService.fetchNote(noteId: noteId, completion: {[weak self] result in
+        noteService.fetchNote(noteId: noteId, completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
             case.success(let data):
