@@ -22,7 +22,7 @@ class HomeTopView: UIView {
     public lazy var searchBtn = UIButton().then {
         $0.setImage(UIImage(named: "searchBarIcon"), for: .normal)
         $0.backgroundColor = .clear
-        $0.tintColor = UIColor(hex: "#767676")
+        $0.tintColor = AppColor.gray70
         $0.addTarget(self, action: #selector(didTapSearchButton), for: .touchUpInside)
     }
     
@@ -61,9 +61,8 @@ class HomeTopView: UIView {
     }
     
     @objc private func didTapSearchButton() {
-            delegate?.didTapSearchButton()
-        }
-    
+        delegate?.didTapSearchButton()
+    }
 }
 
 protocol HomeTopViewDelegate: AnyObject {

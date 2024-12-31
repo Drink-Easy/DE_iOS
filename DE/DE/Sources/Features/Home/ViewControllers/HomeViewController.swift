@@ -51,7 +51,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         $0.tag = 0
     }
     
-    private lazy var pageControl = CustomPageControl(indicatorColor: UIColor(hex: "#D9D9D9") ?? .lightGray, currentIndicatorColor: AppColor.purple100 ?? .purple).then {
+    private lazy var pageControl = CustomPageControl(indicatorColor: UIColor(hex: "#D9D9D9") ?? .lightGray, currentIndicatorColor: AppColor.purple50 ?? .purple).then {
         $0.numberOfPages = adImage.count
         $0.currentPage = 0
     }
@@ -268,6 +268,12 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
 
         }
         return UICollectionViewCell()
+    }
+    
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView.tag == 1 || collectionView.tag == 2 {
+            //let vc = WineDetailViewController
+        }
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

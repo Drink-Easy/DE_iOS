@@ -8,9 +8,6 @@ import SDWebImage
 
 class RecomCollectionViewCell: UICollectionViewCell {
     
-//    public var score = "4.3"
-//    public var price = "34,500"
-    
     static let identifier = "RecomCollectionViewCell"
     
     public lazy var image = UIImageView().then {
@@ -20,21 +17,20 @@ class RecomCollectionViewCell: UICollectionViewCell {
     }
     
     public lazy var scoreNprice = UILabel().then {
-//        $0.text = "★ \(score)  |  \(price)₩"
         $0.textColor = AppColor.purple100
-        $0.font = UIFont.ptdMediumFont(ofSize: 8)
+        $0.font = UIFont.ptdMediumFont(ofSize: 12)
     }
     
     public lazy var name = UILabel().then {
         $0.text = "부와젤, 조아유 드 프랑스"
         $0.textColor = .black
-        $0.font = UIFont.ptdMediumFont(ofSize: 12)
+        $0.font = UIFont.ptdMediumFont(ofSize: 14)
     }
     
     public lazy var kind = UILabel().then {
         $0.text = "스파클링 와인, 샴페인"
-        $0.textColor = UIColor(hex: "#767676")
-        $0.font = UIFont.ptdRegularFont(ofSize: 9)
+        $0.textColor = AppColor.gray70
+        $0.font = UIFont.ptdRegularFont(ofSize: 10)
     }
     
     override init(frame: CGRect) {

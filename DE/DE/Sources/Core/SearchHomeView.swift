@@ -55,7 +55,7 @@ public class SearchHomeView: UIView {
 
     private func setConstraints() {
         title.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide).offset(19)
+            make.top.equalTo(safeAreaLayoutGuide).offset(10)
             make.leading.equalTo(safeAreaLayoutGuide).offset(25)
         }
         
