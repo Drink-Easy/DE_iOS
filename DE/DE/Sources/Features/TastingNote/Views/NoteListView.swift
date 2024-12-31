@@ -28,6 +28,14 @@ class NoteListView: UIView {
         $0.font = .ptdSemiBoldFont(ofSize: 20)
     }
     
+    let seeAllLabel = UILabel().then {
+        $0.text = "모두보기"
+        $0.textColor = AppColor.gray80
+        $0.textAlignment = .center
+        $0.font = .ptdMediumFont(ofSize: 12)
+        $0.isUserInteractionEnabled = true // 터치 이벤트 활성화
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -42,6 +50,7 @@ class NoteListView: UIView {
         addSubview(vectorView)
         addSubview(totalWineLabel)
         addSubview(navView)
+        addSubview(seeAllLabel)
         
         navView.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide)
@@ -63,6 +72,11 @@ class NoteListView: UIView {
         totalWineLabel.snp.makeConstraints { make in
             make.top.equalTo(vectorView.snp.bottom).offset(36)
             make.leading.equalTo(vectorView.snp.leading)
+        }
+        
+        seeAllLabel.snp.makeConstraints { make in
+            make.top.equalTo(totalWineLabel.snp.top).offset(9)
+            make.trailing.equalToSuperview().offset(-24)
         }
         
         self.snp.makeConstraints { make in

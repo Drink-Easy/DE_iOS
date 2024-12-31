@@ -27,7 +27,25 @@ public class NoteListViewController: UIViewController {
             guard let self = self else { return }
             switch result {
             case.success(let data):
-                handleResponse(data)
+                if let data = data {
+                    handleResponse(data)
+                } else {
+                    print("Optional Error")
+                }
+                
+            case.failure(let error):
+                print(error)
+            }
+        })
+    }
+    
+    func callSelectedNote(noteId: Int) {
+        print("NoteID \(noteId)")
+        noteService.fetchNote(noteId: noteId, completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case.success(let data):
+                handleSelectedNoteResponse(data)
             case.failure(let error):
                 print(error)
             }
@@ -77,6 +95,9 @@ public class NoteListViewController: UIViewController {
     
     func setupAction() {
         myTastingNote.writeButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(labelTapped))
+        noteListView.seeAllLabel.addGestureRecognizer(tapGesture)
     }
     
     private func handleResponse(_ data: AllTastingNoteResponseDTO) {
@@ -104,11 +125,24 @@ public class NoteListViewController: UIViewController {
         }
     }
     
+    private func handleSelectedNoteResponse(_ data: TastingNoteResponsesDTO) {
+        DispatchQueue.main.async {
+            print("Fetched Note Data:", data)
+            
+            let infoVC = WineInfoViewController()
+            self.navigationController?.pushViewController(infoVC, animated: true)
+        }
+    }
+    
     @objc func nextVC() {
         let nextVC = WineSearchMainVC()
         navigationController?.pushViewController(nextVC, animated: true)
     }
-
+    
+    @objc private func labelTapped() {
+        callAllNote()
+    }
+    
 }
 
 extension NoteListViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -132,19 +166,38 @@ extension NoteListViewController: UICollectionViewDelegate, UICollectionViewData
         cell.nameLabel.text = note.wineName
         return cell
     }
+    
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedNote = notePreviewList[indexPath.row]
+        callSelectedNote(noteId: selectedNote.noteId)
+    }
+    
 }
 
 extension NoteListViewController: WineImageStackViewDelegate {
     func didSelectWineSort(sort: String) {
-        print(sort)
-//        noteService.fetchAllNotes(sort: "all", completion: { [weak self] result in
-//            guard let self = self else { return }
-//            switch result {
-//            case.success(let data):
-//                handleResponse(data)
-//            case.failure(let error):
-//                print(error)
-//            }
-//        })
+        guard let wineSort = WineSort.toKorean(sort) else {
+            print("Error")
+            return
+        }
+        noteService.fetchAllNotes(sort: wineSort.rawValue, completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case.success(let data):
+                if let data = data {
+                    handleResponse(data)
+                } else {
+                    print("Optional Error")
+                }
+            case.failure(let error):
+                print(error)
+            }
+        })
+    }
+}
+
+extension NoteListViewController: MyTastingNoteViewDelegate {
+    func didTapTastingNoteLabel() {
+        
     }
 }
