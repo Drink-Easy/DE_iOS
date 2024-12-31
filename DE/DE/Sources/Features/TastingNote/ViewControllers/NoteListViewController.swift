@@ -59,6 +59,11 @@ public class NoteListViewController: UIViewController {
         setupUI()
         setupDelegate()
         setupAction()
+        
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         callAllNote()
     }
     
@@ -106,6 +111,7 @@ public class NoteListViewController: UIViewController {
             
             // 데이터 저장
             self.allNotesData = data
+            self.notePreviewList.removeAll() // 초기화
             self.notePreviewList = data.notePriviewList
             
             // WineImageStackView 업데이트
@@ -156,14 +162,7 @@ extension NoteListViewController: UICollectionViewDelegate, UICollectionViewData
         }
         let note = notePreviewList[indexPath.row]
         
-        cell.imageView.sd_setImage(
-            with: URL(string: note.imageUrl),
-            placeholderImage: UIImage(named: "placeholder"), // 로드 중 보여줄 기본 이미지
-            options: .highPriority, // 우선순위 높은 옵션
-            completed: nil
-        )
-        
-        cell.nameLabel.text = note.wineName
+        cell.configure(name: note.wineName, imageURL: note.imageUrl)
         return cell
     }
     

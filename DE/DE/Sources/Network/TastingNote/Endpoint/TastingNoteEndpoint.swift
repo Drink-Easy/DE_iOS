@@ -24,8 +24,8 @@ extension TastingNoteEndpoint: TargetType {
         switch self {
         case .postNote:
             return "/new-note"
-        case .getNote, .deleteNote:
-            return "/"
+        case .getNote(let id), .deleteNote(let id):
+            return "/\(id)"
         case .patchNote(let data):
             return "/\(data.noteId)"
         case .getAllNotes:
@@ -51,9 +51,9 @@ extension TastingNoteEndpoint: TargetType {
         case .postNote(let data):
             return .requestJSONEncodable(data)
         case .getNote(let noteId):
-            return .requestParameters(parameters: ["noteId" : noteId], encoding: URLEncoding.queryString)
+            return .requestPlain
         case .deleteNote(let noteId):
-            return .requestParameters(parameters: ["noteId" : noteId], encoding: URLEncoding.queryString)
+            return .requestPlain
         case .patchNote(let data):
             return .requestJSONEncodable(data.body)
         case .getAllNotes(let sort):
