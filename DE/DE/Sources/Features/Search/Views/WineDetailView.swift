@@ -3,6 +3,7 @@
 import UIKit
 import Then
 import CoreModule
+import SDWebImage
 
 class WineDetailView: UIView {
     
@@ -46,12 +47,11 @@ class WineDetailView: UIView {
     private lazy var kind = createTitle(text: "종류")
     private lazy var type = createTitle(text: "품종")
     private lazy var country = createTitle(text: "생산지")
-    private lazy var kindContents = createContents(text: "스파클링 와인, 샴페인")
-    private lazy var typeContents = createContents(text: "피노누아(60%), 샤르도네(40%)")
-    private lazy var countryContents = createContents(text: "프랑스, 상파뉴")
+    public lazy var kindContents = createContents(text: "스파클링 와인, 샴페인")
+    public lazy var typeContents = createContents(text: "피노누아(60%), 샤르도네(40%)")
+    public lazy var countryContents = createContents(text: "프랑스, 상파뉴")
     
     private lazy var titleStackView = makeStackView(arrangedSubviews: [kind, type, country])
-    private lazy var contentStackView = makeStackView(arrangedSubviews: [kindContents, typeContents, countryContents])
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -66,7 +66,7 @@ class WineDetailView: UIView {
     
     private func addComponents() {
         [image, labelView].forEach{ self.addSubview($0) }
-        [titleStackView, contentStackView].forEach{ labelView.addSubview($0) }
+        [titleStackView, kindContents, typeContents, countryContents].forEach{ labelView.addSubview($0) }
     }
     
     private func constraints() {
@@ -89,9 +89,33 @@ class WineDetailView: UIView {
             $0.leading.equalToSuperview().offset(13)
         }
         
-        contentStackView.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
+        kindContents.snp.makeConstraints {
             $0.leading.equalTo(titleStackView.snp.trailing).offset(18)
+            $0.centerY.equalTo(kind)
+            $0.trailing.equalToSuperview().offset(-13)
         }
+        
+        typeContents.snp.makeConstraints {
+            $0.leading.equalTo(titleStackView.snp.trailing).offset(18)
+            $0.centerY.equalTo(type)
+            $0.trailing.equalToSuperview().offset(-13)
+        }
+        
+        countryContents.snp.makeConstraints {
+            $0.leading.equalTo(titleStackView.snp.trailing).offset(18)
+            $0.centerY.equalTo(country)
+            $0.trailing.equalToSuperview().offset(-13)
+        }
+    }
+    
+    public func configure(_ model: WineDetailInfoModel) {
+        if let url = URL(string: model.image) {
+            image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+        } else {
+            image.image = UIImage(named: "placeholder")
+        }
+        kindContents.text = model.sort
+        typeContents.text = model.variety
+        countryContents.text = model.area
     }
 }

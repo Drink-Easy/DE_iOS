@@ -64,6 +64,7 @@ let project = Project(
 //                        "UIImageRespectsSafeAreaInsets" : true
 //                    ],
                     // 카카오 로그인 설정
+                    "KAKAO_NATIVE_APP_KEY" : "180ebe6367eb8ee6eafe439aa551744a",
                     "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink", "kakaoplus"],
                     "CFBundleURLTypes" : [
                         [
@@ -114,7 +115,7 @@ let project = Project(
             name: "JoinApp",
             destinations: .iOS,
             product: .app,
-            bundleId: "\(bundleId).\(bundleMid).JoinApp",
+            bundleId: "\(bundleId).\(bundleMid).drinkig",
             infoPlist: .extendingDefault(
                 with: [
                     "UIUserInterfaceStyle" : "Light", // 다크모드 제거
@@ -153,6 +154,7 @@ let project = Project(
                     //                        "UIImageRespectsSafeAreaInsets" : true
                     //                    ],
                     // 카카오 로그인 설정
+                    "KAKAO_NATIVE_APP_KEY" : "180ebe6367eb8ee6eafe439aa551744a",
                     "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink", "kakaoplus"],
                     "CFBundleURLTypes" : [
                         [
@@ -214,6 +216,7 @@ let project = Project(
                     ],
                     "UILaunchStoryboardName": "",
                     // 카카오 로그인 설정
+                    "KAKAO_NATIVE_APP_KEY" : "180ebe6367eb8ee6eafe439aa551744a",
                     "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink", "kakaoplus"],
                     "CFBundleURLTypes" : [
                         [
@@ -279,6 +282,7 @@ let project = Project(
                         "UIImageRespectsSafeAreaInsets" : true
                     ],
                     // 카카오 로그인 설정
+                    "KAKAO_NATIVE_APP_KEY" : "180ebe6367eb8ee6eafe439aa551744a",
                     "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink", "kakaoplus"],
                     "CFBundleURLTypes" : [
                         [
@@ -343,6 +347,7 @@ let project = Project(
                         "UIImageRespectsSafeAreaInsets" : true
                     ],
                     // 카카오 로그인 설정
+                    "KAKAO_NATIVE_APP_KEY" : "180ebe6367eb8ee6eafe439aa551744a",
                     "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink", "kakaoplus"],
                     "CFBundleURLTypes" : [
                         [
@@ -418,6 +423,7 @@ let project = Project(
             resources: ["DE/Resources/**"],
             dependencies: [
                 .target(name: "Network"),
+                .external(name: "AMPopTip")
             ]
         ),
         .target(
@@ -428,8 +434,9 @@ let project = Project(
             sources: ["DE/Sources/Features/Home/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
-//                .target(name: "Network"),
                 .target(name: "SearchModule"),
+                .target(name: "TastingNote"),
+                .target(name: "CommunityModule")
             ]
         ),
         .target(
@@ -438,6 +445,17 @@ let project = Project(
             product: .staticFramework,
             bundleId: "\(bundleId).\(bundleMid).SearchModule",
             sources: ["DE/Sources/Features/Search/**"],
+            resources: ["DE/Resources/**"],
+            dependencies: [
+                .target(name: "Network")
+            ]
+        ),
+        .target(
+            name: "CommunityModule",
+            destinations: .iOS,
+            product: .staticFramework,
+            bundleId: "\(bundleId).\(bundleMid).CommunityModule",
+            sources: ["DE/Sources/Features/Community/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
                 .target(name: "Network")

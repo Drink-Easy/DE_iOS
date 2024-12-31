@@ -87,7 +87,7 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
         
         // 유효성 라벨 설정
         validationLabel.text = validationText
-        validationLabel.textColor = .red
+        validationLabel.textColor = AppColor.red
         validationLabel.font = UIFont.systemFont(ofSize: 12)
         validationLabel.isHidden = true
         
@@ -150,11 +150,7 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
     }
     
     private func updateTextFieldStyle(isEditing: Bool) {
-        if isEditing {
-            textField.backgroundColor = AppColor.purple10
-            textField.layer.borderColor = AppColor.purple100?.cgColor
-            iconImageView.tintColor = AppColor.purple100
-        } else {
+        if !isEditing {
             textField.backgroundColor = AppColor.gray30
             textField.layer.borderColor = AppColor.gray30?.cgColor
             iconImageView.tintColor = AppColor.gray60

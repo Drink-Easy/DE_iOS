@@ -1,6 +1,6 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
-import Foundation
+import CoreModule
 import UIKit
 
 enum CharacteristicType: String {
@@ -46,7 +46,7 @@ class PolygonChartView: UIButton {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-        self.backgroundColor = UIColor(hex: "#B06FCD") // 배경색 설정
+        self.backgroundColor = UIColor(hex: "#7213B133") // 배경색 설정
         self.layer.cornerRadius = 10
         self.layer.masksToBounds = true
     }
@@ -62,7 +62,7 @@ class PolygonChartView: UIButton {
         for _ in 0 ..< step {
             stepLinePaths.append(CustomUIBezierPath())
         }
-        let heightMaxValue = rect.height / 2 * 0.5 // RadarChartView영역내에 모든 그림이 그려지도록 max value가 그려질 높이
+        let heightMaxValue = rect.height / 2 * 0.8 // RadarChartView영역내에 모든 그림이 그려지도록 max value가 그려질 높이
         let heightStep = heightMaxValue / CGFloat(step) // 1단계에 해당하는 높이
         let cx = rect.midX
         let cy = rect.midY
@@ -70,23 +70,16 @@ class PolygonChartView: UIButton {
         let y = rect.midY - heightMaxValue
         let valuePath = UIBezierPath() // 각 특성값을 이어 구성할 다각형 path
         chartTypes.forEach { type in
-            // 1. 차트 중심으로부터 각 특성 다각형 꼭지점까지 잇는 직선 그리기
-            UIColor.lightGray.setStroke()
-            let path = UIBezierPath()
-            path.lineWidth = 1
-            path.move(to: CGPoint(x: cx, y: cy))
-            path.addLine(to: transformRotate(radian: radian, x: x, y: y, cx: cx, cy: cy))
-            path.stroke()
             
             // 2. 각 꼭지점 부근에 각 특성 문자열 표시
             let point = transformRotate(radian: radian, x: x, y: y * 0.5, cx: cx, cy: cy)
             if let value = dataList?.first(where: { $0.type == type })?.value {
-                let percentageValue = Int((Double(value) / 10) * 100)
-                let strValue = "\(type.rawValue)\n\(percentageValue)%"
+                let percentageValue = Int(value) //Int((Double(value) / 10) * 100)
+                let strValue = "\(type.rawValue)\n\(percentageValue)"
                 let attributedString = NSMutableAttributedString(string: strValue, attributes: attrs)
-                if let range = strValue.range(of: "\(percentageValue)%") {
+                if let range = strValue.range(of: "\(percentageValue)") {
                     let nsRange = NSRange(range, in: strValue)
-                    attributedString.addAttribute(.foregroundColor, value: UIColor(hex: "FB5133") ?? .red, range: nsRange) // 원하는 색상 적용
+                    attributedString.addAttribute(.foregroundColor, value: AppColor.purple100 ?? .red, range: nsRange) // 원하는 색상 적용
                 }
                 let size = attributedString.size()
                 
@@ -110,8 +103,8 @@ class PolygonChartView: UIButton {
             
             // 4. 각 특성별 값에 해당하는 좌표를 구해 다각형 path 구성
             if let value = dataList?.first(where: { $0.type == type })?.value {
-                let scaledValue = CGFloat(value) * 10 // 슬라이더 값이 0-10이므로 0-100 범위로 변환
-                let convValue = heightMaxValue * (scaledValue / 100) // 전달된 값을 차트 크기에 맞게 변환
+                let scaledValue = CGFloat(value - 20) / 80  // 슬라이더 값이 0-10이므로 0-100 범위로 변환 20, 40, 60, 80, 100 -> 1, 2, 3, 4, 5
+                let convValue = heightMaxValue * scaledValue // 전달된 값을 차트 크기에 맞게 변환
                 let point = transformRotate(radian: radian, x: x, y: rect.midY - convValue, cx: cx, cy: cy)
                 if valuePath.isEmpty {
                     valuePath.move(to: point)
@@ -131,7 +124,7 @@ class PolygonChartView: UIButton {
         }
         
         // 7. 각 특성별 값을 다각형으로 표시
-        UIColor(hex: "FF9F8ECC")!.setFill()
+        UIColor(hex: "#7213B133")!.setFill()
         valuePath.close()
         valuePath.fill()
     }

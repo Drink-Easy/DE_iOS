@@ -1,35 +1,51 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+
 import SnapKit
+import Then
+
 import CoreModule
 
 class SignUpView: UIView {
     
     // MARK: - UI Components
-    let emailField: CustomLabelTextFieldView = {
-        let field = CustomLabelTextFieldView(descriptionImageIcon: "person.fill", descriptionLabelText: "이메일", textFieldPlaceholder: "이메일을 입력해 주세요", validationText: "이메일 형식이 올바르지 않습니다")
-        field.textField.keyboardType = .emailAddress
-        return field
-    }()
-    
-    let passwordField: CustomLabelTextFieldView = {
-        let field = CustomLabelTextFieldView(descriptionImageIcon: "lock.fill", descriptionLabelText: "비밀번호", textFieldPlaceholder: "비밀번호를 입력해 주세요", validationText: "8~20자 이내 영문자, 숫자, 특수문자의 조합", isPasswordField: true)
-        field.textField.textContentType = .newPassword
-        return field
-    }()
-    
-    let confirmPasswordField: CustomLabelTextFieldView = {
-        let field = CustomLabelTextFieldView(descriptionImageIcon: "lock.fill", descriptionLabelText: "비밀번호 재입력", textFieldPlaceholder: "비밀번호를 다시 입력해 주세요", validationText: "다시 확인해 주세요", isPasswordField: true)
-        field.textField.textContentType = .newPassword
-        return field
-    }()
-    
-    let signupButton: CustomButton = {
-        let button = CustomButton(title: "회원가입", titleColor: .white, backgroundColor: AppColor.gray80!)
-        button.isEnabled = false
-        return button
-    }()
+    let emailField = CustomLabelTextFieldView(
+        descriptionImageIcon: "person.fill",
+        descriptionLabelText: "이메일",
+        textFieldPlaceholder: "이메일을 입력해 주세요",
+        validationText: "이메일 형식이 올바르지 않습니다"
+    ).then {
+        $0.textField.keyboardType = .emailAddress
+    }
+
+    let passwordField = CustomLabelTextFieldView(
+        descriptionImageIcon: "lock.fill",
+        descriptionLabelText: "비밀번호",
+        textFieldPlaceholder: "비밀번호를 입력해 주세요",
+        validationText: "8~20자 이내 영문자, 숫자, 특수문자의 조합",
+        isPasswordField: true
+    ).then {
+        $0.textField.textContentType = .newPassword
+    }
+
+    let confirmPasswordField = CustomLabelTextFieldView(
+        descriptionImageIcon: "lock.fill",
+        descriptionLabelText: "비밀번호 재입력",
+        textFieldPlaceholder: "비밀번호를 다시 입력해 주세요",
+        validationText: "다시 확인해 주세요",
+        isPasswordField: true
+    ).then {
+        $0.textField.textContentType = .newPassword
+    }
+
+    let signupButton = CustomButton(
+        title: "회원가입",
+        titleColor: .white,
+        backgroundColor: AppColor.gray80!
+    ).then {
+        $0.isEnabled = false
+    }
     
     // MARK: - Initializer
     override init(frame: CGRect) {

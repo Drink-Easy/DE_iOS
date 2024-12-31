@@ -18,6 +18,5 @@ public struct MemberResponseDTO : Codable {
     let monthPriceMax : Int
     let wineSort : [String]
     let wineArea : [String]
-    let wineVariety : [String]
     let region : String
 }

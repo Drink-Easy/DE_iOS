@@ -3,6 +3,7 @@
 import UIKit
 
 struct TastingNoteModel {
+    let noteId: Int
     let images: UIImage
     let label: String
 }
@@ -10,14 +11,14 @@ struct TastingNoteModel {
 extension TastingNoteModel {
     static func dummy() -> [TastingNoteModel] {
         return [
-            TastingNoteModel(images: UIImage(named: "Samos") ?? UIImage(), label: "사모스"),
-            TastingNoteModel(images: UIImage(named: "Samos") ?? UIImage(), label: "사모스"),
-            TastingNoteModel(images: UIImage(named: "Samos") ?? UIImage(), label: "사모스"),
-            TastingNoteModel(images: UIImage(named: "Samos") ?? UIImage(), label: "사모스"),
-            TastingNoteModel(images: UIImage(named: "Samos") ?? UIImage(), label: "사모스"),
-            TastingNoteModel(images: UIImage(named: "Samos") ?? UIImage(), label: "사모스"),
-            TastingNoteModel(images: UIImage(named: "Samos") ?? UIImage(), label: "사모스"),
-            TastingNoteModel(images: UIImage(named: "Samos") ?? UIImage(), label: "사모스")
+//            TastingNoteModel(images: UIImage(named: "Samos") ?? UIImage(), label: "사모스"),
+//            TastingNoteModel(images: UIImage(named: "Samos") ?? UIImage(), label: "사모스"),
+//            TastingNoteModel(images: UIImage(named: "Samos") ?? UIImage(), label: "사모스"),
+//            TastingNoteModel(images: UIImage(named: "Samos") ?? UIImage(), label: "사모스"),
+//            TastingNoteModel(images: UIImage(named: "Samos") ?? UIImage(), label: "사모스"),
+//            TastingNoteModel(images: UIImage(named: "Samos") ?? UIImage(), label: "사모스"),
+//            TastingNoteModel(images: UIImage(named: "Samos") ?? UIImage(), label: "사모스"),
+//            TastingNoteModel(images: UIImage(named: "Samos") ?? UIImage(), label: "사모스")
         ]
     }
 }

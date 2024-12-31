@@ -1,14 +1,9 @@
-//
-//  NoteCollectionViewCell.swift
-//  Drink-EG
-//
-//  Created by 김도연 on 8/20/24.
-//
-
+// Copyright © 2024 DRINKIG. All rights reserved
 import Foundation
 import UIKit
 import SnapKit
 import Moya
+import SDWebImage
 
 class NoteCollectionViewCell: UICollectionViewCell { // 셀에 이미지와 label을 추가하기 위한 커스텀 셀
     
@@ -49,5 +44,16 @@ class NoteCollectionViewCell: UICollectionViewCell { // 셀에 이미지와 labe
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    public func configure(name : String, imageURL: String) {
+        self.imageView.sd_setImage(
+            with: URL(string: imageURL),
+            placeholderImage: UIImage(named: "placeholder"), // 로드 중 보여줄 기본 이미지
+            options: .highPriority, // 우선순위 높은 옵션
+            completed: nil
+        )
+        
+        self.nameLabel.text = name
     }
 }

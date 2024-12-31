@@ -1,44 +1,40 @@
-//
-//  NoteListView.swift
-//  Drink-EG
-//
-//  Created by 이수현 on 9/28/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
 import SnapKit
 import CoreModule
+import Then
 
 class NoteListView: UIView {
     
-    let navView: CustomSearchNavigationBar = {
-        let n = CustomSearchNavigationBar()
-        n.backgroundColor = AppColor.gray20
-        return n
-    }()
+    let navView = CustomSearchNavigationBar().then {
+        $0.backgroundColor = AppColor.gray20
+    }
     
-    private let noteListLabel: UILabel = {
-        let label = UILabel()
-        label.text = "노트 보관함"
-        label.textColor = .black
-        label.textAlignment = .center
-        label.font = .ptdSemiBoldFont(ofSize: 24)
-        return label
-    }()
+    private let noteListLabel =  UILabel().then {
+        $0.text = "노트 보관함"
+        $0.textColor = .black
+        $0.textAlignment = .center
+        $0.font = .ptdSemiBoldFont(ofSize: 24)
+    }
     
-    private let vectorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = AppColor.purple100
-        return view
-    }()
+    private let vectorView = UIView().then {
+        $0.backgroundColor = AppColor.purple100
+    }
     
-    private let totalWineLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .black
-        label.textAlignment = .center
-        label.font = .ptdSemiBoldFont(ofSize: 20)
-        return label
-    }()
+    private let totalWineLabel = UILabel().then {
+        $0.textColor = .black
+        $0.textAlignment = .center
+        $0.font = .ptdSemiBoldFont(ofSize: 20)
+    }
+    
+    let seeAllLabel = UILabel().then {
+        $0.text = "모두보기"
+        $0.textColor = AppColor.gray80
+        $0.textAlignment = .center
+        $0.font = .ptdMediumFont(ofSize: 12)
+        $0.isUserInteractionEnabled = true // 터치 이벤트 활성화
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -54,6 +50,7 @@ class NoteListView: UIView {
         addSubview(vectorView)
         addSubview(totalWineLabel)
         addSubview(navView)
+        addSubview(seeAllLabel)
         
         navView.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide)
@@ -77,6 +74,11 @@ class NoteListView: UIView {
             make.leading.equalTo(vectorView.snp.leading)
         }
         
+        seeAllLabel.snp.makeConstraints { make in
+            make.top.equalTo(totalWineLabel.snp.top).offset(9)
+            make.trailing.equalToSuperview().offset(-24)
+        }
+        
         self.snp.makeConstraints { make in
             make.bottom.equalTo(totalWineLabel.snp.bottom)
         }
@@ -85,6 +87,6 @@ class NoteListView: UIView {
     }
     
     func updateTotalWineCount(count: Int) {
-        totalWineLabel.text = "Total \(count)병"
+        totalWineLabel.text = "전체 \(count)병"
     }
 }

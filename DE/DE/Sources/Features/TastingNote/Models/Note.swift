@@ -1,9 +1,4 @@
-//
-//  Note.swift
-//  Drink-EG
-//
-//  Created by 김도연 on 8/27/24.
-//
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import Foundation
 

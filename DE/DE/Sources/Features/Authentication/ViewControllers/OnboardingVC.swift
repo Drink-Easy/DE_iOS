@@ -11,12 +11,10 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate {
     private var titleText: [String] = ["쉽게 배우는 와인 지식", "함께 즐기는 와인", "나만의 테이스팅 노트"]
     private var descriptionText: [String] = ["드링키지, 와인의 진입장벽을 낮추다.", "더 즐거운 시간을 공유해 보세요.", "다양한 테이스팅 노트를 기록하며\n나의 취향에 대해 알아 보세요."]
     
-    lazy var pageControl: CustomPageControl = {
-        let pageControl = CustomPageControl()
-        pageControl.numberOfPages = startImage.count
-        pageControl.currentPage = 0
-        return pageControl
-    }()
+    lazy var pageControl = CustomPageControl(indicatorColor: .white, currentIndicatorColor: .white).then {
+        $0.numberOfPages = startImage.count
+        $0.currentPage = 0
+    }
     
     private let startButton = CustomBlurButton(
         title: "시작하기",
@@ -25,13 +23,6 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate {
     ).then {
         $0.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
     }
-    //    private let startButton = CustomButton(
-    //        title: "로그인",
-    //        titleColor: .white,
-    //        backgroundColor: AppColor.purple100!
-    //    ).then {
-    //        $0.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
-    //    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()

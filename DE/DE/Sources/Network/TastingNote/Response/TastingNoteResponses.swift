@@ -3,36 +3,36 @@
 import Foundation
 
 public struct TastingNoteResponsesDTO : Decodable {
-    let noteId : Int
-    let wineId : Int
-    let wineName : String
-    let sort : String
-    let area : String
-    let imageUrl : String
-    let color : String
-    let tasteDate : String
-    let sugarContent : Int
-    let acidity : Int
-    let tannin : Int
-    let body : Int
-    let alcohol : Int
-    let noseMapList : [Int: String]
-    let satisfaction : Double
-    let review : String
+    public let noteId : Int
+    public let wineId : Int
+    public let wineName : String
+    public let sort : String
+    public let area : String
+    public let imageUrl : String
+    public let color : String
+    public let tasteDate : String
+    public let sugarContent : Int
+    public let acidity : Int
+    public let tannin : Int
+    public let body : Int
+    public let alcohol : Int
+    public let noseMapList : [[String: String]]
+    public let rating : Double
+    public let review : String
 }
 
 public struct AllTastingNoteResponseDTO : Decodable {
-    let total : Int
-    let red : Int
-    let white : Int
-    let sparkling : Int
-    let rose : Int
-    let etc : Int
-    let notePriviewList : [TastingNotePreviewResponseDTO]
+    public let total : Int
+    public let red : Int
+    public let white : Int
+    public let sparkling : Int
+    public let rose : Int
+    public let etc : Int
+    public let notePriviewList : [TastingNotePreviewResponseDTO]
 }
 
 public struct TastingNotePreviewResponseDTO : Decodable {
-    let noteId : Int
-    let wineName : String
-    let imageUrl : String
+    public let noteId : Int
+    public let wineName : String
+    public let imageUrl : String
 }

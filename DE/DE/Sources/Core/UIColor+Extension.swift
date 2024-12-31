@@ -10,15 +10,20 @@ public struct AppColor {
     static public let purple20 = UIColor(hex: "#E1CAE9")
     static public let purple10 = UIColor(hex: "#EEE1F0")
     
-    static public let gray100 = UIColor(hex: "#606060")
+    static public let gray100 = UIColor(hex: "#434343")
+    static public let gray90 = UIColor(hex: "#5D5D5D")
     static public let gray80 = UIColor(hex: "#A7A7A7")
-    static public let gray60 = UIColor(hex: "#C2C2C2")
+    static public let gray70 = UIColor(hex: "#7A7A7A")
+    static public let gray60 = UIColor(hex: "#DADADA")
+    static public let gray50 = UIColor(hex: "#ABABAB")
     static public let gray40 = UIColor(hex: "#E9E9E9")
-    static public let gray30 = UIColor(hex: "#F0F0F0")
+    static public let gray30 = UIColor(hex: "#D7D7D7")
     static public let gray20 = UIColor(hex: "#F8F8F8")
+    static public let gray10 = UIColor(hex: "#EAEAEA")
     
     static public let black = UIColor(hex: "#121212")
     static public let bgGray = UIColor(hex: "#F8F8FA")
+    static public let red = UIColor(hex: "FF2A2A")
 }
 
 public extension UIColor {

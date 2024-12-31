@@ -1,16 +1,16 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
-import Foundation
 import UIKit
+
 import SnapKit
+import Then
 
 public class CustomBlurButton: UIButton {
-    private let blurEffectView: UIVisualEffectView = {
-        let blurEffect = UIBlurEffect(style: .light)
-        let view = UIVisualEffectView(effect: blurEffect)
-        view.isUserInteractionEnabled = false // 터치 이벤트 전달 가능하도록 설정
-        return view
-    }()
+    private let blurEffectView = UIVisualEffectView().then {
+        $0.effect = UIBlurEffect(style: .light)
+        $0.isUserInteractionEnabled = false // 터치 이벤트 전달 가능하도록 설정
+    }
+    
     public init(
         title: String = "",
         titleColor: UIColor = .black,
@@ -18,20 +18,19 @@ public class CustomBlurButton: UIButton {
     ) {
         super.init(frame: .zero)
         
-        blurEffectView.effect = UIBlurEffect(style: blurStyle)
-        
         addSubview(blurEffectView)
+        blurEffectView.effect = UIBlurEffect(style: blurStyle)
         blurEffectView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         
-        self.setTitle(title, for: .normal)
-        self.setTitleColor(titleColor, for: .normal)
-        self.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
-        self.layer.cornerRadius = 15
-        self.clipsToBounds = true
-        
-        self.snp.makeConstraints { make in
+        self.then {
+            $0.setTitle(title, for: .normal)
+            $0.setTitleColor(titleColor, for: .normal)
+            $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+            $0.layer.cornerRadius = 15
+            $0.clipsToBounds = true
+        }.snp.makeConstraints { make in
             make.height.equalTo(60)
         }
     }
@@ -45,8 +44,10 @@ public class CustomBlurButton: UIButton {
         titleColor: UIColor,
         blurStyle: UIBlurEffect.Style
     ) {
-        self.setTitle(title, for: .normal)
-        self.setTitleColor(titleColor, for: .normal)
-        self.blurEffectView.effect = UIBlurEffect(style: blurStyle)
+        self.then {
+            $0.setTitle(title, for: .normal)
+            $0.setTitleColor(titleColor, for: .normal)
+            self.blurEffectView.effect = UIBlurEffect(style: blurStyle)
+        }
     }
 }

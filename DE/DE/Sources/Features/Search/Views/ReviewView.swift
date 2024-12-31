@@ -6,23 +6,28 @@ import Then
 
 class ReviewView: UIView {
     
-    public var score = 4.0
+    public var score = 4.0 {
+        didSet {
+            updateScore()
+        }
+    }
     
     private let title = TitleWithBarView(title: "Review", subTitle: "리뷰")
     
-    public lazy var scoreLabel = UILabel().then {
+    public func updateScore() {
         let text = "\(score) / 5.0"
-        $0.text = text
         let attributedString = NSMutableAttributedString(string: text)
         
+        // 전체 텍스트 스타일 설정
         attributedString.addAttributes(
             [
-                .foregroundColor: UIColor(hue: 0, saturation: 0, brightness: 0.6, alpha: 1.0),
+                .foregroundColor: AppColor.gray70!,
                 .font: UIFont.ptdRegularFont(ofSize: 12)
             ],
             range: NSRange(location: 0, length: text.count)
         )
         
+        // `score` 부분 스타일 설정
         if let range = text.range(of: "\(score)") {
             let nsRange = NSRange(range, in: text)
             attributedString.addAttributes(
@@ -33,14 +38,17 @@ class ReviewView: UIView {
                 range: nsRange
             )
         }
-        $0.attributedText = attributedString
+        
+        scoreLabel.attributedText = attributedString
     }
+    
+    public lazy var scoreLabel = UILabel()
     
     public lazy var moreBtn = UIButton().then {
         
         var configuration = UIButton.Configuration.plain()
         // 이미지 설정
-        configuration.image = UIImage(systemName: "chevron.forward")?.withRenderingMode(.alwaysOriginal).withTintColor(Constants.AppColor.gray60 ?? .gray)
+        configuration.image = UIImage(systemName: "chevron.forward")?.withRenderingMode(.alwaysOriginal).withTintColor(AppColor.gray50 ?? .gray)
         let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 10, weight: .regular) // 원하는 크기
         configuration.preferredSymbolConfigurationForImage = symbolConfiguration
         
@@ -49,7 +57,7 @@ class ReviewView: UIView {
 
         // 타이틀 속성 설정
         let attributes: AttributeContainer = AttributeContainer([
-            .font: UIFont.ptdMediumFont(ofSize: 12), .foregroundColor: Constants.AppColor.gray60 ?? .gray])
+            .font: UIFont.ptdMediumFont(ofSize: 12), .foregroundColor: AppColor.gray50 ?? .gray])
         configuration.attributedTitle = AttributedString("더보기", attributes: attributes)
         configuration.titleAlignment = .center
         configuration.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 2, bottom: 0, trailing: 0)
@@ -101,9 +109,13 @@ class ReviewView: UIView {
         
         reviewCollectionView.snp.makeConstraints {
             $0.top.equalTo(moreBtn.snp.bottom).offset(8)
-            $0.height.equalTo(262)
+            $0.height.equalTo(272)
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(24)
             $0.bottom.equalToSuperview()
         }
+    }
+    
+    public func configure(_ model: WineAverageReviewModel) {
+        score = model.avgMemberRating
     }
 }

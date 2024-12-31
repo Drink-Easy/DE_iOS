@@ -42,8 +42,8 @@ public final class AuthService : NetworkManager {
     }
     
     /// 유저 정보 데이터 구조 생성
-    public func makeUserInfoDTO(name: String, isNewBie: Bool, monthPrice: Int, wineSort: [String], wineArea: [String], wineVariety: [String], region: String) -> MemberRequestDTO {
-        return MemberRequestDTO(name: name, isNewBie: isNewBie, monthPrice: monthPrice, wineSort: wineSort, wineArea: wineArea, wineVariety: wineVariety, region: region)
+    public func makeUserInfoDTO(name: String, isNewBie: Bool, monthPrice: Int, wineSort: [String], wineArea: [String], region: String) -> MemberRequestDTO {
+        return MemberRequestDTO(name: name, isNewBie: isNewBie, monthPrice: monthPrice, wineSort: wineSort, wineArea: wineArea, region: region)
     }
 
     //MARK: - API funcs
