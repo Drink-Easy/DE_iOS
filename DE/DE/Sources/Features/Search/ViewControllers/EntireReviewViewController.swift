@@ -7,6 +7,7 @@ import Network
 
 class EntireReviewViewController: UIViewController {
     
+    let navigationBarManager = NavigationBarManager()
     var wineId: Int = 0
     var wineName: String = ""
     var reviewResults: [WineReviewModel] = []
@@ -15,19 +16,32 @@ class EntireReviewViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Constants.AppColor.grayBG
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+        self.navigationItem.largeTitleDisplayMode = .automatic
+        self.navigationController?.navigationBar.largeTitleTextAttributes = [
+            .font: UIFont.ptdSemiBoldFont(ofSize: 24),
+            .foregroundColor: AppColor.black!
+        ]
         
         addView()
         constraints()
         callEntireReviewAPI(wineId: self.wineId, orderByLatest: true)
+        setupNavigationBar()
     }
     
-    private lazy var topNameView = TopNameView().then {
-        $0.name.text = self.wineName
-        $0.backBtn.addTarget(self, action: #selector(goToBack), for: .touchUpInside)
+    private func setupNavigationBar() {
+        
+        self.title = wineName
+        
+        navigationBarManager.addBackButton(
+            to: navigationItem,
+            target: self,
+            action: #selector(prevVC),
+            tintColor: AppColor.gray70!
+        )
     }
     
-    @objc
-    private func goToBack() {
+    @objc func prevVC() {
         navigationController?.popViewController(animated: true)
     }
 
@@ -37,17 +51,13 @@ class EntireReviewViewController: UIViewController {
     }
     
     private func addView() {
-        [topNameView, entireReviewView].forEach{ view.addSubview($0) }
+        [entireReviewView].forEach{ view.addSubview($0) }
     }
     
     private func constraints() {
-        topNameView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide)
-            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
-        }
         
         entireReviewView.snp.makeConstraints {
-            $0.top.equalTo(topNameView.snp.bottom).offset(40)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(10)
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }

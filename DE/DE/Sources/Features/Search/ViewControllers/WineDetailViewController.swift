@@ -16,7 +16,6 @@ class WineDetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.isNavigationBarHidden = false
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationItem.largeTitleDisplayMode = .automatic
         self.navigationController?.navigationBar.largeTitleTextAttributes = [
@@ -49,12 +48,6 @@ class WineDetailViewController: UIViewController {
             action: #selector(tappedLiked),
             tintColor: AppColor.purple100!
         )
-        
-//        navigationBarManager.setTitle(
-//            to: navigationItem,
-//            title: wineName,
-//            textColor: AppColor.black!
-//        )
     }
     
     @objc func prevVC() {
@@ -142,6 +135,22 @@ class WineDetailViewController: UIViewController {
         }
     }
     
+    private func updateReviewView() {
+        if reviewData.isEmpty {
+            // 리뷰가 없을 때
+            reviewView.moreBtn.isHidden = true
+            reviewView.reviewCollectionView.isHidden = true
+            reviewView.scoreLabel.isHidden = true
+            reviewView.noReviewLabel.isHidden = false
+        } else {
+            // 리뷰가 있을 때
+            reviewView.moreBtn.isHidden = false
+            reviewView.reviewCollectionView.isHidden = false
+            reviewView.scoreLabel.isHidden = false
+            reviewView.noReviewLabel.isHidden = true
+        }
+    }
+    
     func transformResponseData(_ responseData : WineResponseWithThreeReviewsDTO) {
         let wineResponse = responseData.wineResponseDTO
         self.wineId = wineResponse.wineId
@@ -156,17 +165,18 @@ class WineDetailViewController: UIViewController {
         
         DispatchQueue.main.async {
             self.setupNavigationBar() // 제목 설정
+            self.updateReviewView()
         }
         
         //let topData = WineDetailTopModel(isLiked: wineResponse.liked, wineName: wineResponse.name)
         let infoData = WineDetailInfoModel(image: wineResponse.imageUrl, sort: wineResponse.sort, area: wineResponse.area)
         let rateData = WineViVinoRatingModel(vivinoRating: wineResponse.vivinoRating)
-        let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString)
+        let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString, avgSugarContent: wineResponse.avgSugarContent, avgAcidity: wineResponse.avgAcidity, avgTannin: wineResponse.avgTannin, avgBody: wineResponse.avgBody, avgAlcohol: wineResponse.avgAlcohol)
         let reviewData = WineAverageReviewModel(avgMemberRating: wineResponse.avgMemberRating)
         if let reviewResponse = responseData.recentReviews {
             for data in reviewResponse {
                 if let name = data.name,
-                       let review = data.review,
+                   let review = data.review,
                    let rating = data.rating,
                    let createdAt = data.createdAt {
                     let reviewModel = WineReviewModel(name: name, contents: review, rating: rating, createdAt: createdAt)

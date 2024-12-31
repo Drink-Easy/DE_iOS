@@ -176,7 +176,6 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                         self.popularWineDataList.append(wine)
                     }
                     self.popularWineListView.recomCollectionView.reloadData()
-                    
                     // 데이터 잘 들어오는지 확인
                     print("Popular Wines Count: \(self.popularWineDataList.count)")
                 }

@@ -12,6 +12,13 @@ class ReviewView: UIView {
         }
     }
     
+    public lazy var noReviewLabel = UILabel().then {
+        $0.text = "작성된 리뷰가 없습니다."
+        $0.textColor = AppColor.gray70
+        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.isHidden = true
+    }
+    
     private let title = TitleWithBarView(title: "Review", subTitle: "리뷰")
     
     public func updateScore() {
@@ -87,7 +94,7 @@ class ReviewView: UIView {
     }
     
     private func addComponents() {
-        [title, moreBtn, reviewCollectionView].forEach{ self.addSubview($0) }
+        [title, moreBtn, reviewCollectionView, noReviewLabel].forEach{ self.addSubview($0) }
         title.addSubview(scoreLabel)
     }
     
@@ -112,6 +119,11 @@ class ReviewView: UIView {
             $0.height.equalTo(272)
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(24)
             $0.bottom.equalToSuperview()
+        }
+        
+        noReviewLabel.snp.makeConstraints {
+            $0.top.equalTo(title.snp.bottom).offset(16)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
         }
     }
     
