@@ -8,31 +8,21 @@ final class ValidationManager {
     
     // MARK: - Properties
     var isUsernameValid = false
-    var isEmailValid = false
     var isPasswordValid = false
     var isConfirmPasswordValid = false
     var isTermsAgreeValid = false
     
     // MARK: - Validation Methods
+    
     func validateUsername(_ view: CustomLabelTextFieldView) -> Bool {
         guard let username = view.text, !username.isEmpty else {
-            showValidationError(view, message: "이름을 입력해 주세요")
-            showValidationError(view, message: "이름을 입력해 주세요")
-            return false
-        }
-        hideValidationError(view)
-        return true
-    }
-    
-    func validateEmail(_ view: CustomLabelTextFieldView) -> Bool {
-        guard let email = view.text, !email.isEmpty else {
-            showValidationError(view, message: "이메일을 입력해 주세요")
+            showValidationError(view, message: "아이디를 입력해 주세요")
             return false
         }
         
-        // 이메일 형식 확인
-        if !isValidEmail(email) {
-            showValidationError(view, message: "유효하지 않은 이메일 형식입니다")
+        // 아이디 형식 확인
+        if !isValidUserName(username) {
+            showValidationError(view, message: "유효하지 않은 아이디 형식입니다")
             return false
         }
         hideValidationError(view)
@@ -58,10 +48,12 @@ final class ValidationManager {
     }
     
     // MARK: - 정규식 함수
-    func isValidEmail(_ email: String) -> Bool {
-        let emailRegex = "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
-        let emailPred = NSPredicate(format: "SELF MATCHES %@", emailRegex)
-        return emailPred.evaluate(with: email)
+    func isValidUserName(_ username: String) -> Bool {
+        //TODO: 함수 주석 해제 필요
+//        let usernameRegex = "^[a-z0-9]{8,20}$"
+        let usernameRegex = ".*"
+        let usernamePred = NSPredicate(format: "SELF MATCHES %@", usernameRegex)
+        return usernamePred.evaluate(with: username)
     }
     
     func isValidPassword(_ password: String) -> Bool {

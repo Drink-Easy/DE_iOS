@@ -24,6 +24,11 @@ public class SelectLoginTypeVC: UIViewController {
     private let mainView = SelectLoginTypeView()
     
     // MARK: - Life Cycle
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
     public override func loadView() {
         self.view = mainView
     }
@@ -98,7 +103,8 @@ public class SelectLoginTypeVC: UIViewController {
     }
     
     @objc private func joinButtonTapped() {
-        let joinViewController = SignUpVC()
+//        let joinViewController = SignUpVC()
+        let joinViewController = TermsOfServiceVC()
         navigationController?.pushViewController(joinViewController, animated: true)
     }
     
