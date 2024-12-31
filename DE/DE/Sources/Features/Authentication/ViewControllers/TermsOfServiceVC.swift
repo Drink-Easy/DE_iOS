@@ -80,10 +80,10 @@ class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegat
             view.addSubview($0)
         }
         
-        for index in 0..<4 {
-            let title = ["개인정보 수집 및 이용 동의 (필수)", "위치정보 이용약관 (필수)", "서비스 이용약관 (필수)", "마케팅 정보 야간 수신 동의  (선택)"][index]
+        for index in 0..<3 {
+            let title = ["개인정보 수집 및 이용 동의 (필수)", "위치정보 이용약관 (필수)", "서비스 이용약관 (필수)"][index]
             //TODO: pdf 추가 & 이름 설정
-            let pdfName = ["privacy_policy", "location", "service", "marketing"][index]
+            let pdfName = ["privacy_policy", "location", "service"][index]
             let agreeView = createAgreeView(title: title, pdfName: pdfName, index: index)
             
             agreeItems.append(agreeView)
@@ -119,8 +119,6 @@ class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegat
                 
                 if index == 0 {
                     make.top.equalTo(dividerView.snp.bottom).offset(20) // 첫 번째 뷰의 제약 조건
-                } else if index == 3 {
-                    make.top.equalTo(agreeItems[index - 1].snp.bottom).offset(50)
                 } else {
                     make.top.equalTo(agreeItems[index - 1].snp.bottom).offset(10) // 이전 뷰의 아래쪽에 위치
                 }
