@@ -42,7 +42,7 @@ class SignUpView: UIView {
     let signupButton = CustomButton(
         title: "회원가입",
         titleColor: .white,
-        backgroundColor: AppColor.gray80!
+        backgroundColor: AppColor.gray30!
     ).then {
         $0.isEnabled = false
     }

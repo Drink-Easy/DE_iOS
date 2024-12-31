@@ -53,7 +53,7 @@ class LoginVC: UIViewController {
             to: navigationItem,
             target: self,
             action: #selector(backButtonTapped),
-            tintColor: AppColor.gray80!
+            tintColor: AppColor.gray70!
         )
     }
     
@@ -93,7 +93,7 @@ class LoginVC: UIViewController {
         validationManager.isPasswordValid
         
         loginView.loginButton.isEnabled = isValid
-        loginView.loginButton.backgroundColor = isValid ? AppColor.purple100 : AppColor.gray80
+        loginView.loginButton.backgroundColor = isValid ? AppColor.purple100 : AppColor.gray30
     }
     
     @objc private func idSaveCheckBoxTapped() {

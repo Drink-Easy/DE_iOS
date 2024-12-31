@@ -74,7 +74,6 @@ class TermsAgreeView: UIView {
     
     // MARK: - Methods
     @objc private func toggleButtonTapped() {
-        print("toggleButtonTapped")
         isChecked.toggle()
         updateToggleButton()
         onStateChange?(isChecked)

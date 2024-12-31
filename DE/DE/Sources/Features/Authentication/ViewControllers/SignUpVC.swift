@@ -43,7 +43,7 @@ class SignUpVC: UIViewController {
             to: navigationItem,
             target: self,
             action: #selector(backButtonTapped),
-            tintColor: AppColor.gray80!
+            tintColor: AppColor.gray70!
         )
     }
     
@@ -99,7 +99,7 @@ class SignUpVC: UIViewController {
         validationManager.isConfirmPasswordValid
         
         signUpView.signupButton.isEnabled = isValid
-        signUpView.signupButton.backgroundColor = isValid ? AppColor.purple100 : AppColor.gray80
+        signUpView.signupButton.backgroundColor = isValid ? AppColor.purple100 : AppColor.gray30
     }
     
     @objc private func backButtonTapped() {

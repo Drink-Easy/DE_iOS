@@ -103,8 +103,7 @@ public class SelectLoginTypeVC: UIViewController {
     }
     
     @objc private func joinButtonTapped() {
-//        let joinViewController = SignUpVC()
-        let joinViewController = TermsOfServiceVC()
+        let joinViewController = SignUpVC()
         navigationController?.pushViewController(joinViewController, animated: true)
     }
     
