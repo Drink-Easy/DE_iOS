@@ -92,7 +92,6 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         [homeTopView, scrollView].forEach{ view.addSubview($0) }
         scrollView.addSubview(contentView)
         [adCollectionView, pageControl, likeWineListView, popularWineListView].forEach{ contentView.addSubview($0) }
-        
         homeTopView.delegate = self
     }
     
@@ -171,24 +170,23 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         return wines.map { toHomeWineModel($0) }
     }
     
-    // 와인 데이터 불러오기
     func fetchWines(type: WineListType) {
         Task {
             // 1. 캐시 데이터 확인
             let cachedWines = await WineDataManager.shared.fetchWines(type: type)
             if !cachedWines.isEmpty {
                 print("✅ 캐시된 \(type.rawValue) 데이터 사용: \(cachedWines.count)개")
-                updateCollectionView(type: type, with: cachedWines)
+                updateCollectionView(type: type, with: cachedWines) // 👉 바로 업데이트
                 return
             }
-
-            // 2. 네트워크 요청 함수 호출
-            fetchWinesFromNetwork(type: type)
+            
+            // 2. 네트워크 요청 처리
+            await fetchWinesFromNetwork(type: type)
         }
     }
 
     // MARK: - 네트워크 요청 처리
-    private func fetchWinesFromNetwork(type: WineListType) {
+    private func fetchWinesFromNetwork(type: WineListType) async {
         let fetchFunction: (@escaping (Result<[HomeWineDTO], NetworkError>) -> Void) -> Void
 
         switch type {
@@ -198,35 +196,45 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
             fetchFunction = networkService.fetchPopularWines
         }
 
-        fetchFunction { [weak self] result in
-            guard let self = self else { return }
+        await withCheckedContinuation { continuation in
+            fetchFunction { [weak self] result in
+                guard let self = self else { return }
 
-            switch result {
-            case .success(let responseData):
-                Task {
-                    let wines = responseData.map {
-                        WineData(wineId: $0.wineId,
-                                 imageUrl: $0.imageUrl,
-                                 wineName: $0.wineName,
-                                 sort: $0.sort,
-                                 price: $0.price,
-                                 vivinoRating: $0.vivinoRating)
+                switch result {
+                case .success(let responseData):
+                    Task {
+                        await self.processWineData(type: type, responseData: responseData)
+                        continuation.resume()
                     }
-                    
-                    do {
-                        try await WineDataManager.shared.deleteWineList(type: type)
-                        try await WineDataManager.shared.saveWines(wines, type: type)
-                        print("✅ \(type.rawValue) 저장 완료: \(wines.count)개")
-                        self.updateCollectionView(type: type, with: wines)
-                    } catch {
-                        print("❌ 데이터 저장 중 오류 발생: \(error)")
-                    }
-                } // : Task
-            case .failure(let error):
-                print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
-            } // : switch
-        } // : closure
-    } // : func
+                case .failure(let error):
+                    print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
+                    continuation.resume()
+                }
+            }
+        }
+    }
+    
+    private func processWineData(type: WineListType, responseData: [HomeWineDTO]) async {
+        let wines = responseData.map {
+            WineData(wineId: $0.wineId,
+                     imageUrl: $0.imageUrl,
+                     wineName: $0.wineName,
+                     sort: $0.sort,
+                     price: $0.price,
+                     vivinoRating: $0.vivinoRating)
+        }
+        
+        do {
+            // 1. 기존 데이터 삭제 및 저장
+            try await WineDataManager.shared.deleteWineList(type: type)
+            try await WineDataManager.shared.saveWines(wines, type: type)
+            print("✅ \(type.rawValue) 저장 완료: \(wines.count)개")
+            
+            updateCollectionView(type: type, with: wines)
+        } catch {
+            print("❌ 데이터 저장 중 오류 발생: \(error)")
+        }
+    }
     
     private func updateLikeWineListView() {
         likeWineListView.title.text = "\(userName) 님이 좋아할 만한 와인"
@@ -246,6 +254,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
 
 extension HomeViewController: UIScrollViewDelegate {
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard scrollView == adCollectionView else { return }
         
         let pageIndex = Int(scrollView.contentOffset.x / view.frame.width)
         pageControl.currentPage = pageIndex
@@ -263,6 +272,13 @@ extension HomeViewController: UIScrollViewDelegate {
 }
 
 extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    public func collectionView(_ collectionView: UICollectionView, didEndDecelerating scrollView: UIScrollView) {
+        if collectionView.tag == 0 { // ✅ 광고 컬렉션 뷰만 반응
+            let pageIndex = Int(scrollView.contentOffset.x / scrollView.frame.width)
+            pageControl.currentPage = pageIndex
+        }
+    }
+    
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView.tag == 0 {
             return adImage.count

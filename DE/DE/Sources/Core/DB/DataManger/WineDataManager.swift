@@ -26,7 +26,7 @@ public final class WineDataManager {
             try deleteWineList(type: type)
             
             // 2. 새로운 WineList 생성
-            let newList = WineList(type: type)
+            let newList = WineList(type: type.rawValue)
             newList.wines.append(contentsOf: wines) // 관계 추가
             
             context.insert(newList) // 저장
@@ -42,16 +42,18 @@ public final class WineDataManager {
     @MainActor
     public func fetchWines(type: WineListType) -> [WineData] {
         let context = container.mainContext
+        let descriptor = FetchDescriptor<WineList>(
+            predicate: #Predicate { $0.type == type.rawValue } // ✅ String으로 비교
+        )
         
         do {
-            // 지정된 타입의 WineList 조회
-            let descriptor = FetchDescriptor<WineList>(predicate: #Predicate { $0.type == type })
-            if let list = try context.fetch(descriptor).first {
-                return list.wines // 저장된 와인 리스트 반환
+            if let wineList = try context.fetch(descriptor).first {
+                return wineList.wines // ✅ 저장된 와인 리스트 반환
+            } else {
+                return []
             }
-            return [] // 저장된 데이터가 없는 경우 빈 배열 반환
         } catch {
-            print("\(type.rawValue) 와인 조회 실패: \(error)")
+            print("❌ \(type.rawValue) 조회 실패: \(error)")
             return []
         }
     }
@@ -61,15 +63,16 @@ public final class WineDataManager {
     @MainActor
     public func deleteWineList(type: WineListType) throws {
         let context = container.mainContext
+        let descriptor = FetchDescriptor<WineList>(
+            predicate: #Predicate { $0.type == type.rawValue } // ✅ String으로 비교
+        )
+        let wineLists = try context.fetch(descriptor)
         
-        // WineList 조회 및 삭제
-        let descriptor = FetchDescriptor<WineList>(predicate: #Predicate { $0.type == type })
-        let lists = try context.fetch(descriptor)
-        for list in lists {
+        for list in wineLists {
             context.delete(list)
         }
         try context.save()
-        print("\(type.rawValue) 와인 데이터 초기화 완료!")
+        print("✅ \(type.rawValue) 삭제 완료!")
     }
     
     // MARK: - 전체 데이터 초기화

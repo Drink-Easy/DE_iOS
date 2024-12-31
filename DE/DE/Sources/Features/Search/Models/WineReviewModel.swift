@@ -50,7 +50,6 @@ struct WineViVinoRatingModel {
 
 struct WineAverageTastingNoteModel {
     let wineNoseText: String
-    let 
     
     init(wineNoseText: String = "") {
         self.wineNoseText = wineNoseText

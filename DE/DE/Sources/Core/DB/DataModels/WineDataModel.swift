@@ -4,8 +4,8 @@ import Foundation
 import SwiftData
 
 public enum WineListType: String, Codable {
-    case recommended
-    case popular
+    case recommended = "recommended"
+    case popular = "popular"
 }
 
 @Model // SwiftData 모델 선언
@@ -29,10 +29,10 @@ public class WineData {
 
 @Model
 public class WineList {
-    var type: WineListType // 추천 또는 인기 구분
+    var type: String // 추천 또는 인기 구분
     var wines : [WineData] = []
     
-    public init(type: WineListType) {
+    public init(type: String) {
         self.type = type
     }
 }
