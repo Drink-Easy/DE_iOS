@@ -106,7 +106,7 @@ public class WineSearchMainVC : UIViewController, UISearchBarDelegate, UITableVi
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = TastedDateViewController()
+        let vc = TastedDateViewController(wineName: wineResults[indexPath.row].wineName)
         UserDefaults.standard.set(wineResults[indexPath.row].wineId, forKey: "wineId")
         print("와인id 저장됨: \(wineResults[indexPath.row].wineId)")
         navigationController?.pushViewController(vc, animated: true)

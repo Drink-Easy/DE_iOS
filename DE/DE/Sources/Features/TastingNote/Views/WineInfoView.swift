@@ -3,6 +3,7 @@
 import UIKit
 import CoreModule
 import Cosmos
+import Network
 
 public class WineInfoView: UIView {
     
@@ -17,7 +18,7 @@ public class WineInfoView: UIView {
         return c
     }()
     
-    private let wineName: UILabel = {
+    lazy var wineName: UILabel = {
         let w = UILabel()
         w.text = "루이 로드레 크리스탈 2015"
         w.textColor = .black
@@ -26,15 +27,14 @@ public class WineInfoView: UIView {
         return w
     }()
     
-    private let wineImage: UIImageView = {
+    lazy var wineImage: UIImageView = {
         let w = UIImageView()
         w.contentMode = .scaleToFill
-        w.image = UIImage(named: "wine1")
         w.layer.cornerRadius = 14
         return w
     }()
     
-    private let descriptionView = DescriptionUIView().then {
+    lazy var descriptionView = DescriptionUIView().then {
         $0.layer.cornerRadius = 14
         $0.backgroundColor = .white
     }
@@ -68,8 +68,17 @@ public class WineInfoView: UIView {
     private let rateLabel: UILabel = {
         let r = UILabel()
         r.text = "Rate"
-        r.font = UIFont.ptdBoldFont(ofSize: 14)
+        r.font = UIFont.ptdBoldFont(ofSize: 20)
         return r
+    }()
+    
+    let changeRate: UILabel = {
+        let c = UILabel()
+        c.text = "수정하기"
+        c.font = .ptdRegularFont(ofSize: 12)
+        c.textColor = AppColor.gray90
+        c.isUserInteractionEnabled = true
+        return c
     }()
     
     private let rateVector: UIView = {
@@ -101,9 +110,18 @@ public class WineInfoView: UIView {
     private let tastingNoteLabel: UILabel = {
         let t = UILabel()
         t.text = "Tasting Notes"
-        t.font = UIFont.ptdBoldFont(ofSize: 14)
+        t.font = UIFont.ptdBoldFont(ofSize: 20)
         t.textColor = .black
         return t
+    }()
+    
+    let changeNoseLabel: UILabel = {
+        let c = UILabel()
+        c.text = "수정하기"
+        c.font = .ptdRegularFont(ofSize: 12)
+        c.textColor = AppColor.gray90
+        c.isUserInteractionEnabled = true
+        return c
     }()
     
     private let tastingNoteVector: UIView = {
@@ -112,56 +130,38 @@ public class WineInfoView: UIView {
         return t
     }()
     
-    private let aromaLabel: UILabel = {
+    private let noseLabel: UILabel = {
         let a = UILabel()
-        a.text = "Aroma"
+        a.text = "Nose"
         a.textColor = .black
-        a.font = UIFont.ptdSemiBoldFont(ofSize: 13)
+        a.font = UIFont.ptdSemiBoldFont(ofSize: 16)
         a.textAlignment = .center
         return a
     }()
     
-    private let aromaDescriptionLabel: UILabel = {
+    private let noseDescriptionLabel: UILabel = {
         let a = UILabel()
         a.text = "API"
-        a.textColor = .black
-        a.font = UIFont.ptdSemiBoldFont(ofSize: 11)
+        a.textColor = AppColor.gray70
+        a.font = UIFont.ptdSemiBoldFont(ofSize: 14)
         a.textAlignment = .center
         return a
     }()
     
-    private let tasteLabel: UILabel = {
+    private let paleteLabel: UILabel = {
         let a = UILabel()
-        a.text = "Taste"
+        a.text = "Palete"
         a.textColor = .black
-        a.font = UIFont.ptdSemiBoldFont(ofSize: 13)
+        a.font = UIFont.ptdSemiBoldFont(ofSize: 16)
         a.textAlignment = .center
         return a
     }()
     
-    private let tasteDescriptionLabel: UILabel = {
-        let a = UILabel()
-        a.text = "API"
-        a.textColor = .black
-        a.font = UIFont.ptdSemiBoldFont(ofSize: 11)
-        a.textAlignment = .center
-        return a
-    }()
-    
-    private let finishLabel: UILabel = {
-        let a = UILabel()
-        a.text = "Finish"
-        a.textColor = .black
-        a.font = UIFont.ptdSemiBoldFont(ofSize: 13)
-        a.textAlignment = .center
-        return a
-    }()
-    
-    private let finishDescriptionLabel: UILabel = {
+    private let paleteDescriptionLabel: UILabel = {
         let a = UILabel()
         a.text = "API"
-        a.textColor = .black
-        a.font = UIFont.ptdSemiBoldFont(ofSize: 11)
+        a.textColor = AppColor.gray70
+        a.font = UIFont.ptdSemiBoldFont(ofSize: 14)
         a.textAlignment = .center
         return a
     }()
@@ -170,9 +170,17 @@ public class WineInfoView: UIView {
         let r = UILabel()
         r.text = "Review"
         r.textColor = .black
-        r.font = UIFont.ptdSemiBoldFont(ofSize: 14)
+        r.font = UIFont.ptdSemiBoldFont(ofSize: 20)
         r.textAlignment = .center
         return r
+    }()
+    
+    let dateLabel: UILabel = {
+        let d = UILabel()
+        d.textColor = AppColor.gray70
+        d.font = .ptdMediumFont(ofSize: 10)
+        d.textAlignment = .center
+        return d
     }()
     
     private let reviewVector: UIView = {
@@ -184,8 +192,8 @@ public class WineInfoView: UIView {
     private let reviewDescription: UILabel = {
         let r = UILabel()
         r.text = "API"
-        r.textColor = .black
-        r.font = UIFont.ptdMediumFont(ofSize: 11)
+        r.textColor = AppColor.gray90
+        r.font = UIFont.ptdMediumFont(ofSize: 14)
         r.textAlignment = .center
         return r
     }()
@@ -195,7 +203,7 @@ public class WineInfoView: UIView {
         addSubview(scrollView)
         
         scrollView.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide)
+            make.top.equalTo(safeAreaLayoutGuide).offset(10)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
@@ -285,7 +293,7 @@ public class WineInfoView: UIView {
         
         graphView.addSubview(tastingNoteLabel)
         tastingNoteLabel.snp.makeConstraints { make in
-            make.top.equalTo(ratingLabel).offset(38)
+            make.top.equalTo(ratingLabel).offset(41)
             make.leading.equalTo(ratingLabel.snp.leading)
         }
         
@@ -296,46 +304,40 @@ public class WineInfoView: UIView {
             make.height.equalTo(1)
         }
         
-        graphView.addSubview(aromaLabel)
-        aromaLabel.snp.makeConstraints { make in
+        graphView.addSubview(noseLabel)
+        noseLabel.snp.makeConstraints { make in
             make.top.equalTo(tastingNoteVector.snp.bottom).offset(12)
             make.leading.equalTo(tastingNoteVector.snp.leading).offset(7.94)
         }
         
-        graphView.addSubview(aromaDescriptionLabel)
-        aromaDescriptionLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(aromaLabel.snp.centerY)
-            make.leading.equalTo(aromaLabel.snp.trailing).offset(19.17)
+        graphView.addSubview(noseDescriptionLabel)
+        noseDescriptionLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(noseLabel.snp.centerY)
+            make.leading.equalTo(noseLabel.snp.trailing).offset(19.17)
         }
         
-        graphView.addSubview(tasteLabel)
-        tasteLabel.snp.makeConstraints { make in
-            make.top.equalTo(aromaLabel.snp.bottom).offset(19)
-            make.leading.equalTo(aromaLabel.snp.leading)
+        graphView.addSubview(paleteLabel)
+        paleteLabel.snp.makeConstraints { make in
+            make.top.equalTo(noseLabel.snp.bottom).offset(19)
+            make.leading.equalTo(noseLabel.snp.leading)
         }
         
-        graphView.addSubview(tasteDescriptionLabel)
-        tasteDescriptionLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(tasteLabel.snp.centerY)
-            make.leading.equalTo(aromaDescriptionLabel.snp.leading)
-        }
-        
-        graphView.addSubview(finishLabel)
-        finishLabel.snp.makeConstraints { make in
-            make.top.equalTo(tasteLabel.snp.bottom).offset(19)
-            make.leading.equalTo(tasteLabel.snp.leading)
-        }
-        
-        graphView.addSubview(finishDescriptionLabel)
-        finishDescriptionLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(finishLabel.snp.centerY)
-            make.leading.equalTo(tasteDescriptionLabel.snp.leading)
+        graphView.addSubview(paleteDescriptionLabel)
+        paleteDescriptionLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(paleteLabel.snp.centerY)
+            make.leading.equalTo(noseDescriptionLabel.snp.leading)
         }
         
         graphView.addSubview(reviewLabel)
         reviewLabel.snp.makeConstraints { make in
-            make.top.equalTo(finishLabel).offset(33)
+            make.top.equalTo(paleteLabel).offset(43)
             make.leading.equalTo(tastingNoteLabel)
+        }
+        
+        graphView.addSubview(dateLabel)
+        dateLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(reviewLabel.snp.centerY)
+            make.leading.equalTo(reviewLabel.snp.trailing).offset(8)
         }
         
         graphView.addSubview(reviewVector)
@@ -355,6 +357,32 @@ public class WineInfoView: UIView {
             make.bottom.equalTo(graphView.snp.bottom).offset(31)
         }
         
+    }
+    
+    func updateUI(_ data: TastingNoteResponsesDTO) {
+        wineName.text = data.wineName
+        wineImage.sd_setImage(with: URL(string: data.imageUrl), placeholderImage: UIImage())
+        descriptionView.kindDescription.text = data.sort
+        // descriptionView.breedDescription.text = data.
+        descriptionView.fromDescription.text = data.area
+        ratingButton.rating = data.rating
+        updateRatingLabel(with: data.rating)
+        dateLabel.text = data.tasteDate
+        reviewDescription.text = data.review
+        noseDescriptionLabel.text = data.noseMapList.compactMap { $0.values.first }.joined(separator: ", ")
+        
+        let chartData = [
+            RadarChartData(type: .sweetness, value: data.sugarContent),
+            RadarChartData(type: .acid, value: data.acidity),
+            RadarChartData(type: .tannin, value: data.tannin),
+            RadarChartData(type: .bodied, value: data.body),
+            RadarChartData(type: .alcohol, value: data.alcohol)
+        ]
+        polygonChart.dataList = chartData
+    }
+    
+    private func updateRatingLabel(with rating: Double) {
+        ratingLabel.text = String(format: "%.1f / 5.0", rating)
     }
     
     override init(frame: CGRect) {
