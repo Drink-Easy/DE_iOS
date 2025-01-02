@@ -21,7 +21,7 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
         $0.numberOfLines = 0
     }
     
-    let startButton = CustomButton(
+    let nextButton = CustomButton(
         title: "다음",
         titleColor: .white,
         isEnabled: false
@@ -63,7 +63,7 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
     
     // MARK: UI Component 설정
     func setupUI() {
-        [headerLabel, profileView, startButton].forEach {
+        [headerLabel, profileView, nextButton].forEach {
             view.addSubview($0)
         }
     }
@@ -78,8 +78,8 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(Constants.superViewHeight * 0.5)
         }
-        startButton.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().offset(-40)
+        nextButton.snp.makeConstraints { make in
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-40)
             make.leading.trailing.equalToSuperview().inset(24)
         }
     }
@@ -89,6 +89,7 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
         profileView.nicknameTextField.textField.addTarget(self, action: #selector(checkFormValidity), for: .editingDidEnd)
         profileView.myLocationTextField.textField.addTarget(self, action: #selector(checkFormValidity), for: .editingDidEnd)
         profileView.locationImageIconButton.addTarget(self, action: #selector(getMyLocation), for: .touchUpInside)
+        nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
     }
     
     //MARK: Functions
@@ -96,7 +97,7 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func startButtonTapped() {
+    @objc func nextButtonTapped() {
         //TODO: 취향 찾기 뷰컨 연결
     }
     
@@ -133,8 +134,8 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
         print(isImageSelected)
         let isFormValid = isNicknameValid && isLocationValid && isImageSelected
 
-        startButton.isEnabled = isFormValid
-        startButton.isEnabled(isEnabled: isFormValid)
+        nextButton.isEnabled = isFormValid
+        nextButton.isEnabled(isEnabled: isFormValid)
     }
 }
 

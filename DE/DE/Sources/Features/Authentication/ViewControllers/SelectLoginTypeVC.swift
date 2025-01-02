@@ -103,13 +103,13 @@ public class SelectLoginTypeVC: UIViewController {
     }
     
     @objc private func joinButtonTapped() {
-        let joinViewController = GetProfileVC()
+        let joinViewController = SignUpVC()
         navigationController?.pushViewController(joinViewController, animated: true)
     }
     
     func goToNextView(_ isFirstLogin: Bool) {
         if isFirstLogin {
-            let enterTasteTestViewController = TestVC()
+            let enterTasteTestViewController = WelcomeVC()
             navigationController?.pushViewController(enterTasteTestViewController, animated: true)
         } else {
             let homeViewController = MainTabBarController()
