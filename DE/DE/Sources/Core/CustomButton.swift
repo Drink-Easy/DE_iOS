@@ -8,12 +8,12 @@ open class CustomButton: UIButton {
     public init(
         title: String = "",
         titleColor: UIColor = .black,
-        backgroundColor: UIColor = .white
+        isEnabled: Bool = true
     ) {
         super.init(frame: .zero)
         self.setTitle(title, for: .normal)
         self.setTitleColor(titleColor, for: .normal)
-        self.backgroundColor = backgroundColor
+        self.backgroundColor = isEnabled ? AppColor.purple100 : AppColor.gray30
         
         self.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         self.layer.cornerRadius = 15
@@ -27,9 +27,13 @@ open class CustomButton: UIButton {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func configure(title: String, titleColor: UIColor, backgroundColor: UIColor) {
+    public func configure(title: String, titleColor: UIColor, isEnabled: Bool) {
         self.setTitle(title, for: .normal)
         self.setTitleColor(titleColor, for: .normal)
-        self.backgroundColor = backgroundColor
+        self.backgroundColor = isEnabled ? AppColor.purple100 : AppColor.gray30
+    }
+    
+    public func isEnabled(isEnabled: Bool){
+        self.backgroundColor = isEnabled ? AppColor.purple100 : AppColor.gray30
     }
 }

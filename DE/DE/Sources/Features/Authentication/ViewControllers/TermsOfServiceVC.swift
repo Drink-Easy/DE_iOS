@@ -1,5 +1,10 @@
+// Copyright © 2024 DRINKIG. All rights reserved
+
 import UIKit
+
 import SnapKit
+import Then
+
 import CoreModule
 
 class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegate {
@@ -13,26 +18,22 @@ class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegat
     private var agreeItems: [TermsAgreeView] = []
     
     // MARK: - UI Components
-    private let subHeaderLabel: UILabel = {
-        let label = UILabel()
-        label.text = "사용자의 더 특별한 경험을 위해\n약관 동의가 필요합니다."
-        label.font = UIFont.ptdSemiBoldFont(ofSize: 24)
-        label.textAlignment = .left
-        label.numberOfLines = 0
-        return label
-    }()
-    
+    private let subHeaderLabel = UILabel().then {
+        $0.text = "사용자의 더 특별한 경험을 위해\n약관 동의가 필요합니다."
+        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.textAlignment = .left
+        $0.numberOfLines = 0
+    }
+
     private let allTitleLabel = UILabel().then {
         $0.text = "전체 약관 동의"
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
         $0.textColor = .black
     }
-    
-    private let dividerView: UIView = {
-        let view = UIView()
-        view.backgroundColor = AppColor.gray30
-        return view
-    }()
+
+    private let dividerView = UIView().then {
+        $0.backgroundColor = AppColor.gray30
+    }
     
     private let allToggleButton = UIButton(type: .system).then {
         $0.tintColor = AppColor.gray30
@@ -43,7 +44,7 @@ class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegat
     private let startButton = CustomButton(
         title: "시작하기",
         titleColor: .white,
-        backgroundColor: AppColor.gray30!
+        isEnabled: false
     ).then {
         $0.isEnabled = false
         $0.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
@@ -164,7 +165,7 @@ class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegat
     private func updateStartButtonState() {
         let allRequiredAgreed = agreements.prefix(3).allSatisfy { $0 }
         startButton.isEnabled = allRequiredAgreed
-        startButton.backgroundColor = allRequiredAgreed ? AppColor.purple100! : AppColor.gray30!
+        startButton.isEnabled(isEnabled: allRequiredAgreed)
     }
     
     @objc private func startButtonTapped() {

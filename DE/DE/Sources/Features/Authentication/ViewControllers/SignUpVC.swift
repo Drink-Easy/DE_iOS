@@ -99,7 +99,7 @@ class SignUpVC: UIViewController {
         validationManager.isConfirmPasswordValid
         
         signUpView.signupButton.isEnabled = isValid
-        signUpView.signupButton.backgroundColor = isValid ? AppColor.purple100 : AppColor.gray30
+        signUpView.signupButton.isEnabled(isEnabled: isValid)
     }
     
     @objc private func backButtonTapped() {

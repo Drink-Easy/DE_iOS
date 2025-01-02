@@ -59,7 +59,7 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
     let startButton = CustomButton(
         title: "시작하기",
         titleColor: .white,
-        backgroundColor: AppColor.gray30!
+        isEnabled: false
     ).then {
         $0.isEnabled = false
     }
