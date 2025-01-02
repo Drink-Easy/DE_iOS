@@ -98,7 +98,7 @@ public class SelectLoginTypeVC: UIViewController {
     }
     
     @objc private func joinButtonTapped() {
-        let joinViewController = SignUpVC()
+        let joinViewController = GetProfileVC()
         navigationController?.pushViewController(joinViewController, animated: true)
     }
     

@@ -1,4 +1,4 @@
-// Copyright © 2024 RT4. All rights reserved
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
 import CoreModule
