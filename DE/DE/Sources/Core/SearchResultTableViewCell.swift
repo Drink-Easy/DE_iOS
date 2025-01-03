@@ -126,14 +126,31 @@ public class SearchResultTableViewCell: UITableViewCell {
         }
     }
     
-    public func configure(model: SearchResultModel) {
+    public func configure(model: SearchResultModel, highlightText: String? = nil) {
         if let url = URL(string: model.imageURL) {
             image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
         } else {
             image.image = UIImage(named: "placeholder")
         }
-        name.text = model.wineName
+        
+        //하이라이트 적용
+        if let highlightText = highlightText, !highlightText.isEmpty {
+            name.attributedText = highlightTextInLabel(text: model.wineName, highlight: highlightText)
+        } else {
+            name.text = model.wineName
+        }
+    
         kind.text = "와인 > \(model.sort)"
         score.text = "★ \(String(format: "%.1f", model.satisfaction))"
+    }
+    
+    private func highlightTextInLabel(text: String, highlight: String) -> NSAttributedString {
+        let attributedString = NSMutableAttributedString(string: text)
+        let range = (text.lowercased() as NSString).range(of: highlight.lowercased())
+        if range.location != NSNotFound {
+            attributedString.addAttribute(.foregroundColor, value: AppColor.purple100!, range: range)
+            attributedString.addAttribute(.font, value: UIFont.ptdSemiBoldFont(ofSize: 16), range: range)
+        }
+        return attributedString
     }
 }
