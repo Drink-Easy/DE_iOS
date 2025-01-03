@@ -38,11 +38,7 @@ class WineDetailViewController: UIViewController {
         
         // ✅ 원래 상태와 변경된 상태를 비교
         if originalIsLiked != isLiked {
-            if isLiked {
-                sendLikeRequest(to: wineId)
-            } else {
-                sendUnlikeRequest(to: wineId)
-            }
+            callLikedAPI(wineId: self.wineId)
         }
     }
     
@@ -218,7 +214,7 @@ class WineDetailViewController: UIViewController {
     }
     
     func callWineDetailAPI(wineId: Int) {
-        wineNetworkService.fetchWineInfo(wineId: self.wineId) { [weak self] result in
+        wineNetworkService.fetchWineInfo(wineId: wineId) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
@@ -232,7 +228,19 @@ class WineDetailViewController: UIViewController {
         }
     }
     
-    func callLikedAPI(
+    func callLikedAPI(wineId: Int) {
+        let dto = likedNetworkService.makePostDTO(wineId: wineId)
+        likedNetworkService.postWishlist(data: dto) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let responseData) :
+                print(responseData)
+            case .failure(let error) :
+                print("\(error)")
+            }
+        }
+    }
 }
 
 extension WineDetailViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {

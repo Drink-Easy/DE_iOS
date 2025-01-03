@@ -9,7 +9,7 @@ public final class WishlistService: NetworkManager {
     // Provider 설정
     let provider: MoyaProvider<WishlistEndpoint>
     
-    init(provider: MoyaProvider<WishlistEndpoint>? = nil) {
+    public init(provider: MoyaProvider<WishlistEndpoint>? = nil) {
         // 플러그인 추가
         let plugins: [PluginType] = [
             CookiePlugin(),
