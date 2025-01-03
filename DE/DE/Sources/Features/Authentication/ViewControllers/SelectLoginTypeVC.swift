@@ -1,28 +1,34 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
-
 import SnapKit
 import Then
-
 import SwiftyToaster
-
 import KeychainSwift
-import KakaoSDKUser
-import AuthenticationServices
 
 import Network
 import CoreModule
+import HomeModule
 
-class SelectLoginTypeVC: UIViewController {
+import AuthenticationServices
+import KakaoSDKUser
+
+
+public class SelectLoginTypeVC: UIViewController {
     
     public static let keychain = KeychainSwift()
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
+    public var appleLoginDto : AppleLoginRequestDTO?
     let networkService = AuthService()
     
     private let mainView = SelectLoginTypeView()
     
     // MARK: - Life Cycle
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
     public override func loadView() {
         self.view = mainView
     }
@@ -73,7 +79,7 @@ class SelectLoginTypeVC: UIViewController {
     }
     
     @objc private func appleButtonTapped() {
-        print("애플 버튼 눌림")
+        startAppleLoginProcess()
     }
     
     private func kakaoLoginProceed(_ userIDString: String, userEmail: String) {
@@ -83,8 +89,8 @@ class SelectLoginTypeVC: UIViewController {
             
             switch result {
             case .success(let response):
-                // TODO: 다음 뷰 설정
                 print("카카오 로그인 성공")
+                self.goToNextView(response.isFirst)
             case .failure(let error):
                 print(error)
             }
@@ -101,14 +107,13 @@ class SelectLoginTypeVC: UIViewController {
         navigationController?.pushViewController(joinViewController, animated: true)
     }
     
-    private func goToNextView() {
-//        if LoginVC.isFirstLogin {
-//            let enterTasteTestViewController = TestVC()
-//            navigationController?.pushViewController(enterTasteTestViewController, animated: true)
-//        } else {
-//            let homeViewController = TestVC()
-//            navigationController?.pushViewController(homeViewController, animated: true)
-//        }
-        
+    func goToNextView(_ isFirstLogin: Bool) {
+        if isFirstLogin {
+            let enterTasteTestViewController = WelcomeVC()
+            navigationController?.pushViewController(enterTasteTestViewController, animated: true)
+        } else {
+            let homeViewController = MainTabBarController()
+            navigationController?.pushViewController(homeViewController, animated: true)
+        }
     }
 }

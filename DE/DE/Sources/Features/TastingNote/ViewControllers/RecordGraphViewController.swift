@@ -75,7 +75,7 @@ public class RecordGraphViewController: UIViewController {
         sliderValues["Alcohol"] = Int(recordGraphView.alcoholSlider.value)
         
         // UserDefaults에 저장
-        UserDefaults.standard.set(sliderValues, forKey: "SliderValues")
+        UserDefaults.standard.set(sliderValues, forKey: "sliderValues")
         print("저장된 슬라이더 값: \(sliderValues)")
         
     }

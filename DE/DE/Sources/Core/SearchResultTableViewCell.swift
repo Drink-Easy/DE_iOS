@@ -4,7 +4,6 @@ import UIKit
 import SnapKit
 import Then
 import SDWebImage
-import CoreModule
 
 public class SearchResultTableViewCell: UITableViewCell {
     

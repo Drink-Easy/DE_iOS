@@ -1,4 +1,4 @@
-// Copyright © 2024 RT4. All rights reserved
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
 import CoreModule
@@ -61,7 +61,7 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
         // 아이콘 설정
         iconImageView.image = UIImage(systemName: descriptionImageIcon)?.withRenderingMode(.alwaysTemplate)
         iconImageView.contentMode = .scaleAspectFit
-        iconImageView.tintColor = AppColor.gray60
+        iconImageView.tintColor = AppColor.gray50
         
         // 설명 라벨 설정
         descriptionLabel.text = descriptionLabelText
@@ -71,15 +71,15 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
         // 텍스트 필드 설정
         textField.placeholder = textFieldPlaceholder
         textField.borderStyle = .none
-        textField.font = UIFont.systemFont(ofSize: 16)
-        textField.backgroundColor = AppColor.gray30
+        textField.font = UIFont.ptdMediumFont(ofSize: 14)
+        textField.backgroundColor = AppColor.gray10
         textField.delegate = self
-        textField.layer.borderColor = AppColor.gray30?.cgColor
+        textField.layer.borderColor = AppColor.gray10?.cgColor
         textField.layer.borderWidth = 2
         textField.layer.cornerRadius = 15
         textField.isSecureTextEntry = isPasswordField // 비밀번호 필드 여부에 따라 처리
         
-        let placeholderColor = AppColor.gray80
+        let placeholderColor = AppColor.gray70
         textField.attributedPlaceholder = NSAttributedString(
             string: textFieldPlaceholder,
             attributes: [NSAttributedString.Key.foregroundColor: placeholderColor ?? UIColor.systemGray]
@@ -101,7 +101,7 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
         if let toggleButton = toggleButton {
             addSubview(toggleButton)
             toggleButton.setImage(UIImage(systemName: "eye.slash"), for: .normal)
-            toggleButton.tintColor = AppColor.gray60
+            toggleButton.tintColor = AppColor.gray50
             toggleButton.addTarget(self, action: #selector(togglePasswordVisibility), for: .touchUpInside)
             
             toggleButton.snp.makeConstraints { make in
@@ -151,9 +151,9 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
     
     private func updateTextFieldStyle(isEditing: Bool) {
         if !isEditing {
-            textField.backgroundColor = AppColor.gray30
-            textField.layer.borderColor = AppColor.gray30?.cgColor
-            iconImageView.tintColor = AppColor.gray60
+            textField.backgroundColor = AppColor.gray10
+            textField.layer.borderColor = AppColor.gray10?.cgColor
+            iconImageView.tintColor = AppColor.gray50
             validationLabel.isHidden = true
         }
     }

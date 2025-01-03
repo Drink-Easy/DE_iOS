@@ -9,6 +9,10 @@ import CoreModule
 // 테이스팅 목록 표시 뷰
 class MyTastingNoteView: UIView {
     
+    private var tastingNotes: [TastingNoteModel] = []
+    
+    weak var delegate: MyTastingNoteViewDelegate?
+    
     let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.itemSize = .init(width: Constants.superViewWidth*0.27, height: Constants.superViewWidth*0.35)
         $0.minimumInteritemSpacing = 10
@@ -28,7 +32,7 @@ class MyTastingNoteView: UIView {
         $0.textColor = .black
         $0.textAlignment = .left
     }
-    
+
     let writeButton = UIButton().then {
         $0.setImage(UIImage(named: "writeNote"), for: .normal)
     }
@@ -73,7 +77,25 @@ class MyTastingNoteView: UIView {
         }
     }
     
+    func updateData(notes: [TastingNoteModel]) {
+        self.tastingNotes = notes
+        collectionView.reloadData()
+    }
+    
+    private func setupGestureActions() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tastingNoteLabelTapped))
+        tastingNoteLabel.addGestureRecognizer(tapGesture) // 라벨에 TapGesture 추가
+    }
+    
+    @objc private func tastingNoteLabelTapped() {
+        delegate?.didTapTastingNoteLabel()
+    }
+    
     required init? (coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+
+protocol MyTastingNoteViewDelegate: AnyObject {
+    func didTapTastingNoteLabel()
 }

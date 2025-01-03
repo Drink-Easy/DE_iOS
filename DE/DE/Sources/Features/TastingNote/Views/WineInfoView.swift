@@ -6,6 +6,17 @@ import Cosmos
 
 public class WineInfoView: UIView {
     
+    let scrollView: UIScrollView = {
+        let s = UIScrollView()
+        return s
+    }()
+    
+    let contentView: UIView = {
+        let c = UIView()
+        c.backgroundColor = AppColor.gray20
+        return c
+    }()
+    
     private let wineName: UILabel = {
         let w = UILabel()
         w.text = "루이 로드레 크리스탈 2015"
@@ -23,39 +34,10 @@ public class WineInfoView: UIView {
         return w
     }()
     
-    private let wineDescription: UIView = {
-        let w = UIView()
-        w.backgroundColor = .white
-        w.layer.cornerRadius = 14
-        return w
-    }()
-    
-    private let wineKind: UILabel = {
-        let w = UILabel()
-        w.text = "종류"
-        w.textColor = UIColor(hex: "#7E13B1")
-        w.textAlignment = .center
-        w.font = UIFont(name: "Pretendard-SemiBold", size: 14)
-        return w
-    }()
-    
-    private let wineGrape: UILabel = {
-        let w = UILabel()
-        w.text = "품종"
-        w.textColor = UIColor(hex: "#7E13B1")
-        w.textAlignment = .center
-        w.font = UIFont(name: "Pretendard-SemiBold", size: 14)
-        return w
-    }()
-    
-    private let wineFrom: UILabel = {
-        let w = UILabel()
-        w.text = "생산지"
-        w.textColor = UIColor(hex: "#7E13B1")
-        w.textAlignment = .center
-        w.font = UIFont(name: "Pretendard-SemiBold", size: 14)
-        return w
-    }()
+    private let descriptionView = DescriptionUIView().then {
+        $0.layer.cornerRadius = 14
+        $0.backgroundColor = .white
+    }
     
     private let graphView: UIView = {
         let g = UIView()
@@ -78,10 +60,9 @@ public class WineInfoView: UIView {
         return v
     }()
     
-    private let polygonView: UIView = {
-        let v = UIView()
-        v.backgroundColor = .lightGray
-        return v
+    let polygonChart: PolygonChartView = {
+        let p = PolygonChartView()
+        return p
     }()
     
     private let rateLabel: UILabel = {
@@ -210,48 +191,44 @@ public class WineInfoView: UIView {
     }()
     
     func setupUI() {
-        addSubview(wineName)
+        backgroundColor = AppColor.gray20
+        addSubview(scrollView)
+        
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(safeAreaLayoutGuide)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
+        
+        scrollView.addSubview(contentView)
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalTo(scrollView)
+        }
+        
+        contentView.addSubview(wineName)
         wineName.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(110)
+            make.top.equalToSuperview().offset(10)
             make.leading.equalToSuperview().offset(25)
         }
         
-        addSubview(wineImage)
+        contentView.addSubview(wineImage)
         wineImage.snp.makeConstraints { make in
             make.top.equalTo(wineName.snp.bottom).offset(20)
             make.leading.equalTo(wineName.snp.leading)
             make.width.height.equalTo(100)
         }
         
-        addSubview(wineDescription)
-        wineDescription.snp.makeConstraints { make in
-            make.top.equalTo(wineImage.snp.top)
-            make.bottom.equalTo(wineImage.snp.bottom)
+        contentView.addSubview(descriptionView)
+        descriptionView.snp.makeConstraints { make in
+            make.top.bottom.equalTo(wineImage)
             make.leading.equalTo(wineImage.snp.trailing).offset(8)
             make.trailing.equalToSuperview().offset(-24)
         }
         
-        wineDescription.addSubview(wineKind)
-        wineKind.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(16)
-            make.leading.equalToSuperview().offset(13)
-        }
-        
-        wineDescription.addSubview(wineGrape)
-        wineGrape.snp.makeConstraints { make in
-            make.top.equalTo(wineKind.snp.bottom).offset(8)
-            make.leading.equalTo(wineKind.snp.leading)
-        }
-        
-        wineDescription.addSubview(wineFrom)
-        wineFrom.snp.makeConstraints { make in
-            make.top.equalTo(wineGrape.snp.bottom).offset(8)
-            make.leading.equalTo(wineGrape.snp.leading)
-        }
-        
-        addSubview(graphView)
+        contentView.addSubview(graphView)
         graphView.snp.makeConstraints { make in
-            make.top.equalTo(wineDescription.snp.bottom).offset(24)
+            make.top.equalTo(descriptionView.snp.bottom).offset(24)
             make.leading.equalTo(wineImage.snp.leading)
             make.centerX.equalToSuperview()
             make.height.greaterThanOrEqualTo(747)
@@ -271,8 +248,8 @@ public class WineInfoView: UIView {
             make.centerX.equalToSuperview()
         }
         
-        graphView.addSubview(polygonView)
-        polygonView.snp.makeConstraints { make in
+        graphView.addSubview(polygonChart)
+        polygonChart.snp.makeConstraints { make in
             make.top.equalTo(graphVector.snp.bottom).offset(26)
             make.leading.equalTo(graphVector.snp.leading)
             make.centerX.equalTo(graphVector.snp.centerX)
@@ -281,7 +258,7 @@ public class WineInfoView: UIView {
         
         graphView.addSubview(rateLabel)
         rateLabel.snp.makeConstraints { make in
-            make.top.equalTo(polygonView.snp.bottom).offset(40)
+            make.top.equalTo(polygonChart.snp.bottom).offset(40)
             make.leading.equalTo(graphLabel)
         }
         
@@ -372,6 +349,10 @@ public class WineInfoView: UIView {
         reviewDescription.snp.makeConstraints { make in
             make.top.equalTo(reviewVector.snp.bottom).offset(22)
             make.leading.equalTo(reviewVector.snp.leading).offset(8.56)
+        }
+        
+        contentView.snp.makeConstraints { make in
+            make.bottom.equalTo(graphView.snp.bottom).offset(31)
         }
         
     }

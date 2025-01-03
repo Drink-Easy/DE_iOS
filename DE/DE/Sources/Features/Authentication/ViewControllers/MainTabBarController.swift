@@ -4,6 +4,7 @@ import UIKit
 import CoreModule
 import TastingNote
 import CommunityModule
+import HomeModule
 
 public class MainTabBarController: UITabBarController {
     
@@ -22,6 +23,10 @@ public class MainTabBarController: UITabBarController {
         if let name = userName {
             homeVC.userName = name
             classVC.userName = name
+        } else {
+            guard let savedName = SelectLoginTypeVC.keychain.get("userNickname") else {return }
+            homeVC.userName = savedName
+            classVC.userName = savedName
         }
 
     }
@@ -29,6 +34,7 @@ public class MainTabBarController: UITabBarController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.delegate = self
         configureTabs()
     }
     
@@ -67,5 +73,15 @@ public class MainTabBarController: UITabBarController {
         tabBar.unselectedItemTintColor = AppColor.gray60
         
         setViewControllers([nav1, nav2, nav3, nav4, nav5], animated: true)
+    }
+}
+// MARK: - UITabBarControllerDelegate
+extension MainTabBarController: UITabBarControllerDelegate {
+    public func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        // 현재 선택된 탭이 다시 선택되었을 때만 처리
+        guard let navController = viewController as? UINavigationController else { return }
+        
+        // 루트 뷰로 이동
+        navController.popToRootViewController(animated: true)
     }
 }

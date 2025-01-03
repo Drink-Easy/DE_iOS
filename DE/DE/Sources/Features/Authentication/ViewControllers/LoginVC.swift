@@ -17,8 +17,8 @@ class LoginVC: UIViewController {
     let validationManager = ValidationManager()
     let networkService = AuthService()
     
-    var isSavingEmail : Bool = false
-    var emailString : String = ""
+    var isSavingId : Bool = false
+    var usernameString : String = ""
     
     override func loadView() {
         view = loginView // 커스텀 뷰 사용
@@ -53,15 +53,15 @@ class LoginVC: UIViewController {
             to: navigationItem,
             target: self,
             action: #selector(backButtonTapped),
-            tintColor: AppColor.gray80!
+            tintColor: AppColor.gray70!
         )
     }
     
     // MARK: - Action 설정
     private func setupActions() {
-        loginView.emailField.textField.addTarget(self, action: #selector(emailValidate), for: .editingChanged)
+        loginView.usernameField.textField.addTarget(self, action: #selector(usernameValidate), for: .editingChanged)
         loginView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .editingChanged)
-        loginView.emailSaveCheckBox.addTarget(self, action: #selector(emailSaveCheckBoxTapped), for: .touchUpInside)
+        loginView.idSaveCheckBox.addTarget(self, action: #selector(idSaveCheckBoxTapped), for: .touchUpInside)
         loginView.joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -78,8 +78,8 @@ class LoginVC: UIViewController {
         self.view.endEditing(true)
     }
     
-    @objc func emailValidate() {
-        validationManager.isEmailValid = validationManager.validateEmail(loginView.emailField)
+    @objc func usernameValidate() {
+        validationManager.isUsernameValid = validationManager.validateUsername(loginView.usernameField)
         validateInputs()
     }
     
@@ -89,28 +89,28 @@ class LoginVC: UIViewController {
     }
     
     private func validateInputs() {
-        let isValid = validationManager.isEmailValid &&
+        let isValid = validationManager.isUsernameValid &&
         validationManager.isPasswordValid
         
         loginView.loginButton.isEnabled = isValid
-        loginView.loginButton.backgroundColor = isValid ? AppColor.purple100 : AppColor.gray80
+        loginView.loginButton.isEnabled(isEnabled: isValid)
     }
     
-    @objc private func emailSaveCheckBoxTapped() {
-        loginView.emailSaveCheckBox.isSelected.toggle()
-        isSavingEmail = loginView.emailSaveCheckBox.isSelected
+    @objc private func idSaveCheckBoxTapped() {
+        loginView.idSaveCheckBox.isSelected.toggle()
+        isSavingId = loginView.idSaveCheckBox.isSelected
     }
     
     @objc private func loginButtonTapped() {
-        let loginDTO = networkService.makeLoginDTO(username: loginView.emailField.text!, password: loginView.passwordField.text!)
-        emailString = loginDTO.username
+        let loginDTO = networkService.makeLoginDTO(username: loginView.usernameField.text!, password: loginView.passwordField.text!)
+        usernameString = loginDTO.username
         
         networkService.login(data: loginDTO) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(let response):
-                SelectLoginTypeVC.keychain.set(emailString, forKey: "savedUserEmail")
+                SelectLoginTypeVC.keychain.set(usernameString, forKey: "savedUserId")
                 self.goToNextView(response.isFirst)
             case .failure(let error):
                 print(error)
@@ -133,9 +133,9 @@ class LoginVC: UIViewController {
         navigationController?.pushViewController(joinViewController, animated: true)
     }
     
-    func fillSavedEmail() {
-        if let email = SelectLoginTypeVC.keychain.get("savedUserEmail") {
-            loginView.emailField.text = email
+    func fillSavedId() {
+        if let id = SelectLoginTypeVC.keychain.get("savedUserId") {
+            loginView.usernameField.text = id
         }
     }
 }

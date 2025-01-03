@@ -75,6 +75,7 @@ public class TestVC: UIViewController {
                 DispatchQueue.main.async {
                     let homeTabBarController = MainTabBarController()
                     homeTabBarController.userName = data.name
+                    SelectLoginTypeVC.keychain.set(data.name, forKey: "userNickname")
                     
                     print("User name set: \(homeTabBarController.userName)")
 

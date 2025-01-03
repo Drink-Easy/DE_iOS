@@ -11,20 +11,6 @@ public class WineSearchMainVC : UIViewController, UISearchBarDelegate, UITableVi
     // TODO : 상단 네비게이션 바 추가하는거 하셈!!
     var wineResults: [SearchResultModel] = []
     let networkService = WineService()
-    let noteService = TastingNoteService()
-    
-    func callPost() {
-        let d = noteService.makePostNoteDTO(wineId: 584297, color: "#892222", tasteDate: "2024-12-18", sugarContent: 5, acidity: 5, tannin: 5, body: 5, alcohol: 5, nose: ["붓꽃", "장미", "금작화"], rating: 5.0, review: "첫번째 리뷰에용")
-        
-        noteService.postNote(data: d) { result in
-            switch result {
-            case .success(let str):
-                print(str)
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,7 +26,6 @@ public class WineSearchMainVC : UIViewController, UISearchBarDelegate, UITableVi
         )
         searchHomeView.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         setupNavigationBar()
-//        callPost() 테스트용
     }
     
     private lazy var searchHomeView = SearchHomeView(
