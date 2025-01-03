@@ -8,6 +8,7 @@ import Then
 class MorePopularWineViewController: UIViewController {
 
     let navigationBarManager = NavigationBarManager()
+    let dataManger = WineDataManager.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,8 +18,16 @@ class MorePopularWineViewController: UIViewController {
         setupNavigationBar()
     }
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
     private lazy var morePopularWineView = MoreRecomWineView().then {
-        $0.title.text = ""
+        $0.title.text = "지금 가장 인기있는 와인 🔥"
+        
+        $0.moreWineTableView.dataSource = self
+        $0.moreWineTableView.delegate = self
     }
     
     private func setupNavigationBar() {
@@ -37,6 +46,7 @@ class MorePopularWineViewController: UIViewController {
 
 extension MorePopularWineViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return dataManger.fetchWines(type: .popular).count
         return 10
     }
     
@@ -45,9 +55,9 @@ extension MorePopularWineViewController: UITableViewDelegate, UITableViewDataSou
             return UITableViewCell()
         }
         
-//        let wine = wineResults[indexPath.row]
-//        let searchText = searchHomeView.searchBar.text ?? ""
-//        cell.configure(model: wine, highlightText: searchText.isEmpty ? nil : searchText)
+//        let wineList = dataManger.fetchWines(type: .popular)
+//        let wine = wineList[indexPath.row]
+//        cell.configure(model: wine)
         
         return cell
     }

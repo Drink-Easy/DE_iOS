@@ -63,6 +63,15 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         $0.recomCollectionView.delegate = self
         $0.recomCollectionView.dataSource = self
         $0.recomCollectionView.tag = 1
+        
+        $0.moreBtn.addTarget(self, action: #selector(goToMoreLikely), for: .touchUpInside)
+    }
+    
+    @objc
+    private func goToMoreLikely() {
+        let vc = MoreLikelyWineViewController()
+        vc.userName = self.userName
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     private lazy var popularWineListView = RecomView().then {
@@ -70,6 +79,14 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         $0.recomCollectionView.delegate = self
         $0.recomCollectionView.dataSource = self
         $0.recomCollectionView.tag = 2
+        
+        $0.moreBtn.addTarget(self, action: #selector(goToMorePopular), for: .touchUpInside)
+    }
+    
+    @objc
+    private func goToMorePopular() {
+        let vc = MorePopularWineViewController()
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     public override func viewDidLoad() {

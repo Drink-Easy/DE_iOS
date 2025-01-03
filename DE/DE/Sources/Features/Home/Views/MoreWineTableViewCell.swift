@@ -2,6 +2,9 @@
 
 import UIKit
 import CoreModule
+import SnapKit
+import Then
+import SDWebImage
 
 class MoreWineTableViewCell: UITableViewCell {
     
@@ -72,11 +75,11 @@ class MoreWineTableViewCell: UITableViewCell {
     
     public override func prepareForReuse() {
         super.prepareForReuse()
-        self.image.image = nil
-        self.name.text = nil
-        self.kind.text = nil
-        self.score.text = nil
-        self.price.text = nil
+//        self.image.image = nil
+//        self.name.text = nil
+//        self.kind.text = nil
+//        self.score.text = nil
+//        self.price.text = nil
     }
     
     required init?(coder: NSCoder) {
@@ -93,6 +96,11 @@ class MoreWineTableViewCell: UITableViewCell {
         borderLayer.borderColor = UIColor.clear.cgColor // 기본 테두리 없음
         borderLayer.frame = contentView.bounds
         contentView.layer.addSublayer(borderLayer)
+    }
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        borderLayer.frame = contentView.bounds // 레이아웃 변경 시 테두리 업데이트
     }
     
     private func addComponents() {
@@ -128,15 +136,16 @@ class MoreWineTableViewCell: UITableViewCell {
         }
     }
     
-//    public func configure(model: SearchResultModel, highlightText: String? = nil) {
-//        if let url = URL(string: model.imageURL) {
-//            image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
-//        } else {
-//            image.image = UIImage(named: "placeholder")
-//        }
-//    
-//        kind.text = "와인 > \(model.sort)"
-//        score.text = "★ \(String(format: "%.1f", model.satisfaction))"
-//    }
+    public func configure(model: WineData) {
+        if let url = URL(string: model.imageUrl) {
+            image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+        } else {
+            image.image = UIImage(named: "placeholder")
+        }
+        name.text = model.wineName
+        kind.text = "와인 > \(model.sort)"
+        score.text = "★ \(String(format: "%.1f", model.vivinoRating))"
+        price.text = "\(model.price)만원대"
+    }
 
 }

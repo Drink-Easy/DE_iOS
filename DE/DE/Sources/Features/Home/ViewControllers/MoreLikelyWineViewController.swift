@@ -8,17 +8,40 @@ import Then
 class MoreLikelyWineViewController: UIViewController {
 
     let navigationBarManager = NavigationBarManager()
+    let userDataManager = UserDataManager.shared
+    let wineDataManger = WineDataManager.shared
+    
+    var userName = ""
+    private var wineList: [WineData] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         self.view = moreLikelyWineView
-        
         setupNavigationBar()
     }
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        Task {
+            wineList = await wineDataManger.fetchWines(type: .recommended)
+            print("✅ 불러온 와인 데이터: \(wineList.count)개")
+        }
+    }
+    
+    @MainActor
+    private func fetchWineData() async {
+        wineList = wineDataManger.fetchWines(type: .recommended)
+        moreLikelyWineView.moreWineTableView.reloadData()
+    }
+    
     private lazy var moreLikelyWineView = MoreRecomWineView().then {
-        $0.title.text = ""
+        $0.title.text = "\(userName) 님이 좋아할 만한 와인"
+        $0.title.setPartialTextStyle(text: $0.title.text ?? "", targetText: "\(userName)", color: AppColor.purple100 ?? .purple, font: UIFont.ptdSemiBoldFont(ofSize: 30))
+        
+        $0.moreWineTableView.dataSource = self
+        $0.moreWineTableView.delegate = self
     }
     
     private func setupNavigationBar() {
@@ -38,7 +61,7 @@ class MoreLikelyWineViewController: UIViewController {
 
 extension MoreLikelyWineViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return wineList.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -46,9 +69,8 @@ extension MoreLikelyWineViewController: UITableViewDelegate, UITableViewDataSour
             return UITableViewCell()
         }
         
-//        let wine = wineResults[indexPath.row]
-//        let searchText = searchHomeView.searchBar.text ?? ""
-//        cell.configure(model: wine, highlightText: searchText.isEmpty ? nil : searchText)
+        let wine = wineList[indexPath.row]
+        cell.configure(model: wine)
         
         return cell
     }

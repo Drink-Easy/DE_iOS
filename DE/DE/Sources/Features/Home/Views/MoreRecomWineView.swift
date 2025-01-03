@@ -12,10 +12,11 @@ class MoreRecomWineView: UIView {
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
     }
     
-    private lazy var moreWineTableView = UITableView().then {
+    public lazy var moreWineTableView = UITableView().then {
         $0.register(MoreWineTableViewCell.self, forCellReuseIdentifier: "MoreWineTableViewCell")
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
         $0.backgroundColor = Constants.AppColor.grayBG
+        $0.showsVerticalScrollIndicator = false
     }
 
     override init(frame: CGRect) {
@@ -40,9 +41,9 @@ class MoreRecomWineView: UIView {
         }
         
         moreWineTableView.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).offset(18)
+            $0.top.equalTo(title.snp.bottom).offset(25)
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(18)
-            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-18)
+            $0.bottom.equalTo(safeAreaLayoutGuide)
         }
     }
 }
