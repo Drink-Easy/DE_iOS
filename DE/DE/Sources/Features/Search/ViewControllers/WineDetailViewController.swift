@@ -152,7 +152,7 @@ class WineDetailViewController: UIViewController {
     }
     
     func transformResponseData(_ responseData : WineResponseWithThreeReviewsDTO) {
-        let wineResponse = responseData.wineResponseDTO
+        let wineResponse = responseData.wineResponse
         self.wineId = wineResponse.wineId
         self.wineName = wineResponse.name
         let noseNotes = [

@@ -26,6 +26,7 @@ class EntireReviewViewController: UIViewController {
         addView()
         constraints()
         callEntireReviewAPI(wineId: self.wineId, orderByLatest: true)
+        setupDropdownAction()
         setupNavigationBar()
     }
     
@@ -60,6 +61,18 @@ class EntireReviewViewController: UIViewController {
             $0.top.equalTo(view.safeAreaLayoutGuide).offset(10)
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
+    }
+    
+    private func setupDropdownAction() {
+        entireReviewView.dropdownView.onOptionSelected = { [weak self] selectedOption in
+            guard let self = self else { return }
+            if selectedOption == "최신순" {
+                self.reviewResults.sort { $0.createdAt > $1.createdAt }
+            } else if selectedOption == "별점순" {
+                self.reviewResults.sort { $0.rating > $1.rating }
+            }
+            self.entireReviewView.reviewCollectionView.reloadData()
         }
     }
     
