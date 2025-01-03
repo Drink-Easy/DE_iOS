@@ -10,7 +10,10 @@ class WineDetailViewController: UIViewController {
     let navigationBarManager = NavigationBarManager()
     var wineId: Int = 0
     var wineName: String = ""
-    let networkService = WineService()
+    var isLiked: Bool = false
+    var originalIsLiked: Bool = false
+    let wineNetworkService = WineService()
+    let likedNetworkService = WishlistService()
     var reviewData: [WineReviewModel] = []
 
 
@@ -28,6 +31,19 @@ class WineDetailViewController: UIViewController {
         constraints()
         callWineDetailAPI(wineId: self.wineId)
         setupNavigationBar()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // ✅ 원래 상태와 변경된 상태를 비교
+        if originalIsLiked != isLiked {
+            if isLiked {
+                sendLikeRequest(to: wineId)
+            } else {
+                sendUnlikeRequest(to: wineId)
+            }
+        }
     }
     
     private func setupNavigationBar() {
@@ -48,6 +64,11 @@ class WineDetailViewController: UIViewController {
             action: #selector(tappedLiked),
             tintColor: AppColor.purple100!
         )
+        
+        if let rightButton = navigationItem.rightBarButtonItem?.customView as? UIButton {
+            rightButton.isSelected = isLiked
+            updateHeartButton(button: rightButton)  // 초기 좋아요 상태 반영
+        }
     }
     
     @objc func prevVC() {
@@ -56,17 +77,17 @@ class WineDetailViewController: UIViewController {
     
     @objc func tappedLiked(_ sender: UIButton) {
         sender.isSelected.toggle()
-            
-        // 버튼이 클릭될 때마다, 버튼 이미지를 변환
-        if sender.isSelected {
-            let heartFilledImage = UIImage(systemName: "heart.fill")?.withTintColor(AppColor.purple100!, renderingMode: .alwaysOriginal)
-            sender.setImage(heartFilledImage, for: .selected)
-            sender.tintColor = AppColor.bgGray
-        } else {
-            let heartImage = UIImage(systemName: "heart")?.withTintColor(AppColor.purple100!, renderingMode: .alwaysOriginal)
-            sender.setImage(heartImage, for: .normal)
-            sender.tintColor = AppColor.bgGray
-        }
+        isLiked.toggle()
+        updateHeartButton(button: sender)
+    }
+    
+    private func updateHeartButton(button: UIButton) {
+        let heartImage = button.isSelected
+            ? UIImage(systemName: "heart.fill")?.withTintColor(AppColor.purple100!, renderingMode: .alwaysOriginal)
+            : UIImage(systemName: "heart")?.withTintColor(AppColor.purple100!, renderingMode: .alwaysOriginal)
+
+        button.setImage(heartImage, for: .normal)
+        button.tintColor = AppColor.bgGray
     }
     
     private lazy var scrollView = UIScrollView().then {
@@ -155,6 +176,8 @@ class WineDetailViewController: UIViewController {
         let wineResponse = responseData.wineResponse
         self.wineId = wineResponse.wineId
         self.wineName = wineResponse.name
+        self.isLiked = wineResponse.liked
+        self.originalIsLiked = wineResponse.liked
         let noseNotes = [
             wineResponse.wineNoteNose?.nose1 ?? "nose1",
             wineResponse.wineNoteNose?.nose2 ?? "nose2",
@@ -164,11 +187,10 @@ class WineDetailViewController: UIViewController {
         let tastingNoteString = noseNotes.joined(separator: ", ")
         
         DispatchQueue.main.async {
-            self.setupNavigationBar() // 제목 설정
+            self.setupNavigationBar() // 제목 및 좋아요 설정
             self.updateReviewView()
         }
         
-        //let topData = WineDetailTopModel(isLiked: wineResponse.liked, wineName: wineResponse.name)
         let infoData = WineDetailInfoModel(image: wineResponse.imageUrl, sort: wineResponse.sort, area: wineResponse.area)
         let rateData = WineViVinoRatingModel(vivinoRating: wineResponse.vivinoRating)
         let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString, avgSugarContent: wineResponse.avgSugarContent, avgAcidity: wineResponse.avgAcidity, avgTannin: wineResponse.avgTannin, avgBody: wineResponse.avgBody, avgAlcohol: wineResponse.avgAlcohol)
@@ -187,7 +209,6 @@ class WineDetailViewController: UIViewController {
             }
         }
         DispatchQueue.main.async {
-            //self.topNameView.configure(topData)
             self.wineDetailView.configure(infoData)
             self.vivinoRateView.configure(rateData)
             self.averageTastingNoteView.configure(avgData)
@@ -197,7 +218,7 @@ class WineDetailViewController: UIViewController {
     }
     
     func callWineDetailAPI(wineId: Int) {
-        networkService.fetchWineInfo(wineId: self.wineId) { [weak self] result in
+        wineNetworkService.fetchWineInfo(wineId: self.wineId) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
@@ -210,6 +231,8 @@ class WineDetailViewController: UIViewController {
             }
         }
     }
+    
+    func callLikedAPI(
 }
 
 extension WineDetailViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
