@@ -91,6 +91,11 @@ public class SelectLoginTypeVC: UIViewController {
             switch result {
             case .success(let response):
                 print("카카오 로그인 성공")
+                saveUserId(userId: response.userId)
+                Task {
+                    // userID저장
+                    await UserDataManager.shared.createUser(userId: response.userId)
+                }
                 self.goToNextView(response.isFirst)
             case .failure(let error):
                 print(error)
@@ -116,5 +121,12 @@ public class SelectLoginTypeVC: UIViewController {
             let homeViewController = MainTabBarController()
             navigationController?.pushViewController(homeViewController, animated: true)
         }
+    }
+    
+    func saveUserId(userId : Int) {
+        // 로그아웃 시, 이 데이터 모두 삭제
+        let userIdString = "\(userId)"
+        SelectLoginTypeVC.keychain.set(userIdString, forKey: "userId")
+        UserDefaults.standard.set(userId, forKey: "userId")
     }
 }

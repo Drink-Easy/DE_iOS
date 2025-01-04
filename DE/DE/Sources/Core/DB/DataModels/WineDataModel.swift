@@ -29,10 +29,15 @@ public class WineData {
 
 @Model
 public class WineList {
-    var type: String // 추천 또는 인기 구분
-    var wines : [WineData] = []
-    
-    public init(type: String) {
+    var type: WineListType // 구분 (추천/인기)
+    var wines: [WineData] = []
+    var timestamp: Date // 캐시 유효기간 관리
+    var user: UserData? // 사용자 관계 (부모 관계)
+
+    init(type: WineListType, wines: [WineData], timestamp: Date, user: UserData) {
         self.type = type
+        self.wines = wines
+        self.timestamp = timestamp
+        self.user = user
     }
 }
