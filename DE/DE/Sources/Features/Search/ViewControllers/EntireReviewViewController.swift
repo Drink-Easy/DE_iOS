@@ -12,6 +12,7 @@ class EntireReviewViewController: UIViewController {
     var wineName: String = ""
     var reviewResults: [WineReviewModel] = []
     let networkService = WineService()
+    private var expandedCells: [Bool] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,6 +95,7 @@ class EntireReviewViewController: UIViewController {
                         return WineReviewModel(name: name, contents: review, rating: rating, createdAt: createdAt)
                     } ?? []
                     self.entireReviewView.reviewCollectionView.reloadData()
+                    self.expandedCells = Array(repeating: false, count: self.reviewResults.count)
                 }
             case .failure(let error):
                 print("Error fetching reviews: \(error)")
@@ -111,14 +113,39 @@ extension EntireReviewViewController: UICollectionViewDataSource, UICollectionVi
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReviewCollectionViewCell.identifier, for: indexPath) as! ReviewCollectionViewCell
         
-        let review = reviewResults[indexPath.row]
-        cell.configure(model: review)
+        let review = reviewResults[indexPath.item]
+        cell.configure(model: review, isExpanded: expandedCells[indexPath.item])
+        
+        cell.onToggle = {
+            self.expandedCells[indexPath.item].toggle()
+            
+            UIView.animate(withDuration: 0, animations: {
+                collectionView.performBatchUpdates(nil, completion: nil)
+            }) { _ in
+                // 텍스트를 약간 늦춰서 줄이기
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    cell.review.numberOfLines = self.expandedCells[indexPath.item] ? 0 : 2
+                }
+            }
+        }
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: 82) // 셀 크기
+        
+        let width = collectionView.frame.width
+        let text = reviewResults[indexPath.item].contents
+        let isExpanded = expandedCells[indexPath.item]
+        
+        // 텍스트 높이 계산 + 패딩
+        let labelFont = UIFont.ptdMediumFont(ofSize: 14)
+        let labelWidth = width - 30
+        let estimatedHeight = text.heightWithConstrainedWidth(width: labelWidth, font: labelFont)
+        
+        let cellHeight = isExpanded ? estimatedHeight + 85 : 104
+        
+        return CGSize(width: width, height: cellHeight)
     }
 }
 

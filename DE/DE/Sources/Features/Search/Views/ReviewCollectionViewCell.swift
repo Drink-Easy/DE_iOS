@@ -7,6 +7,8 @@ import Then
 class ReviewCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "ReviewCollectionViewCell"
+    var isExpanded = false
+    var onToggle: (() -> Void)?
     
     public lazy var nickname = UILabel().then {
         $0.textColor = .black
@@ -22,6 +24,20 @@ class ReviewCollectionViewCell: UICollectionViewCell {
         $0.numberOfLines = 0
         $0.textColor = AppColor.gray70
         $0.font = UIFont.ptdMediumFont(ofSize: 14)
+        $0.numberOfLines = 2
+        $0.lineBreakMode = .byTruncatingTail
+    }
+    
+    public lazy var date = UILabel().then {
+        $0.textColor = AppColor.gray90
+        $0.font = UIFont.ptdRegularFont(ofSize: 12)
+    }
+    
+    private let toggleButton = UIButton().then {
+        $0.setTitle("더보기", for: .normal)
+        $0.titleLabel?.font = UIFont.ptdMediumFont(ofSize: 13)
+        $0.setTitleColor(AppColor.gray50, for: .normal)
+        $0.isHidden = true
     }
     
     override init(frame: CGRect) {
@@ -31,6 +47,15 @@ class ReviewCollectionViewCell: UICollectionViewCell {
         contentView.layer.masksToBounds = true
         self.addComponents()
         self.constraints()
+        
+        toggleButton.addTarget(self, action: #selector(toggleButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc private func toggleButtonTapped() {
+        isExpanded.toggle()
+        review.numberOfLines = isExpanded ? 0 : 2
+        toggleButton.setTitle(isExpanded ? "접기" : "더보기", for: .normal)
+        onToggle?()
     }
         
     required init?(coder: NSCoder) {
@@ -38,12 +63,12 @@ class ReviewCollectionViewCell: UICollectionViewCell {
     }
     
     private func addComponents() {
-        [nickname, score, review].forEach { contentView.addSubview($0) }
+        [nickname, score, review, date, toggleButton].forEach { contentView.addSubview($0) }
     }
     
     private func constraints() {
         nickname.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(15)
+            $0.top.equalToSuperview().offset(10)
             $0.leading.equalToSuperview().offset(18)
         }
         
@@ -54,13 +79,42 @@ class ReviewCollectionViewCell: UICollectionViewCell {
         
         review.snp.makeConstraints {
             $0.leading.equalTo(nickname.snp.leading)
-            $0.top.equalTo(nickname.snp.bottom).offset(10)
+            $0.trailing.equalToSuperview().offset(-12)
+            $0.top.equalTo(nickname.snp.bottom).offset(7)
+        }
+        
+        date.snp.makeConstraints {
+            $0.centerY.equalTo(score)
+            $0.trailing.equalToSuperview().offset(-12)
+        }
+        
+        toggleButton.snp.makeConstraints {
+            $0.top.equalTo(review.snp.bottom).offset(3)
+            $0.leading.equalTo(review.snp.leading)
+            $0.bottom.equalToSuperview().offset(-10)
         }
     }
     
-    public func configure(model: WineReviewModel) {
+    public func configure(model: WineReviewModel, isExpanded: Bool) {
         nickname.text = model.name
         score.text = "★ \(String(model.rating))"
         review.text = model.contents
+        let input = model.createdAt
+        if let range = input.range(of: "T") {
+            let result = String(input[..<range.lowerBound])
+            date.text = result
+        }
+        
+        self.isExpanded = isExpanded
+        review.numberOfLines = isExpanded ? 0 : 2
+        toggleButton.setTitle(isExpanded ? "접기" : "더보기", for: .normal)
+        toggleButton.isHidden = !isTextTruncated(text: model.contents)
+    }
+    
+    private func isTextTruncated(text: String) -> Bool {
+        let labelWidth = contentView.frame.width - 30
+        let maxHeight = review.font.lineHeight * 2
+        let estimatedHeight = text.heightWithConstrainedWidth(width: labelWidth, font: review.font)
+        return estimatedHeight > maxHeight
     }
 }

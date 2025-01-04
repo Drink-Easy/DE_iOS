@@ -10,10 +10,12 @@ class EntireReviewView: UIView {
     public lazy var reviewCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.scrollDirection = .vertical
         $0.minimumInteritemSpacing = 8
+        $0.estimatedItemSize = .zero
     }).then {
         $0.register(ReviewCollectionViewCell.self, forCellWithReuseIdentifier: ReviewCollectionViewCell.identifier)
         $0.backgroundColor = .clear
         $0.isScrollEnabled = true
+        $0.showsVerticalScrollIndicator = false
     }
 
     override init(frame: CGRect) {

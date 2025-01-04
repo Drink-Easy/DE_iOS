@@ -15,6 +15,7 @@ class WineDetailViewController: UIViewController {
     let wineNetworkService = WineService()
     let likedNetworkService = WishlistService()
     var reviewData: [WineReviewModel] = []
+    private var expandedCells: [Bool] = []
 
 
     override func viewDidLoad() {
@@ -36,7 +37,7 @@ class WineDetailViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        // ✅ 원래 상태와 변경된 상태를 비교
+        // 원래 상태와 변경된 상태를 비교
         if originalIsLiked != isLiked {
             callLikedAPI(wineId: self.wineId)
         }
@@ -203,6 +204,7 @@ class WineDetailViewController: UIViewController {
                     print("작성된 리뷰가 없습니다.")
                 }
             }
+            expandedCells = Array(repeating: false, count: self.reviewData.count)
         }
         DispatchQueue.main.async {
             self.wineDetailView.configure(infoData)
@@ -241,6 +243,28 @@ class WineDetailViewController: UIViewController {
             }
         }
     }
+    
+    private func updateScrollViewHeight() {
+        DispatchQueue.main.async {
+            // reviewView의 동적 높이 구하기
+            let collectionViewContentHeight = self.reviewView.reviewCollectionView.collectionViewLayout.collectionViewContentSize.height
+            
+            // contentView의 bottom 업데이트
+            self.contentView.snp.updateConstraints {
+                $0.bottom.equalTo(self.reviewView.snp.bottom).offset(40)
+            }
+            
+            // 컬렉션뷰의 height 업데이트
+            self.reviewView.reviewCollectionView.snp.updateConstraints {
+                $0.height.equalTo(collectionViewContentHeight)
+            }
+            
+            // scrollView의 contentSize 수동 업데이트
+            self.scrollView.contentSize = CGSize(width: self.scrollView.frame.width, height: self.contentView.frame.height + collectionViewContentHeight + 40)
+            
+            self.scrollView.layoutIfNeeded()
+        }
+    }
 }
 
 extension WineDetailViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -251,13 +275,33 @@ extension WineDetailViewController: UICollectionViewDataSource, UICollectionView
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReviewCollectionViewCell.identifier, for: indexPath) as! ReviewCollectionViewCell
         
-        let review = reviewData[indexPath.row]
-        cell.configure(model: review)
+        let review = reviewData[indexPath.item]
+        cell.configure(model: review, isExpanded: expandedCells[indexPath.item])
+        
+        cell.onToggle = {
+            self.expandedCells[indexPath.item].toggle()
+            
+            UIView.animate(withDuration: 0, animations: {
+                collectionView.performBatchUpdates(nil, completion: nil)
+                self.updateScrollViewHeight()
+            })
+        }
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: 82) // 셀 크기
+        
+        let width = collectionView.frame.width
+        let text = reviewData[indexPath.item].contents
+        let isExpanded = expandedCells[indexPath.item]
+        
+        // 텍스트 높이 계산 + 패딩
+        let labelFont = UIFont.ptdMediumFont(ofSize: 14)
+        let labelWidth = width - 30
+        let estimatedHeight = text.heightWithConstrainedWidth(width: labelWidth, font: labelFont)
+        
+        let cellHeight = isExpanded ? estimatedHeight + 87 : 104
+        return CGSize(width: width, height: cellHeight)
     }
 }

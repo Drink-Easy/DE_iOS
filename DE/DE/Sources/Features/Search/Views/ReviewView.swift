@@ -76,6 +76,7 @@ class ReviewView: UIView {
     public lazy var reviewCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.scrollDirection = .vertical
         $0.minimumInteritemSpacing = 8
+        $0.estimatedItemSize = .zero
     }).then {
         $0.register(ReviewCollectionViewCell.self, forCellWithReuseIdentifier: ReviewCollectionViewCell.identifier)
         $0.backgroundColor = .clear
@@ -116,7 +117,7 @@ class ReviewView: UIView {
         
         reviewCollectionView.snp.makeConstraints {
             $0.top.equalTo(moreBtn.snp.bottom).offset(8)
-            $0.height.equalTo(272)
+            $0.height.equalTo(332)
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(24)
             $0.bottom.equalToSuperview()
         }
