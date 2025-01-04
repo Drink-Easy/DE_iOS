@@ -13,13 +13,16 @@ public class ChangeNoseViewController: UIViewController {
     let chooseNoseView = ChangeNoseView()
     let navigationBarManager = NavigationBarManager()
     let noteId: Int
+    let wineName: String
     
     let noteService = TastingNoteService()
+    var initialNose: [String: String]
     
-    let wineName = UserDefaults.standard.string(forKey: "wineName")
     
-    init(noteId: Int) {
+    init(noteId: Int, wineName: String, initialNose: [String: String]) {
         self.noteId = noteId
+        self.wineName = wineName
+        self.initialNose = initialNose
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -34,7 +37,7 @@ public class ChangeNoseViewController: UIViewController {
         setupCollectionView() // CollectionView 설정
         setupActions()
         setupNavigationBar()
-        chooseNoseView.updateUI(wineName: wineName ?? "")
+        chooseNoseView.updateUI(wineName: wineName)
     }
     
     private func setupUI() {
@@ -90,60 +93,67 @@ public class ChangeNoseViewController: UIViewController {
         }
         
         callNotePatchNose()
+        updateNextButtonState()
         
         let nextVC = WineInfoViewController(noteId: noteId)
         navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    private func loadInitialData() {
+        if let savedData = loadSavedNoseData() {
+            selectedItems = savedData
+            chooseNoseView.updateSelectedCollectionViewHeight()
+            chooseNoseView.collectionView.reloadData()
+            chooseNoseView.selectedCollectionView.reloadData()
+        }
     }
     
     private func loadSavedNoseData() -> [String: [NoseModel]]? {
         guard let data = UserDefaults.standard.data(forKey: "nose") else { return nil }
         do {
             let decoder = JSONDecoder()
-            let savedData = try decoder.decode([String: [NoseModel]].self, from: data)
-            return savedData
+            return try decoder.decode([String: [NoseModel]].self, from: data)
         } catch {
-            print("Failed to load saved nose data: \(error)")
+            print("데이터 디코딩 실패: \(error)")
             return nil
         }
     }
     
     private func isNoseDataChanged() -> Bool {
         guard let savedData = loadSavedNoseData() else {
-            // 저장된 데이터가 없는 경우 변경된 것으로 간주
             return true
         }
         return savedData != selectedItems
     }
     
     private func updateNextButtonState() {
-        chooseNoseView.nextButton.isEnabled = isNoseDataChanged()
-        chooseNoseView.nextButton.backgroundColor = chooseNoseView.nextButton.isEnabled ? AppColor.purple100 : AppColor.gray30
+        let currentNoseArray = selectedItems.flatMap { $0.value.map { $0.type } }
+        let initialNoseArray = Array(initialNose.values)
+        
+        let isChanged = currentNoseArray != initialNoseArray
+        
+        // 버튼 상태 업데이트
+        chooseNoseView.nextButton.isEnabled = isChanged
+        chooseNoseView.nextButton.backgroundColor = isChanged ? AppColor.purple100 : AppColor.gray30
     }
     
     func callNotePatchNose() {
-        guard let savedNoseData = loadSavedNoseData() else {
-            print("기존 데이터 없음. 모든 항목을 추가 목록에 넣습니다.")
-            let addNoseList = selectedItems.flatMap { $0.value.map { $0.type } }
-            return
-        }
-        
-        // 현재 선택된 데이터
+        // 현재 선택된 nose 데이터
         let currentNoseArray = selectedItems.flatMap { $0.value.map { $0.type } }
         
-        // 기존 데이터와 현재 데이터 비교
-        let savedNoseArray = savedNoseData.flatMap { $0.value.map { $0.type } }
+        // 제거된 항목: 기존에 있었지만 현재 선택된 항목에 없는 경우
+        let removeNoseList = initialNose
+                .filter { !currentNoseArray.contains($0.value) }
+                .compactMap { Int($0.key) }
         
-        // 새로 추가된 항목
-        let addNoseList = currentNoseArray.filter { !savedNoseArray.contains($0) }
+        // 추가된 항목: 현재 선택된 항목에 있지만 기존에 없던 항목
+        let addNoseList = currentNoseArray.filter { !initialNose.values.contains($0) }
         
-        // 제거된 항목
-        let removeNoseList = savedNoseArray.filter { !currentNoseArray.contains($0) }
-        
-        // PATCH 요청 보내기
         sendPatchRequest(addNoseList: addNoseList, removeNoseList: removeNoseList)
+        
     }
     
-    private func sendPatchRequest(addNoseList: [String], removeNoseList: [String]) {
+    private func sendPatchRequest(addNoseList: [String], removeNoseList: [Int]) {
         let updateRequest = TastingNoteUpdateRequestDTO(
             color: nil,
             tastingDate: nil,
@@ -153,8 +163,8 @@ public class ChangeNoseViewController: UIViewController {
             body: nil,
             alcohol: nil,
             addNoseList: addNoseList,
-            removeNoseList: [],
-            satisfaction: nil,
+            removeNoseList: removeNoseList,
+            rating: nil,
             review: nil
         )
         
@@ -327,6 +337,8 @@ extension ChangeNoseViewController {
             chooseNoseView.selectedCollectionView.reloadData()
             chooseNoseView.updateSelectedCollectionViewHeight()
             chooseNoseView.updateNoseCollectionViewHeight()
+            
+            updateNextButtonState()
         }
     }
 }

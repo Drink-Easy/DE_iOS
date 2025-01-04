@@ -9,64 +9,17 @@ public class ChangeRateViewController: UIViewController {
     let ratingWineView = ChangeRateView()
     private var ratingValue: Double = 2.5
     let navigationBarManager = NavigationBarManager()
+    let noteId: Int
     
     let noteService = TastingNoteService()
     
+    init(noteId: Int) {
+        self.noteId = noteId
+        super.init(nibName: nil, bundle: nil)
+    }
     
-    func callPost() {
-        
-        func getValue<T>(forKey key: String) -> T? {
-            return UserDefaults.standard.value(forKey: key) as? T
-        }
-        
-        func getString(forKey key: String) -> String? {
-            return UserDefaults.standard.string(forKey: key)
-        }
-        
-        guard
-            let wineId: Int = getValue(forKey: "wineId"),
-            let tasteDate = getString(forKey: "tasteDate"),
-            let color = getString(forKey: "color"),
-            let noseData = UserDefaults.standard.data(forKey: "nose"),
-            let sliderValue = UserDefaults.standard.dictionary(forKey: "sliderValues") as? [String: Int],
-            let rating: Double = getValue(forKey: "rating"),
-            let review = getString(forKey: "review")
-        else {
-            print("필수 값이 누락되었습니다.")
-            return
-        }
-        
-        let decoder = JSONDecoder()
-        guard let decodedNose = try? decoder.decode([String: [NoseModel]].self, from: noseData) else {
-            print("디코딩 실패")
-            return
-        }
-        
-        let noseArray: [String] = decodedNose.flatMap { $0.value.map { $0.type } }
-        
-        let postDTO = noteService.makePostNoteDTO(
-            wineId: wineId,
-            color: color,
-            tasteDate: tasteDate,
-            sugarContent: sliderValue["Sweetness"] ?? 0,
-            acidity: sliderValue["Acidity"] ?? 0,
-            tannin: sliderValue["Tannin"] ?? 0,
-            body: sliderValue["Body"] ?? 0,
-            alcohol: sliderValue["Alcohol"] ?? 0,
-            nose: noseArray,
-            rating: rating,
-            review: review
-        )
-        
-        noteService.postNote(data: postDTO, completion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case.success(let str):
-                print(str)
-            case.failure(let error):
-                print(error)
-            }
-        } )
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     public override func viewDidLoad() {
@@ -114,9 +67,36 @@ public class ChangeRateViewController: UIViewController {
         UserDefaults.standard.set(reviewRate, forKey: "rating")
         
         print("저장된 데이터: \(reviewText), \(reviewRate)")
-        
-        callPost()
-        let nextVC = NoteListViewController()
+        callNotePatchRate()
+        let nextVC = WineInfoViewController(noteId: noteId)
         navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    func callNotePatchRate() {
+        let updateRequest = TastingNoteUpdateRequestDTO(
+            color: nil,
+            tastingDate: nil,
+            sugarContent: nil,
+            acidity: nil,
+            tannin: nil,
+            body: nil,
+            alcohol: nil,
+            addNoseList: nil,
+            removeNoseList: nil,
+            rating: ratingWineView.ratingButton.rating,
+            review: ratingWineView.reviewTextField.text
+        )
+        let patchDTO = TastingNotePatchRequestDTO(noteId: noteId, body: updateRequest)
+        noteService.patchNote(data: patchDTO, completion: {[weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case.success(let response):
+                DispatchQueue.main.async {
+                    print("PATCH 요청 성공: \(response)")
+                }
+            case.failure(let error):
+                print(error)
+            }
+        })
     }
 }

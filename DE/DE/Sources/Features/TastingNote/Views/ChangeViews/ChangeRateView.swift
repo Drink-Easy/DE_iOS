@@ -161,7 +161,7 @@ class ChangeRateView: UIView {
         descriptionView.snp.makeConstraints { make in
             make.top.bottom.equalTo(wineImage)
             make.leading.equalTo(wineImage.snp.trailing).offset(8)
-            //make.trailing.equalToSuperview().offset(24)
+            make.trailing.equalToSuperview().offset(-24)
         }
         
         contentView.addSubview(rateLabel)

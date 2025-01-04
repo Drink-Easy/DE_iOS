@@ -12,6 +12,7 @@ public class WineInfoViewController: UIViewController {
     
     let navigationBarManager = NavigationBarManager()
     let noteService = TastingNoteService()
+    var changeNoseData: [String: String] = [:]
     
     init(noteId: Int) {
         self.noteId = noteId
@@ -71,6 +72,14 @@ public class WineInfoViewController: UIViewController {
         DispatchQueue.main.async {
             print("Fetched Note Data:", data)
             self.wineInfoView.updateUI(data)
+            
+            let noseMap = data.noseMapList.reduce(into: [String: String]()) { dict, item in
+                if let key = item.keys.first, let value = item.values.first {
+                    dict[key] = value
+                }
+            }
+            
+            self.changeNoseData = noseMap
         }
     }
     
@@ -93,16 +102,20 @@ public class WineInfoViewController: UIViewController {
     
     @objc func changeColor() {
         let nextVC = ChangeColorViewController(noteId: noteId)
+        nextVC.wineName = wineInfoView.wineName.text ?? ""
+        nextVC.wineArea = wineInfoView.descriptionView.fromDescription.text ?? ""
+        nextVC.wineSort = wineInfoView.descriptionView.kindDescription.text ?? ""
+        // nextVC.wineImage = wineInfoView.descriptionView.
         navigationController?.pushViewController(nextVC, animated: true)
     }
     
     @objc func changeNose() {
-        let nextVC = ChangeNoseViewController(noteId: noteId)
+        let nextVC = ChangeNoseViewController(noteId: noteId, wineName: wineInfoView.wineName.text ?? "", initialNose: changeNoseData)
         navigationController?.pushViewController(nextVC, animated: true)
     }
     
     @objc func changeRate() {
-        let nextVC = ChangeRateViewController()
+        let nextVC = ChangeRateViewController(noteId: noteId)
         navigationController?.pushViewController(nextVC, animated: true)
     }
     

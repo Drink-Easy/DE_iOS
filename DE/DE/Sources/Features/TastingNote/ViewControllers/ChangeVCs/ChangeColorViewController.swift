@@ -11,10 +11,10 @@ public class ChangeColorViewController: UIViewController, ColorStackViewDelegate
     let navigationBarManager = NavigationBarManager()
     let noteId: Int
     
-    let wineName = UserDefaults.standard.string(forKey: "wineName")
-    let wineSort = UserDefaults.standard.string(forKey: "wineSort")
-    let wineArea = UserDefaults.standard.string(forKey: "wineArea")
-    let wineImage = UserDefaults.standard.string(forKey: "wineImage")
+    var wineName: String = ""
+    var wineSort: String = ""
+    var wineArea: String = ""
+    var wineImage: String = ""
     
     let noteService = TastingNoteService()
     
@@ -29,7 +29,7 @@ public class ChangeColorViewController: UIViewController, ColorStackViewDelegate
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        chooseWineColor.updateUI(wineName: wineName ?? "", wineSort: wineSort ?? "", imageUrl: wineImage ?? "", wineArea: wineArea ?? "")
+        chooseWineColor.updateUI(wineName: wineName, wineSort: wineSort, imageUrl: wineImage, wineArea: wineArea)
         chooseWineColor.nextButton.isEnabled = false
         chooseWineColor.nextButton.backgroundColor = AppColor.gray30
     }
@@ -120,7 +120,7 @@ public class ChangeColorViewController: UIViewController, ColorStackViewDelegate
             alcohol: nil,
             addNoseList: nil,
             removeNoseList: nil,
-            satisfaction: nil,
+            rating: nil,
             review: nil
         )
         let patchDTO = TastingNotePatchRequestDTO(noteId: noteId, body: updateRequest)
