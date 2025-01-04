@@ -23,6 +23,11 @@ class MorePopularWineViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
     private lazy var morePopularWineView = MoreRecomWineView().then {
         $0.title.text = "지금 가장 인기있는 와인 🔥"
         

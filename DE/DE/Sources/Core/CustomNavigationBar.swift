@@ -38,4 +38,42 @@ public class NavigationBarManager {
         navigationItem.titleView = titleLabel
     }
     
+    // MARK: - 커스텀 Large Title
+//    public func setupCustomLargeTitle(for navigationController: UINavigationController?, title: String, font: UIFont, textColor: UIColor, lineSpacing: CGFloat) {
+//        
+//        guard let navBar = navigationController?.navigationBar else { return }
+//        
+//        let largeTitleLabel = UILabel()
+//        largeTitleLabel.text = title
+//        largeTitleLabel.numberOfLines = 0  // 여러 줄 허용
+//        largeTitleLabel.font = font
+//        largeTitleLabel.textAlignment = .left
+//        
+//        //줄 간격 설정 (lineSpacing 적용)
+//        let paragraphStyle = NSMutableParagraphStyle()
+//        paragraphStyle.lineSpacing = lineSpacing
+//        let attributedText = NSAttributedString(
+//            string: title,
+//            attributes: [
+//                .font: largeTitleLabel.font!,
+//                .paragraphStyle: paragraphStyle
+//            ]
+//        )
+//        largeTitleLabel.attributedText = attributedText
+//        
+//        // 커스텀 뷰 컨테이너 생성
+//        if #available(iOS 13.0, *) {
+//            let appearance = UINavigationBarAppearance()
+//            appearance.largeTitleTextAttributes = [
+//                .foregroundColor: UIColor.label,
+//                .font: UIFont.boldSystemFont(ofSize: 34),
+//                .paragraphStyle: paragraphStyle
+//            ]
+//            navBar.scrollEdgeAppearance = appearance
+//            navBar.standardAppearance = appearance
+//        }
+//        
+//        // 타이틀 설정
+//        navBar.topItem?.title = title
+//    }
 }

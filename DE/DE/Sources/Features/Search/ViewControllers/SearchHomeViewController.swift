@@ -24,6 +24,11 @@ public class SearchHomeViewController : UIViewController {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
     private lazy var searchHomeView = SearchHomeView(
         titleText: "검색하고 싶은\n와인을 입력해주세요",
         placeholder: "검색어 입력"

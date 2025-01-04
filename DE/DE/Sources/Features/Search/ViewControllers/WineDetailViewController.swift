@@ -22,10 +22,12 @@ class WineDetailViewController: UIViewController {
         super.viewDidLoad()
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationItem.largeTitleDisplayMode = .automatic
+        //self.navigationItem.setValue(1, forKey: "__largeTitleTwoLineMode")
         self.navigationController?.navigationBar.largeTitleTextAttributes = [
             .font: UIFont.ptdSemiBoldFont(ofSize: 24),
-            .foregroundColor: AppColor.black!
+            .foregroundColor: AppColor.black!,
         ]
+        
         view.backgroundColor = Constants.AppColor.grayBG
         
         addView()
@@ -34,9 +36,14 @@ class WineDetailViewController: UIViewController {
         setupNavigationBar()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
         // 원래 상태와 변경된 상태를 비교
         if originalIsLiked != isLiked {
             callLikedAPI(wineId: self.wineId)
@@ -160,12 +167,14 @@ class WineDetailViewController: UIViewController {
             reviewView.reviewCollectionView.isHidden = true
             reviewView.scoreLabel.isHidden = true
             reviewView.noReviewLabel.isHidden = false
+            scrollView.isScrollEnabled = false
         } else {
             // 리뷰가 있을 때
             reviewView.moreBtn.isHidden = false
             reviewView.reviewCollectionView.isHidden = false
             reviewView.scoreLabel.isHidden = false
             reviewView.noReviewLabel.isHidden = true
+            scrollView.isScrollEnabled = true
         }
     }
     
@@ -298,10 +307,15 @@ extension WineDetailViewController: UICollectionViewDataSource, UICollectionView
         
         // 텍스트 높이 계산 + 패딩
         let labelFont = UIFont.ptdMediumFont(ofSize: 14)
+        let lineSpacing = labelFont.pointSize * 0.3
         let labelWidth = width - 30
-        let estimatedHeight = text.heightWithConstrainedWidth(width: labelWidth, font: labelFont)
+        //let estimatedHeight = text.heightWithConstrainedWidth(width: labelWidth, font: labelFont)
+        let numberOfLines = text.numberOfLines(width: labelWidth, font: labelFont, lineSpacing: lineSpacing)
+        let lineHeight = labelFont.lineHeight + lineSpacing
         
-        let cellHeight = isExpanded ? estimatedHeight + 87 : 104
+        let cellHeight = isExpanded
+                ? CGFloat(numberOfLines - 2) * lineHeight + 104
+                : 104
         return CGSize(width: width, height: cellHeight)
     }
 }

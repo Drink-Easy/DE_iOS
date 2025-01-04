@@ -30,6 +30,11 @@ class MoreLikelyWineViewController: UIViewController {
         }
     }
     
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
     @MainActor
     private func fetchWineData() async {
         wineList = wineDataManger.fetchWines(type: .recommended)

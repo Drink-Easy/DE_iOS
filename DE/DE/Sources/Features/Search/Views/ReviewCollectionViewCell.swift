@@ -25,7 +25,7 @@ class ReviewCollectionViewCell: UICollectionViewCell {
         $0.textColor = AppColor.gray70
         $0.font = UIFont.ptdMediumFont(ofSize: 14)
         $0.numberOfLines = 2
-        $0.lineBreakMode = .byTruncatingTail
+        $0.setLineSpacingPercentage(0.3)
     }
     
     public lazy var date = UILabel().then {
@@ -89,9 +89,8 @@ class ReviewCollectionViewCell: UICollectionViewCell {
         }
         
         toggleButton.snp.makeConstraints {
-            $0.top.equalTo(review.snp.bottom).offset(3)
+            $0.top.equalTo(review.snp.bottom).offset(2)
             $0.leading.equalTo(review.snp.leading)
-            $0.bottom.equalToSuperview().offset(-10)
         }
     }
     
@@ -106,15 +105,19 @@ class ReviewCollectionViewCell: UICollectionViewCell {
         }
         
         self.isExpanded = isExpanded
+        review.setLineSpacingPercentage(0.3)
         review.numberOfLines = isExpanded ? 0 : 2
         toggleButton.setTitle(isExpanded ? "접기" : "더보기", for: .normal)
-        toggleButton.isHidden = !isTextTruncated(text: model.contents)
+        toggleButton.isHidden = !isReviewTextTruncated()
     }
     
-    private func isTextTruncated(text: String) -> Bool {
+    private func isReviewTextTruncated() -> Bool {
+        guard let text = review.text else { return false }
+        
         let labelWidth = contentView.frame.width - 30
-        let maxHeight = review.font.lineHeight * 2
-        let estimatedHeight = text.heightWithConstrainedWidth(width: labelWidth, font: review.font)
-        return estimatedHeight > maxHeight
+        let labelFont = review.font ?? UIFont.systemFont(ofSize: 16)
+        let lineSpacing = review.font.pointSize * 0.3
+        let numberOfLines = text.numberOfLines(width: labelWidth, font: labelFont, lineSpacing: lineSpacing)
+        return numberOfLines > 2
     }
 }

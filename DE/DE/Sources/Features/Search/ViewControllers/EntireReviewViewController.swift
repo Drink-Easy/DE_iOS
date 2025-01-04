@@ -31,6 +31,16 @@ class EntireReviewViewController: UIViewController {
         setupNavigationBar()
     }
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
     private func setupNavigationBar() {
         
         self.title = wineName
@@ -140,11 +150,15 @@ extension EntireReviewViewController: UICollectionViewDataSource, UICollectionVi
         
         // 텍스트 높이 계산 + 패딩
         let labelFont = UIFont.ptdMediumFont(ofSize: 14)
+        let lineSpacing = labelFont.pointSize * 0.3
         let labelWidth = width - 30
-        let estimatedHeight = text.heightWithConstrainedWidth(width: labelWidth, font: labelFont)
+        //let estimatedHeight = text.heightWithConstrainedWidth(width: labelWidth, font: labelFont)
+        let numberOfLines = text.numberOfLines(width: labelWidth, font: labelFont, lineSpacing: lineSpacing)
+        let lineHeight = labelFont.lineHeight + lineSpacing
         
-        let cellHeight = isExpanded ? estimatedHeight + 85 : 104
-        
+        let cellHeight = isExpanded
+                ? CGFloat(numberOfLines - 2) * lineHeight + 104
+                : 104
         return CGSize(width: width, height: cellHeight)
     }
 }
