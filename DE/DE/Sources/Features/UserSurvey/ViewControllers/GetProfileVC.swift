@@ -7,8 +7,9 @@ import SnapKit
 import Then
 
 import CoreModule
+import CoreLocation
 
-class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
     
     private let navigationBarManager = NavigationBarManager()
     
@@ -47,7 +48,6 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
         setupConstraints()
         setupNavigationBar()
         setupActions()
-        
         configureTapGestureForDismissingPicker()
     }
         
@@ -122,8 +122,13 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
         present(picker, animated: true, completion: nil)
     }
     
+    //TODO: 위치 정보 불러오기 로직
     @objc func getMyLocation() {
-        //TODO: 지역 연결 로직 작성
+        LocationManager.shared.requestLocationPermission { [weak self] address in
+            DispatchQueue.main.async {
+                self?.profileView.myLocationTextField.textField.text = address ?? ""
+            }
+        }
     }
     
     // 폼 유효성 검사
