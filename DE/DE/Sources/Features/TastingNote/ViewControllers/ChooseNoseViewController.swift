@@ -7,7 +7,7 @@ public class ChooseNoseViewController: UIViewController {
     
     private var collectionView: UICollectionView!
     var sections: [NoseSectionModel] = NoseSectionModel.sections() // 섹션 데이터
-    var selectedItems: [String: [NoseModel]] = [:]
+    var selectedItems: [String:[NoseModel]] = [:]
     
     let chooseNoseView = ChooseNoseView()
     let navigationBarManager = NavigationBarManager()
@@ -86,7 +86,7 @@ extension ChooseNoseViewController: UICollectionViewDelegate, UICollectionViewDa
         if collectionView.tag == 0 {
             return sections.count
         } else if collectionView.tag == 1 {
-            return selectedItems.values.count
+            return 1
         }
         return 0
     }
@@ -96,9 +96,8 @@ extension ChooseNoseViewController: UICollectionViewDelegate, UICollectionViewDa
         if collectionView.tag == 0 {
             return sections[section].isExpanded ? sections[section].items.count : 0
         } else if collectionView.tag == 1 {
-            let keys = Array(selectedItems.keys)
-            let key = keys[section]
-            return selectedItems[key]?.count ?? 0
+            let allSelectedItems = selectedItems.values.flatMap { $0 } // 모든 섹션의 아이템 합침
+            return allSelectedItems.count
         }
         return 0
     }
