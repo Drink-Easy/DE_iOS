@@ -108,6 +108,7 @@ public class WineSearchMainVC : UIViewController, UISearchBarDelegate, UITableVi
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = TastedDateViewController()
+        UserDefaults.standard.set(wineResults[indexPath.row].wineName, forKey: "wineName")
         UserDefaults.standard.set(wineResults[indexPath.row].wineId, forKey: "wineId")
         UserDefaults.standard.set(wineResults[indexPath.row].sort, forKey: "wineSort")
         UserDefaults.standard.set(wineResults[indexPath.row].area, forKey: "wineArea")

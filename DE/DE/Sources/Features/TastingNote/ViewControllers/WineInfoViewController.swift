@@ -6,7 +6,7 @@ import CoreModule
 import Network
 
 public class WineInfoViewController: UIViewController {
-
+    
     let wineInfoView = WineInfoView()
     private let noteId: Int
     
@@ -27,6 +27,7 @@ public class WineInfoViewController: UIViewController {
         self.navigationController?.isNavigationBarHidden = false
         setupUI()
         setupNavigationBar()
+        setupActions()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -43,12 +44,14 @@ public class WineInfoViewController: UIViewController {
     }
     
     private func setupNavigationBar() {
-        navigationBarManager.addBackButton(
+        navigationBarManager.addLeftRightButtons(
             to: navigationItem,
+            leftIcon: "chevron.left",
+            leftAction: #selector(prevVC),
+            rightIcon: "trash",
+            rightAction: #selector(deleteTapped),
             target: self,
-            action: #selector(prevVC),
-            tintColor: AppColor.gray80!
-        )
+            tintColor: AppColor.gray90 ?? .black)
     }
     
     func callSelectedNote(noteId: Int) {
@@ -71,9 +74,52 @@ public class WineInfoViewController: UIViewController {
         }
     }
     
+    private func setupActions() {
+        let colorTapGesture = UITapGestureRecognizer(target: self, action: #selector(changeColor))
+        let noseTapGesture = UITapGestureRecognizer(target: self, action: #selector(changeNose))
+        let rateTapGesture = UITapGestureRecognizer(target: self, action: #selector(changeRate))
+        let graphTapGesture = UITapGestureRecognizer(target: self, action: #selector(changeGraph))
+        
+        wineInfoView.changeColor.addGestureRecognizer(colorTapGesture)
+        wineInfoView.changeNose.addGestureRecognizer(noseTapGesture)
+        wineInfoView.changeRate.addGestureRecognizer(rateTapGesture)
+        wineInfoView.changeGraph.addGestureRecognizer(graphTapGesture)
+    }
+    
     
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)
     }
     
+    @objc func changeColor() {
+        let nextVC = ChangeColorViewController(noteId: noteId)
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    @objc func changeNose() {
+        let nextVC = ChangeNoseViewController(noteId: noteId)
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    @objc func changeRate() {
+        let nextVC = ChangeRateViewController()
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    @objc func changeGraph() {
+        let nextVC = ChangeGraphViewController()
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    @objc func deleteTapped() {
+        noteService.deleteNote(noteId: noteId, completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case.success(let response):
+                print(response)
+            case.failure(let error):
+                print(error)
+            }
+        })
+    }
 }

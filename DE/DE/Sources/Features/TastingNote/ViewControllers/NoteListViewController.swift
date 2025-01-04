@@ -21,7 +21,7 @@ public class NoteListViewController: UIViewController {
     private let myTastingNote = MyTastingNoteView()
     
     let noteService = TastingNoteService()
-    
+
     func callAllNote() {
         noteService.fetchAllNotes(sort: "all", completion: { [weak self] result in
             guard let self = self else { return }
@@ -46,7 +46,6 @@ public class NoteListViewController: UIViewController {
         setupUI()
         setupDelegate()
         setupAction()
-        
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -127,6 +126,9 @@ public class NoteListViewController: UIViewController {
         callAllNote()
     }
     
+    @objc func searchButtonTapped() {
+        
+    }
 }
 
 extension NoteListViewController: UICollectionViewDelegate, UICollectionViewDataSource {

@@ -2,25 +2,19 @@
 
 import UIKit
 import CoreModule
+import Network
 
-public class RecordGraphViewController: UIViewController {
+public class ChangeGraphViewController: UIViewController {
     
-    let recordGraphView = RecordGraphView()
+    let recordGraphView = ChangeGraphView()
     private var sliderValues: [String: Int] = [:] {
         didSet {
             updatePolygonChart()
         }
     }
-    
     let navigationBarManager = NavigationBarManager()
-    let wineName = UserDefaults.standard.string(forKey: "wineName")
     
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        DispatchQueue.main.async {
-            self.recordGraphView.updateUI(wineName: self.wineName ?? "")
-        }
-    }
+    let noteService = TastingNoteService()
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -104,6 +98,5 @@ public class RecordGraphViewController: UIViewController {
         default:
             break
         }
-    }
-    
+    }    
 }

@@ -4,25 +4,14 @@ import UIKit
 import CoreModule
 import Network
 
-public class RatingWineViewController: UIViewController {
+public class ChangeRateViewController: UIViewController {
     
-    let ratingWineView = RatingWineView()
+    let ratingWineView = ChangeRateView()
     private var ratingValue: Double = 2.5
     let navigationBarManager = NavigationBarManager()
     
     let noteService = TastingNoteService()
     
-    let wineName = UserDefaults.standard.string(forKey: "wineName")
-    let wineArea = UserDefaults.standard.string(forKey: "wineArea")
-    let wineImage = UserDefaults.standard.string(forKey: "wineImage")
-    let wineSort = UserDefaults.standard.string(forKey: "wineSort")
-    
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        DispatchQueue.main.async {
-            self.ratingWineView.updateUI(wineName: self.wineName ?? "", wineSort: self.wineSort ?? "", wineArea: self.wineArea ?? "", wineImage: self.wineImage ?? "")
-        }
-    }
     
     func callPost() {
         
@@ -73,10 +62,7 @@ public class RatingWineViewController: UIViewController {
             guard let self = self else { return }
             switch result {
             case.success(let str):
-                DispatchQueue.main.async {
-                    let nextVC = NoteListViewController()
-                    self.navigationController?.pushViewController(nextVC, animated: true)
-                }
+                print(str)
             case.failure(let error):
                 print(error)
             }
@@ -130,5 +116,7 @@ public class RatingWineViewController: UIViewController {
         print("저장된 데이터: \(reviewText), \(reviewRate)")
         
         callPost()
+        let nextVC = NoteListViewController()
+        navigationController?.pushViewController(nextVC, animated: true)
     }
 }

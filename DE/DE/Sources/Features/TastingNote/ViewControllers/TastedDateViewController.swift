@@ -14,7 +14,9 @@ public class TastedDateViewController: UIViewController {
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tastedDateView.updateUI(wineName: wineName ?? "")
+        DispatchQueue.main.async {
+            self.tastedDateView.updateUI(wineName: self.wineName ?? "")
+        }
     }
     
     public override func viewDidLoad() {
