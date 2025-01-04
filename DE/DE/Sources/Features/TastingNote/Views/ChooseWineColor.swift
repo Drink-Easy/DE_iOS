@@ -146,12 +146,12 @@ class ChooseWineColor: UIView {
         }
     }
     
-    func updateUI(_ data: SearchWineResponseDTO) {
-        wineNameLabel.text = data.name
-        descriptionView.kindDescription.text = data.sort
+    func updateUI(wineName: String, wineSort: String, imageUrl: String, wineArea: String) {
+        wineNameLabel.text = wineName
+        descriptionView.kindDescription.text = wineSort
         // descriptionView.breedDescription.text
-        descriptionView.fromDescription.text = data.area
-        wineImage.sd_setImage(with: URL(string: data.imageUrl), placeholderImage: UIImage())
+        descriptionView.fromDescription.text = wineArea
+        wineImage.sd_setImage(with: URL(string: imageUrl), placeholderImage: UIImage())
     }
     
     override init(frame: CGRect) {

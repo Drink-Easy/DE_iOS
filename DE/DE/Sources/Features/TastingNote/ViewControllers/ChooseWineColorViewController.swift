@@ -9,20 +9,15 @@ public class ChooseWineColorViewController: UIViewController, ColorStackViewDele
     var selectedColor: UIColor?
     let chooseWineColor = ChooseWineColor()
     let navigationBarManager = NavigationBarManager()
-    let dto: SearchWineResponseDTO
     
-    init(data: SearchWineResponseDTO) {
-        self.dto = data
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    let wineName = UserDefaults.standard.string(forKey: "wineName")
+    let wineSort = UserDefaults.standard.string(forKey: "wineSort")
+    let wineArea = UserDefaults.standard.string(forKey: "wineArea")
+    let wineImage = UserDefaults.standard.string(forKey: "wineImage")
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        chooseWineColor.updateUI(dto)
+        chooseWineColor.updateUI(wineName: wineName ?? "", wineSort: wineSort ?? "", imageUrl: wineImage ?? "", wineArea: wineArea ?? "")
     }
     
     public override func viewDidLoad() {

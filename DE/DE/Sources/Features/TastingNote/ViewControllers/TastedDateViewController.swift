@@ -9,20 +9,12 @@ public class TastedDateViewController: UIViewController {
     let tastedDateView = TastedDateView()
     var selectedDate: DateComponents?
     let navigationBarManager = NavigationBarManager()
-    private let wineName: String
     
-    init(wineName: String) {
-        self.wineName = wineName
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+    let wineName = UserDefaults.standard.string(forKey: "wineName")
+
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tastedDateView.updateUI(wineName: wineName)
+        tastedDateView.updateUI(wineName: wineName ?? "")
     }
     
     public override func viewDidLoad() {
@@ -77,7 +69,7 @@ public class TastedDateViewController: UIViewController {
             print("날짜 저장됨: \(dateString)")
         }
         
-        let nextVC = ChooseWineColorViewController(data: <#SearchWineResponseDTO#>)
+        let nextVC = ChooseWineColorViewController()
         navigationController?.pushViewController(nextVC, animated: true)
     }
     
