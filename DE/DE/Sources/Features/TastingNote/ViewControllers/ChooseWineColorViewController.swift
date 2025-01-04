@@ -2,12 +2,28 @@
 
 import UIKit
 import CoreModule
+import Network
 
 public class ChooseWineColorViewController: UIViewController, ColorStackViewDelegate {
     
     var selectedColor: UIColor?
     let chooseWineColor = ChooseWineColor()
     let navigationBarManager = NavigationBarManager()
+    let dto: SearchWineResponseDTO
+    
+    init(data: SearchWineResponseDTO) {
+        self.dto = data
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        chooseWineColor.updateUI(dto)
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,9 +48,6 @@ public class ChooseWineColorViewController: UIViewController, ColorStackViewDele
     
     func setupDelegate() {
         chooseWineColor.colorStackView1.delegate = self
-        chooseWineColor.colorStackView2.delegate = self
-        chooseWineColor.colorStackView3.delegate = self
-        chooseWineColor.colorStackView4.delegate = self
     }
     
     private func setupNavigationBar() {
@@ -64,7 +77,7 @@ public class ChooseWineColorViewController: UIViewController, ColorStackViewDele
         navigationController?.pushViewController(nextVC, animated: true)
     }
     
-    func colorStackView(_ stackView: ColorStackView, didSelectColor color: UIColor) {
+    func colorStackView(_ stackView: ColorStackView, didSelectColor color: UIColor?) {
         selectedColor = color
     }
 }

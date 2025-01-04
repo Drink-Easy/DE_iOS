@@ -43,12 +43,12 @@ class SignUpVC: UIViewController {
             to: navigationItem,
             target: self,
             action: #selector(backButtonTapped),
-            tintColor: AppColor.gray80!
+            tintColor: AppColor.gray70!
         )
     }
     
     private func setupActions() {
-        signUpView.emailField.textField.addTarget(self, action: #selector(emailValidate), for: .editingChanged)
+        signUpView.usernameField.textField.addTarget(self, action: #selector(usernameValidate), for: .editingChanged)
         signUpView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .editingChanged)
         signUpView.confirmPasswordField.textField.addTarget(self, action: #selector(confirmPasswordValidate), for: .editingChanged)
         
@@ -64,7 +64,7 @@ class SignUpVC: UIViewController {
     
     //MARK: - Button Funcs
     @objc private func signupButtonTapped() {
-        let signUpDTO = networkService.makeJoinDTO(username: signUpView.emailField.text!, password: signUpView.passwordField.text!, rePassword: signUpView.confirmPasswordField.text!)
+        let signUpDTO = networkService.makeJoinDTO(username: signUpView.usernameField.text!, password: signUpView.passwordField.text!, rePassword: signUpView.confirmPasswordField.text!)
         
         networkService.join(data: signUpDTO) { [weak self] result in
             guard let self = self else { return }
@@ -78,8 +78,8 @@ class SignUpVC: UIViewController {
         }
     }
     
-    @objc func emailValidate() {
-        validationManager.isEmailValid = validationManager.validateEmail(signUpView.emailField)
+    @objc func usernameValidate() {
+        validationManager.isUsernameValid = validationManager.validateUsername(signUpView.usernameField)
         validateInputs()
     }
     
@@ -94,12 +94,12 @@ class SignUpVC: UIViewController {
     }
     
     private func validateInputs() {
-        let isValid = validationManager.isEmailValid &&
+        let isValid = validationManager.isUsernameValid &&
         validationManager.isPasswordValid &&
         validationManager.isConfirmPasswordValid
         
         signUpView.signupButton.isEnabled = isValid
-        signUpView.signupButton.backgroundColor = isValid ? AppColor.purple100 : AppColor.gray80
+        signUpView.signupButton.backgroundColor = isValid ? AppColor.purple100 : AppColor.gray30
     }
     
     @objc private func backButtonTapped() {

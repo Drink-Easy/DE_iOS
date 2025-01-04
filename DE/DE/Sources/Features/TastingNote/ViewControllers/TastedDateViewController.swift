@@ -2,12 +2,28 @@
 
 import UIKit
 import CoreModule
+import Network
 
 public class TastedDateViewController: UIViewController {
 
     let tastedDateView = TastedDateView()
     var selectedDate: DateComponents?
     let navigationBarManager = NavigationBarManager()
+    private let wineName: String
+    
+    init(wineName: String) {
+        self.wineName = wineName
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tastedDateView.updateUI(wineName: wineName)
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,7 +77,7 @@ public class TastedDateViewController: UIViewController {
             print("날짜 저장됨: \(dateString)")
         }
         
-        let nextVC = ChooseWineColorViewController()
+        let nextVC = ChooseWineColorViewController(data: <#SearchWineResponseDTO#>)
         navigationController?.pushViewController(nextVC, animated: true)
     }
     
@@ -86,8 +102,10 @@ extension TastedDateViewController: UICalendarViewDelegate {
         if dateComponents == selectedDate {
             return .customView {
                 let backgroundView = UIView()
-                backgroundView.backgroundColor = UIColor(hex: "#B06FCD")
-                backgroundView.layer.cornerRadius = 10
+                backgroundView.backgroundColor = AppColor.purple100
+                backgroundView.layer.cornerRadius = 18 // 원형으로 만들기 위해 cornerRadius를 반지름으로 설정
+                backgroundView.layer.masksToBounds = true
+                
                 return backgroundView
             }
         }
