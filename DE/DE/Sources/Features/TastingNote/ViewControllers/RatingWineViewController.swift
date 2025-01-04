@@ -12,6 +12,7 @@ public class RatingWineViewController: UIViewController {
     
     let noteService = TastingNoteService()
     
+    
     func callPost() {
         
         func getValue<T>(forKey key: String) -> T? {

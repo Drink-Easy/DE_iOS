@@ -41,7 +41,7 @@ class ChooseNoseView: UIView {
     
     private let wineName: UILabel = {
         let w = UILabel()
-        w.text = "루이 로드레 크리스탈 2015"
+        // w.text = "루이 로드레 크리스탈 2015"
         w.font = UIFont.ptdSemiBoldFont(ofSize: 24)
         w.textColor = .black
         return w
@@ -121,6 +121,10 @@ class ChooseNoseView: UIView {
         n.setTitleColor(.white, for: .normal)
         return n
     }()
+    
+    func updateUI(wineName: String) {
+        self.wineName.text = wineName
+    }
     
     func setupUI() {
         backgroundColor = AppColor.gray20

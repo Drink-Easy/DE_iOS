@@ -123,6 +123,11 @@ class RatingWineView: UIView {
         return n
     }()
     
+    func updateUI(wineName: String, wineSort: String, wineArea: String) {
+        self.wineName.text = wineName
+        descriptionView.fromDescription.text = wineArea
+    }
+    
     func setupUI() {
         backgroundColor = AppColor.gray20
         

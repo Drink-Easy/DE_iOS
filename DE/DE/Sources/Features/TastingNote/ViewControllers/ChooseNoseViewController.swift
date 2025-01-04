@@ -12,6 +12,7 @@ public class ChooseNoseViewController: UIViewController {
     let chooseNoseView = ChooseNoseView()
     let navigationBarManager = NavigationBarManager()
 
+    let wineName = UserDefaults.standard.string(forKey: "wineName")
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,6 +21,7 @@ public class ChooseNoseViewController: UIViewController {
         setupCollectionView() // CollectionView 설정
         setupActions()
         setupNavigationBar()
+        chooseNoseView.updateUI(wineName: wineName ?? "")
     }
     
     private func setupUI() {
