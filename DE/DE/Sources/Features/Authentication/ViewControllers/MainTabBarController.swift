@@ -24,6 +24,9 @@ public class MainTabBarController: UITabBarController {
             homeVC.userName = name
             classVC.userName = name
         } else {
+            // TODO : SwiftData
+            // userId 가져오기
+            // userid로 닉네임 fetch하기
             guard let savedName = SelectLoginTypeVC.keychain.get("userNickname") else {return }
             homeVC.userName = savedName
             classVC.userName = savedName
