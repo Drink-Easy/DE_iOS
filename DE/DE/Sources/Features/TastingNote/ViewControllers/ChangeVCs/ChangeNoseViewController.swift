@@ -12,17 +12,13 @@ public class ChangeNoseViewController: UIViewController {
     
     let chooseNoseView = ChangeNoseView()
     let navigationBarManager = NavigationBarManager()
-    let noteId: Int
-    let wineName: String
     
     let noteService = TastingNoteService()
-    var initialNose: [String: String]
+    var dto: TastingNoteResponsesDTO
     
     
-    init(noteId: Int, wineName: String, initialNose: [String: String]) {
-        self.noteId = noteId
-        self.wineName = wineName
-        self.initialNose = initialNose
+    init(dto: TastingNoteResponsesDTO) {
+        self.dto = dto
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -37,7 +33,7 @@ public class ChangeNoseViewController: UIViewController {
         setupCollectionView() // CollectionView 설정
         setupActions()
         setupNavigationBar()
-        chooseNoseView.updateUI(wineName: wineName)
+        chooseNoseView.updateUI(wineName: dto.wineName)
     }
     
     private func setupUI() {
@@ -93,64 +89,68 @@ public class ChangeNoseViewController: UIViewController {
         }
         
         callNotePatchNose()
-        updateNextButtonState()
         
-        let nextVC = WineInfoViewController(noteId: noteId)
-        navigationController?.pushViewController(nextVC, animated: true)
+        dismiss(animated: true, completion: nil)
     }
     
+    // MARK: - 초기 데이터 로트
     private func loadInitialData() {
-        if let savedData = loadSavedNoseData() {
-            selectedItems = savedData
-            chooseNoseView.updateSelectedCollectionViewHeight()
-            chooseNoseView.collectionView.reloadData()
-            chooseNoseView.selectedCollectionView.reloadData()
-        }
+        selectedItems = noseMapListToSelectItems(dto.noseMapList)
+        chooseNoseView.updateSelectedCollectionViewHeight()
+        chooseNoseView.collectionView.reloadData()
+        chooseNoseView.selectedCollectionView.reloadData()
     }
     
-    private func loadSavedNoseData() -> [String: [NoseModel]]? {
-        guard let data = UserDefaults.standard.data(forKey: "nose") else { return nil }
-        do {
-            let decoder = JSONDecoder()
-            return try decoder.decode([String: [NoseModel]].self, from: data)
-        } catch {
-            print("데이터 디코딩 실패: \(error)")
-            return nil
-        }
-    }
     
-    private func isNoseDataChanged() -> Bool {
-        guard let savedData = loadSavedNoseData() else {
-            return true
-        }
-        return savedData != selectedItems
-    }
-    
-    private func updateNextButtonState() {
-        let currentNoseArray = selectedItems.flatMap { $0.value.map { $0.type } }
-        let initialNoseArray = Array(initialNose.values)
+    // MARK: - noseMapList 변환 함수
+    private func noseMapListToSelectItems(_ noseMapList: [[String: String]]) -> [String: [NoseModel]] {
+        var result: [String: [NoseModel]] = [:]
         
-        let isChanged = currentNoseArray != initialNoseArray
-        
-        // 버튼 상태 업데이트
-        chooseNoseView.nextButton.isEnabled = isChanged
-        chooseNoseView.nextButton.backgroundColor = isChanged ? AppColor.purple100 : AppColor.gray30
+        for noseMap in noseMapList {
+            for (key, value) in noseMap {
+                let noseModel = NoseModel(type: value)
+                
+                // 섹션 제목을 찾아서 해당 섹션에 추가
+                if let section = sections.first(where: { $0.items.contains(where: { $0.type == value }) }) {
+                    let sectionTitle = section.sectionTitle
+                    if result[sectionTitle] == nil {
+                        result[sectionTitle] = []
+                    }
+                    result[sectionTitle]?.append(noseModel)
+                }
+            }
+        }
+        return result
+    }
+    
+    private func updateSectionSelection() {
+        for sectionIndex in sections.indices {
+            let sectionTitle = sections[sectionIndex].sectionTitle
+            if let selectedItemsInSection = selectedItems[sectionTitle] {
+                sections[sectionIndex].selectedItems = selectedItemsInSection
+            }
+        }
     }
     
     func callNotePatchNose() {
-        // 현재 선택된 nose 데이터
-        let currentNoseArray = selectedItems.flatMap { $0.value.map { $0.type } }
+        // 기존 noseMapList에서 noseId 목록 추출
+        let initialNoseIds = dto.noseMapList.compactMap { Int($0.keys.first!) }
         
-        // 제거된 항목: 기존에 있었지만 현재 선택된 항목에 없는 경우
-        let removeNoseList = initialNose
-                .filter { !currentNoseArray.contains($0.value) }
-                .compactMap { Int($0.key) }
+        // 현재 선택된 noseType 목록
+        let currentNoseTypes = selectedItems.flatMap { $0.value.map { $0.type } }
         
-        // 추가된 항목: 현재 선택된 항목에 있지만 기존에 없던 항목
-        let addNoseList = currentNoseArray.filter { !initialNose.values.contains($0) }
+        // 추가된 항목: 현재 선택된 항목 중 기존에 없는 항목의 noseId 추출
+        let addNoseList = currentNoseTypes.filter { type in
+            !dto.noseMapList.contains(where: { $0.values.first == type })
+        }
         
+        // 제거된 항목: 기존 noseId 중 현재 선택되지 않은 항목
+        let removeNoseList = initialNoseIds.filter { id in
+            !dto.noseMapList.contains(where: { $0.keys.first == "\(id)" && currentNoseTypes.contains($0.values.first!) })
+        }
+        
+        // 서버에 PATCH 요청
         sendPatchRequest(addNoseList: addNoseList, removeNoseList: removeNoseList)
-        
     }
     
     private func sendPatchRequest(addNoseList: [String], removeNoseList: [Int]) {
@@ -168,7 +168,7 @@ public class ChangeNoseViewController: UIViewController {
             review: nil
         )
         
-        let patchDTO = TastingNotePatchRequestDTO(noteId: noteId, body: updateRequest)
+        let patchDTO = TastingNotePatchRequestDTO(noteId: dto.noteId, body: updateRequest)
         
         noteService.patchNote(data: patchDTO, completion: { [weak self] result in
             guard let self = self else { return }
@@ -337,8 +337,6 @@ extension ChangeNoseViewController {
             chooseNoseView.selectedCollectionView.reloadData()
             chooseNoseView.updateSelectedCollectionViewHeight()
             chooseNoseView.updateNoseCollectionViewHeight()
-            
-            updateNextButtonState()
         }
     }
 }

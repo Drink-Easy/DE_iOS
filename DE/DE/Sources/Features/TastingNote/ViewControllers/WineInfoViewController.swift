@@ -9,10 +9,11 @@ public class WineInfoViewController: UIViewController {
     
     let wineInfoView = WineInfoView()
     private let noteId: Int
-    
     let navigationBarManager = NavigationBarManager()
     let noteService = TastingNoteService()
     var changeNoseData: [String: String] = [:]
+    
+    var dto: TastingNoteResponsesDTO?
     
     init(noteId: Int) {
         self.noteId = noteId
@@ -31,9 +32,11 @@ public class WineInfoViewController: UIViewController {
         setupActions()
     }
     
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        callSelectedNote(noteId: noteId)
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        DispatchQueue.main.async {
+            self.callSelectedNote(noteId: self.noteId)
+        }
     }
     
     
@@ -61,6 +64,7 @@ public class WineInfoViewController: UIViewController {
             guard let self = self else { return }
             switch result {
             case.success(let data):
+                dto = data
                 handleSelectedNoteResponse(data)
             case.failure(let error):
                 print(error)
@@ -101,27 +105,47 @@ public class WineInfoViewController: UIViewController {
     }
     
     @objc func changeColor() {
-        let nextVC = ChangeColorViewController(noteId: noteId)
-        nextVC.wineName = wineInfoView.wineName.text ?? ""
-        nextVC.wineArea = wineInfoView.descriptionView.fromDescription.text ?? ""
-        nextVC.wineSort = wineInfoView.descriptionView.kindDescription.text ?? ""
-        // nextVC.wineImage = wineInfoView.descriptionView.
-        navigationController?.pushViewController(nextVC, animated: true)
+        guard let dto = dto else {
+            print("DTO is nil")
+            return
+        }
+        
+        let nextVC = ChangeColorViewController(dto: dto)
+        nextVC.modalPresentationStyle = .fullScreen
+        present(nextVC, animated: true, completion: nil)
     }
     
     @objc func changeNose() {
-        let nextVC = ChangeNoseViewController(noteId: noteId, wineName: wineInfoView.wineName.text ?? "", initialNose: changeNoseData)
-        navigationController?.pushViewController(nextVC, animated: true)
+        guard let dto = dto else {
+            print("DTO is nil")
+            return
+        }
+        
+        let nextVC = ChangeNoseViewController(dto: dto)
+        nextVC.modalPresentationStyle = .fullScreen
+        present(nextVC, animated: true, completion: nil)
     }
     
     @objc func changeRate() {
-        let nextVC = ChangeRateViewController(noteId: noteId)
-        navigationController?.pushViewController(nextVC, animated: true)
+        guard let dto = dto else {
+            print("DTO is nil")
+            return
+        }
+        
+        let nextVC = ChangeRateViewController(dto: dto)
+        nextVC.modalPresentationStyle = .fullScreen
+        present(nextVC, animated: true, completion: nil)
     }
     
     @objc func changeGraph() {
-        let nextVC = ChangeGraphViewController()
-        navigationController?.pushViewController(nextVC, animated: true)
+        guard let dto = dto else {
+            print("DTO is nil")
+            return
+        }
+        
+        let nextVC = ChangeGraphViewController(dto: dto)
+        nextVC.modalPresentationStyle = .fullScreen
+        present(nextVC, animated: true, completion: nil)
     }
     
     @objc func deleteTapped() {

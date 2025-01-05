@@ -3,6 +3,7 @@
 import UIKit
 import CoreModule
 import AMPopTip
+import Network
 
 class ChangeGraphView: UIView, UIScrollViewDelegate {
     
@@ -15,17 +16,6 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
         let c = UIView()
         c.backgroundColor = AppColor.gray20
         return c
-    }()
-    
-    let pageLabel: UILabel = {
-        let p = UILabel()
-        p.textColor = AppColor.gray80
-        let fullText = "3/5"
-        let coloredText = "3"
-        let attributedString = fullText.withColor(for: coloredText, color: AppColor.purple70 ?? UIColor(hex: "9741BF")!)
-        p.attributedText = attributedString
-        p.font = .ptdMediumFont(ofSize: 16)
-        return p
     }()
     
     let wineNameLabel: UILabel = {
@@ -240,13 +230,22 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
     
     let nextButton: UIButton = {
         let n = UIButton()
-        n.setTitle("다음", for: .normal)
+        n.setTitle("저장하기", for: .normal)
         n.titleLabel?.font = .ptdBoldFont(ofSize: 18)
         n.setTitleColor(.white, for: .normal)
         n.backgroundColor = AppColor.purple100
         n.layer.cornerRadius = 14
         return n
     }()
+    
+    func updateUI(dto: TastingNoteResponsesDTO) {
+        wineNameLabel.text = dto.wineName
+        sweetSlider.value = Float(dto.sugarContent)
+        acidSlider.value = Float(dto.acidity)
+        tanninSlider.value = Float(dto.tannin)
+        bodySlider.value = Float(dto.body)
+        alcoholSlider.value = Float(dto.alcohol)
+    }
     
     func setupUI() {
         addSubview(scrollView)
@@ -262,15 +261,9 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
             make.width.equalTo(scrollView)
         }
         
-        contentView.addSubview(pageLabel)
-        pageLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(10)
-            make.leading.equalToSuperview().offset(24)
-        }
-        
         contentView.addSubview(wineNameLabel)
         wineNameLabel.snp.makeConstraints { make in
-            make.top.equalTo(pageLabel.snp.bottom).offset(2)
+            make.top.equalToSuperview().offset(10)
             make.leading.equalToSuperview().offset(24)
         }
         
