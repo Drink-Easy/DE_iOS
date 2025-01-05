@@ -5,7 +5,7 @@ import CoreModule
 import SnapKit
 
 // 계열 선택 뷰
-class ChooseNoseView: UIView {
+class ChangeNoseView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -31,8 +31,8 @@ class ChooseNoseView: UIView {
     let pageLabel: UILabel = {
         let p = UILabel()
         p.textColor = AppColor.gray80
-        let fullText = "3/5"
-        let coloredText = "3"
+        let fullText = "1/5"
+        let coloredText = "1"
         let attributedString = fullText.withColor(for: coloredText, color: AppColor.purple70 ?? UIColor(hex: "9741BF")!)
         p.attributedText = attributedString
         p.font = .ptdMediumFont(ofSize: 16)
@@ -114,7 +114,7 @@ class ChooseNoseView: UIView {
     
     let nextButton: UIButton = {
         let n = UIButton()
-        n.setTitle("다음", for: .normal)
+        n.setTitle("저장하기", for: .normal)
         n.titleLabel?.font = UIFont.ptdBoldFont(ofSize: 18)
         n.backgroundColor = UIColor(hex: "#7E13B1")
         n.layer.cornerRadius = 14
@@ -233,29 +233,4 @@ class ChooseNoseView: UIView {
         }
     }
     
-}
-
-class LeftAlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {
-    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-        guard let attributes = super.layoutAttributesForElements(in: rect) else { return nil }
-        
-        var leftMargin: CGFloat = sectionInset.left
-        var maxY: CGFloat = -1.0
-        
-        attributes.forEach { layoutAttribute in
-            // 헤더와 푸터는 정렬 대상에서 제외
-            if layoutAttribute.representedElementCategory == .cell {
-                // 같은 행인지 확인
-                if layoutAttribute.frame.origin.y >= maxY {
-                    leftMargin = sectionInset.left
-                }
-                
-                layoutAttribute.frame.origin.x = leftMargin
-                leftMargin += layoutAttribute.frame.width + minimumInteritemSpacing
-                maxY = max(layoutAttribute.frame.maxY, maxY)
-            }
-        }
-        
-        return attributes
-    }
 }

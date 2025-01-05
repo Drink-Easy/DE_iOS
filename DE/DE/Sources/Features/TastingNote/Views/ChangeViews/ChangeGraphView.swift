@@ -4,7 +4,7 @@ import UIKit
 import CoreModule
 import AMPopTip
 
-class RecordGraphView: UIView, UIScrollViewDelegate {
+class ChangeGraphView: UIView, UIScrollViewDelegate {
     
     let scrollView: UIScrollView = {
         let s = UIScrollView()
@@ -20,8 +20,8 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
     let pageLabel: UILabel = {
         let p = UILabel()
         p.textColor = AppColor.gray80
-        let fullText = "4/5"
-        let coloredText = "4"
+        let fullText = "3/5"
+        let coloredText = "3"
         let attributedString = fullText.withColor(for: coloredText, color: AppColor.purple70 ?? UIColor(hex: "9741BF")!)
         p.attributedText = attributedString
         p.font = .ptdMediumFont(ofSize: 16)
@@ -247,10 +247,6 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         n.layer.cornerRadius = 14
         return n
     }()
-    
-    func updateUI(wineName: String) {
-        wineNameLabel.text = wineName
-    }
     
     func setupUI() {
         addSubview(scrollView)
