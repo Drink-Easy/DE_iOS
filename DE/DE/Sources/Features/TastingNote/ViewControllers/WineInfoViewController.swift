@@ -6,12 +6,13 @@ import CoreModule
 import Network
 
 public class WineInfoViewController: UIViewController {
-
+    
     let wineInfoView = WineInfoView()
     private let noteId: Int
     
     let navigationBarManager = NavigationBarManager()
     let noteService = TastingNoteService()
+    var changeNoseData: [String: String] = [:]
     
     init(noteId: Int) {
         self.noteId = noteId
@@ -27,6 +28,7 @@ public class WineInfoViewController: UIViewController {
         self.navigationController?.isNavigationBarHidden = false
         setupUI()
         setupNavigationBar()
+        setupActions()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -43,12 +45,14 @@ public class WineInfoViewController: UIViewController {
     }
     
     private func setupNavigationBar() {
-        navigationBarManager.addBackButton(
+        navigationBarManager.addLeftRightButtons(
             to: navigationItem,
+            leftIcon: "chevron.left",
+            leftAction: #selector(prevVC),
+            rightIcon: "trash",
+            rightAction: #selector(deleteTapped),
             target: self,
-            action: #selector(prevVC),
-            tintColor: AppColor.gray80!
-        )
+            tintColor: AppColor.gray90 ?? .black)
     }
     
     func callSelectedNote(noteId: Int) {
@@ -68,7 +72,27 @@ public class WineInfoViewController: UIViewController {
         DispatchQueue.main.async {
             print("Fetched Note Data:", data)
             self.wineInfoView.updateUI(data)
+            
+            let noseMap = data.noseMapList.reduce(into: [String: String]()) { dict, item in
+                if let key = item.keys.first, let value = item.values.first {
+                    dict[key] = value
+                }
+            }
+            
+            self.changeNoseData = noseMap
         }
+    }
+    
+    private func setupActions() {
+        let colorTapGesture = UITapGestureRecognizer(target: self, action: #selector(changeColor))
+        let noseTapGesture = UITapGestureRecognizer(target: self, action: #selector(changeNose))
+        let rateTapGesture = UITapGestureRecognizer(target: self, action: #selector(changeRate))
+        let graphTapGesture = UITapGestureRecognizer(target: self, action: #selector(changeGraph))
+        
+        wineInfoView.changeColor.addGestureRecognizer(colorTapGesture)
+        wineInfoView.changeNose.addGestureRecognizer(noseTapGesture)
+        wineInfoView.changeRate.addGestureRecognizer(rateTapGesture)
+        wineInfoView.changeGraph.addGestureRecognizer(graphTapGesture)
     }
     
     
@@ -76,4 +100,39 @@ public class WineInfoViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
+    @objc func changeColor() {
+        let nextVC = ChangeColorViewController(noteId: noteId)
+        nextVC.wineName = wineInfoView.wineName.text ?? ""
+        nextVC.wineArea = wineInfoView.descriptionView.fromDescription.text ?? ""
+        nextVC.wineSort = wineInfoView.descriptionView.kindDescription.text ?? ""
+        // nextVC.wineImage = wineInfoView.descriptionView.
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    @objc func changeNose() {
+        let nextVC = ChangeNoseViewController(noteId: noteId, wineName: wineInfoView.wineName.text ?? "", initialNose: changeNoseData)
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    @objc func changeRate() {
+        let nextVC = ChangeRateViewController(noteId: noteId)
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    @objc func changeGraph() {
+        let nextVC = ChangeGraphViewController()
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    @objc func deleteTapped() {
+        noteService.deleteNote(noteId: noteId, completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case.success(let response):
+                print(response)
+            case.failure(let error):
+                print(error)
+            }
+        })
+    }
 }

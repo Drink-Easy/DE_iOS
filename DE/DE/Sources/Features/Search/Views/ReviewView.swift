@@ -12,6 +12,13 @@ class ReviewView: UIView {
         }
     }
     
+    public lazy var noReviewLabel = UILabel().then {
+        $0.text = "작성된 리뷰가 없습니다."
+        $0.textColor = AppColor.gray70
+        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.isHidden = true
+    }
+    
     private let title = TitleWithBarView(title: "Review", subTitle: "리뷰")
     
     public func updateScore() {
@@ -69,6 +76,7 @@ class ReviewView: UIView {
     public lazy var reviewCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.scrollDirection = .vertical
         $0.minimumInteritemSpacing = 8
+        $0.estimatedItemSize = .zero
     }).then {
         $0.register(ReviewCollectionViewCell.self, forCellWithReuseIdentifier: ReviewCollectionViewCell.identifier)
         $0.backgroundColor = .clear
@@ -87,7 +95,7 @@ class ReviewView: UIView {
     }
     
     private func addComponents() {
-        [title, moreBtn, reviewCollectionView].forEach{ self.addSubview($0) }
+        [title, moreBtn, reviewCollectionView, noReviewLabel].forEach{ self.addSubview($0) }
         title.addSubview(scoreLabel)
     }
     
@@ -109,9 +117,14 @@ class ReviewView: UIView {
         
         reviewCollectionView.snp.makeConstraints {
             $0.top.equalTo(moreBtn.snp.bottom).offset(8)
-            $0.height.equalTo(272)
+            $0.height.equalTo(332)
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(24)
             $0.bottom.equalToSuperview()
+        }
+        
+        noReviewLabel.snp.makeConstraints {
+            $0.top.equalTo(title.snp.bottom).offset(16)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
         }
     }
     

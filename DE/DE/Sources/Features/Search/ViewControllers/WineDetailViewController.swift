@@ -10,25 +10,44 @@ class WineDetailViewController: UIViewController {
     let navigationBarManager = NavigationBarManager()
     var wineId: Int = 0
     var wineName: String = ""
-    let networkService = WineService()
+    var isLiked: Bool = false
+    var originalIsLiked: Bool = false
+    let wineNetworkService = WineService()
+    let likedNetworkService = WishlistService()
     var reviewData: [WineReviewModel] = []
+    private var expandedCells: [Bool] = []
 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.isNavigationBarHidden = false
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationItem.largeTitleDisplayMode = .automatic
+        //self.navigationItem.setValue(1, forKey: "__largeTitleTwoLineMode")
         self.navigationController?.navigationBar.largeTitleTextAttributes = [
             .font: UIFont.ptdSemiBoldFont(ofSize: 24),
-            .foregroundColor: AppColor.black!
+            .foregroundColor: AppColor.black!,
         ]
+        
         view.backgroundColor = Constants.AppColor.grayBG
         
         addView()
         constraints()
         callWineDetailAPI(wineId: self.wineId)
         setupNavigationBar()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+        // 원래 상태와 변경된 상태를 비교
+        if originalIsLiked != isLiked {
+            callLikedAPI(wineId: self.wineId)
+        }
     }
     
     private func setupNavigationBar() {
@@ -50,11 +69,10 @@ class WineDetailViewController: UIViewController {
             tintColor: AppColor.purple100!
         )
         
-//        navigationBarManager.setTitle(
-//            to: navigationItem,
-//            title: wineName,
-//            textColor: AppColor.black!
-//        )
+        if let rightButton = navigationItem.rightBarButtonItem?.customView as? UIButton {
+            rightButton.isSelected = isLiked
+            updateHeartButton(button: rightButton)  // 초기 좋아요 상태 반영
+        }
     }
     
     @objc func prevVC() {
@@ -63,17 +81,17 @@ class WineDetailViewController: UIViewController {
     
     @objc func tappedLiked(_ sender: UIButton) {
         sender.isSelected.toggle()
-            
-        // 버튼이 클릭될 때마다, 버튼 이미지를 변환
-        if sender.isSelected {
-            let heartFilledImage = UIImage(systemName: "heart.fill")?.withTintColor(AppColor.purple100!, renderingMode: .alwaysOriginal)
-            sender.setImage(heartFilledImage, for: .selected)
-            sender.tintColor = AppColor.bgGray
-        } else {
-            let heartImage = UIImage(systemName: "heart")?.withTintColor(AppColor.purple100!, renderingMode: .alwaysOriginal)
-            sender.setImage(heartImage, for: .normal)
-            sender.tintColor = AppColor.bgGray
-        }
+        isLiked.toggle()
+        updateHeartButton(button: sender)
+    }
+    
+    private func updateHeartButton(button: UIButton) {
+        let heartImage = button.isSelected
+            ? UIImage(systemName: "heart.fill")?.withTintColor(AppColor.purple100!, renderingMode: .alwaysOriginal)
+            : UIImage(systemName: "heart")?.withTintColor(AppColor.purple100!, renderingMode: .alwaysOriginal)
+
+        button.setImage(heartImage, for: .normal)
+        button.tintColor = AppColor.bgGray
     }
     
     private lazy var scrollView = UIScrollView().then {
@@ -142,10 +160,30 @@ class WineDetailViewController: UIViewController {
         }
     }
     
+    private func updateReviewView() {
+        if reviewData.isEmpty {
+            // 리뷰가 없을 때
+            reviewView.moreBtn.isHidden = true
+            reviewView.reviewCollectionView.isHidden = true
+            reviewView.scoreLabel.isHidden = true
+            reviewView.noReviewLabel.isHidden = false
+            scrollView.isScrollEnabled = false
+        } else {
+            // 리뷰가 있을 때
+            reviewView.moreBtn.isHidden = false
+            reviewView.reviewCollectionView.isHidden = false
+            reviewView.scoreLabel.isHidden = false
+            reviewView.noReviewLabel.isHidden = true
+            scrollView.isScrollEnabled = true
+        }
+    }
+    
     func transformResponseData(_ responseData : WineResponseWithThreeReviewsDTO) {
-        let wineResponse = responseData.wineResponseDTO
+        let wineResponse = responseData.wineResponse
         self.wineId = wineResponse.wineId
         self.wineName = wineResponse.name
+        self.isLiked = wineResponse.liked
+        self.originalIsLiked = wineResponse.liked
         let noseNotes = [
             wineResponse.wineNoteNose?.nose1 ?? "nose1",
             wineResponse.wineNoteNose?.nose2 ?? "nose2",
@@ -155,18 +193,18 @@ class WineDetailViewController: UIViewController {
         let tastingNoteString = noseNotes.joined(separator: ", ")
         
         DispatchQueue.main.async {
-            self.setupNavigationBar() // 제목 설정
+            self.setupNavigationBar() // 제목 및 좋아요 설정
+            self.updateReviewView()
         }
         
-        //let topData = WineDetailTopModel(isLiked: wineResponse.liked, wineName: wineResponse.name)
         let infoData = WineDetailInfoModel(image: wineResponse.imageUrl, sort: wineResponse.sort, area: wineResponse.area)
         let rateData = WineViVinoRatingModel(vivinoRating: wineResponse.vivinoRating)
-        let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString)
+        let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString, avgSugarContent: wineResponse.avgSugarContent, avgAcidity: wineResponse.avgAcidity, avgTannin: wineResponse.avgTannin, avgBody: wineResponse.avgBody, avgAlcohol: wineResponse.avgAlcohol)
         let reviewData = WineAverageReviewModel(avgMemberRating: wineResponse.avgMemberRating)
         if let reviewResponse = responseData.recentReviews {
             for data in reviewResponse {
                 if let name = data.name,
-                       let review = data.review,
+                   let review = data.review,
                    let rating = data.rating,
                    let createdAt = data.createdAt {
                     let reviewModel = WineReviewModel(name: name, contents: review, rating: rating, createdAt: createdAt)
@@ -175,9 +213,9 @@ class WineDetailViewController: UIViewController {
                     print("작성된 리뷰가 없습니다.")
                 }
             }
+            expandedCells = Array(repeating: false, count: self.reviewData.count)
         }
         DispatchQueue.main.async {
-            //self.topNameView.configure(topData)
             self.wineDetailView.configure(infoData)
             self.vivinoRateView.configure(rateData)
             self.averageTastingNoteView.configure(avgData)
@@ -187,7 +225,7 @@ class WineDetailViewController: UIViewController {
     }
     
     func callWineDetailAPI(wineId: Int) {
-        networkService.fetchWineInfo(wineId: self.wineId) { [weak self] result in
+        wineNetworkService.fetchWineInfo(wineId: wineId) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
@@ -200,6 +238,42 @@ class WineDetailViewController: UIViewController {
             }
         }
     }
+    
+    func callLikedAPI(wineId: Int) {
+        let dto = likedNetworkService.makePostDTO(wineId: wineId)
+        likedNetworkService.postWishlist(data: dto) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let responseData) :
+                print(responseData)
+            case .failure(let error) :
+                print("\(error)")
+            }
+        }
+    }
+    
+    private func updateScrollViewHeight() {
+        DispatchQueue.main.async {
+            // reviewView의 동적 높이 구하기
+            let collectionViewContentHeight = self.reviewView.reviewCollectionView.collectionViewLayout.collectionViewContentSize.height
+            
+            // contentView의 bottom 업데이트
+            self.contentView.snp.updateConstraints {
+                $0.bottom.equalTo(self.reviewView.snp.bottom).offset(40)
+            }
+            
+            // 컬렉션뷰의 height 업데이트
+            self.reviewView.reviewCollectionView.snp.updateConstraints {
+                $0.height.equalTo(collectionViewContentHeight)
+            }
+            
+            // scrollView의 contentSize 수동 업데이트
+            self.scrollView.contentSize = CGSize(width: self.scrollView.frame.width, height: self.contentView.frame.height + collectionViewContentHeight + 40)
+            
+            self.scrollView.layoutIfNeeded()
+        }
+    }
 }
 
 extension WineDetailViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -210,13 +284,38 @@ extension WineDetailViewController: UICollectionViewDataSource, UICollectionView
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReviewCollectionViewCell.identifier, for: indexPath) as! ReviewCollectionViewCell
         
-        let review = reviewData[indexPath.row]
-        cell.configure(model: review)
+        let review = reviewData[indexPath.item]
+        cell.configure(model: review, isExpanded: expandedCells[indexPath.item])
+        
+        cell.onToggle = {
+            self.expandedCells[indexPath.item].toggle()
+            
+            UIView.animate(withDuration: 0, animations: {
+                collectionView.performBatchUpdates(nil, completion: nil)
+                self.updateScrollViewHeight()
+            })
+        }
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: 82) // 셀 크기
+        
+        let width = collectionView.frame.width
+        let text = reviewData[indexPath.item].contents
+        let isExpanded = expandedCells[indexPath.item]
+        
+        // 텍스트 높이 계산 + 패딩
+        let labelFont = UIFont.ptdMediumFont(ofSize: 14)
+        let lineSpacing = labelFont.pointSize * 0.3
+        let labelWidth = width - 30
+        //let estimatedHeight = text.heightWithConstrainedWidth(width: labelWidth, font: labelFont)
+        let numberOfLines = text.numberOfLines(width: labelWidth, font: labelFont, lineSpacing: lineSpacing)
+        let lineHeight = labelFont.lineHeight + lineSpacing
+        
+        let cellHeight = isExpanded
+                ? CGFloat(numberOfLines - 2) * lineHeight + 104
+                : 104
+        return CGSize(width: width, height: cellHeight)
     }
 }

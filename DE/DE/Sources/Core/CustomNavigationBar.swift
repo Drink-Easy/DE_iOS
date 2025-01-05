@@ -37,5 +37,28 @@ public class NavigationBarManager {
         titleLabel.textAlignment = .center
         navigationItem.titleView = titleLabel
     }
-    
+  
+    public func addLeftRightButtons(
+            to navigationItem: UINavigationItem,
+            leftIcon: String,
+            leftAction: Selector,
+            rightIcon: String,
+            rightAction: Selector,
+            target: Any?,
+            tintColor: UIColor = .label
+        ) {
+            // 왼쪽 버튼 생성
+            let leftButton = UIButton(type: .system)
+            leftButton.setImage(UIImage(systemName: leftIcon), for: .normal)
+            leftButton.tintColor = tintColor
+            leftButton.addTarget(target, action: leftAction, for: .touchUpInside)
+            navigationItem.leftBarButtonItem = UIBarButtonItem(customView: leftButton)
+
+            // 오른쪽 버튼 생성
+            let rightButton = UIButton(type: .system)
+            rightButton.setImage(UIImage(systemName: rightIcon), for: .normal)
+            rightButton.tintColor = tintColor
+            rightButton.addTarget(target, action: rightAction, for: .touchUpInside)
+            navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightButton)
+        }
 }

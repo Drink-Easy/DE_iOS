@@ -14,32 +14,49 @@ class VivinoRateView: UIView {
     }
     
     public func updateScore() {
-        let text = "\(score) / 5.0"
-        let attributedString = NSMutableAttributedString(string: text)
-        
-        // 전체 텍스트 스타일 설정
-        attributedString.addAttributes(
-            [
-                .foregroundColor: AppColor.gray70!,
-                .font: UIFont.ptdRegularFont(ofSize: 12)
-            ],
-            range: NSRange(location: 0, length: text.count)
-        )
-        
-        // `score` 부분 스타일 설정
-        if let range = text.range(of: "\(score)") {
-            let nsRange = NSRange(range, in: text)
+        if score == 0.0 {
+            scoreLabel.isHidden = true
+            scoreStar.isHidden = true
+            noRatingLabel.isHidden = false
+        } else {
+            scoreLabel.isHidden = false
+            scoreStar.isHidden = false
+            noRatingLabel.isHidden = true
+            
+            let text = "\(score) / 5.0"
+            let attributedString = NSMutableAttributedString(string: text)
+            
+            // 전체 텍스트 스타일 설정
             attributedString.addAttributes(
                 [
-                    .foregroundColor: Constants.AppColor.purple100 ?? .purple,
-                    .font: UIFont.ptdSemiBoldFont(ofSize: 18)
+                    .foregroundColor: AppColor.gray70!,
+                    .font: UIFont.ptdRegularFont(ofSize: 12)
                 ],
-                range: nsRange
+                range: NSRange(location: 0, length: text.count)
             )
+            
+            // `score` 부분 스타일 설정
+            if let range = text.range(of: "\(score)") {
+                let nsRange = NSRange(range, in: text)
+                attributedString.addAttributes(
+                    [
+                        .foregroundColor: Constants.AppColor.purple100 ?? .purple,
+                        .font: UIFont.ptdSemiBoldFont(ofSize: 18)
+                    ],
+                    range: nsRange
+                )
+            }
+            
+            scoreLabel.attributedText = attributedString
+            scoreStar.rating = score
         }
-        
-        scoreLabel.attributedText = attributedString
-        scoreStar.rating = score
+    }
+    
+    private lazy var noRatingLabel = UILabel().then {
+        $0.text = "비비노 평점이 없습니다."
+        $0.textColor = AppColor.gray70
+        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.isHidden = true
     }
     
     private let title = TitleWithBarView(title: "Vivino Rate", subTitle: "비비노 평점")
@@ -69,7 +86,7 @@ class VivinoRateView: UIView {
     }
     
     private func addComponents() {
-        [title, scoreLabel, scoreStar].forEach{ self.addSubview($0) }
+        [title, scoreLabel, scoreStar, noRatingLabel].forEach{ self.addSubview($0) }
     }
     
     private func constraints() {
@@ -87,6 +104,11 @@ class VivinoRateView: UIView {
             $0.centerY.equalTo(scoreLabel)
             $0.leading.equalTo(scoreLabel.snp.trailing).offset(26)
             $0.bottom.equalToSuperview()
+        }
+        
+        noRatingLabel.snp.makeConstraints {
+            $0.top.equalTo(title.snp.bottom).offset(16)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
         }
     }
     

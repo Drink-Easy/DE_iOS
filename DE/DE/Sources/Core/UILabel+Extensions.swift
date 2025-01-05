@@ -25,4 +25,24 @@ extension UILabel {
         
         self.attributedText = attributedString
     }
+    
+    public func setLineSpacingPercentage(_ lineSpacingMultiplier: CGFloat) {
+        guard let text = self.text, let font = self.font else { return }
+        
+        let calculatedLineSpacing = font.pointSize * lineSpacingMultiplier
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = calculatedLineSpacing
+        paragraphStyle.lineBreakMode = .byTruncatingTail
+        
+        let attributedText = NSAttributedString(
+            string: text,
+            attributes: [
+                .font: font,
+                .paragraphStyle: paragraphStyle
+            ]
+        )
+        
+        self.attributedText = attributedText
+    }
 }

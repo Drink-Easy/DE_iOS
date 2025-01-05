@@ -6,6 +6,13 @@ import Then
 
 class AverageTastingNoteView: UIView {
     
+    private lazy var noTastinNote = UILabel().then {
+        $0.text = "작성된 테이스팅 노트가 없습니다."
+        $0.textColor = AppColor.gray70
+        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.isHidden = true
+    }
+    
     private let title = TitleWithBarView(title: "Tasting Note", subTitle: "테이스팅 노트")
     
     private func createTitle(text: String) ->  UILabel {
@@ -21,6 +28,7 @@ class AverageTastingNoteView: UIView {
             $0.text = text
             $0.textColor = .black
             $0.font = UIFont.ptdRegularFont(ofSize: 14)
+            $0.numberOfLines = 0
         }
     }
     
@@ -41,7 +49,7 @@ class AverageTastingNoteView: UIView {
     }
     
     private func addComponents() {
-        [title, nose, palate, noseContents, palateContents].forEach{ self.addSubview($0) }
+        [title, nose, palate, noseContents, palateContents, noTastinNote].forEach{ self.addSubview($0) }
     }
     
     private func constraints() {
@@ -63,16 +71,38 @@ class AverageTastingNoteView: UIView {
         noseContents.snp.makeConstraints {
             $0.centerY.equalTo(nose)
             $0.leading.equalTo(safeAreaLayoutGuide).offset(89)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-26)
         }
         
         palateContents.snp.makeConstraints {
-            $0.centerY.equalTo(palate)
+            $0.top.equalTo(palate.snp.top)
             $0.leading.equalTo(noseContents.snp.leading)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-26)
+            //$0.height.equalTo(50)
             $0.bottom.equalToSuperview()
+        }
+        
+        noTastinNote.snp.makeConstraints { 
+            $0.top.equalTo(title.snp.bottom).offset(16)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
         }
     }
     
     public func configure(_ model: WineAverageTastingNoteModel) {
-        noseContents.text = model.wineNoseText
+        if model.avgAcidity == 0.0 {
+            nose.isHidden = true
+            palate.isHidden = true
+            noseContents.isHidden = true
+            palateContents.isHidden = true
+            noTastinNote.isHidden = false
+        } else {
+            nose.isHidden = false
+            palate.isHidden = false
+            noseContents.isHidden = false
+            palateContents.isHidden = false
+            noTastinNote.isHidden = true
+            noseContents.text = model.wineNoseText
+            palateContents.text = "\(model.sugarContentDescription()), \(model.acidityDescription()), \(model.tanninDescription()), \(model.bodyDescription()), \(model.alcoholDescription())"
+        }
     }
 }

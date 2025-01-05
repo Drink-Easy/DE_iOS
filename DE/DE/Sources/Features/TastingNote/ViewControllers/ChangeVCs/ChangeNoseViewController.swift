@@ -2,17 +2,33 @@
 
 import UIKit
 import CoreModule
+import Network
 
-public class ChooseNoseViewController: UIViewController {
+public class ChangeNoseViewController: UIViewController {
     
     private var collectionView: UICollectionView!
     var sections: [NoseSectionModel] = NoseSectionModel.sections() // 섹션 데이터
-    var selectedItems: [String:[NoseModel]] = [:]
+    var selectedItems: [String: [NoseModel]] = [:]
     
-    let chooseNoseView = ChooseNoseView()
+    let chooseNoseView = ChangeNoseView()
     let navigationBarManager = NavigationBarManager()
-
-    let wineName = UserDefaults.standard.string(forKey: "wineName")
+    let noteId: Int
+    let wineName: String
+    
+    let noteService = TastingNoteService()
+    var initialNose: [String: String]
+    
+    
+    init(noteId: Int, wineName: String, initialNose: [String: String]) {
+        self.noteId = noteId
+        self.wineName = wineName
+        self.initialNose = initialNose
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,7 +37,7 @@ public class ChooseNoseViewController: UIViewController {
         setupCollectionView() // CollectionView 설정
         setupActions()
         setupNavigationBar()
-        chooseNoseView.updateUI(wineName: wineName ?? "")
+        chooseNoseView.updateUI(wineName: wineName)
     }
     
     private func setupUI() {
@@ -76,19 +92,105 @@ public class ChooseNoseViewController: UIViewController {
             print("\(error)")
         }
         
-        let nextVC = RecordGraphViewController()
-        nextVC.modalPresentationStyle = .fullScreen
+        callNotePatchNose()
+        updateNextButtonState()
+        
+        let nextVC = WineInfoViewController(noteId: noteId)
         navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    private func loadInitialData() {
+        if let savedData = loadSavedNoseData() {
+            selectedItems = savedData
+            chooseNoseView.updateSelectedCollectionViewHeight()
+            chooseNoseView.collectionView.reloadData()
+            chooseNoseView.selectedCollectionView.reloadData()
+        }
+    }
+    
+    private func loadSavedNoseData() -> [String: [NoseModel]]? {
+        guard let data = UserDefaults.standard.data(forKey: "nose") else { return nil }
+        do {
+            let decoder = JSONDecoder()
+            return try decoder.decode([String: [NoseModel]].self, from: data)
+        } catch {
+            print("데이터 디코딩 실패: \(error)")
+            return nil
+        }
+    }
+    
+    private func isNoseDataChanged() -> Bool {
+        guard let savedData = loadSavedNoseData() else {
+            return true
+        }
+        return savedData != selectedItems
+    }
+    
+    private func updateNextButtonState() {
+        let currentNoseArray = selectedItems.flatMap { $0.value.map { $0.type } }
+        let initialNoseArray = Array(initialNose.values)
+        
+        let isChanged = currentNoseArray != initialNoseArray
+        
+        // 버튼 상태 업데이트
+        chooseNoseView.nextButton.isEnabled = isChanged
+        chooseNoseView.nextButton.backgroundColor = isChanged ? AppColor.purple100 : AppColor.gray30
+    }
+    
+    func callNotePatchNose() {
+        // 현재 선택된 nose 데이터
+        let currentNoseArray = selectedItems.flatMap { $0.value.map { $0.type } }
+        
+        // 제거된 항목: 기존에 있었지만 현재 선택된 항목에 없는 경우
+        let removeNoseList = initialNose
+                .filter { !currentNoseArray.contains($0.value) }
+                .compactMap { Int($0.key) }
+        
+        // 추가된 항목: 현재 선택된 항목에 있지만 기존에 없던 항목
+        let addNoseList = currentNoseArray.filter { !initialNose.values.contains($0) }
+        
+        sendPatchRequest(addNoseList: addNoseList, removeNoseList: removeNoseList)
+        
+    }
+    
+    private func sendPatchRequest(addNoseList: [String], removeNoseList: [Int]) {
+        let updateRequest = TastingNoteUpdateRequestDTO(
+            color: nil,
+            tastingDate: nil,
+            sugarContent: nil,
+            acidity: nil,
+            tannin: nil,
+            body: nil,
+            alcohol: nil,
+            addNoseList: addNoseList,
+            removeNoseList: removeNoseList,
+            rating: nil,
+            review: nil
+        )
+        
+        let patchDTO = TastingNotePatchRequestDTO(noteId: noteId, body: updateRequest)
+        
+        noteService.patchNote(data: patchDTO, completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let response):
+                DispatchQueue.main.async {
+                    print("PATCH 요청 성공: \(response)")
+                }
+            case .failure(let error):
+                print("PATCH 요청 실패: \(error)")
+            }
+        })
     }
 }
 
-extension ChooseNoseViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension ChangeNoseViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     // 섹션 수
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
         if collectionView.tag == 0 {
             return sections.count
         } else if collectionView.tag == 1 {
-            return 1
+            return selectedItems.values.count
         }
         return 0
     }
@@ -98,8 +200,9 @@ extension ChooseNoseViewController: UICollectionViewDelegate, UICollectionViewDa
         if collectionView.tag == 0 {
             return sections[section].isExpanded ? sections[section].items.count : 0
         } else if collectionView.tag == 1 {
-            let allSelectedItems = selectedItems.values.flatMap { $0 } // 모든 섹션의 아이템 합침
-            return allSelectedItems.count
+            let keys = Array(selectedItems.keys)
+            let key = keys[section]
+            return selectedItems[key]?.count ?? 0
         }
         return 0
     }
@@ -160,7 +263,7 @@ extension ChooseNoseViewController: UICollectionViewDelegate, UICollectionViewDa
     }
 }
 
-extension ChooseNoseViewController: NoseHeaderViewDelegate {
+extension ChangeNoseViewController: NoseHeaderViewDelegate {
     // 토글 애니메이션에 대한 것
     func toggleSection(_ section: Int) {
         sections[section].isExpanded.toggle()
@@ -173,7 +276,7 @@ extension ChooseNoseViewController: NoseHeaderViewDelegate {
     }
 }
 
-extension ChooseNoseViewController: UICollectionViewDelegateFlowLayout {
+extension ChangeNoseViewController: UICollectionViewDelegateFlowLayout {
     // 섹션 간 여백
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10) // 좌우 여백 10
@@ -206,7 +309,7 @@ extension ChooseNoseViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension ChooseNoseViewController {
+extension ChangeNoseViewController {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 0 {
             // 첫 번째 컬렉션 뷰: 전체 항목
@@ -234,10 +337,12 @@ extension ChooseNoseViewController {
             chooseNoseView.selectedCollectionView.reloadData()
             chooseNoseView.updateSelectedCollectionViewHeight()
             chooseNoseView.updateNoseCollectionViewHeight()
+            
+            updateNextButtonState()
         }
     }
 }
 
-protocol NoseHeaderViewDelegate: AnyObject {
-    func toggleSection(_ section: Int) // 섹션 상태 토글을 위한 델리게이트 메서드
-}
+//protocol NoseHeaderViewDelegate: AnyObject {
+//    func toggleSection(_ section: Int) // 섹션 상태 토글을 위한 델리게이트 메서드
+//}
