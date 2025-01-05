@@ -9,6 +9,7 @@ import KeychainSwift
 import Network
 import CoreModule
 import HomeModule
+import UserSurveyModule
 
 import AuthenticationServices
 import KakaoSDKUser

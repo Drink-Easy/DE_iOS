@@ -37,43 +37,28 @@ public class NavigationBarManager {
         titleLabel.textAlignment = .center
         navigationItem.titleView = titleLabel
     }
-    
-    // MARK: - 커스텀 Large Title
-//    public func setupCustomLargeTitle(for navigationController: UINavigationController?, title: String, font: UIFont, textColor: UIColor, lineSpacing: CGFloat) {
-//        
-//        guard let navBar = navigationController?.navigationBar else { return }
-//        
-//        let largeTitleLabel = UILabel()
-//        largeTitleLabel.text = title
-//        largeTitleLabel.numberOfLines = 0  // 여러 줄 허용
-//        largeTitleLabel.font = font
-//        largeTitleLabel.textAlignment = .left
-//        
-//        //줄 간격 설정 (lineSpacing 적용)
-//        let paragraphStyle = NSMutableParagraphStyle()
-//        paragraphStyle.lineSpacing = lineSpacing
-//        let attributedText = NSAttributedString(
-//            string: title,
-//            attributes: [
-//                .font: largeTitleLabel.font!,
-//                .paragraphStyle: paragraphStyle
-//            ]
-//        )
-//        largeTitleLabel.attributedText = attributedText
-//        
-//        // 커스텀 뷰 컨테이너 생성
-//        if #available(iOS 13.0, *) {
-//            let appearance = UINavigationBarAppearance()
-//            appearance.largeTitleTextAttributes = [
-//                .foregroundColor: UIColor.label,
-//                .font: UIFont.boldSystemFont(ofSize: 34),
-//                .paragraphStyle: paragraphStyle
-//            ]
-//            navBar.scrollEdgeAppearance = appearance
-//            navBar.standardAppearance = appearance
-//        }
-//        
-//        // 타이틀 설정
-//        navBar.topItem?.title = title
-//    }
+  
+    public func addLeftRightButtons(
+            to navigationItem: UINavigationItem,
+            leftIcon: String,
+            leftAction: Selector,
+            rightIcon: String,
+            rightAction: Selector,
+            target: Any?,
+            tintColor: UIColor = .label
+        ) {
+            // 왼쪽 버튼 생성
+            let leftButton = UIButton(type: .system)
+            leftButton.setImage(UIImage(systemName: leftIcon), for: .normal)
+            leftButton.tintColor = tintColor
+            leftButton.addTarget(target, action: leftAction, for: .touchUpInside)
+            navigationItem.leftBarButtonItem = UIBarButtonItem(customView: leftButton)
+
+            // 오른쪽 버튼 생성
+            let rightButton = UIButton(type: .system)
+            rightButton.setImage(UIImage(systemName: rightIcon), for: .normal)
+            rightButton.tintColor = tintColor
+            rightButton.addTarget(target, action: rightAction, for: .touchUpInside)
+            navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightButton)
+        }
 }

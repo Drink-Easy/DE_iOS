@@ -4,18 +4,7 @@ import UIKit
 import CoreModule
 import Network
 
-class ChooseWineColor: UIView {
-    
-    let pageLabel: UILabel = {
-        let p = UILabel()
-        p.textColor = AppColor.gray80
-        let fullText = "2/5"
-        let coloredText = "2"
-        let attributedString = fullText.withColor(for: coloredText, color: AppColor.purple70 ?? UIColor(hex: "9741BF")!)
-        p.attributedText = attributedString
-        p.font = .ptdMediumFont(ofSize: 16)
-        return p
-    }()
+class ChangeColorView: UIView {
     
     let wineNameLabel: UILabel = {
         let w = UILabel()
@@ -72,7 +61,7 @@ class ChooseWineColor: UIView {
     
     let nextButton: UIButton = {
         let b = UIButton()
-        b.setTitle("다음", for: .normal)
+        b.setTitle("저장하기", for: .normal)
         b.titleLabel?.font = .ptdBoldFont(ofSize: 18)
         b.backgroundColor = UIColor(hex: "#7E13B1")
         b.layer.cornerRadius = 10
@@ -83,16 +72,10 @@ class ChooseWineColor: UIView {
     func setupUI() {
         backgroundColor = AppColor.gray20
         
-        addSubview(pageLabel)
-        pageLabel.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide).offset(10)
-            make.leading.equalToSuperview().offset(24)
-        }
-        
         addSubview(wineNameLabel)
         wineNameLabel.snp.makeConstraints { make in
-            make.top.equalTo(pageLabel.snp.bottom).offset(2)
-            make.leading.equalTo(pageLabel)
+            make.top.equalTo(safeAreaLayoutGuide).offset(10)
+            make.leading.equalToSuperview().offset(24)
         }
         
         addSubview(wineImage)

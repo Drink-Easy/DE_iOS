@@ -21,7 +21,7 @@ public class NoteListViewController: UIViewController {
     private let myTastingNote = MyTastingNoteView()
     
     let noteService = TastingNoteService()
-    
+
     func callAllNote() {
         noteService.fetchAllNotes(sort: "all", completion: { [weak self] result in
             guard let self = self else { return }
@@ -39,19 +39,6 @@ public class NoteListViewController: UIViewController {
         })
     }
     
-    func callSelectedNote(noteId: Int) {
-        print("NoteID \(noteId)")
-        noteService.fetchNote(noteId: noteId, completion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case.success(let data):
-                handleSelectedNoteResponse(data)
-            case.failure(let error):
-                print(error)
-            }
-        })
-    }
-    
     public override func viewDidLoad() {
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = UIColor(hex: "F8F8FA")
@@ -59,7 +46,6 @@ public class NoteListViewController: UIViewController {
         setupUI()
         setupDelegate()
         setupAction()
-        
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -131,15 +117,6 @@ public class NoteListViewController: UIViewController {
         }
     }
     
-    private func handleSelectedNoteResponse(_ data: TastingNoteResponsesDTO) {
-        DispatchQueue.main.async {
-            print("Fetched Note Data:", data)
-            
-            let infoVC = WineInfoViewController()
-            self.navigationController?.pushViewController(infoVC, animated: true)
-        }
-    }
-    
     @objc func nextVC() {
         let nextVC = WineSearchMainVC()
         navigationController?.pushViewController(nextVC, animated: true)
@@ -149,6 +126,9 @@ public class NoteListViewController: UIViewController {
         callAllNote()
     }
     
+    @objc func searchButtonTapped() {
+        
+    }
 }
 
 extension NoteListViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -168,7 +148,9 @@ extension NoteListViewController: UICollectionViewDelegate, UICollectionViewData
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedNote = notePreviewList[indexPath.row]
-        callSelectedNote(noteId: selectedNote.noteId)
+        // callSelectedNote(noteId: selectedNote.noteId)
+        let infoVC = WineInfoViewController(noteId: selectedNote.noteId)
+        navigationController?.pushViewController(infoVC, animated: true)
     }
     
 }

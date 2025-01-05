@@ -6,7 +6,7 @@ import Cosmos
 import CoreModule
 import Then
 
-class RatingWineView: UIView {
+class ChangeRateView: UIView {
     
     let scrollView: UIScrollView = {
         let s = UIScrollView()
@@ -123,10 +123,9 @@ class RatingWineView: UIView {
         return n
     }()
     
-    func updateUI(wineName: String, wineSort: String, wineArea: String, wineImage: String) {
+    func updateUI(wineName: String, wineSort: String, wineArea: String) {
         self.wineName.text = wineName
         descriptionView.fromDescription.text = wineArea
-        self.wineImage.sd_setImage(with: URL(string: wineImage), placeholderImage: UIImage())
     }
     
     func setupUI() {

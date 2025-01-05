@@ -16,6 +16,7 @@ struct RadarChartData {
     let value: Int
 }
 
+
 class CustomUIBezierPath: UIBezierPath {
     
     var movePoint: CGPoint?
@@ -75,9 +76,9 @@ class PolygonChartView: UIButton {
             let point = transformRotate(radian: radian, x: x, y: y * 0.5, cx: cx, cy: cy)
             if let value = dataList?.first(where: { $0.type == type })?.value {
                 let percentageValue = Int(value) //Int((Double(value) / 10) * 100)
-                let strValue = "\(type.rawValue)\n\(percentageValue)"
+                let strValue = "\(type.rawValue)\n\(percentageValue)%"
                 let attributedString = NSMutableAttributedString(string: strValue, attributes: attrs)
-                if let range = strValue.range(of: "\(percentageValue)") {
+                if let range = strValue.range(of: "\(percentageValue)%") {
                     let nsRange = NSRange(range, in: strValue)
                     attributedString.addAttribute(.foregroundColor, value: AppColor.purple100 ?? .red, range: nsRange) // 원하는 색상 적용
                 }
@@ -118,7 +119,7 @@ class PolygonChartView: UIButton {
         
         stepLinePaths.enumerated().forEach { index, path in
             // 5. 단계별 가이드 라인 그리기
-            UIColor(hex: "C1C1C1")!.setStroke()
+            AppColor.gray50?.setStroke()
             path.close()
             path.stroke()
         }
@@ -137,4 +138,33 @@ class PolygonChartView: UIButton {
         return CGPoint(x: x2, y: y2)
     }
     
+}
+
+extension UIBezierPath {
+    /// 둥근 모서리를 가진 다각형 경로 생성
+    convenience init(roundedPolygonPathWithCenter center: CGPoint, radius: CGFloat, sides: Int, cornerRadius: CGFloat) {
+        self.init()
+        
+        guard sides >= 3 else { return }
+        
+        let angleIncrement = CGFloat(2 * .pi / CGFloat(sides))
+        let midAngleIncrement = angleIncrement / 2.0
+        
+        for i in 0..<sides {
+            let angle = angleIncrement * CGFloat(i)
+            let point = CGPoint(x: center.x + radius * cos(angle), y: center.y + radius * sin(angle))
+            
+            if i == 0 {
+                move(to: point)
+            } else {
+                let previousAngle = angle - angleIncrement
+                let midAngle = (previousAngle + angle) / 2
+                let controlPoint = CGPoint(x: center.x + (radius - cornerRadius) * cos(midAngle),
+                                           y: center.y + (radius - cornerRadius) * sin(midAngle))
+                
+                addQuadCurve(to: point, controlPoint: controlPoint)
+            }
+        }
+        close()
+    }
 }

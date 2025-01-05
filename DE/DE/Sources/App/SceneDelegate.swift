@@ -3,6 +3,7 @@
 import UIKit
 import Authentication
 import TastingNote
+import UserSurveyModule
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 

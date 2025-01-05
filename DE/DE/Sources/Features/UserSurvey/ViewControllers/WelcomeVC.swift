@@ -7,7 +7,7 @@ import Then
 
 import CoreModule
 
-class WelcomeVC: UIViewController {
+public class WelcomeVC: UIViewController {
     
     // MARK: - UI Components
     private let logoImageView = UIImageView().then {
@@ -39,7 +39,7 @@ class WelcomeVC: UIViewController {
     
     // MARK: - Life Cycle
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         setupUI()

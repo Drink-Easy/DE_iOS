@@ -2,12 +2,23 @@
 
 import UIKit
 import CoreModule
+import Network
 
 public class ChooseWineColorViewController: UIViewController, ColorStackViewDelegate {
     
     var selectedColor: UIColor?
     let chooseWineColor = ChooseWineColor()
     let navigationBarManager = NavigationBarManager()
+    
+    let wineName = UserDefaults.standard.string(forKey: "wineName")
+    let wineSort = UserDefaults.standard.string(forKey: "wineSort")
+    let wineArea = UserDefaults.standard.string(forKey: "wineArea")
+    let wineImage = UserDefaults.standard.string(forKey: "wineImage")
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        chooseWineColor.updateUI(wineName: wineName ?? "", wineSort: wineSort ?? "", imageUrl: wineImage ?? "", wineArea: wineArea ?? "")
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,9 +43,6 @@ public class ChooseWineColorViewController: UIViewController, ColorStackViewDele
     
     func setupDelegate() {
         chooseWineColor.colorStackView1.delegate = self
-        chooseWineColor.colorStackView2.delegate = self
-        chooseWineColor.colorStackView3.delegate = self
-        chooseWineColor.colorStackView4.delegate = self
     }
     
     private func setupNavigationBar() {
@@ -64,7 +72,7 @@ public class ChooseWineColorViewController: UIViewController, ColorStackViewDele
         navigationController?.pushViewController(nextVC, animated: true)
     }
     
-    func colorStackView(_ stackView: ColorStackView, didSelectColor color: UIColor) {
+    func colorStackView(_ stackView: ColorStackView, didSelectColor color: UIColor?) {
         selectedColor = color
     }
 }

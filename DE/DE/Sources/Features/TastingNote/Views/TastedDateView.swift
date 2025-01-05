@@ -3,9 +3,10 @@
 import UIKit
 import CoreModule
 import Then
+import Network
 
 class TastedDateView: UIView {
-
+    
     let pageLabel = UILabel().then {
         $0.textColor = AppColor.gray80
         let fullText = "1/5"
@@ -34,7 +35,7 @@ class TastedDateView: UIView {
         $0.fontDesign = .rounded
         $0.layer.cornerRadius = 10
         $0.wantsDateDecorations = true
-        $0.tintColor = UIColor(hex: "#7E13B1")
+        $0.tintColor = AppColor.purple100
     }
     
     let nextButton = UIButton().then {
@@ -82,6 +83,10 @@ class TastedDateView: UIView {
             make.leading.equalToSuperview().offset(28)
             make.height.equalTo(Constants.superViewHeight*0.06)
         }
+    }
+
+    func updateUI(wineName: String) {
+        self.wineName.text = wineName
     }
     
     override init(frame: CGRect) {
