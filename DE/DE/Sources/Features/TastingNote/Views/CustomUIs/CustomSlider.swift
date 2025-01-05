@@ -3,12 +3,12 @@
 import UIKit
 import CoreModule
 
-class CustomSlider: UISlider {
+public class CustomSlider: UISlider {
     
-    private var dividers: [UIView] = []
-    private let stepValues: [Float] = [20, 40, 60, 80, 100]
+    public var dividers: [UIView] = []
+    public let stepValues: [Float] = [20, 40, 60, 80, 100]
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         setupSlider()
     }
@@ -17,7 +17,7 @@ class CustomSlider: UISlider {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setupSlider() {
+    public func setupSlider() {
         minimumTrackTintColor = AppColor.purple20
         maximumTrackTintColor = AppColor.purple20
         
@@ -33,7 +33,7 @@ class CustomSlider: UISlider {
         addTarget(self, action: #selector(sliderDidEnded), for: [.touchUpInside, .touchUpOutside])
     }
     
-    override func thumbRect(forBounds bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
+    public override func thumbRect(forBounds bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
         // 기존 UISlider의 Thumb 위치 계산
         let originalThumbRect = super.thumbRect(forBounds: bounds, trackRect: rect, value: value)
         
@@ -42,21 +42,21 @@ class CustomSlider: UISlider {
         return originalThumbRect.offsetBy(dx: 0, dy: yOffset)
     }
     
-    @objc private func sliderValueChanged() {
+    @objc public func sliderValueChanged() {
         snapToStep()
     }
     
-    @objc private func sliderDidEnded() {
+    @objc public func sliderDidEnded() {
         snapToStep()
         updateThumbImage()
     }
     
-    private func snapToStep() {
+    public func snapToStep() {
         let closestValue = stepValues.min(by: { abs($0 - value) < abs($1 - value) }) ?? value
         value = closestValue
     }
     
-    private func updateThumbImage() {
+    public func updateThumbImage() {
         // 현재 슬라이더 값에 해당하는 텍스트 생성
         let text = "\(Int(value))"
         

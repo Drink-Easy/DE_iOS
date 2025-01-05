@@ -17,6 +17,7 @@ class SurveyTopView: UIView {
     private lazy var title = UILabel().then {
         $0.textColor = AppColor.black
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.numberOfLines = 0
     }
 
     init(titleText: String, currentPage: Int, entirePage: Int) {
