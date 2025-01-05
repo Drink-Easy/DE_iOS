@@ -7,7 +7,7 @@ import CoreModule
 public enum WishlistEndpoint {
     case getWishList
     case postWishList(wineId: Int)
-    case deleteWineLike(wineWishlistId: Int)
+    case deleteWineLike(wineId: Int)
 }
 
 extension WishlistEndpoint: TargetType {
@@ -22,8 +22,8 @@ extension WishlistEndpoint: TargetType {
         switch self {
         case .postWishList(let wineId):
             return "/\(wineId)"
-        case .deleteWineLike(let wineWishlistId):
-            return "/\(wineWishlistId)"
+        case .deleteWineLike(let wineId):
+            return "/\(wineId)"
         default:
             return ""
         }

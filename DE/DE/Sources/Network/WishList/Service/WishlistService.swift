@@ -33,8 +33,8 @@ public final class WishlistService: NetworkManager {
     }
     
     /// 위시리스트 삭제 API
-    public func deleteWishlist(wineWishlistId: Int, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .deleteWineLike(wineWishlistId: wineWishlistId), decodingType: String.self, completion: completion)
+    public func deleteWishlist(wineId: Int, completion: @escaping (Result<String, NetworkError>) -> Void) {
+        request(target: .deleteWineLike(wineId: wineId), decodingType: String.self, completion: completion)
     }
 }
 

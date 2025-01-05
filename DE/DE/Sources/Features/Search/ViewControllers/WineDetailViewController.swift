@@ -46,7 +46,7 @@ class WineDetailViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
         // 원래 상태와 변경된 상태를 비교
         if originalIsLiked != isLiked {
-            callLikedAPI(wineId: self.wineId)
+            (originalIsLiked ? calldeleteLikedAPI : callLikeAPI)(wineId)
         }
     }
     
@@ -239,9 +239,21 @@ class WineDetailViewController: UIViewController {
         }
     }
     
-    func callLikedAPI(wineId: Int) {
-        let dto = likedNetworkService.makePostDTO(wineId: wineId)
-        likedNetworkService.postWishlist(data: dto) { [weak self] result in
+    func callLikeAPI(wineId: Int) {
+        likedNetworkService.postWishlist(wineId: wineId) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let responseData) :
+                print(responseData)
+            case .failure(let error) :
+                print("\(error)")
+            }
+        }
+    }
+    
+    func calldeleteLikedAPI(wineId: Int) {
+        likedNetworkService.deleteWishlist(wineId: wineId) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
