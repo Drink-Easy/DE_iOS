@@ -13,7 +13,7 @@ public struct SearchWineResponseDTO: Decodable {
 }
 
 public struct WineResponseWithThreeReviewsDTO: Decodable {
-    public let wineResponseDTO: WineResponseDTO
+    public let wineResponse: WineResponseDTO
     public let recentReviews: [WineReviewResponseDTO]?
 }
 

@@ -37,7 +37,7 @@ public class NavigationBarManager {
         titleLabel.textAlignment = .center
         navigationItem.titleView = titleLabel
     }
-    
+  
     public func addLeftRightButtons(
             to navigationItem: UINavigationItem,
             leftIcon: String,
@@ -61,5 +61,4 @@ public class NavigationBarManager {
             rightButton.addTarget(target, action: rightAction, for: .touchUpInside)
             navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightButton)
         }
-    
 }

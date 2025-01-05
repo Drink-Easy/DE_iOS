@@ -1,54 +1,54 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+import CoreModule
 import SnapKit
 import Then
 import SDWebImage
 
-public class SearchResultTableViewCell: UITableViewCell {
+class MoreWineTableViewCell: UITableViewCell {
     
     private let borderLayer = CALayer()
     
     private lazy var image = UIImageView().then {
         $0.image = UIImage(named: "스파클링")
         $0.contentMode = .scaleAspectFill
-        $0.layer.cornerRadius = 5
+        $0.layer.cornerRadius = 6
         $0.layer.masksToBounds = true
     }
     
     private lazy var name = UILabel().then {
-        //$0.text = "루이 로드레 빈티지 브륏"
+        $0.text = "루이 로드레 빈티지 브륏 살롱 라따미 살라 어쩌구"
         $0.textColor = Constants.AppColor.DGblack
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
-        $0.numberOfLines = 1
+        $0.font = UIFont.ptdSemiBoldFont(ofSize: 18)
+        $0.numberOfLines = 2
         $0.lineBreakMode = .byTruncatingTail
     }
     
     private lazy var kind = UILabel().then {
-        //$0.text = "와인 > 스파클링, 샴페인"
+        $0.text = "와인 > 스파클링, 샴페인"
         $0.textColor = AppColor.gray100
         $0.font = UIFont.ptdRegularFont(ofSize: 14)
     }
     
-    private lazy var labelStackView = UIStackView(arrangedSubviews: [name, kind]).then {
-        $0.axis = .vertical
-        $0.spacing = 26
-        $0.alignment = .fill
-        $0.distribution = .fill
+    private lazy var score = UILabel().then {
+        $0.text = "★ 3.0"
+        $0.textColor = Constants.AppColor.purple100
+        $0.font = UIFont.ptdRegularFont(ofSize: 14)
     }
     
-    private lazy var score = UILabel().then {
-        //$0.text = "★ 4.0"
+    private lazy var price = UILabel().then {
+        $0.text = "3만원대"
         $0.textColor = Constants.AppColor.purple100
         $0.font = UIFont.ptdRegularFont(ofSize: 14)
     }
 
-    public override func awakeFromNib() {
+    override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
 
-    public override func setSelected(_ selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         if selected {
             borderLayer.cornerRadius = 8
@@ -75,10 +75,11 @@ public class SearchResultTableViewCell: UITableViewCell {
     
     public override func prepareForReuse() {
         super.prepareForReuse()
-        self.image.image = nil
-        self.name.text = nil
-        self.kind.text = nil
-        self.score.text = nil
+//        self.image.image = nil
+//        self.name.text = nil
+//        self.kind.text = nil
+//        self.score.text = nil
+//        self.price.text = nil
     }
     
     required init?(coder: NSCoder) {
@@ -103,53 +104,48 @@ public class SearchResultTableViewCell: UITableViewCell {
     }
     
     private func addComponents() {
-        [image, labelStackView, score].forEach{ self.addSubview($0) }
+        [image, name, kind, score, price].forEach{ self.addSubview($0) }
     }
     
     private func constraints() {
         image.snp.makeConstraints {
-            $0.verticalEdges.equalToSuperview().inset(11)
+            $0.verticalEdges.equalToSuperview().inset(15)
             $0.leading.equalToSuperview().offset(6)
-            $0.width.height.equalTo(70)
+            $0.width.height.equalTo(88)
         }
-
-        labelStackView.snp.makeConstraints {
-            $0.centerY.equalTo(image)
-            $0.leading.equalTo(image.snp.trailing).offset(18)
-            $0.trailing.equalToSuperview().offset(-6)
+        
+        name.snp.makeConstraints {
+            $0.leading.equalTo(image.snp.trailing).offset(16)
+            $0.trailing.equalToSuperview().inset(6)
+            $0.top.equalTo(image.snp.top)
+        }
+        
+        kind.snp.makeConstraints {
+            $0.top.equalTo(name.snp.bottom).offset(3)
+            $0.leading.equalTo(name.snp.leading)
         }
         
         score.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-6)
-            $0.centerY.equalTo(kind)
+            $0.leading.equalTo(kind.snp.leading)
+            $0.bottom.equalTo(image.snp.bottom)
+        }
+        
+        price.snp.makeConstraints {
+            $0.leading.equalTo(score.snp.trailing).offset(10)
+            $0.bottom.equalTo(score.snp.bottom)
         }
     }
     
-    public func configure(model: SearchResultModel, highlightText: String? = nil) {
-        if let url = URL(string: model.imageURL) {
+    public func configure(model: WineData) {
+        if let url = URL(string: model.imageUrl) {
             image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
         } else {
             image.image = UIImage(named: "placeholder")
         }
-        
-        //하이라이트 적용
-        if let highlightText = highlightText, !highlightText.isEmpty {
-            name.attributedText = highlightTextInLabel(text: model.wineName, highlight: highlightText)
-        } else {
-            name.text = model.wineName
-        }
-    
+        name.text = model.wineName
         kind.text = "와인 > \(model.sort)"
-        score.text = "★ \(String(format: "%.1f", model.satisfaction))"
+        score.text = "★ \(String(format: "%.1f", model.vivinoRating))"
+        price.text = "₩ \(model.price)만원대"
     }
-    
-    private func highlightTextInLabel(text: String, highlight: String) -> NSAttributedString {
-        let attributedString = NSMutableAttributedString(string: text)
-        let range = (text.lowercased() as NSString).range(of: highlight.lowercased())
-        if range.location != NSNotFound {
-            attributedString.addAttribute(.foregroundColor, value: AppColor.purple100!, range: range)
-            attributedString.addAttribute(.font, value: UIFont.ptdSemiBoldFont(ofSize: 16), range: range)
-        }
-        return attributedString
-    }
+
 }
