@@ -20,11 +20,6 @@ public final class WishlistService: NetworkManager {
         self.provider = provider ?? MoyaProvider<WishlistEndpoint>(plugins: plugins)
     }
     
-    /// 위시리스트 등록 데이터 생성
-    public func makePostDTO(wineId: Int) -> WineWishlistRequestDTO {
-        return WineWishlistRequestDTO(wineId: wineId)
-    }
-    
     //MARK: - API funcs
     
     /// 위시리스트 조회 API
@@ -33,8 +28,8 @@ public final class WishlistService: NetworkManager {
     }
     
     /// 위시리스트 등록 API
-    public func postWishlist(data: WineWishlistRequestDTO, completion: @escaping (Result<WineWishlistResponseDTO, NetworkError>) -> Void) {
-        request(target: .postWishList(data: data), decodingType: WineWishlistResponseDTO.self, completion: completion)
+    public func postWishlist(wineId: Int, completion: @escaping (Result<WineWishlistResponseDTO, NetworkError>) -> Void) {
+        request(target: .postWishList(wineId: wineId), decodingType: WineWishlistResponseDTO.self, completion: completion)
     }
     
     /// 위시리스트 삭제 API
