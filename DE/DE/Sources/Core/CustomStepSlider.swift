@@ -1,8 +1,6 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
-import StepSlider
 import UIKit
-import CoreModule
 
 public class CustomStepSlider: UISlider {
     
@@ -182,7 +180,7 @@ public class CustomStepSlider: UISlider {
         setThumbImage(thumbImageWithText, for: .normal)
     }
     
-    override func thumbRect(forBounds bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
+    public override func thumbRect(forBounds bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
         // 기존 UISlider의 Thumb 위치 계산
         let originalThumbRect = super.thumbRect(forBounds: bounds, trackRect: rect, value: value)
         

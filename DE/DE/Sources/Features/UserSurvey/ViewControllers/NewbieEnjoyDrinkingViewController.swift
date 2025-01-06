@@ -53,7 +53,7 @@ class NewbieEnjoyDrinkingViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
-        let vc = ManiaKindViewController()
+        let vc = ManiaConsumeViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 }

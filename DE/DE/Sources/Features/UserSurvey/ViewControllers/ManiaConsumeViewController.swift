@@ -12,7 +12,7 @@ class ManiaConsumeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        //self.view = surveySliderView
+        self.view = surveySliderView
         setupNavigationBar()
     }
     
@@ -39,6 +39,6 @@ class ManiaConsumeViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    //private var surveySliderView = SurveySliderView(titleText: "일주일 간 소비하시는\n와인 금액을 알려주세요", currentPage: 1, entirePage: 4, buttonTitle: "다음")
+    private var surveySliderView = SurveySliderView(titleText: "일주일 간 소비하시는\n와인 금액을 알려주세요", currentPage: 1, entirePage: 4, buttonTitle: "다음")
 
 }

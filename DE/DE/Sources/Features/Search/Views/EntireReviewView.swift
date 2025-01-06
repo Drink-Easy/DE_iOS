@@ -5,7 +5,7 @@ import UIKit
 class EntireReviewView: UIView {
     
     private let title = TitleWithBarView(title: "리뷰 전체보기", subTitle: "")
-    public let dropdownView = CustomDropdownView(options: ["최신순", "별점순"])
+    public let dropdownView = CustomDropdownView(options: ["최신 순", "오래된 순", "별점 높은 순", "별점 낮은 순"])
     
     public lazy var reviewCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.scrollDirection = .vertical
@@ -41,8 +41,8 @@ class EntireReviewView: UIView {
         
         dropdownView.snp.makeConstraints {
             $0.bottom.equalTo(title.snp.bottom).offset(-7)
-            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-25)
-            $0.width.equalTo(65)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-10)
+            $0.width.equalTo(90)
         }
         
         reviewCollectionView.snp.makeConstraints {
