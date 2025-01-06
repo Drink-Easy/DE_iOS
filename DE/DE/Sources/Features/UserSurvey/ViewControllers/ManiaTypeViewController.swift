@@ -6,11 +6,11 @@ import Then
 import CoreModule
 import SwiftyToaster
 
-class NewbieEnjoyDrinkingViewController: UIViewController {
-    
+class ManiaTypeViewController: UIViewController {
+
     private let navigationBarManager = NavigationBarManager()
     
-    let cellData = ["소주", "맥주", "위스키", "칵테일", "막걸리", "사케", "고량주", "보드카", "브랜디", "데킬라"]
+    let cellData = ["까베르네쇼비뇽", "샤도네이", "메를로", "까베르네프랑", "피노누아", "시라/쉬라즈", "쁘띠베르도", "쇼비뇽블랑", "그르나슈", "말벡", "산지오베제", "리슬링", "모스카토", "블렌드", "네비올로", "카르메너르", "무르베드르", "템프라니요"]
     
     private var selectedItems: [String] = []
     private let maxSelectionCount = 2
@@ -45,7 +45,7 @@ class NewbieEnjoyDrinkingViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    private lazy var surveyKindView = SurveyKindView(titleText: "평소 즐겨마시는\n주종을 골라주세요(2개 선택)", currentPage: 1, entirePage: 3, buttonTitle: "다음").then {
+    private lazy var surveyKindView = SurveyKindView(titleText: "선호하는 와인 품종을\n골라주세요(2개 선택)", currentPage: 3, entirePage: 4, buttonTitle: "다음").then {
         $0.surveyKindCollectionView.delegate = self
         $0.surveyKindCollectionView.dataSource = self
         
@@ -53,12 +53,12 @@ class NewbieEnjoyDrinkingViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
-        let vc = ManiaKindViewController()
+        let vc = ManiaCountryViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 }
 
-extension NewbieEnjoyDrinkingViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
+extension ManiaTypeViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return cellData.count
     }
@@ -107,3 +107,4 @@ extension NewbieEnjoyDrinkingViewController: UICollectionViewDelegateFlowLayout,
         return CGSize(width: cellWidth, height: 49)
     }
 }
+

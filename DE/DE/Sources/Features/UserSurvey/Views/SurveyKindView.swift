@@ -51,7 +51,7 @@ class SurveyKindView: UIView {
             $0.top.equalTo(surveyTopView.snp.bottom).offset(50)
             $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
             $0.trailing.equalTo(safeAreaLayoutGuide)
-            $0.height.equalTo(179)
+            $0.height.equalTo(374)
         }
         
         nextButton.snp.makeConstraints {

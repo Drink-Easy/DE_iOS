@@ -65,7 +65,7 @@ class SurveyTopView: UIView {
         
         title.snp.makeConstraints {
             $0.top.equalTo(page.snp.bottom).offset(4)
-            $0.leading.equalTo(page.snp.leading)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
             $0.bottom.equalToSuperview()
         }
     }
