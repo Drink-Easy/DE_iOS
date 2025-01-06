@@ -102,7 +102,7 @@ class AverageTastingNoteView: UIView {
             palateContents.isHidden = false
             noTastinNote.isHidden = true
             noseContents.text = model.wineNoseText
-            palateContents.text = "\(model.sugarContentDescription()), \(model.acidityDescription()), \(model.tanninDescription()), \(model.bodyDescription()), \(model.alcoholDescription())"
+            palateContents.text = "\(model.sugarContentDescription()), \(model.acidityDescription()), \(model.tanninDescription()),\n\(model.bodyDescription()), \(model.alcoholDescription())"
         }
     }
 }

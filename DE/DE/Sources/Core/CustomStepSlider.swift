@@ -2,7 +2,6 @@
 
 import UIKit
 import SnapKit
-import CoreModule
 
 public class CustomStepSlider: UISlider {
     
@@ -188,108 +187,6 @@ public class CustomStepSlider: UISlider {
     private func snapToStep() {
         let closestValue = stepValues.min(by: { abs($0 - value) < abs($1 - value) }) ?? value
         value = closestValue
-    }
-    
-    private func updateThumbImage() {
-        // 현재 슬라이더 값에 해당하는 텍스트 생성
-        let text = "\(Int(value))"
-        
-        // 기존 Thumb 이미지를 로드
-        guard let baseImage = UIImage(named: "thumbImage") else {
-            print("Thumb base image not found")
-            return
-        }
-        
-        // Thumb 이미지 위에 텍스트 추가
-        let renderer = UIGraphicsImageRenderer(size: baseImage.size)
-        let thumbImageWithText = renderer.image { context in
-            // 원래 Thumb 이미지 그리기
-            baseImage.draw(at: .zero)
-            
-            // 텍스트 그리기
-            let attributes: [NSAttributedString.Key: Any] = [
-                .font: UIFont.boldSystemFont(ofSize: 14),
-                .foregroundColor: UIColor.white
-            ]
-            let textSize = text.size(withAttributes: attributes)
-            let textRect = CGRect(
-                x: (baseImage.size.width - textSize.width) / 2,
-                y: (baseImage.size.height - textSize.height) / 2 - 10,
-                width: textSize.width,
-                height: textSize.height
-            )
-            text.draw(in: textRect, withAttributes: attributes)
-        }
-        
-        // Thumb에 이미지 설정
-        setThumbImage(thumbImageWithText, for: .normal)
-    }
-    
-    public override func thumbRect(forBounds bounds: CGRect, trackRect rect: CGRect, value: Float) -> CGRect {
-        // 기존 UISlider의 Thumb 위치 계산
-        let originalThumbRect = super.thumbRect(forBounds: bounds, trackRect: rect, value: value)
-        
-        // thumb의 높이 절반만큼 위로 이동
-        let thumbHeight = originalThumbRect.size.height
-        let yOffset = -thumbHeight * 0.32
-        
-        // 수정된 Thumb 위치 반환
-        return originalThumbRect.offsetBy(dx: 0, dy: yOffset)
-    }
-    
-    func setupUI() {
-        addSubview(firstStep)
-        firstStep.snp.makeConstraints { make in
-            // make.top.equalToSuperview().offset(1)
-            make.centerY.equalToSuperview()
-            make.leading.equalToSuperview().offset(7)
-            make.width.height.equalTo(8)
-        }
-        
-        addSubview(blind1)
-        blind1.snp.makeConstraints { make in
-            make.top.equalTo(firstStep.snp.top).offset(4)
-            make.leading.equalToSuperview()
-            make.trailing.equalTo(firstStep.snp.leading)
-            make.height.equalTo(2)
-        }
-        
-        addSubview(fifthStep)
-        fifthStep.snp.makeConstraints { make in
-            // make.top.equalToSuperview().offset(1)
-            make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-7)
-            make.width.height.equalTo(8)
-        }
-        
-        addSubview(blind2)
-        blind2.snp.makeConstraints { make in
-            make.top.equalTo(firstStep.snp.top).offset(4)
-            make.trailing.equalToSuperview()
-            make.leading.equalTo(fifthStep.snp.trailing)
-            make.height.equalTo(2)
-        }
-        
-        addSubview(thirdStep)
-        thirdStep.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(firstStep)
-            make.height.width.equalTo(8)
-        }
-        
-        addSubview(secondStep)
-        secondStep.snp.makeConstraints { make in
-            make.centerY.equalTo(firstStep.snp.centerY)
-            make.leading.equalTo(firstStep.snp.trailing).offset(54)
-            make.width.height.equalTo(8)
-        }
-        
-        addSubview(fourthStep)
-        fourthStep.snp.makeConstraints { make in
-            make.centerY.equalTo(firstStep.snp.centerY)
-            make.leading.equalTo(thirdStep.snp.trailing).offset(53)
-            make.width.height.equalTo(8)
-        }
     }
 }
 
