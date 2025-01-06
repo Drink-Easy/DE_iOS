@@ -44,6 +44,7 @@ class ChooseNoseView: UIView {
         // w.text = "루이 로드레 크리스탈 2015"
         w.font = UIFont.ptdSemiBoldFont(ofSize: 24)
         w.textColor = .black
+        w.numberOfLines = 0
         return w
     }()
     
@@ -152,6 +153,7 @@ class ChooseNoseView: UIView {
         wineName.snp.makeConstraints { make in
             make.top.equalTo(pageLabel.snp.bottom).offset(2)
             make.leading.equalTo(pageLabel)
+            make.trailing.equalToSuperview().offset(-25)
         }
         
         contentView.addSubview(noseLabel)

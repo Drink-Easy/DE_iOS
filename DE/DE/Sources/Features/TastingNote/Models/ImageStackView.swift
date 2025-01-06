@@ -3,7 +3,7 @@
 import UIKit
 
 struct ImageStackView {
-    let images = [("RedImage", "레드"), ("WhiteImage", "화이트"), ("SparklingImage", "스파클링"), ("RoseImage", "로제"), ("ETCImage", "기타")]
+    let images = [("redImage", "레드"), ("whiteImage", "화이트"), ("SparklingImage", "스파클링"), ("roseImage", "로제"), ("roseImage", "기타")]
 
 }
 
