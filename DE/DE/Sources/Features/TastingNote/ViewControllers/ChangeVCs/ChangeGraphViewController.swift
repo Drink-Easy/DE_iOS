@@ -4,6 +4,7 @@ import UIKit
 import CoreModule
 import Network
 
+
 public class ChangeGraphViewController: UIViewController {
     
     let recordGraphView = ChangeGraphView()
@@ -15,6 +16,21 @@ public class ChangeGraphViewController: UIViewController {
     let navigationBarManager = NavigationBarManager()
     
     let noteService = TastingNoteService()
+    let dto: TastingNoteResponsesDTO
+    
+    init(dto: TastingNoteResponsesDTO) {
+        self.dto = dto
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        recordGraphView.updateUI(dto: dto)
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,10 +79,7 @@ public class ChangeGraphViewController: UIViewController {
     
     @objc func nextVC() {
         saveSliderValues()
-        
-        let nextVC = RatingWineViewController()
-        nextVC.modalPresentationStyle = .fullScreen
-        navigationController?.pushViewController(nextVC, animated: true)
+        dismiss(animated: true, completion: nil)
     }
     
     private func saveSliderValues() {
@@ -77,10 +90,13 @@ public class ChangeGraphViewController: UIViewController {
         sliderValues["Body"] = Int(recordGraphView.bodySlider.value)
         sliderValues["Alcohol"] = Int(recordGraphView.alcoholSlider.value)
         
-        // UserDefaults에 저장
-        UserDefaults.standard.set(sliderValues, forKey: "sliderValues")
-        print("저장된 슬라이더 값: \(sliderValues)")
-        
+        callNotePatchGraph(
+            sugar: sliderValues["Sweetness"] ?? 20,
+            acid: sliderValues["Acidity"] ?? 20,
+            tannin: sliderValues["Tannin"] ?? 20,
+            body: sliderValues["Body"] ?? 20,
+            alcohol: sliderValues["Alcohol"] ?? 20
+        )
     }
     
     @objc func sliderValueChanged(_ sender: UISlider) {
@@ -98,5 +114,33 @@ public class ChangeGraphViewController: UIViewController {
         default:
             break
         }
-    }    
+    }
+    
+    func callNotePatchGraph(sugar: Int, acid: Int, tannin: Int, body: Int, alcohol: Int) {
+        let updateRequest = TastingNoteUpdateRequestDTO(
+            color: nil,
+            tastingDate: nil,
+            sugarContent: sugar,
+            acidity: acid,
+            tannin: tannin,
+            body: body,
+            alcohol: alcohol,
+            addNoseList: nil,
+            removeNoseList: nil,
+            rating: nil,
+            review: nil
+        )
+        let patchDTO = TastingNotePatchRequestDTO(noteId: dto.noteId, body: updateRequest)
+        noteService.patchNote(data: patchDTO, completion: {[weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case.success(let response):
+                DispatchQueue.main.async {
+                    print("PATCH 요청 성공: \(response)")
+                }
+            case.failure(let error):
+                print(error)
+            }
+        })
+    }
 }

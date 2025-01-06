@@ -9,12 +9,12 @@ public class ChangeRateViewController: UIViewController {
     let ratingWineView = ChangeRateView()
     private var ratingValue: Double = 2.5
     let navigationBarManager = NavigationBarManager()
-    let noteId: Int
     
     let noteService = TastingNoteService()
+    let dto: TastingNoteResponsesDTO
     
-    init(noteId: Int) {
-        self.noteId = noteId
+    init(dto: TastingNoteResponsesDTO) {
+        self.dto = dto
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -28,6 +28,11 @@ public class ChangeRateViewController: UIViewController {
         self.view = ratingWineView
         setupActions()
         setupNavigationBar()
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        ratingWineView.updateUI(dto: dto)
     }
     
     func setupActions() {
@@ -58,21 +63,11 @@ public class ChangeRateViewController: UIViewController {
     }
     
     @objc func nextVC() {
-        
-        // UserDefaults에 저장
-        let reviewText = ratingWineView.reviewTextField.text ?? ""
-        let reviewRate = Int(ratingValue)
-        
-        UserDefaults.standard.set(reviewText, forKey: "review")
-        UserDefaults.standard.set(reviewRate, forKey: "rating")
-        
-        print("저장된 데이터: \(reviewText), \(reviewRate)")
-        callNotePatchRate()
-        let nextVC = WineInfoViewController(noteId: noteId)
-        navigationController?.pushViewController(nextVC, animated: true)
+        callNotePatchRate(rating: ratingWineView.ratingButton.rating, review: ratingWineView.reviewTextField.text)
+        dismiss(animated: true, completion: nil)
     }
     
-    func callNotePatchRate() {
+    func callNotePatchRate(rating: Double, review: String) {
         let updateRequest = TastingNoteUpdateRequestDTO(
             color: nil,
             tastingDate: nil,
@@ -83,10 +78,10 @@ public class ChangeRateViewController: UIViewController {
             alcohol: nil,
             addNoseList: nil,
             removeNoseList: nil,
-            rating: ratingWineView.ratingButton.rating,
-            review: ratingWineView.reviewTextField.text
+            rating: rating,
+            review: review
         )
-        let patchDTO = TastingNotePatchRequestDTO(noteId: noteId, body: updateRequest)
+        let patchDTO = TastingNotePatchRequestDTO(noteId: dto.noteId, body: updateRequest)
         noteService.patchNote(data: patchDTO, completion: {[weak self] result in
             guard let self = self else { return }
             switch result {

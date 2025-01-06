@@ -9,17 +9,12 @@ public class ChangeColorViewController: UIViewController, ColorStackViewDelegate
     var selectedColor: UIColor?
     let chooseWineColor = ChangeColorView()
     let navigationBarManager = NavigationBarManager()
-    let noteId: Int
-    
-    var wineName: String = ""
-    var wineSort: String = ""
-    var wineArea: String = ""
-    var wineImage: String = ""
+    let dto: TastingNoteResponsesDTO
     
     let noteService = TastingNoteService()
     
-    init(noteId: Int) {
-        self.noteId = noteId
+    init(dto: TastingNoteResponsesDTO) {
+        self.dto = dto
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -29,7 +24,7 @@ public class ChangeColorViewController: UIViewController, ColorStackViewDelegate
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        chooseWineColor.updateUI(wineName: wineName, wineSort: wineSort, imageUrl: wineImage, wineArea: wineArea)
+        chooseWineColor.updateUI(wineName: dto.wineName, wineSort: dto.sort, imageUrl: dto.imageUrl, wineArea: dto.area)
         chooseWineColor.nextButton.isEnabled = false
         chooseWineColor.nextButton.backgroundColor = AppColor.gray30
     }
@@ -73,17 +68,9 @@ public class ChangeColorViewController: UIViewController, ColorStackViewDelegate
     }
     
     @objc func nextVC() {
-        guard let selectedColor = selectedColor, let hexColor = selectedColor.toHex() else {
-            print("색상을 선택해주세요.")
-            return
-        }
-        
-        UserDefaults.standard.set(hexColor, forKey: "color")
-        print("선택된 색상 헥스 코드 저장 완료: \(hexColor)")
-        
+
         callNotePatchColor()
-        let nextVC = WineInfoViewController(noteId: noteId)
-        navigationController?.pushViewController(nextVC, animated: true)
+        dismiss(animated: true, completion: nil)
     }
     
     func colorStackView(_ stackView: ColorStackView, didSelectColor color: UIColor?) {
@@ -95,7 +82,7 @@ public class ChangeColorViewController: UIViewController, ColorStackViewDelegate
     func compareColor() {
         guard let selectedColor = selectedColor, let selectedHexColor = selectedColor.toHex() else { return }
         
-        let prevColorHex = UserDefaults.standard.string(forKey: "color")
+        let prevColorHex = dto.color
         
         if selectedHexColor == prevColorHex {
             // 선택된 색상이 이전 색상과 같으면 버튼 비활성화
@@ -109,7 +96,7 @@ public class ChangeColorViewController: UIViewController, ColorStackViewDelegate
     }
     
     func callNotePatchColor() {
-        let existingColor = UserDefaults.standard.string(forKey: "color")
+        let existingColor = selectedColor?.toHex()
         let updateRequest = TastingNoteUpdateRequestDTO(
             color: existingColor,
             tastingDate: nil,
@@ -123,7 +110,7 @@ public class ChangeColorViewController: UIViewController, ColorStackViewDelegate
             rating: nil,
             review: nil
         )
-        let patchDTO = TastingNotePatchRequestDTO(noteId: noteId, body: updateRequest)
+        let patchDTO = TastingNotePatchRequestDTO(noteId: dto.noteId, body: updateRequest)
         noteService.patchNote(data: patchDTO, completion: {[weak self] result in
             guard let self = self else { return }
             switch result {

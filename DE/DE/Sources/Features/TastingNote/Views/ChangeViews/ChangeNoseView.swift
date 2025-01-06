@@ -74,6 +74,7 @@ class ChangeNoseView: UIView {
         n.text = "와인을 시음하기 전, 향을 맡아보세요! 와인 잔을 천천히 돌려 잔의 표면에 와인을 묻히면 잔 속에 향이 풍부하게 느껴져요."
         n.font = UIFont.ptdRegularFont(ofSize: 14)
         n.textColor = UIColor(hex: "#767676")
+        n.lineBreakMode = .byTruncatingTail
         n.numberOfLines = 0
         return n
     }()
@@ -177,8 +178,8 @@ class ChangeNoseView: UIView {
         contentView.addSubview(noseDescription)
         noseDescription.snp.makeConstraints { make in
             make.top.equalTo(vector1.snp.bottom).offset(12)
-            make.leading.equalTo(vector1)
-            make.trailing.equalTo(vector1.snp.trailing).offset(-37)
+            make.leading.trailing.equalTo(vector1)
+            // make.trailing.equalTo(vector1.snp.trailing).offset(-37)
         }
         
         contentView.addSubview(selectedLabel)
