@@ -123,6 +123,12 @@ class RatingWineView: UIView {
         return n
     }()
     
+    func updateUI(wineName: String, wineSort: String, wineArea: String, wineImage: String) {
+        self.wineName.text = wineName
+        descriptionView.fromDescription.text = wineArea
+        self.wineImage.sd_setImage(with: URL(string: wineImage), placeholderImage: UIImage())
+    }
+    
     func setupUI() {
         backgroundColor = AppColor.gray20
         
@@ -156,7 +162,7 @@ class RatingWineView: UIView {
         descriptionView.snp.makeConstraints { make in
             make.top.bottom.equalTo(wineImage)
             make.leading.equalTo(wineImage.snp.trailing).offset(8)
-            //make.trailing.equalToSuperview().offset(24)
+            make.trailing.equalToSuperview().offset(-24)
         }
         
         contentView.addSubview(rateLabel)

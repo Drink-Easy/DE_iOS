@@ -68,7 +68,7 @@ public class SearchHomeView: UIView {
         searchResultTableView.snp.makeConstraints { make in
             make.top.equalTo(searchBar.snp.bottom).offset(18)
             make.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(18)
-            make.bottom.equalTo(safeAreaLayoutGuide).offset(-18)
+            make.bottom.equalTo(safeAreaLayoutGuide)
         }
     }
 }

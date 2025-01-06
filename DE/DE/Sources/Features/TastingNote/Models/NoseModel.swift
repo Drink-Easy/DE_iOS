@@ -23,7 +23,7 @@ extension NoseSectionModel {
     }
 }
 
-struct NoseModel: Codable {
+struct NoseModel: Codable, Equatable {
     let type: String
 }
 

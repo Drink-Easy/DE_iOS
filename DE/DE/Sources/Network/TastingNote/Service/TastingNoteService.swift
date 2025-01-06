@@ -58,7 +58,7 @@ public final class TastingNoteService: NetworkManager {
                            satisfaction : Double?,
                            review : String?
     ) -> TastingNoteUpdateRequestDTO {
-        return TastingNoteUpdateRequestDTO(color: color, tastingDate: tastingDate, sugarContent: sugarContent, acidity: acidity, tannin: tannin, body: body, alcohol: alcohol, addNoseList: addNoseList, removeNoseList: removeNoseList, satisfaction: satisfaction, review: review)
+        return TastingNoteUpdateRequestDTO(color: color, tastingDate: tastingDate, sugarContent: sugarContent, acidity: acidity, tannin: tannin, body: body, alcohol: alcohol, addNoseList: addNoseList, removeNoseList: removeNoseList, rating: satisfaction, review: review)
     }
     
     //MARK: - API funcs

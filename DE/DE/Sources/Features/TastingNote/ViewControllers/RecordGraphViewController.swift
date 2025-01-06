@@ -11,7 +11,16 @@ public class RecordGraphViewController: UIViewController {
             updatePolygonChart()
         }
     }
+    
     let navigationBarManager = NavigationBarManager()
+    let wineName = UserDefaults.standard.string(forKey: "wineName")
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        DispatchQueue.main.async {
+            self.recordGraphView.updateUI(wineName: self.wineName ?? "")
+        }
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
