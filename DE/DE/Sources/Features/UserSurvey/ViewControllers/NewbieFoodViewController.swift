@@ -6,19 +6,20 @@ import Then
 import CoreModule
 import SwiftyToaster
 
-class NewbieEnjoyDrinkingViewController: UIViewController {
+class NewbieFoodViewController: UIViewController {
     
     private let navigationBarManager = NavigationBarManager()
     
-    let cellData = ["소주", "맥주", "위스키", "칵테일", "막걸리", "사케", "고량주", "보드카", "브랜디", "데킬라"]
+    let cellData = ["육류 (스테이크, 바비큐, 치킨 등)", "해산물 (회, 새우, 랍스터 등)", "치즈", "스낵 (견과류, 올리브, 프로슈토 등)", "피자, 파스타", "디저트"]
     
     private var selectedItems: [String] = []
     private let maxSelectionCount = 2
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-        self.view = surveyKindView
+        self.view = surveyFoodView
         setupNavigationBar()
     }
     
@@ -45,26 +46,26 @@ class NewbieEnjoyDrinkingViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    private lazy var surveyKindView = SurveyKindView(titleText: "평소 즐겨마시는\n주종을 골라주세요(2개 선택)", currentPage: 1, entirePage: 3, buttonTitle: "다음").then {
-        $0.surveyKindCollectionView.delegate = self
-        $0.surveyKindCollectionView.dataSource = self
+    private lazy var surveyFoodView = SurveyFoodView(titleText: "평소 즐겨먹는\n안주를 골라주세요(2개 선택)", currentPage: 2, entirePage: 3, buttonTitle: "다음").then {
+        $0.surveyFoodCollectionView.delegate = self
+        $0.surveyFoodCollectionView.dataSource = self
         
         $0.nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
     }
     
     @objc func nextButtonTapped() {
-        let vc = NewbieFoodViewController()
+        let vc = NewbieConsumeViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 }
 
-extension NewbieEnjoyDrinkingViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
+extension NewbieFoodViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return cellData.count
     }
     
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SurveyKindCollectionViewCell.identifier, for: indexPath) as! SurveyKindCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SurveyFoodCollectionViewCell.identifier, for: indexPath) as! SurveyFoodCollectionViewCell
         
         let title = cellData[indexPath.row]
         cell.configure(contents: title)
@@ -91,19 +92,13 @@ extension NewbieEnjoyDrinkingViewController: UICollectionViewDelegateFlowLayout,
         
         // UI 업데이트
         collectionView.reloadData()
-        surveyKindView.nextButton.isEnabled = selectedItems.count >= 1
-        surveyKindView.nextButton.isEnabled(isEnabled: selectedItems.count >= 1)
+        surveyFoodView.nextButton.isEnabled = selectedItems.count >= 1
+        surveyFoodView.nextButton.isEnabled(isEnabled: selectedItems.count >= 1)
     }
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        let title = cellData[indexPath.row]
-        let font = UIFont.ptdMediumFont(ofSize: 16)
-        let size = title.size(withAttributes: [.font: font])
-        
-        let padding: CGFloat = 44
-        let cellWidth = size.width + padding
-        
-        return CGSize(width: cellWidth, height: 49)
+        return CGSize(width: collectionView.frame.width, height: 81)
     }
 }
+

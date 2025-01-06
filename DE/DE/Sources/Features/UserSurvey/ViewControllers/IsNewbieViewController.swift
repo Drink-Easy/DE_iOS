@@ -38,7 +38,7 @@ public class IsNewbieViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
-        let vc = NewbieEnjoyDrinkingViewController()
+        let vc = (isNewbie ?? true) ? NewbieEnjoyDrinkingViewController() : ManiaConsumeViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
     

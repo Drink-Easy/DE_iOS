@@ -6,15 +6,21 @@ import SnapKit
 public class CustomStepSlider: UISlider {
     
     // MARK: - Properties
-    private let stepValues: [Float] = [20, 40, 60, 80, 100] // 스텝 값
+    private var stepValues: [Float] = [] // 스텝 값
     private let stepCounts = 5
     
+    private var stepLabels: [String] = []
+    private var stepLabelViews: [UILabel] = []
+    
     // MARK: - Init
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    public init(text1: String = "", text2: String =  "", text3: String = "", text4: String = "", text5: String = "", step1: Float = 20, step2: Float = 40, step3: Float = 60, step4: Float = 80, step5: Float = 100) {
+        super.init(frame: .zero)
+        self.stepLabels = [text1, text2, text3, text4, text5]
+        self.stepValues = [step1, step2, step3, step4, step5]
         setupUI()
         setupTrack()
         setupCustomThumb()
+        setupStepLabels()
         // setInitialValue()
     }
     
@@ -78,6 +84,23 @@ public class CustomStepSlider: UISlider {
         for _ in 0..<stepCounts {
             let steps = createCircleView()
             stepStackView.addArrangedSubview(steps)
+        }
+    }
+    
+    private func setupStepLabels() {
+        for (index, labelText) in stepLabels.enumerated() {
+            let label = UILabel()
+            label.text = labelText
+            label.font = UIFont.ptdRegularFont(ofSize: 12)
+            label.textColor = AppColor.black
+            label.textAlignment = .center
+            stepLabelViews.append(label)
+            addSubview(label)
+            
+            label.snp.makeConstraints { make in
+                make.centerX.equalTo(stepStackView.arrangedSubviews[index].snp.centerX)
+                make.top.equalTo(stepStackView.snp.bottom).offset(14)
+            }
         }
     }
     

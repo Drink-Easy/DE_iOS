@@ -5,7 +5,7 @@ import CoreModule
 import SnapKit
 import Then
 
-class ManiaConsumeViewController: UIViewController {
+class NewbieConsumeViewController: UIViewController {
     
     private let navigationBarManager = NavigationBarManager()
     
@@ -41,7 +41,7 @@ class ManiaConsumeViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    private var surveySliderView = SurveySliderView(titleText: "일주일 간 소비하시는\n와인 금액을 알려주세요", currentPage: 1, entirePage: 4, buttonTitle: "다음").then {
+    private var surveySliderView = SurveySliderView(titleText: "추천 받고싶은\n와인의 금액대를 알려주세요.", currentPage: 3, entirePage: 3, buttonTitle: "추천 결과 확인하기").then {
         
         $0.sliderView.addTarget(self, action: #selector(sliderValueChanged(_:)), for: .valueChanged)
         $0.nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
@@ -56,7 +56,7 @@ class ManiaConsumeViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
-        let vc = ManiaKindViewController()
+        let vc = IsNewbieViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 }
