@@ -30,7 +30,8 @@ public class WineInfoView: UIView {
     lazy var wineImage: UIImageView = {
         let w = UIImageView()
         w.contentMode = .scaleToFill
-        w.layer.cornerRadius = 14
+        w.layer.cornerRadius = 12
+        w.clipsToBounds = true
         return w
     }()
     
@@ -210,17 +211,19 @@ public class WineInfoView: UIView {
         r.rating = 2.5
         r.settings.fillMode = .half
         r.settings.emptyBorderColor = .clear
+        r.settings.filledBorderColor = .clear
         r.settings.starSize = 20
         r.settings.starMargin = 5
         r.settings.filledColor = UIColor(hex: "#7E13B1")!
         r.settings.emptyColor = UIColor(hex: "D9D9D9")!
+        r.isUserInteractionEnabled = false
         return r
     }()
     
     private let ratingLabel: UILabel = {
         let ratingValue: Double = 2.5
         let r = UILabel()
-        r.text = "2.5 / 5.0"
+        r.text = "\(ratingValue) / 5.0"
         r.textColor = .black
         r.font = .ptdSemiBoldFont(ofSize: 13)
         return r
@@ -230,7 +233,7 @@ public class WineInfoView: UIView {
         let r = UILabel()
         r.text = "Review"
         r.textColor = .black
-        r.font = UIFont.ptdSemiBoldFont(ofSize: 20)
+        r.font = .ptdSemiBoldFont(ofSize: 20)
         r.textAlignment = .center
         return r
     }()
@@ -262,7 +265,8 @@ public class WineInfoView: UIView {
         r.text = "API"
         r.textColor = AppColor.gray90
         r.font = UIFont.ptdMediumFont(ofSize: 14)
-        r.textAlignment = .center
+        r.textAlignment = .left
+        r.isUserInteractionEnabled = false
         return r
     }()
     
@@ -338,10 +342,10 @@ public class WineInfoView: UIView {
         
         graphView.addSubview(polygonChart)
         polygonChart.snp.makeConstraints { make in
-            make.top.equalTo(graphVector.snp.bottom).offset(26)
+            make.top.equalTo(graphVector.snp.bottom).offset(62)
             make.leading.equalTo(graphVector.snp.leading)
             make.centerX.equalTo(graphVector.snp.centerX)
-            make.height.greaterThanOrEqualTo(270)
+            make.height.greaterThanOrEqualTo(312)
         }
         
         graphView.addSubview(colorLabel)
@@ -393,7 +397,7 @@ public class WineInfoView: UIView {
         graphView.addSubview(noseLabelKorean)
         noseLabelKorean.snp.makeConstraints { make in
             make.top.equalTo(noseLabel.snp.top).offset(3)
-            make.leading.equalTo(colorLabelKorean.snp.leading)
+            make.leading.equalTo(noseLabel.snp.trailing).offset(10)
         }
         
         graphView.addSubview(changeNose)
@@ -424,7 +428,7 @@ public class WineInfoView: UIView {
         graphView.addSubview(rateKoreanLabel)
         rateKoreanLabel.snp.makeConstraints { make in
             make.top.equalTo(rateLabel.snp.top).offset(3)
-            make.leading.equalTo(noseLabelKorean.snp.leading)
+            make.leading.equalTo(rateLabel.snp.trailing).offset(10)
         }
         
         graphView.addSubview(changeRate)
@@ -444,11 +448,13 @@ public class WineInfoView: UIView {
         ratingLabel.snp.makeConstraints { make in
             make.top.equalTo(rateVector.snp.bottom).offset(10)
             make.leading.equalTo(rateVector.snp.leading).offset(6)
+            make.width.equalTo(50)
+            make.height.equalTo(20)
         }
         
         graphView.addSubview(ratingButton)
         ratingButton.snp.makeConstraints { make in
-            // make.top.equalTo(ratingLabel.snp.top)
+            make.top.equalTo(ratingLabel.snp.top).offset(-2)
             make.centerY.equalTo(ratingLabel.snp.centerY)
             make.leading.equalTo(ratingLabel.snp.trailing).offset(11.5)
         }
@@ -462,7 +468,7 @@ public class WineInfoView: UIView {
         graphView.addSubview(reviewKoreanLabel)
         reviewKoreanLabel.snp.makeConstraints { make in
             make.top.equalTo(reviewLabel.snp.top).offset(3)
-            make.leading.equalTo(rateKoreanLabel.snp.leading)
+            make.leading.equalTo(reviewLabel.snp.trailing).offset(10)
         }
         
         graphView.addSubview(dateLabel)
@@ -472,7 +478,7 @@ public class WineInfoView: UIView {
         }
         
         graphView.addSubview(reviewVector)
-        rateVector.snp.makeConstraints { make in
+        reviewVector.snp.makeConstraints { make in
             make.top.equalTo(reviewLabel.snp.bottom).offset(5.06)
             make.leading.trailing.equalTo(rateVector)
             make.height.equalTo(1)

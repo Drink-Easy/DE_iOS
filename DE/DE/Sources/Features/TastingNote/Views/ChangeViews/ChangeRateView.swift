@@ -24,7 +24,8 @@ class ChangeRateView: UIView {
         let w = UILabel()
         w.text = "루이 로드레 크리스탈 2015"
         w.textColor = .black
-        w.textAlignment = .center
+        w.textAlignment = .left
+        w.numberOfLines = 0
         w.font = UIFont(name: "Pretendard-SemiBold", size: 24)
         return w
     }()
@@ -154,6 +155,7 @@ class ChangeRateView: UIView {
         wineName.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(10)
             make.leading.equalToSuperview().offset(25)
+            make.trailing.equalToSuperview().offset(-24)
         }
         
         contentView.addSubview(wineImage)
