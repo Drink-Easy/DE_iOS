@@ -4,7 +4,7 @@ import StepSlider
 import UIKit
 import CoreModule
 
-class CustomStepSlider: UISlider {
+public class CustomStepSlider: UISlider {
     
     private let stepValues: [Float] = [20, 40, 60, 80, 100] // 스텝 값
         private var labels: [UILabel] = []
