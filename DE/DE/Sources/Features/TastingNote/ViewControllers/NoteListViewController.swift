@@ -89,6 +89,8 @@ public class NoteListViewController: UIViewController {
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(labelTapped))
         noteListView.seeAllLabel.addGestureRecognizer(tapGesture)
+        
+        noteListView.searchButton.addTarget(self, action: #selector(searchVC), for: .touchUpInside)
     }
     
     private func handleResponse(_ data: AllTastingNoteResponseDTO) {
@@ -119,6 +121,11 @@ public class NoteListViewController: UIViewController {
     
     @objc func nextVC() {
         let nextVC = WineSearchMainVC()
+        navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    @objc func searchVC() {
+        let nextVC = SearchWineViewController()
         navigationController?.pushViewController(nextVC, animated: true)
     }
     
