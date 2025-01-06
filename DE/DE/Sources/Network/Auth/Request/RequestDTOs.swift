@@ -2,6 +2,16 @@
 
 import Foundation
 
+// email check
+
+public struct UsernameCheckRequest: Codable {
+    public let username: String
+    
+    public init(username: String) {
+        self.username = username
+    }
+}
+
 // 애플 로그인
 public struct AppleLoginRequestDTO : Codable {
     public let identityToken : String

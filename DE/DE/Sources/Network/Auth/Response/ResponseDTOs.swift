@@ -6,6 +6,7 @@ public struct LoginResponseDTO : Decodable {
     public let username : String?
     public let role : String?
     public let isFirst : Bool
+    public let id: Int
 }
 
 public struct MemberResponseDTO : Codable {
@@ -19,4 +20,8 @@ public struct MemberResponseDTO : Codable {
     let wineSort : [String]
     let wineArea : [String]
     let region : String
+}
+
+public struct UsernameCheckResponse: Decodable {
+    let isDuplicate : Bool
 }

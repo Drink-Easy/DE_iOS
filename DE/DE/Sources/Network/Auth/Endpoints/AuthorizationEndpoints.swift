@@ -11,8 +11,9 @@ public enum AuthorizationEndpoints {
     case postAppleLogin(data : AppleLoginRequestDTO)
     case postKakaoLogin(data : KakaoLoginRequestDTO)
     
+    case emailVerification(data : UsernameCheckRequest)
+    
     case postReIssueToken
-    case patchMemberInfo(data : MemberRequestDTO)
 }
 
 extension AuthorizationEndpoints: TargetType {
@@ -37,15 +38,13 @@ extension AuthorizationEndpoints: TargetType {
             return "/login/kakao"
         case .postReIssueToken:
             return "/reissue"
-        case .patchMemberInfo:
-            return "/member"
+        case .emailVerification:
+            return "/join/check"
         }
     }
     
     public var method: Moya.Method {
         switch self {
-        case .patchMemberInfo :
-            return .patch
         default:
             return .post
         }
@@ -63,7 +62,7 @@ extension AuthorizationEndpoints: TargetType {
             return .requestJSONEncodable(data)
         case .postKakaoLogin(let data) :
             return .requestJSONEncodable(data)
-        case .patchMemberInfo(let data):
+        case .emailVerification(let data):
             return .requestJSONEncodable(data)
         }
     }
@@ -74,7 +73,7 @@ extension AuthorizationEndpoints: TargetType {
         ]
         
         switch self {
-        case .patchMemberInfo, .postReIssueToken:
+        case .postReIssueToken:
             if let cookies = HTTPCookieStorage.shared.cookies {
                 let cookieHeader = HTTPCookie.requestHeaderFields(with: cookies)
                 for (key, value) in cookieHeader {
