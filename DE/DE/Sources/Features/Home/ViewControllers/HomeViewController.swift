@@ -59,7 +59,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     }
     
     private lazy var likeWineListView = RecomView().then {
-        $0.title.text = "\(userName) 님이 좋아할 만한 와인"
+        $0.title.text = "For \(userName),"
         $0.title.setPartialTextStyle(text: $0.title.text ?? "", targetText: "\(userName)", color: AppColor.purple100 ?? .purple, font: UIFont.ptdSemiBoldFont(ofSize: 26))
         $0.recomCollectionView.delegate = self
         $0.recomCollectionView.dataSource = self
@@ -281,7 +281,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     }
     
     private func updateLikeWineListView() {
-        likeWineListView.title.text = "\(userName) 님이 좋아할 만한 와인"
+        likeWineListView.title.text = "For \(userName),"
         likeWineListView.title.setPartialTextStyle(
             text: likeWineListView.title.text ?? "",
             targetText: "\(userName)",

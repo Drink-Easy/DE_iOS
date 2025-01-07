@@ -6,7 +6,7 @@ import SnapKit
 import Then
 import Network
 
-public class SearchHomeViewController : UIViewController {
+public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     
     let navigationBarManager = NavigationBarManager()
     var wineResults: [SearchResultModel] = []
@@ -35,7 +35,8 @@ public class SearchHomeViewController : UIViewController {
     ).then {
         $0.searchResultTableView.dataSource = self
         $0.searchResultTableView.delegate = self
-        $0.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        $0.searchBar.delegate = self
+        //$0.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
     }
     
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -43,20 +44,52 @@ public class SearchHomeViewController : UIViewController {
         self.view.endEditing(true)  //firstresponder가 전부 사라짐
     }
     
-    @objc
-    private func textFieldDidChange(_ textField: UITextField) {
-        let query = textField.text ?? ""
-        filterSuggestions(with: query)
-    }
-
-    func filterSuggestions(with query: String) {
-        if query.isEmpty {
-            wineResults = []
-            self.searchHomeView.searchResultTableView.reloadData()
-        } else {
-            callSearchAPI(query: query)
+    public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        // 현재 텍스트
+        let currentText = searchHomeView.searchBar.text ?? ""
+        
+        // 한글 조합 중인 텍스트 (markedTextRange가 nil이 아니면 조합 중)
+        if let markedTextRange = searchHomeView.searchBar.markedTextRange,
+           let _ = searchHomeView.searchBar.position(from: markedTextRange.start, offset: 0) {
+            return true // 조합 중인 텍스트는 제한하지 않음
         }
+        
+        // 입력 후 텍스트
+        guard let stringRange = Range(range, in: currentText) else { return false }
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+        
+        if updatedText.count >= 2 {
+            // 경고 표시
+            showCharacterLimitAlert()
+            return false
+        }
+        
+        callSearchAPI(query: updatedText)
+        
+        // 글자 수 제한
+        return true
     }
+    
+    private func showCharacterLimitAlert() {
+        let alert = UIAlertController(title: "경고", message: "최소 2자 이상 입력해 주세요.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
+//    @objc
+//    private func textFieldDidChange(_ textField: UITextField) {
+//        let query = textField.text ?? ""
+//        filterSuggestions(with: query)
+//    }
+//
+//    func filterSuggestions(with query: String) {
+//        if query.isEmpty {
+//            wineResults = []
+//            self.searchHomeView.searchResultTableView.reloadData()
+//        } else {
+//            callSearchAPI(query: query)
+//        }
+//    }
     
     private func setupNavigationBar() {
         navigationBarManager.addBackButton(
