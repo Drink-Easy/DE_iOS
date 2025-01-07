@@ -170,8 +170,7 @@ public class CustomStepSlider: UISlider {
     
     // MARK: - Update Thumb Position
     private func updateThumbPosition(animated: Bool) {
-        // ✅ 현재 value에 맞는 동그라미 뷰 가져오기
-        let stepIndex = Int((value - minimumValue) / 20)
+        let stepIndex = Int((value - minimumValue) / stepValues[0])
         guard stepIndex >= 0 && stepIndex < stepStackView.arrangedSubviews.count else { return }
         let targetCircleView = stepStackView.arrangedSubviews[stepIndex]
         

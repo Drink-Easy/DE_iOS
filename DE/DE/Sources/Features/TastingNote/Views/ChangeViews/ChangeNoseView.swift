@@ -184,7 +184,7 @@ class ChangeNoseView: UIView {
         
         contentView.addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
-            make.top.equalTo(selectedCollectionView.snp.bottom).offset(24)
+            make.top.equalTo(selectedCollectionView.snp.bottom).offset(5)
             make.leading.equalTo(selectedCollectionView.snp.leading).offset(6)
             make.centerX.equalTo(vector1.snp.centerX)
             make.height.equalTo(400)
@@ -204,20 +204,62 @@ class ChangeNoseView: UIView {
         
     }
 
-    func updateSelectedCollectionViewHeight() {
-        selectedCollectionView.layoutIfNeeded() // 레이아웃 업데이트
-        let contentHeight = selectedCollectionView.contentSize.height
+//    func updateSelectedCollectionViewHeight() {
+////        selectedCollectionView.layoutIfNeeded() // 레이아웃 업데이트
+//        let contentHeight = selectedCollectionView.contentSize.height
+//        selectedCollectionView.snp.updateConstraints { make in
+//            make.height.equalTo(contentHeight)
+//        }
+//        selectedCollectionView.layoutIfNeeded() // 레이아웃 업데이트
+//    }
+    
+    func updateSelectedCollectionViewHeight(itemCount: Int) {
+        guard let layout = selectedCollectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+        
+        // 컬렉션 뷰의 너비와 아이템 크기 및 간격 정보
+        let totalWidth = selectedCollectionView.frame.width
+        let itemWidth = layout.itemSize.width
+        let spacing = layout.minimumInteritemSpacing
+        
+        // 줄 수 계산 로직
+        var rows: CGFloat = 0
+        var currentRowWidth: CGFloat = 0
+        
+        for _ in 0..<itemCount {
+            if currentRowWidth + itemWidth > totalWidth {
+                // 현재 줄이 꽉 찼으므로 줄을 추가
+                rows += 1
+                currentRowWidth = itemWidth + spacing
+            } else {
+                // 같은 줄에 계속 추가
+                currentRowWidth += itemWidth + spacing
+            }
+        }
+        
+        // 마지막 줄 처리
+        if currentRowWidth > 0 {
+            rows += 1
+        }
+        
+        // 최종 높이 계산 (줄 수 * 아이템 높이 + 줄 간 간격)
+        let itemHeight = layout.itemSize.height
+        let lineSpacing = layout.minimumLineSpacing
+        let contentHeight = rows * itemHeight + (rows - 1) * lineSpacing
+        
+        // 높이 업데이트
         selectedCollectionView.snp.updateConstraints { make in
             make.height.equalTo(contentHeight)
         }
+        
+        selectedCollectionView.layoutIfNeeded()
     }
     
     func updateNoseCollectionViewHeight() {
-        collectionView.layoutIfNeeded() // 레이아웃 업데이트
         let contentHeight = collectionView.contentSize.height
         collectionView.snp.updateConstraints { make in
             make.height.equalTo(contentHeight)
         }
+        collectionView.layoutIfNeeded() // 레이아웃 업데이트
     }
     
 }
