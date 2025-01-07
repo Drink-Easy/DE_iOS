@@ -12,6 +12,7 @@ public final class MyWineService : NetworkManager {
     public init(provider: MoyaProvider<MyWineEndpoint>? = nil) {
         // 플러그인 추가
         let plugins: [PluginType] = [
+            CookiePlugin(),
             NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)) // 로그 플러그인
         ]
         
