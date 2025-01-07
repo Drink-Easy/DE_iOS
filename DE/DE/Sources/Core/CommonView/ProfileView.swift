@@ -29,12 +29,14 @@ public class ProfileView: UIView {
     
     public let nicknameTextField = CustomTextFieldView(
         descriptionLabelText: "닉네임",
-        textFieldPlaceholder: "닉네임을 입력해 주세요"
+        textFieldPlaceholder: "닉네임을 입력해 주세요",
+        validationText: ""
     )
     
     public let myLocationTextField = CustomTextFieldView(
         descriptionLabelText: "내 동네",
-        textFieldPlaceholder: ""
+        textFieldPlaceholder: "",
+        validationText: ""
     ).then {
         $0.textField.isUserInteractionEnabled = false
     }

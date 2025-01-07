@@ -9,7 +9,7 @@ import Then
 import CoreModule
 import CoreLocation
 
-class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
+public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
     
     private let navigationBarManager = NavigationBarManager()
     
@@ -30,17 +30,17 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
         $0.isEnabled = false
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         
@@ -147,7 +147,7 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
 }
 
 extension GetProfileVC: PHPickerViewControllerDelegate {
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+    public func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true, completion: nil)
 
         guard let result = results.first else { return }

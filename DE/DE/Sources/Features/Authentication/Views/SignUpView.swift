@@ -13,7 +13,7 @@ class SignUpView: UIView {
     lazy var usernameField = CustomLabelTextFieldView(
         descriptionImageIcon: "person.fill",
         descriptionLabelText: "이메일",
-        textFieldPlaceholder: "이메일 입력해 주세요",
+        textFieldPlaceholder: "이메일을 입력해 주세요",
         validationText: "유효하지 않은 이메일 형식입니다"
     ).then {
         $0.textField.keyboardType = .default

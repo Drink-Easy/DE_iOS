@@ -65,6 +65,7 @@ final class ValidationManager {
         view.updateValidationText(message, isHidden: false)
         view.textField.layer.borderColor = AppColor.red?.cgColor
         view.textField.backgroundColor = AppColor.red?.withAlphaComponent(0.1)
+        view.textField.textColor = AppColor.red
         view.iconImageView.tintColor = AppColor.red
     }
     
@@ -72,6 +73,7 @@ final class ValidationManager {
         view.updateValidationText("", isHidden: true)
         view.textField.layer.borderColor = AppColor.purple100?.cgColor
         view.textField.backgroundColor = AppColor.purple10
+        view.textField.textColor = AppColor.gray70
         view.iconImageView.tintColor = AppColor.purple100
     }
 }
