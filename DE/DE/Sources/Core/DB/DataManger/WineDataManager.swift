@@ -5,6 +5,7 @@ import UIKit
 
 public final class WineDataManager {
     public static let shared = WineDataManager()
+    
     lazy var container: ModelContainer = {
         do {
             let configuration = ModelConfiguration(isStoredInMemoryOnly: false)

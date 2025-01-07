@@ -5,8 +5,8 @@ import SwiftData
 
 @Model
 public class Wishlist {
-    var wishlishWines: [WineData] = []
-    var user: UserData?
+    @Relationship var wishlishWines: [WineData] = []
+    @Relationship var user: UserData?
     
     init(wishlishWines: [WineData], user: UserData? = nil) {
         self.wishlishWines = wishlishWines
