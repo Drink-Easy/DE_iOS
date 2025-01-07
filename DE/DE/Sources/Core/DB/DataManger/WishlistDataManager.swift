@@ -5,33 +5,26 @@ import SwiftData
 
 public final class WishlistDataManager {
     public static let shared = WishlistDataManager()
-    let container: ModelContainer
     
-    private init() {
+    lazy var container: ModelContainer = {
         do {
-            container = try ModelContainer(for: WineData.self, Wishlist.self)
+            let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
+            let container = try ModelContainer(
+                for: UserData.self, Wishlist.self, WineData.self,
+                configurations: configuration
+            )
+            print("✅ SwiftData 초기화 성공!")
+            return container
         } catch {
+            print("❌ SwiftData 초기화 실패: \(error.localizedDescription)")
             fatalError("SwiftData 초기화 실패: \(error.localizedDescription)")
         }
-    }
+    }()
     
-    // MARK: - 위시리스트 조회
-    @MainActor
-    public func fetchWishlist() -> [WineData] {
-        let context = container.mainContext
-        let descriptor = FetchDescriptor<WishList>(
-            predicate: #Predicate { $0.type == type.rawValue } // ✅ String으로 비교
-        )
-        
-        do {
-            if let wineList = try context.fetch(descriptor).first {
-                return wineList.wines // ✅ 저장된 와인 리스트 반환
-            } else {
-                return []
-            }
-        } catch {
-            print("❌ \(type.rawValue) 조회 실패: \(error)")
-            return []
-        }
-    }
+    // fetch
+    
+    // create
+    
+    // delete
+    
 }

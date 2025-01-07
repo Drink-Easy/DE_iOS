@@ -27,7 +27,7 @@ public final class UserDataManager {
             
             if existingUsers.isEmpty {
                 // 2. 신규 유저 생성 (이름 없음)
-                let newUser = UserData(userId: userId, userName: "noname", wines: [])
+                let newUser = UserData(userId: userId, userName: "noname", wines: [], controllerCounters: [])
                 context.insert(newUser)
                 try context.save()
                 print("✅ 유저 ID 생성 완료: \(userId)")
