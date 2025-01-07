@@ -127,7 +127,6 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
             $0.edges.equalTo(scrollView) // 스크롤뷰의 모든 가장자리에 맞춰 배치
             $0.width.equalTo(scrollView.snp.width) // 가로 스크롤을 방지, 스크롤뷰와 같은 너비로 설정
             $0.bottom.equalTo(popularWineListView.snp.bottom).offset(46)
-            
         }
         
         adCollectionView.snp.makeConstraints {

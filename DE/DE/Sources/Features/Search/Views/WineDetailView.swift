@@ -7,6 +7,16 @@ import SDWebImage
 
 class WineDetailView: UIView {
     
+    // 이미지 그림자 전용 뷰 (그림자만 표시)
+    public lazy var shadowContainerView = UIView().then {
+        $0.layer.shadowColor = UIColor.black.cgColor
+        $0.layer.shadowOpacity = 0.07
+        $0.layer.shadowOffset = CGSize(width: 0, height: 1)
+        $0.layer.shadowRadius = 10.5
+        $0.backgroundColor = .clear
+    }
+
+    // 실제 콘텐츠를 담는 뷰 (cornerRadius 적용)
     public lazy var image = UIImageView().then {
         $0.image = UIImage(named: "스파클링")
         $0.layer.cornerRadius = 14
@@ -17,6 +27,11 @@ class WineDetailView: UIView {
         $0.backgroundColor = .white
         $0.layer.cornerRadius = 14
         $0.layer.masksToBounds = true
+        $0.layer.shadowColor = UIColor.black.cgColor
+        $0.layer.shadowOpacity = 0.07
+        $0.layer.shadowOffset = CGSize(width: 0, height: 1)
+        $0.layer.shadowRadius = 10.5
+        $0.layer.masksToBounds = false
     }
     
     private func createTitle(text: String) ->  UILabel {
@@ -65,15 +80,20 @@ class WineDetailView: UIView {
     }
     
     private func addComponents() {
-        [image, labelView].forEach{ self.addSubview($0) }
+        [shadowContainerView, labelView].forEach{ self.addSubview($0) }
+        shadowContainerView.addSubview(image)
         [titleStackView, kindContents, typeContents, countryContents].forEach{ labelView.addSubview($0) }
     }
     
     private func constraints() {
-        image.snp.makeConstraints {
+        shadowContainerView.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide)
             $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
             $0.width.height.equalTo(100)
+        }
+        
+        image.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
         
         labelView.snp.makeConstraints {

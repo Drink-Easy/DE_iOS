@@ -98,7 +98,8 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
     }
     
     @objc func nextButtonTapped() {
-        //TODO: 취향 찾기 뷰컨 연결
+        let vc = IsNewbieViewController()
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     func configureTapGestureForDismissingPicker() {
@@ -122,7 +123,7 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
         present(picker, animated: true, completion: nil)
     }
     
-    //TODO: 위치 정보 불러오기 로직
+    //MARK: - 위치 정보 불러오기 로직
     @objc func getMyLocation() {
         LocationManager.shared.requestLocationPermission { [weak self] address in
             DispatchQueue.main.async {
