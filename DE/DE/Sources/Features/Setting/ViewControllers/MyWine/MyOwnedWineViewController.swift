@@ -3,17 +3,15 @@
 import UIKit
 
 class MyOwnedWineViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-    
-    
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        3
-    }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MyWineTableViewCell.identifier, for: indexPath)
-        cell.wineImage = UIImage(named: "Loxton")
-        return cell
+    }
+    
+    
+    let myOwnedWineView = MyOwnedWineView()
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        3
     }
     
 
@@ -24,14 +22,14 @@ class MyOwnedWineViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     private lazy var myWineTableView: UITableView = {
-        let tableView = UITableView()
-        tableView.register(MyWineTableViewCell.self, forCellReuseIdentifier: MyWineTableViewCell.identifier)
-        
-        return tableView
-        
+        let tableView = myOwnedWineView.tableView
         tableView.dataSource = self
         tableView.delegate = self
         
+        
+        tableView.register(MyWineTableViewCell.self, forCellReuseIdentifier: MyWineTableViewCell.identifier)
+        
+        return tableView
     }()
     
     
