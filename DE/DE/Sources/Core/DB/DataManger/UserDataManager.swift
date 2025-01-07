@@ -16,55 +16,85 @@ public final class UserDataManager {
         }
     }
     
-    // MARK: - 유저 이름 저장
-    @MainActor public func saveUserName(_ name: String) async {
+    // MARK: - 유저 ID 생성 (기본 정보만)
+    @MainActor public func createUser(userId: Int) async {
         let context = container.mainContext
         
         do {
-            let fetchDescriptor = FetchDescriptor<UserData>()
-            let users = try context.fetch(fetchDescriptor)
+            // 1. 이미 존재하는지 확인
+            let descriptor = FetchDescriptor<UserData>(predicate: #Predicate { $0.userId == userId })
+            let existingUsers = try context.fetch(descriptor)
             
-            // 기존 데이터 삭제
-            for user in users {
-                context.delete(user)
+            if existingUsers.isEmpty {
+                // 2. 신규 유저 생성 (이름 없음)
+                let newUser = UserData(userId: userId, userName: "noname", wines: [])
+                context.insert(newUser)
+                try context.save()
+                print("✅ 유저 ID 생성 완료: \(userId)")
+            } else {
+                print("⚠️ 유저 ID가 이미 존재합니다: \(userId)")
             }
-            
-            // 새로운 데이터 저장
-            let user = UserData(userName: name)
-            context.insert(user)
-            
-            // 한번에 저장
-            try context.save()
-            print("✅ 유저 이름 저장 성공: \(name)")
         } catch {
-            print("❌ 유저 이름 저장 실패: \(error)")
+            print("❌ 유저 ID 생성 실패: \(error)")
+        }
+    }
+    
+    // MARK: - 유저 이름 업데이트
+    @MainActor public func updateUserName(userId: Int, userName: String) async {
+        let context = container.mainContext
+        
+        do {
+            // 1. 해당 ID의 유저 검색
+            let descriptor = FetchDescriptor<UserData>(predicate: #Predicate { $0.userId == userId })
+            let users = try context.fetch(descriptor)
+            
+            if let user = users.first {
+                // 2. 유저 이름 업데이트
+                user.userName = userName
+                try context.save()
+                print("✅ 유저 이름 업데이트 완료: \(userName)")
+            } else {
+                print("⚠️ 해당 ID의 유저가 존재하지 않습니다: \(userId)")
+            }
+        } catch {
+            print("❌ 유저 이름 업데이트 실패: \(error)")
         }
     }
     
     // MARK: - 유저 이름 불러오기
-    @MainActor public func fetchUserName() async -> String? {
+    @MainActor public func fetchUser(userId: Int) async -> UserData? {
         let context = container.mainContext
         
         do {
-            let fetchDescriptor = FetchDescriptor<UserData>()
-            let users = try context.fetch(fetchDescriptor)
-            return users.first?.userName // 첫 번째 유저 이름 반환
+            let descriptor = FetchDescriptor<UserData>(predicate: #Predicate { $0.userId == userId })
+            let users = try context.fetch(descriptor)
+            return users.first
         } catch {
-            print("❌ 유저 이름 불러오기 실패: \(error)")
+            print("❌ 유저 정보 불러오기 실패: \(error)")
             return nil
         }
     }
     
     // MARK: - 유저 데이터 삭제
-    @MainActor public func deleteUserData() async throws {
+    @MainActor
+    func deleteUser(userId: Int) {
         let context = container.mainContext
-        let fetchDescriptor = FetchDescriptor<UserData>()
-        let users = try context.fetch(fetchDescriptor)
         
-        for user in users {
-            context.delete(user)
+        do {
+            // 1. 특정 userId로 유저 검색
+            let descriptor = FetchDescriptor<UserData>(predicate: #Predicate { $0.userId == userId })
+            let users = try context.fetch(descriptor)
+            
+            // 2. 검색된 유저 삭제
+            for user in users {
+                context.delete(user)
+            }
+            
+            // 3. 변경 사항 저장
+            try context.save()
+            print("✅ 유저 정보 삭제 완료: \(userId)")
+        } catch {
+            print("❌ 유저 정보 삭제 실패: \(error)")
         }
-        try context.save()
-        print("✅ 기존 유저 데이터 삭제 완료")
     }
 }

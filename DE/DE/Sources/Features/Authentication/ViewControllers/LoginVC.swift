@@ -110,7 +110,12 @@ class LoginVC: UIViewController {
             
             switch result {
             case .success(let response):
-                SelectLoginTypeVC.keychain.set(usernameString, forKey: "savedUserId")
+                SelectLoginTypeVC.keychain.set(usernameString, forKey: "savedUserEmail")
+                // userId 저장
+                saveUserId(userId: response.userId)
+                Task {
+                    await UserDataManager.shared.createUser(userId: response.userId)
+                }
                 self.goToNextView(response.isFirst)
             case .failure(let error):
                 print(error)
@@ -138,4 +143,12 @@ class LoginVC: UIViewController {
             loginView.usernameField.text = id
         }
     }
+    
+    func saveUserId(userId : Int) {
+        // 로그아웃 시, 이 데이터 모두 삭제
+        let userIdString = "\(userId)"
+        SelectLoginTypeVC.keychain.set(userIdString, forKey: "userId")
+        UserDefaults.standard.set(userId, forKey: "userId")
+    }
+    
 }

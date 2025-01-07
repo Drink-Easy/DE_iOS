@@ -49,7 +49,6 @@ class ManiaConsumeViewController: UIViewController {
     
     @objc private func sliderValueChanged(_ sender: UISlider) {
         selectedItem = sender.value
-        print(sender.value)
         
         surveySliderView.nextButton.isEnabled = true
         surveySliderView.nextButton.isEnabled(isEnabled: true)

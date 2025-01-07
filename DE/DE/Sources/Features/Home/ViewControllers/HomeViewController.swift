@@ -189,6 +189,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     func fetchWines(type: WineListType) {
         Task {
             // 1. 캐시 데이터 확인
+            // TODO : 캐시 데이터 유효기간 확인하기
             let cachedWines = await WineDataManager.shared.fetchWines(type: type)
             if !cachedWines.isEmpty {
                 print("✅ 캐시된 \(type.rawValue) 데이터 사용: \(cachedWines.count)개")
@@ -231,6 +232,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     }
     
     private func processWineData(type: WineListType, responseData: [HomeWineDTO]) async {
+        // TODO : 캐시 유효기간 저장
         let wines = responseData.map {
             WineData(wineId: $0.wineId,
                      imageUrl: $0.imageUrl,
