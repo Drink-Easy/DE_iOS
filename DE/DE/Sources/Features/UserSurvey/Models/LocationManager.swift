@@ -20,7 +20,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     // 위치 요청 메서드
     func requestLocationPermission(completion: @escaping (String?) -> Void) {
         self.completion = completion
-        let status = locationManager.authorizationStatus
+        let status = CLLocationManager.authorizationStatus()
         switch status {
         case .notDetermined:
             locationManager.requestWhenInUseAuthorization()
@@ -45,7 +45,13 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     
     // 권한 거부시 alert창 띄우기
     private func showLocationDeniedAlert() {
-        guard let topVC = UIApplication.shared.windows.first?.rootViewController else { return }
+        guard let topVC = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .flatMap({ $0.windows })
+            .first(where: { $0.isKeyWindow })?.rootViewController else {
+                return
+            }
+
         let alert = UIAlertController(
             title: "위치 서비스 비활성화",
             message: "위치 권한을 허용하려면 설정에서 활성화해주세요.",
@@ -56,7 +62,9 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
             UIApplication.shared.open(settingsURL)
         })
         alert.addAction(UIAlertAction(title: "취소", style: .cancel))
-        topVC.present(alert, animated: true)
+        DispatchQueue.main.async {
+            topVC.present(alert, animated: true)
+        }
     }
 
     // 위치 업데이트 처리
@@ -72,8 +80,8 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     // 주소 변환
     private func reverseGeocode(location: CLLocation, completion: @escaping (String?) -> Void) {
         let geocoder = CLGeocoder()
-        geocoder.reverseGeocodeLocation(location) { placemarks, error in
-            guard error == nil, let placemark = placemarks?.first else {
+        geocoder.reverseGeocodeLocation(location) { [weak self] placemarks, error in
+            guard let self = self, error == nil, let placemark = placemarks?.first else {
                 completion(nil)
                 return
             }
