@@ -17,6 +17,7 @@ class SurveyKindView: UIView {
         $0.backgroundColor = .clear
         $0.isScrollEnabled = false
         $0.allowsMultipleSelection = true
+        $0.clipsToBounds = false
     }
     
     public var nextButton: CustomButton
@@ -51,7 +52,7 @@ class SurveyKindView: UIView {
             $0.top.equalTo(surveyTopView.snp.bottom).offset(50)
             $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
             $0.trailing.equalTo(safeAreaLayoutGuide)
-            $0.height.equalTo(374)
+            $0.height.equalTo(400)
         }
         
         nextButton.snp.makeConstraints {
