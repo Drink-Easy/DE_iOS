@@ -38,13 +38,15 @@ public final class WineService: NetworkManager {
     }
     
     /// 추천 와인 조회
-    public func fetchRecommendWines(completion: @escaping (Result<[HomeWineDTO], NetworkError>) -> Void) {
-        request(target: .getRecommendWines, decodingType: [HomeWineDTO].self, completion: completion)
+    public func fetchRecommendWines(completion: @escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) {
+        requestWithTime(target: .getRecommendWines, decodingType: [HomeWineDTO].self, completion: completion)
+//        request(target: .getRecommendWines, decodingType: [HomeWineDTO].self, completion: completion)
     }
     
     /// 인기 와인 조회
-    public func fetchPopularWines(completion: @escaping (Result<[HomeWineDTO], NetworkError>) -> Void) {
-        request(target: .getMostLikedWines, decodingType: [HomeWineDTO].self, completion: completion)
+    public func fetchPopularWines(completion: @escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) {
+        requestWithTime(target: .getMostLikedWines, decodingType: [HomeWineDTO].self, completion: completion)
+//        request(target: .getMostLikedWines, decodingType: [HomeWineDTO].self, completion: completion)
     }
     
 }

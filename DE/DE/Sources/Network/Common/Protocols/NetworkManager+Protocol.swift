@@ -27,4 +27,11 @@ protocol NetworkManager {
         target: Endpoint,
         completion: @escaping (Result<Void, NetworkError>) -> Void
     )
+    
+    // ✅ 캐시 유효 시간 포함
+    func requestWithTime<T: Decodable>(
+        target: Endpoint,
+        decodingType: T.Type,
+        completion: @escaping (Result<(T, TimeInterval?), NetworkError>) -> Void
+    )
 }

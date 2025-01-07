@@ -188,23 +188,31 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     
     func fetchWines(type: WineListType) {
         Task {
-            // 1. 캐시 데이터 확인
-            // TODO : 캐시 데이터 유효기간 확인하기
-            let cachedWines = await WineDataManager.shared.fetchWines(type: type)
-            if !cachedWines.isEmpty {
-                print("✅ 캐시된 \(type.rawValue) 데이터 사용: \(cachedWines.count)개")
-                updateCollectionView(type: type, with: cachedWines) // 👉 바로 업데이트
+            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+                print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
+            do {
+                // 1. 캐시 데이터 우선 사용
+                let cachedWines = try WineDataManager.shared.fetchWineDataList(userId: userId, wineListType: type)
+                if !cachedWines.isEmpty {
+                    print("✅ 캐시된 \(type.rawValue) 데이터 사용: \(cachedWines.count)개")
+                    updateCollectionView(type: type, with: cachedWines) // 👉 바로 업데이트
+                    return
+                }
+            } catch {
+                print("⚠️ 캐시된 데이터 없음")
+            }
             
-            // 2. 네트워크 요청 처리
+            // 2. 캐시 데이터가 없으면 네트워크 요청
+            print("🌐 네트워크 요청 시작")
             await fetchWinesFromNetwork(type: type)
         }
     }
 
     // MARK: - 네트워크 요청 처리
     private func fetchWinesFromNetwork(type: WineListType) async {
-        let fetchFunction: (@escaping (Result<[HomeWineDTO], NetworkError>) -> Void) -> Void
+        let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
 
         switch type {
         case .recommended:
@@ -220,7 +228,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                 switch result {
                 case .success(let responseData):
                     Task {
-                        await self.processWineData(type: type, responseData: responseData)
+                        await self.processWineData(type: type, responseData: responseData.0, time: responseData.1 ?? 3600)
                         continuation.resume()
                     }
                 case .failure(let error):
@@ -231,8 +239,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         }
     }
     
-    private func processWineData(type: WineListType, responseData: [HomeWineDTO]) async {
-        // TODO : 캐시 유효기간 저장
+    private func processWineData(type: WineListType, responseData: [HomeWineDTO], time: TimeInterval) async {
         let wines = responseData.map {
             WineData(wineId: $0.wineId,
                      imageUrl: $0.imageUrl,
@@ -243,9 +250,11 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         }
         
         do {
-            // 1. 기존 데이터 삭제 및 저장
-            try await WineDataManager.shared.deleteWineList(type: type)
-            try await WineDataManager.shared.saveWines(wines, type: type)
+            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+                print("⚠️ userId가 UserDefaults에 없습니다.")
+                return
+            }
+            try await WineDataManager.shared.saveWineData(userId: userId, wineListType: type, wineData: wines, expirationInterval: time)
             print("✅ \(type.rawValue) 저장 완료: \(wines.count)개")
             updateCollectionView(type: type, with: wines)
         } catch {

@@ -5,9 +5,9 @@ import SwiftData
 
 @Model
 public class UserData {
-    @Attribute(.unique) var userId : Int
-    var userName: String
-    var wines : [WineList] = []
+    @Attribute(.unique) public var userId : Int
+    public var userName: String
+    public var wines : [WineList] = []
     
     init(userId: Int, userName: String, wines: [WineList] = [] ) {
         self.userId = userId
