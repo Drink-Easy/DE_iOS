@@ -86,8 +86,8 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
 
     func setupActions() {
         profileView.profileImageEditButton.addTarget(self, action: #selector(selectProfileImage), for: .touchUpInside)
-        profileView.nicknameTextField.textField.addTarget(self, action: #selector(checkFormValidity), for: .editingDidEnd)
-        profileView.myLocationTextField.textField.addTarget(self, action: #selector(checkFormValidity), for: .editingDidEnd)
+        profileView.nicknameTextField.textField.addTarget(self, action: #selector(checkFormValidity), for: .editingDidEnd) // TODO: 닉네임 중복 확인 api 연결
+        profileView.myLocationTextField.textField.addTarget(self, action: #selector(checkFormValidity), for: .editingChanged)
         profileView.locationImageIconButton.addTarget(self, action: #selector(getMyLocation), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
     }
@@ -137,12 +137,13 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
         let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true)
         let isLocationValid = !(profileView.myLocationTextField.textField.text?.isEmpty ?? true)
         let isImageSelected = profileView.profileImageView.image != nil
-        print(isImageSelected)
         let isFormValid = isNicknameValid && isLocationValid && isImageSelected
 
         nextButton.isEnabled = isFormValid
         nextButton.isEnabled(isEnabled: isFormValid)
     }
+    
+    
 }
 
 extension GetProfileVC: PHPickerViewControllerDelegate {
