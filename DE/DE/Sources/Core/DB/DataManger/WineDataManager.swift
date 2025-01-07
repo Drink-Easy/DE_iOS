@@ -1,95 +1,112 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import SwiftData
-import Foundation
+import UIKit
 
 public final class WineDataManager {
     public static let shared = WineDataManager()
-    let container: ModelContainer
-    
-    private init() {
+    lazy var container: ModelContainer = {
         do {
-            container = try ModelContainer(for: WineData.self, WineList.self)
+            let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
+            let container = try ModelContainer(
+                for: UserData.self, WineList.self, WineData.self,
+                configurations: configuration
+            )
+            print("✅ SwiftData 초기화 성공!")
+            return container
         } catch {
+            print("❌ SwiftData 초기화 실패: \(error.localizedDescription)")
             fatalError("SwiftData 초기화 실패: \(error.localizedDescription)")
         }
-    }
+    }()
     
-    // MARK: - 와인 저장
+    private init() {}
     
+    /// 와인 데이터를 저장하는 메서드
     @MainActor
-    public func saveWines(_ wines: [WineData], type: WineListType) {
+    public func saveWineData(userId: Int, wineListType: WineListType, wineData: [WineData], expirationInterval: TimeInterval) throws {
         let context = container.mainContext
         
-        do {
-            // 1. 기존 리스트 삭제
-            try deleteWineList(type: type)
-            
-            // 2. 새로운 WineList 생성
-            let newList = WineList(type: type.rawValue)
-            newList.wines.append(contentsOf: wines) // 관계 추가
-            
-            context.insert(newList) // 저장
-            try context.save()
-            print("\(type.rawValue) 와인 저장 성공!")
-        } catch {
-            print("\(type.rawValue) 와인 저장 실패: \(error)")
-        }
-    }
-    
-    // MARK: - 와인 조회
-
-    @MainActor
-    public func fetchWines(type: WineListType) -> [WineData] {
-        let context = container.mainContext
-        let descriptor = FetchDescriptor<WineList>(
-            predicate: #Predicate { $0.type == type.rawValue } // ✅ String으로 비교
-        )
+        // 1. userId 검사
+        let user = try fetchUser(by: userId, in: context)
         
         do {
-            if let wineList = try context.fetch(descriptor).first {
-                return wineList.wines // ✅ 저장된 와인 리스트 반환
-            } else {
-                return []
-            }
-        } catch {
-            print("❌ \(type.rawValue) 조회 실패: \(error)")
-            return []
+            let wineList = try fetchWineList(for: userId, type: wineListType, in: context)
+            wineList.wines.removeAll()
+            wineList.wines.append(contentsOf: wineData)
+            wineList.timestamp = Date().addingTimeInterval(expirationInterval)
+        } catch WineDataManagerError.wineListNotFound {
+            let newWineList = WineList(type: wineListType, wines: wineData, timestamp: Date().addingTimeInterval(expirationInterval), user: user)
+            context.insert(newWineList)
         }
+        
+        try context.save()
+        print("✅ 와인 데이터 저장 완료!")
     }
     
-    // MARK: - 와인 삭제
-    
     @MainActor
-    public func deleteWineList(type: WineListType) throws {
+    public func fetchWineDataList(userId: Int, wineListType: WineListType) throws -> [WineData] {
         let context = container.mainContext
-        let descriptor = FetchDescriptor<WineList>(
-            predicate: #Predicate { $0.type == type.rawValue } // ✅ String으로 비교
-        )
+        
+        // 1. 유효 기간이 지난 데이터 삭제
+        try deleteExpiredWineData()
+        
+        // 2. 해당 userId와 wineListType에 맞는 WineList 검색
+        let wineList = try fetchWineList(for: userId, type: wineListType, in: context)
+        
+        // 3. 와인 데이터를 반환
+        return wineList.wines
+    }
+    
+    /// 만료된 와인 데이터 삭제
+    @MainActor
+    public func deleteExpiredWineData() throws {
+        let context = container.mainContext
+        let currentDate = Date()
+        
+        let descriptor = FetchDescriptor<WineList>(predicate: #Predicate { wineList in
+            wineList.timestamp < currentDate
+        })
+        
+        let expiredWineLists = try context.fetch(descriptor)
+        
+        for wineList in expiredWineLists {
+            context.delete(wineList)
+        }
+        
+        try context.save()
+        print("✅ 만료된 와인 데이터가 삭제되었습니다: \(expiredWineLists.count)개")
+    }
+    
+    
+    /// 사용자 검색
+    private func fetchUser(by userId: Int, in context: ModelContext) throws -> UserData {
+        let descriptor = FetchDescriptor<UserData>(predicate: #Predicate { $0.userId == userId })
+        let users = try context.fetch(descriptor)
+        
+        guard let user = users.first else {
+            throw WineDataManagerError.userNotFound
+        }
+        
+        return user
+    }
+    
+    /// WineList 검색
+    func fetchWineList(for userId: Int, type: WineListType, in context: ModelContext) throws -> WineList {
+        let descriptor = FetchDescriptor<WineList>(predicate: #Predicate { $0.user?.userId == userId && $0.type == type.rawValue })
         let wineLists = try context.fetch(descriptor)
         
-        for list in wineLists {
-            context.delete(list)
+        guard let wineList = wineLists.first else {
+            throw WineDataManagerError.wineListNotFound
         }
-        try context.save()
-        print("✅ \(type.rawValue) 삭제 완료!")
+        
+        return wineList
     }
     
-    // MARK: - 전체 데이터 초기화
-    
-    /// 전체 와인 데이터 초기화
-    @MainActor
-    public func deleteAllWines() {
-        let context = container.mainContext
-        do {
-            let allWines = try context.fetch(FetchDescriptor<WineList>())
-            for wineList in allWines {
-                context.delete(wineList)
-            }
-            try context.save()
-            print("모든 와인 데이터 삭제 완료!")
-        } catch {
-            print("데이터 삭제 실패: \(error)")
-        }
-    }
+}
+
+// MARK: - 에러 정의
+public enum WineDataManagerError: Error {
+    case userNotFound
+    case wineListNotFound
 }

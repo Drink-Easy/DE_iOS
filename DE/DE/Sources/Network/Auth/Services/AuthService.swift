@@ -41,10 +41,15 @@ public final class AuthService : NetworkManager {
         return AppleLoginRequestDTO(identityToken: idToken)
     }
     
-    /// 유저 정보 데이터 구조 생성
-    public func makeUserInfoDTO(name: String, isNewBie: Bool, monthPrice: Int, wineSort: [String], wineArea: [String], region: String) -> MemberRequestDTO {
-        return MemberRequestDTO(name: name, isNewBie: isNewBie, monthPrice: monthPrice, wineSort: wineSort, wineArea: wineArea, region: region)
+    /// 이메일 중복 체크 데이터 구조 생성
+    public func makeEmailCheckDTO(emailString: String) -> UsernameCheckRequest {
+        return UsernameCheckRequest(username: emailString)
     }
+    
+    /// 유저 정보 데이터 구조 생성
+//    public func makeUserInfoDTO(name: String, isNewBie: Bool, monthPrice: Int, wineSort: [String], wineArea: [String], region: String) -> MemberRequestDTO {
+//        return MemberRequestDTO(name: name, isNewBie: isNewBie, monthPrice: monthPrice, wineSort: wineSort, wineArea: wineArea, region: region)
+//    }
 
     //MARK: - API funcs
     /// 자체 로그인 API
@@ -80,13 +85,18 @@ public final class AuthService : NetworkManager {
         request(target: .postJoin(data: data), decodingType: String.self, completion: completion)
     }
     
+    /// 이메일 중복 체크 API
+    public func checkEmail(data : UsernameCheckRequest, completion: @escaping (Result<UsernameCheckResponse, NetworkError>) -> Void) {
+        request(target: .emailVerification(data: data), decodingType: UsernameCheckResponse.self, completion: completion)
+    }
+    
     /// 토큰 재발급 API
     public func reissueToken(completion: @escaping (Result<Void, NetworkError>) -> Void) {
         requestStatusCode(target: .postReIssueToken, completion: completion)
     }
     
     /// 멤버 정보 전송 API
-    public func sendMemberInfo(data: MemberRequestDTO, completion: @escaping (Result<MemberResponseDTO, NetworkError>) -> Void) {
-        request(target: .patchMemberInfo(data: data), decodingType: MemberResponseDTO.self, completion: completion)
-    }
+//    public func sendMemberInfo(data: MemberRequestDTO, completion: @escaping (Result<MemberResponseDTO, NetworkError>) -> Void) {
+//        request(target: .patchMemberInfo(data: data), decodingType: MemberResponseDTO.self, completion: completion)
+//    }
 }

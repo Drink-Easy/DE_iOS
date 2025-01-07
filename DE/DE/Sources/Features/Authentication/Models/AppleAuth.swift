@@ -54,9 +54,9 @@ extension SelectLoginTypeVC: ASAuthorizationControllerDelegate {
                 
                 switch result {
                 case .success(let response):
-                    saveUserId(userId: response.userId)
+                    saveUserId(userId: response.id)
                     Task {
-                        await UserDataManager.shared.createUser(userId: response.userId)
+                        await UserDataManager.shared.createUser(userId: response.id)
                     }
                     self.goToNextView(response.isFirst)
                 case .failure(let error):

@@ -18,20 +18,28 @@ public class MainTabBarController: UITabBarController {
     }
 
     private func updateUserName() {
-        print("User name updated: \(userName ?? "Unknown")") // 디버깅 코드 추가
-        // 여기에 UI 업데이트 코드 추가
         if let name = userName {
+            print("✅ 닉네임 업데이트: \(name)")
             homeVC.userName = name
             classVC.userName = name
         } else {
-            // TODO : SwiftData
-            // userId 가져오기
-            // userid로 닉네임 fetch하기
-            guard let savedName = SelectLoginTypeVC.keychain.get("userNickname") else {return }
-            homeVC.userName = savedName
-            classVC.userName = savedName
+            guard let userId = UserDefaults.standard.object(forKey: "userId") as? Int else {
+                print("⚠️ userId가 UserDefaults에 저장되어 있지 않습니다.")
+                return
+            }
+            
+            Task {
+                if let userData = await UserDataManager.shared.fetchUser(userId: userId) {
+                    print("✅ SwiftData에서 닉네임 가져오기 성공")
+                    homeVC.userName = userData.userName ?? "unknown"
+                    classVC.userName = userData.userName ?? "unknown"
+                } else {
+                    print("⚠️ SwiftData에서 닉네임을 찾을 수 없습니다.")
+                    homeVC.userName = "noname"
+                    classVC.userName = "noname"
+                }
+            }
         }
-
     }
 
     public override func viewDidLoad() {
