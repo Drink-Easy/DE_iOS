@@ -8,12 +8,15 @@ import CoreModule
 class WishListViewController: UIViewController {
     
     private let navigationBarManager = NavigationBarManager()
+    var wineResults: [SearchResultModel] = []
     private let networkService = WishlistService()
     
     private lazy var searchResultTableView = UITableView().then {
         $0.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
         $0.backgroundColor = Constants.AppColor.grayBG
+        $0.dataSource = self
+        $0.delegate = self
     }
 
     override func viewDidLoad() {
@@ -22,6 +25,7 @@ class WishListViewController: UIViewController {
         setupNavigationBar()
         addComponents()
         setConstraints()
+        callLikeAPI()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -65,6 +69,52 @@ class WishListViewController: UIViewController {
         }
     }
     
-    
+    func callFetchWishlistAPI() {
+        networkService.fetchWishlist() { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let responseData) :
+                DispatchQueue.main.async {
+                    self.wineResults = responseData.map { data in
+                        SearchResultModel(
+                            wineId: data.wineId,
+                            wineName: data.name,
+                            imageURL: data.imageUrl,
+                            sort: data.sort,
+                            satisfaction: data.vivinoRating,
+                            area: data.area
+                        )
+                    }
+                    self.searchResultTableView.reloadData()
+                }
+            case .failure(let error) :
+                print("\(error)")
+            }
+        }
+    }
 
+}
+
+extension WishListViewController: UITableViewDelegate, UITableViewDataSource {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return wineResults.count
+    }
+    
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultTableViewCell", for: indexPath) as? SearchResultTableViewCell else {
+            return UITableViewCell()
+        }
+        
+        let wine = wineResults[indexPath.row]
+        cell.configure(model: wine)
+        
+        return cell
+    }
+    
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = WineDetailViewController()
+        vc.wineId = wineResults[indexPath.row].wineId
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
