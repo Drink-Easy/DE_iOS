@@ -13,7 +13,7 @@ public class CustomStepSlider: UISlider {
     private var stepLabelViews: [UILabel] = []
     
     // MARK: - Init
-    public init(text1: String = "", text2: String =  "", text3: String = "", text4: String = "", text5: String = "", step1: Float = 20, step2: Float = 40, step3: Float = 60, step4: Float = 80, step5: Float = 100) {
+    public init(text1: String = "", text2: String = "", text3: String = "", text4: String = "", text5: String = "", step1: Float = 20, step2: Float = 40, step3: Float = 60, step4: Float = 80, step5: Float = 100) {
         super.init(frame: .zero)
         self.stepLabels = [text1, text2, text3, text4, text5]
         self.stepValues = [step1, step2, step3, step4, step5]
@@ -36,6 +36,14 @@ public class CustomStepSlider: UISlider {
         imageView.isUserInteractionEnabled = true
         return imageView
     }()
+    
+    public override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        let thumbRect = thumbRect(forBounds: bounds, trackRect: trackRect(forBounds: bounds), value: value)
+        
+        // 터치 범위를 Thumb 이미지 크기보다 위로 60pt 확장
+        let largerThumbRect = thumbRect.inset(by: UIEdgeInsets(top: -60, left: -50, bottom: 0, right: -50))
+        return largerThumbRect.contains(point)
+    }
     
     // MARK: - Setup UI
     private lazy var stepStackView: UIStackView = {
@@ -171,7 +179,7 @@ public class CustomStepSlider: UISlider {
     // MARK: - Update Thumb Position
     private func updateThumbPosition(animated: Bool) {
         // ✅ 현재 value에 맞는 동그라미 뷰 가져오기
-        let stepIndex = Int((value - minimumValue) / 20)
+        let stepIndex = Int((value - minimumValue) / stepValues[0])
         guard stepIndex >= 0 && stepIndex < stepStackView.arrangedSubviews.count else { return }
         let targetCircleView = stepStackView.arrangedSubviews[stepIndex]
         
