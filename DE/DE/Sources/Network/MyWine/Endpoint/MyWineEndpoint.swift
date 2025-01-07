@@ -7,7 +7,8 @@ import Moya
 public enum MyWineEndpoint {
     case getMyWines
     case postMyWine(data: MyWineRequest)
-    case patchMyWine(wineId: Int, data : MyWineUpdateRequest)
+    case patchMyWine(myWineId: Int, data : MyWineUpdateRequest)
+    case deleteMyWine(myWineId: Int)
 }
 
 extension MyWineEndpoint: TargetType {
@@ -20,7 +21,7 @@ extension MyWineEndpoint: TargetType {
     
     public var path: String {
         switch self {
-        case .patchMyWine(let id, _):
+        case .patchMyWine(let id, _), .deleteMyWine(let id):
             return "/\(id)"
         default :
             return ""
@@ -35,6 +36,8 @@ extension MyWineEndpoint: TargetType {
             return .post
         case .patchMyWine:
             return .patch
+        case .deleteMyWine:
+            return .delete
         }
     }
     
@@ -46,6 +49,8 @@ extension MyWineEndpoint: TargetType {
             return .requestJSONEncodable(data)
         case .patchMyWine(_, let data):
             return .requestJSONEncodable(data)
+        case .deleteMyWine(_) :
+            return .requestPlain
         }
     }
     
