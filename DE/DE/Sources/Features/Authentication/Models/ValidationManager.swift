@@ -16,13 +16,13 @@ final class ValidationManager {
     
     func validateUsername(_ view: CustomLabelTextFieldView) -> Bool {
         guard let username = view.text, !username.isEmpty else {
-            showValidationError(view, message: "아이디를 입력해 주세요")
+            showValidationError(view, message: "이메일을 입력해 주세요")
             return false
         }
         
         // 아이디 형식 확인
         if !isValidUserName(username) {
-            showValidationError(view, message: "유효하지 않은 아이디 형식입니다")
+            showValidationError(view, message: "유효하지 않은 이메일 형식입니다")
             return false
         }
         hideValidationError(view)
@@ -49,9 +49,7 @@ final class ValidationManager {
     
     // MARK: - 정규식 함수
     func isValidUserName(_ username: String) -> Bool {
-        //TODO: 함수 주석 해제 필요
-//        let usernameRegex = "^[a-z0-9]{8,20}$"
-        let usernameRegex = ".*"
+        let usernameRegex = "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
         let usernamePred = NSPredicate(format: "SELF MATCHES %@", usernameRegex)
         return usernamePred.evaluate(with: username)
     }

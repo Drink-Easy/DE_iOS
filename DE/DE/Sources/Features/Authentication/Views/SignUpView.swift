@@ -10,11 +10,11 @@ import CoreModule
 class SignUpView: UIView {
     
     // MARK: - UI Components
-    let usernameField = CustomLabelTextFieldView(
+    lazy var usernameField = CustomLabelTextFieldView(
         descriptionImageIcon: "person.fill",
-        descriptionLabelText: "아이디",
-        textFieldPlaceholder: "아이디를 입력해 주세요",
-        validationText: "8~20자 이내 영소문자, 숫자의 조합"
+        descriptionLabelText: "이메일",
+        textFieldPlaceholder: "이메일 입력해 주세요",
+        validationText: "유효하지 않은 이메일 형식입니다"
     ).then {
         $0.textField.keyboardType = .default
     }

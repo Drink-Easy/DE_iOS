@@ -76,7 +76,7 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
         textField.delegate = self
         textField.layer.borderColor = AppColor.gray10?.cgColor
         textField.layer.borderWidth = 2
-        textField.layer.cornerRadius = 15
+        textField.layer.cornerRadius = 10
         textField.isSecureTextEntry = isPasswordField // 비밀번호 필드 여부에 따라 처리
         
         let placeholderColor = AppColor.gray70
