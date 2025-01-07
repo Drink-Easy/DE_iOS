@@ -2,7 +2,13 @@
 
 import Foundation
 
-public struct WineWishlistResponseDTO : Decodable {
-    public  let id : Int
-    public let wine : SearchWineResponseDTO
+public struct WinePreviewResponse : Decodable {
+    let wineId : Int
+    let name : String
+    let imageUrl : String
+    let sort : String
+    let area : String
+    let variety : String
+    let viviniRating : Double
+    let price : Int
 }

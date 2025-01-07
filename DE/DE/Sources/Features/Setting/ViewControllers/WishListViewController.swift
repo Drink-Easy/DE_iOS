@@ -75,17 +75,15 @@ class WishListViewController: UIViewController {
             
             switch result {
             case .success(let responseData) :
+                self.wineResults = responseData.map { data in
+                    SearchResultModel(wineId: data.wineId,
+                                      wineName: data.name,
+                                      imageURL: data.imageUrl,
+                                      sort: data.sort,
+                                      satisfaction: data.viviniRating,
+                                      area: data.area)
+                }
                 DispatchQueue.main.async {
-                    self.wineResults = responseData.map { data in
-                        SearchResultModel(
-                            wineId: data.wineId,
-                            wineName: data.name,
-                            imageURL: data.imageUrl,
-                            sort: data.sort,
-                            satisfaction: data.vivinoRating,
-                            area: data.area
-                        )
-                    }
                     self.searchResultTableView.reloadData()
                 }
             case .failure(let error) :

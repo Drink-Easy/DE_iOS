@@ -23,13 +23,13 @@ public final class WishlistService: NetworkManager {
     //MARK: - API funcs
     
     /// 위시리스트 조회 API
-    public func fetchWishlist(completion: @escaping (Result<[WineWishlistResponseDTO], NetworkError>) -> Void) {
-        request(target: .getWishList, decodingType: [WineWishlistResponseDTO].self, completion: completion)
+    public func fetchWishlist(completion: @escaping (Result<[WinePreviewResponse], NetworkError>) -> Void) {
+        request(target: .getWishList, decodingType: [WinePreviewResponse].self, completion: completion)
     }
     
     /// 위시리스트 등록 API
-    public func postWishlist(wineId: Int, completion: @escaping (Result<WineWishlistResponseDTO, NetworkError>) -> Void) {
-        request(target: .postWishList(wineId: wineId), decodingType: WineWishlistResponseDTO.self, completion: completion)
+    public func postWishlist(wineId: Int, completion: @escaping (Result<String, NetworkError>) -> Void) {
+        request(target: .postWishList(wineId: wineId), decodingType: String.self, completion: completion)
     }
     
     /// 위시리스트 삭제 API
