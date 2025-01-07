@@ -37,6 +37,21 @@ public class NavigationBarManager {
         titleLabel.textAlignment = .center
         navigationItem.titleView = titleLabel
     }
+    
+    public func setNReturnTitle(
+        to navigationItem: UINavigationItem,
+        title: String,
+        textColor: UIColor = .label,
+        font: UIFont = .systemFont(ofSize: 18, weight: .bold)
+    ) -> UILabel {
+        let titleLabel = UILabel()
+        titleLabel.text = title
+        titleLabel.font = font
+        titleLabel.textColor = textColor
+        titleLabel.textAlignment = .center
+        navigationItem.titleView = titleLabel
+        return titleLabel  // UILabel(smallTitle) 반환
+    }
   
     public func addLeftRightButtons(
             to navigationItem: UINavigationItem,

@@ -57,6 +57,9 @@ let project = Project(
                         "NSAllowsArbitraryLoads" : true
                     ],
                     "UILaunchStoryboardName": "",
+                    "NSLocationWhenInUseUsageDescription" : "드링키지 어플을 사용일 때만 사용자의 위치를 가져옵니다.",
+                    "NSLocationAlwaysUsageDescription" : "항상 사용자의 위치를 가져옵니다.",
+                    "NSLocationAlwaysAndWhenInUseUsageDescription" : "앱 사용 중 및 백그라운드에서 사용자의 위치를 가져옵니다.",
 //                    // 런치 스크린
 //                    "UILaunchScreen" : [
 //                        "UIColorName" : "LaunchScreenBGColor",
@@ -237,7 +240,8 @@ let project = Project(
                 
                 .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK"),
-                .external(name: "AMPopTip")
+                .external(name: "AMPopTip"),
+                .external(name: "StepSlider")
             ]
         ),
         .target(
@@ -423,7 +427,8 @@ let project = Project(
             resources: ["DE/Resources/**"],
             dependencies: [
                 .target(name: "Network"),
-                .external(name: "AMPopTip")
+                .external(name: "AMPopTip"),
+                .external(name: "StepSlider")
             ]
         ),
         .target(

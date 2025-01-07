@@ -22,7 +22,8 @@ class ChooseWineColor: UIView {
         w.text = "루이 로드레 크리스탈 2015"
         w.font = .ptdSemiBoldFont(ofSize: 24)
         w.textColor = .black
-        w.textAlignment = .center
+        w.textAlignment = .left
+        w.numberOfLines = 0
         return w
     }()
     
@@ -93,6 +94,7 @@ class ChooseWineColor: UIView {
         wineNameLabel.snp.makeConstraints { make in
             make.top.equalTo(pageLabel.snp.bottom).offset(2)
             make.leading.equalTo(pageLabel)
+            make.trailing.equalToSuperview().offset(-25)
         }
         
         addSubview(wineImage)

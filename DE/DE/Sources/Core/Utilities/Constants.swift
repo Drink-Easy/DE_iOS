@@ -22,6 +22,7 @@ public struct Constants {
         public static let wineLectureCompleteURL = "\(baseURL)/wine-lecture-complete"
         public static let wineURL = "\(baseURL)/wine"
         public static let wishlistURL = "\(baseURL)/wine-wishlist"
+        public static let myWineURL = "\(baseURL)/my-wine"
     }
     
 

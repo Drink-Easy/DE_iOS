@@ -5,7 +5,7 @@ import CoreModule
 import Then
 import Network
 
-class WineDetailViewController: UIViewController {
+class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     
     let navigationBarManager = NavigationBarManager()
     var wineId: Int = 0
@@ -20,16 +20,9 @@ class WineDetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.navigationBar.prefersLargeTitles = true
-        self.navigationItem.largeTitleDisplayMode = .automatic
-        //self.navigationItem.setValue(1, forKey: "__largeTitleTwoLineMode")
-        self.navigationController?.navigationBar.largeTitleTextAttributes = [
-            .font: UIFont.ptdSemiBoldFont(ofSize: 24),
-            .foregroundColor: AppColor.black!,
-        ]
-        
+        self.navigationController?.navigationBar.prefersLargeTitles = false
         view.backgroundColor = Constants.AppColor.grayBG
-        
+    
         addView()
         constraints()
         callWineDetailAPI(wineId: self.wineId)
@@ -52,7 +45,7 @@ class WineDetailViewController: UIViewController {
     
     private func setupNavigationBar() {
         
-        self.title = wineName
+        largeTitleLabel.text = wineName
         
         navigationBarManager.addBackButton(
             to: navigationItem,
@@ -60,6 +53,13 @@ class WineDetailViewController: UIViewController {
             action: #selector(prevVC),
             tintColor: AppColor.gray70!
         )
+        
+        smallTitleLabel = navigationBarManager.setNReturnTitle(
+            to: navigationItem,
+            title: wineName,
+            textColor: AppColor.black ?? .black
+        )
+        smallTitleLabel.isHidden = true
         
         navigationBarManager.addRightButton(
             to: navigationItem,
@@ -94,9 +94,28 @@ class WineDetailViewController: UIViewController {
         button.tintColor = AppColor.bgGray
     }
     
+    private lazy var largeTitleLabel = UILabel().then {
+        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.numberOfLines = 0
+        $0.textColor = AppColor.black
+    }
+    
+    private var smallTitleLabel = UILabel()
+    
     private lazy var scrollView = UIScrollView().then {
         $0.showsVerticalScrollIndicator = false
         $0.showsHorizontalScrollIndicator = false
+    }
+    
+    //largeTitle -> smallTitle
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let largeTitleBottom = largeTitleLabel.frame.maxY + 10
+        
+        UIView.animate(withDuration: 0.1) {
+            self.largeTitleLabel.alpha = offsetY > largeTitleBottom ? 0 : 1
+            self.smallTitleLabel.isHidden = !(offsetY > largeTitleBottom)
+        }
     }
     
     private lazy var contentView = UIView()
@@ -120,9 +139,10 @@ class WineDetailViewController: UIViewController {
     }
     
     private func addView() {
+        scrollView.delegate = self
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-        [wineDetailView, vivinoRateView, averageTastingNoteView, reviewView].forEach{ contentView.addSubview($0) }
+        [largeTitleLabel, wineDetailView, vivinoRateView, averageTastingNoteView, reviewView].forEach{ contentView.addSubview($0) }
     }
     
     private func constraints() {
@@ -138,8 +158,13 @@ class WineDetailViewController: UIViewController {
             $0.bottom.equalTo(reviewView.snp.bottom).offset(40)
         }
         
-        wineDetailView.snp.makeConstraints {
+        largeTitleLabel.snp.makeConstraints {
+            $0.horizontalEdges.equalToSuperview().inset(25)
             $0.top.equalToSuperview().offset(10)
+        }
+        
+        wineDetailView.snp.makeConstraints {
+            $0.top.equalTo(largeTitleLabel.snp.bottom).offset(21)
             $0.horizontalEdges.equalToSuperview()
         }
         
@@ -200,7 +225,8 @@ class WineDetailViewController: UIViewController {
         let infoData = WineDetailInfoModel(image: wineResponse.imageUrl, sort: wineResponse.sort, area: wineResponse.area)
         let rateData = WineViVinoRatingModel(vivinoRating: wineResponse.vivinoRating)
         let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString, avgSugarContent: wineResponse.avgSugarContent, avgAcidity: wineResponse.avgAcidity, avgTannin: wineResponse.avgTannin, avgBody: wineResponse.avgBody, avgAlcohol: wineResponse.avgAlcohol)
-        let reviewData = WineAverageReviewModel(avgMemberRating: wineResponse.avgMemberRating)
+        let roundedAvgMemberRating = (wineResponse.avgMemberRating * 10).rounded() / 10
+        let reviewData = WineAverageReviewModel(avgMemberRating: roundedAvgMemberRating)
         if let reviewResponse = responseData.recentReviews {
             for data in reviewResponse {
                 if let name = data.name,

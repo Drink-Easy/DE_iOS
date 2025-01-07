@@ -3,6 +3,8 @@
 import UIKit
 import CoreModule
 import AMPopTip
+import Network
+import StepSlider
 
 class ChangeGraphView: UIView, UIScrollViewDelegate {
     
@@ -17,23 +19,13 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
         return c
     }()
     
-    let pageLabel: UILabel = {
-        let p = UILabel()
-        p.textColor = AppColor.gray80
-        let fullText = "3/5"
-        let coloredText = "3"
-        let attributedString = fullText.withColor(for: coloredText, color: AppColor.purple70 ?? UIColor(hex: "9741BF")!)
-        p.attributedText = attributedString
-        p.font = .ptdMediumFont(ofSize: 16)
-        return p
-    }()
-    
     let wineNameLabel: UILabel = {
         let w = UILabel()
         w.text = "루이 로드레 크리스탈 2015"
         w.font = .ptdSemiBoldFont(ofSize: 24)
         w.textColor = .black
-        w.textAlignment = .center
+        w.textAlignment = .left
+        w.numberOfLines = 0
         return w
     }()
     
@@ -121,8 +113,8 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
         return s
     }()
     
-    let sweetSlider: CustomSlider = {
-        let c = CustomSlider()
+    let sweetSlider: CustomStepSlider = {
+        let c = CustomStepSlider()
         return c
     }()
     
@@ -149,8 +141,8 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
         return s
     }()
     
-    let acidSlider: CustomSlider = {
-        let c = CustomSlider()
+    let acidSlider: CustomStepSlider = {
+        let c = CustomStepSlider()
         return c
     }()
     
@@ -177,8 +169,8 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
         return s
     }()
     
-    let tanninSlider: CustomSlider = {
-        let c = CustomSlider()
+    let tanninSlider: CustomStepSlider = {
+        let c = CustomStepSlider()
         return c
     }()
     
@@ -205,8 +197,8 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
         return s
     }()
     
-    let bodySlider: CustomSlider = {
-        let c = CustomSlider()
+    let bodySlider: CustomStepSlider = {
+        let c = CustomStepSlider()
         return c
     }()
     
@@ -233,20 +225,34 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
         return s
     }()
     
-    let alcoholSlider: CustomSlider = {
-        let c = CustomSlider()
+    let alcoholSlider: CustomStepSlider = {
+        let c = CustomStepSlider()
         return c
+    }()
+    
+    let testSlider: CustomStepSlider = {
+        let t = CustomStepSlider()
+        return t
     }()
     
     let nextButton: UIButton = {
         let n = UIButton()
-        n.setTitle("다음", for: .normal)
+        n.setTitle("저장하기", for: .normal)
         n.titleLabel?.font = .ptdBoldFont(ofSize: 18)
         n.setTitleColor(.white, for: .normal)
         n.backgroundColor = AppColor.purple100
         n.layer.cornerRadius = 14
         return n
     }()
+    
+    func updateUI(dto: TastingNoteResponsesDTO) {
+        wineNameLabel.text = dto.wineName
+        sweetSlider.value = Float(dto.sugarContent)
+        acidSlider.value = Float(dto.acidity)
+        tanninSlider.value = Float(dto.tannin)
+        bodySlider.value = Float(dto.body)
+        alcoholSlider.value = Float(dto.alcohol)
+    }
     
     func setupUI() {
         addSubview(scrollView)
@@ -262,16 +268,11 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
             make.width.equalTo(scrollView)
         }
         
-        contentView.addSubview(pageLabel)
-        pageLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(10)
-            make.leading.equalToSuperview().offset(24)
-        }
-        
         contentView.addSubview(wineNameLabel)
         wineNameLabel.snp.makeConstraints { make in
-            make.top.equalTo(pageLabel.snp.bottom).offset(2)
+            make.top.equalToSuperview().offset(10)
             make.leading.equalToSuperview().offset(24)
+            make.trailing.equalToSuperview().offset(-24)
         }
         
         contentView.addSubview(wineImage)
@@ -331,15 +332,16 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
         
         contentView.addSubview(sweetnessLabel)
         sweetnessLabel.snp.makeConstraints { make in
-            make.top.equalTo(vector2.snp.bottom).offset(58)
+            make.top.equalTo(vector2.snp.bottom).offset(70)
             make.leading.equalTo(vector2.snp.leading)
         }
         
         contentView.addSubview(sweetToolTip)
         sweetToolTip.snp.makeConstraints { make in
-            make.top.equalTo(sweetnessLabel).offset(6)
+            // make.top.equalTo(sweetnessLabel).offset(6)
             make.centerY.equalTo(sweetnessLabel)
             make.leading.equalTo(sweetnessLabel.snp.trailing).offset(4)
+            make.width.height.equalTo(12)
         }
         
         contentView.addSubview(sweetSlider)
@@ -348,6 +350,7 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
             make.leading.equalTo(sweetToolTip.snp.trailing).offset(23)
             make.centerY.equalTo(sweetToolTip.snp.centerY)
             make.trailing.equalTo(vector2.snp.trailing)
+            make.width.equalTo(250)
         }
         
         contentView.addSubview(acidLabel)
@@ -358,17 +361,18 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
         
         contentView.addSubview(acidToolTip)
         acidToolTip.snp.makeConstraints { make in
-            make.top.equalTo(acidLabel).offset(6)
             make.centerY.equalTo(acidLabel)
             make.leading.equalTo(acidLabel.snp.trailing).offset(4)
+            make.width.height.equalTo(12)
         }
         
         contentView.addSubview(acidSlider)
         acidSlider.snp.makeConstraints { make in
             make.top.equalTo(acidToolTip.snp.top).offset(3)
-            make.leading.trailing.equalTo(sweetSlider)
+            make.leading.equalTo(acidToolTip.snp.trailing).offset(23)
             make.centerY.equalTo(acidToolTip.snp.centerY)
-            make.trailing.equalTo(sweetSlider.snp.trailing)
+            make.trailing.equalTo(vector2.snp.trailing)
+            make.width.equalTo(250)
         }
         
         contentView.addSubview(tanninLabel)
@@ -379,17 +383,18 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
         
         contentView.addSubview(tanninToolTip)
         tanninToolTip.snp.makeConstraints { make in
-            make.top.equalTo(tanninLabel).offset(6)
             make.centerY.equalTo(tanninLabel)
             make.leading.equalTo(tanninLabel.snp.trailing).offset(4)
+            make.width.height.equalTo(12)
         }
         
         contentView.addSubview(tanninSlider)
         tanninSlider.snp.makeConstraints { make in
             make.top.equalTo(tanninToolTip.snp.top).offset(3)
-            make.leading.trailing.equalTo(acidSlider)
+            make.leading.equalTo(tanninToolTip.snp.trailing).offset(23)
             make.centerY.equalTo(tanninToolTip.snp.centerY)
-            make.trailing.equalTo(acidSlider.snp.trailing)
+            make.trailing.equalTo(vector2.snp.trailing)
+            make.width.equalTo(250)
         }
         
         contentView.addSubview(bodyLabel)
@@ -400,17 +405,18 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
         
         contentView.addSubview(bodyToolTip)
         bodyToolTip.snp.makeConstraints { make in
-            make.top.equalTo(bodyLabel).offset(6)
             make.centerY.equalTo(bodyLabel)
             make.leading.equalTo(bodyLabel.snp.trailing).offset(4)
+            make.width.height.equalTo(12)
         }
         
         contentView.addSubview(bodySlider)
         bodySlider.snp.makeConstraints { make in
             make.top.equalTo(bodyToolTip.snp.top).offset(3)
-            make.leading.trailing.equalTo(tanninSlider)
+            make.leading.equalTo(bodyToolTip.snp.trailing).offset(23)
             make.centerY.equalTo(bodyToolTip.snp.centerY)
-            make.trailing.equalTo(tanninSlider.snp.trailing)
+            make.trailing.equalTo(vector2.snp.trailing)
+            make.width.equalTo(250)
         }
         
         contentView.addSubview(alcoholLabel)
@@ -421,17 +427,18 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
         
         contentView.addSubview(alcoholToolTip)
         alcoholToolTip.snp.makeConstraints { make in
-            make.top.equalTo(alcoholLabel).offset(6)
             make.centerY.equalTo(alcoholLabel)
             make.leading.equalTo(alcoholLabel.snp.trailing).offset(4)
+            make.width.height.equalTo(12)
         }
         
         contentView.addSubview(alcoholSlider)
         alcoholSlider.snp.makeConstraints { make in
             make.top.equalTo(alcoholToolTip.snp.top).offset(3)
-            make.leading.trailing.equalTo(bodySlider)
+            make.leading.equalTo(alcoholToolTip.snp.trailing).offset(23)
             make.centerY.equalTo(alcoholToolTip.snp.centerY)
-            make.trailing.equalTo(bodySlider.snp.trailing)
+            make.trailing.equalTo(vector2)
+            make.width.equalTo(250)
         }
         
         contentView.addSubview(nextButton)
@@ -503,4 +510,14 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
 
+}
+
+extension UIImage {
+    func resized(to size: CGSize) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
+        self.draw(in: CGRect(origin: .zero, size: size))
+        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return resizedImage ?? self
+    }
 }

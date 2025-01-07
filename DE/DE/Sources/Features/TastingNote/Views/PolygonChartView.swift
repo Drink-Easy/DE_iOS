@@ -3,6 +3,7 @@
 import CoreModule
 import UIKit
 
+
 enum CharacteristicType: String {
     case sweetness = "당도"
     case acid = "산도"
@@ -54,7 +55,8 @@ class PolygonChartView: UIButton {
     
     override func draw(_ rect: CGRect) {
         
-        let font = UIFont.systemFont(ofSize: 14)
+        let font = UIFont.ptdBoldFont(ofSize: 14)
+        let percentageFont = UIFont.ptdMediumFont(ofSize: 11.35)
         let attrs = [NSAttributedString.Key.font: font, NSAttributedString.Key.foregroundColor: UIColor.black]
         
         var radian: Double = 0
@@ -63,7 +65,7 @@ class PolygonChartView: UIButton {
         for _ in 0 ..< step {
             stepLinePaths.append(CustomUIBezierPath())
         }
-        let heightMaxValue = rect.height / 2 * 0.8 // RadarChartView영역내에 모든 그림이 그려지도록 max value가 그려질 높이
+        let heightMaxValue = rect.height / 3 // RadarChartView영역내에 모든 그림이 그려지도록 max value가 그려질 높이
         let heightStep = heightMaxValue / CGFloat(step) // 1단계에 해당하는 높이
         let cx = rect.midX
         let cy = rect.midY
@@ -73,15 +75,20 @@ class PolygonChartView: UIButton {
         chartTypes.forEach { type in
             
             // 2. 각 꼭지점 부근에 각 특성 문자열 표시
-            let point = transformRotate(radian: radian, x: x, y: y * 0.5, cx: cx, cy: cy)
+            let point = transformRotate(radian: radian, x: x, y: y * 0.4, cx: cx, cy: cy)
             if let value = dataList?.first(where: { $0.type == type })?.value {
-                let percentageValue = Int(value) //Int((Double(value) / 10) * 100)
-                let strValue = "\(type.rawValue)\n\(percentageValue)%"
+                let percentageValue = "\(value)%"
+                let strValue = "\(type.rawValue)\n\(percentageValue)"
                 let attributedString = NSMutableAttributedString(string: strValue, attributes: attrs)
-                if let range = strValue.range(of: "\(percentageValue)%") {
-                    let nsRange = NSRange(range, in: strValue)
-                    attributedString.addAttribute(.foregroundColor, value: AppColor.purple100 ?? .red, range: nsRange) // 원하는 색상 적용
-                }
+
+                // ✅ 퍼센트 부분을 찾고, 폰트와 색상을 변경합니다.
+                let range = (strValue as NSString).range(of: percentageValue)
+                    attributedString.addAttributes([
+                        NSAttributedString.Key.font: percentageFont,
+                        NSAttributedString.Key.foregroundColor: AppColor.purple100 ?? .red
+                    ], range: range)
+                
+                
                 let size = attributedString.size()
                 
                 // 문자열 그리기

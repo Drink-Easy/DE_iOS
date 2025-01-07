@@ -54,14 +54,15 @@ class NoteListView: UIView {
         addSubview(seeAllLabel)
         
         noteListLabel.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide).offset(11)
+            make.top.equalTo(safeAreaLayoutGuide).offset(23)
             make.leading.equalToSuperview().offset(24)
         }
         
         searchButton.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide).offset(19)
-            make.trailing.equalToSuperview().offset(-25.5)
-            make.width.height.equalTo(18.5)
+            make.top.equalTo(noteListLabel.snp.top).offset(5)
+            make.centerY.equalTo(noteListLabel.snp.centerY)
+            make.trailing.equalToSuperview().offset(-24)
+            
         }
         
         vectorView.snp.makeConstraints { make in

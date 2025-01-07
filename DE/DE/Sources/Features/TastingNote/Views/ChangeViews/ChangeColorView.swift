@@ -11,7 +11,8 @@ class ChangeColorView: UIView {
         w.text = "루이 로드레 크리스탈 2015"
         w.font = .ptdSemiBoldFont(ofSize: 24)
         w.textColor = .black
-        w.textAlignment = .center
+        w.textAlignment = .left
+        w.numberOfLines = 0
         return w
     }()
     
@@ -76,6 +77,7 @@ class ChangeColorView: UIView {
         wineNameLabel.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide).offset(10)
             make.leading.equalToSuperview().offset(24)
+            make.trailing.equalToSuperview().offset(-24)
         }
         
         addSubview(wineImage)

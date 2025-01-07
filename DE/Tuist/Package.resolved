@@ -1,5 +1,5 @@
 {
-  "originHash" : "116dc2846d71a9afe33619fa0e361d508059871c080a3949bf2b2162fd1c887c",
+  "originHash" : "ae679e7bbef736a0e1a95ed4952ec79ff7b5c14bcb0a6067b9d004aa5b0b065a",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -107,6 +107,15 @@
       "state" : {
         "revision" : "2842e6e84e82eb9a8dac0100ca90d9444b0307f4",
         "version" : "5.7.1"
+      }
+    },
+    {
+      "identity" : "stepslider",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/spromicky/StepSlider.git",
+      "state" : {
+        "revision" : "bb490b81515cb0dc87465938a36c43dcba11a274",
+        "version" : "1.8.0"
       }
     },
     {

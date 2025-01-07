@@ -5,6 +5,7 @@ import SnapKit
 import Cosmos
 import CoreModule
 import Then
+import Network
 
 class ChangeRateView: UIView {
     
@@ -23,7 +24,8 @@ class ChangeRateView: UIView {
         let w = UILabel()
         w.text = "루이 로드레 크리스탈 2015"
         w.textColor = .black
-        w.textAlignment = .center
+        w.textAlignment = .left
+        w.numberOfLines = 0
         w.font = UIFont(name: "Pretendard-SemiBold", size: 24)
         return w
     }()
@@ -123,9 +125,14 @@ class ChangeRateView: UIView {
         return n
     }()
     
-    func updateUI(wineName: String, wineSort: String, wineArea: String) {
-        self.wineName.text = wineName
-        descriptionView.fromDescription.text = wineArea
+    func updateUI(dto: TastingNoteResponsesDTO) {
+        self.wineName.text = dto.wineName
+        wineImage.sd_setImage(with: URL(string: dto.imageUrl), placeholderImage: UIImage())
+        descriptionView.fromDescription.text = dto.area
+        descriptionView.kindDescription.text = dto.sort
+        reviewTextField.text = dto.review
+        ratingButton.rating = dto.rating
+        ratingLabel.text = "\(dto.rating) / 5.0"
     }
     
     func setupUI() {
@@ -148,6 +155,7 @@ class ChangeRateView: UIView {
         wineName.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(10)
             make.leading.equalToSuperview().offset(25)
+            make.trailing.equalToSuperview().offset(-24)
         }
         
         contentView.addSubview(wineImage)
