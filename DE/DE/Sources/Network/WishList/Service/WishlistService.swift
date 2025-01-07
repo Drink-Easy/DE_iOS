@@ -23,8 +23,9 @@ public final class WishlistService: NetworkManager {
     //MARK: - API funcs
     
     /// 위시리스트 조회 API
-    public func fetchWishlist(completion: @escaping (Result<[WinePreviewResponse], NetworkError>) -> Void) {
-        request(target: .getWishList, decodingType: [WinePreviewResponse].self, completion: completion)
+    public func fetchWishlist(completion: @escaping (Result<[WinePreviewResponse]?, NetworkError>) -> Void) {
+//        request(target: .getWishList, decodingType: [WinePreviewResponse].self, completion: completion)
+        requestOptional(target: .getWishList, decodingType: [WinePreviewResponse].self, completion: completion)
     }
     
     /// 위시리스트 등록 API

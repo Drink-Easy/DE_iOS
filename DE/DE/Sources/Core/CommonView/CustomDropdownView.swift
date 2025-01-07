@@ -5,7 +5,7 @@ import SnapKit
 import Then
 import CoreModule
 
-class CustomDropdownView: UIView {
+public class CustomDropdownView: UIView {
     
     // MARK: - Properties
     private let dropdownButton = UIButton(type: .system)
@@ -23,7 +23,7 @@ class CustomDropdownView: UIView {
     private var optionLabels: [UILabel] = []
     
     // MARK: - Initializer
-    init(options: [String], onOptionSelected: ((String) -> Void)? = nil) {
+    public init(options: [String], onOptionSelected: ((String) -> Void)? = nil) {
         self.options = options
         self.onOptionSelected = onOptionSelected
         super.init(frame: .zero)
@@ -139,7 +139,7 @@ class CustomDropdownView: UIView {
         }
     }
     
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         // 1. 드롭다운 버튼 영역 터치 감지
         if dropdownButton.frame.contains(point) {
             return dropdownButton

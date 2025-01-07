@@ -5,8 +5,8 @@ import Then
 import CoreModule
 import Network
 
-class WineDetailViewController: UIViewController, UIScrollViewDelegate {
-    
+class WishListWineDetailViewController: UIViewController, UIScrollViewDelegate {
+
     let navigationBarManager = NavigationBarManager()
     public var wineId: Int = 0
     var wineName: String = ""
@@ -131,7 +131,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     
     @objc
     private func goToEntireReview() {
-        let vc = EntireReviewViewController()
+        let vc = WishListEntireReviewViewController()
         vc.wineId = self.wineId
         vc.wineName = self.wineName
         navigationController?.pushViewController(vc, animated: true)
@@ -172,7 +172,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
             $0.horizontalEdges.equalToSuperview()
         }
         
-        averageTastingNoteView.snp.makeConstraints { 
+        averageTastingNoteView.snp.makeConstraints {
             $0.top.equalTo(vivinoRateView.snp.bottom).offset(70)
             $0.horizontalEdges.equalToSuperview()
         }
@@ -313,7 +313,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
 }
 
-extension WineDetailViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension WishListWineDetailViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return reviewData.count
     }

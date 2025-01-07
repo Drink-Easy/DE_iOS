@@ -4,7 +4,7 @@ import UIKit
 import CoreModule
 import Then
 
-class AverageTastingNoteView: UIView {
+public class AverageTastingNoteView: UIView {
     
     private lazy var noTastinNote = UILabel().then {
         $0.text = "작성된 테이스팅 노트가 없습니다."
@@ -37,7 +37,7 @@ class AverageTastingNoteView: UIView {
     public lazy var noseContents = createContents(text: "신선한, 시트러스, 미묘한, 배")
     public lazy var palateContents = createContents(text: "섬세한, 농축된, 균형잡힌, 생동감, 아몬드")
 
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = Constants.AppColor.grayBG
         self.addComponents()

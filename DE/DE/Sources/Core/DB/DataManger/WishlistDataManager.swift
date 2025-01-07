@@ -6,6 +6,7 @@ import SwiftData
 public final class WishlistDataManager {
     public static let shared = WishlistDataManager()
     
+<<<<<<< Updated upstream
     lazy var container: ModelContainer = {
         do {
             let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
@@ -27,4 +28,6 @@ public final class WishlistDataManager {
     
     // delete
     
+=======
+>>>>>>> Stashed changes
 }

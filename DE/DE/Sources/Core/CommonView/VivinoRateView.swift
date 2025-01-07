@@ -5,7 +5,7 @@ import Cosmos
 import Then
 import CoreModule
 
-class VivinoRateView: UIView {
+public class VivinoRateView: UIView {
     
     public var score = 4.0 {
         didSet {
@@ -74,7 +74,7 @@ class VivinoRateView: UIView {
         $0.settings.emptyBorderColor = AppColor.gray30!
     }
 
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = Constants.AppColor.grayBG
         self.addComponents()

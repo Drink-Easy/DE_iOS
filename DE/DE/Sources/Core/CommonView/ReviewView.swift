@@ -4,7 +4,7 @@ import UIKit
 import CoreModule
 import Then
 
-class ReviewView: UIView {
+public class ReviewView: UIView {
     
     public var score = 4.0 {
         didSet {
@@ -83,7 +83,7 @@ class ReviewView: UIView {
         $0.isScrollEnabled = false
     }
 
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = Constants.AppColor.grayBG
         self.addComponents()

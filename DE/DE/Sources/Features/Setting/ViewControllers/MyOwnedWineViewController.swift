@@ -12,7 +12,7 @@ class MyOwnedWineViewController: UIViewController, UITableViewDataSource, UITabl
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MyWineTableViewCell.identifier, for: indexPath)
-        cell.wineImage = UIImage(named: "Loxton")
+        //cell.wineImage = UIImage(named: "Loxton")
         return cell
     }
     

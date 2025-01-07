@@ -2,13 +2,13 @@
 
 import UIKit
 
-struct WineReviewModel {
-    let name: String
-    let contents: String
-    let rating: Double
-    let createdAt: String
+public struct WineReviewModel {
+    public let name: String
+    public let contents: String
+    public let rating: Double
+    public let createdAt: String
     
-    init(name: String, contents: String, rating: Double, createdAt: String) {
+    public init(name: String, contents: String, rating: Double, createdAt: String) {
         self.name = name
         self.contents = contents
         self.rating = rating
@@ -16,23 +16,23 @@ struct WineReviewModel {
     }
 }
 
-struct WineDetailTopModel {
-    let isLiked : Bool
-    let wineName : String
+public struct WineDetailTopModel {
+    public let isLiked : Bool
+    public let wineName : String
     
-    init(isLiked: Bool, wineName: String) {
+    public init(isLiked: Bool, wineName: String) {
         self.isLiked = isLiked
         self.wineName = wineName
     }
 }
 
-struct WineDetailInfoModel {
-    let image: String
-    let sort: String
-    let area: String
-    let variety: String
+public struct WineDetailInfoModel {
+    public let image: String
+    public let sort: String
+    public let area: String
+    public let variety: String
     
-    init(image: String, sort: String, area: String, variety: String = "") {
+    public init(image: String, sort: String, area: String, variety: String = "") {
         self.image = image
         self.sort = sort
         self.area = area
@@ -40,23 +40,23 @@ struct WineDetailInfoModel {
     }
 }
 
-struct WineViVinoRatingModel {
-    let vivinoRating: Double
+public struct WineViVinoRatingModel {
+    public let vivinoRating: Double
     
-    init(vivinoRating: Double) {
+    public init(vivinoRating: Double) {
         self.vivinoRating = vivinoRating
     }
 }
 
-struct WineAverageTastingNoteModel {
-    let wineNoseText: String
-    let avgSugarContent: Double
-    let avgAcidity: Double
-    let avgTannin: Double
-    let avgBody: Double
-    let avgAlcohol: Double
+public struct WineAverageTastingNoteModel {
+    public let wineNoseText: String
+    public let avgSugarContent: Double
+    public let avgAcidity: Double
+    public let avgTannin: Double
+    public let avgBody: Double
+    public let avgAlcohol: Double
     
-    init(wineNoseText: String, avgSugarContent: Double, avgAcidity: Double, avgTannin: Double, avgBody: Double, avgAlcohol: Double) {
+    public init(wineNoseText: String, avgSugarContent: Double, avgAcidity: Double, avgTannin: Double, avgBody: Double, avgAlcohol: Double) {
         self.wineNoseText = wineNoseText
         self.avgSugarContent = avgSugarContent
         self.avgAcidity = avgAcidity
@@ -67,7 +67,7 @@ struct WineAverageTastingNoteModel {
 }
 
 extension WineAverageTastingNoteModel {
-    func sugarContentDescription() -> String {
+    public func sugarContentDescription() -> String {
         switch avgSugarContent {
         case 0...20.0: return "당도 없음"
         case 20.0...40.0: return "드라이"
@@ -78,7 +78,7 @@ extension WineAverageTastingNoteModel {
         }
     }
 
-    func acidityDescription() -> String {
+    public func acidityDescription() -> String {
         switch avgAcidity {
         case 0...20.0: return "산미 없음"
         case 20.0...40.0: return "미세한 산미"
@@ -89,7 +89,7 @@ extension WineAverageTastingNoteModel {
         }
     }
 
-    func tanninDescription() -> String {
+    public func tanninDescription() -> String {
         switch avgTannin {
         case 0...20.0: return "타닌 없음"
         case 20.0...40.0: return "미세한 타닌"
@@ -100,7 +100,7 @@ extension WineAverageTastingNoteModel {
         }
     }
 
-    func bodyDescription() -> String {
+    public func bodyDescription() -> String {
         switch avgBody {
         case 0...20.0: return "바디감 없음"
         case 20.0...40.0: return "라이트 바디"
@@ -111,7 +111,7 @@ extension WineAverageTastingNoteModel {
         }
     }
 
-    func alcoholDescription() -> String {
+    public func alcoholDescription() -> String {
         switch avgAlcohol {
         case 0...20.0: return "알코올 없음"
         case 20.0...40.0: return "미세한 알코올"
@@ -123,18 +123,22 @@ extension WineAverageTastingNoteModel {
     }
 }
 
-struct WineAverageReviewModel {
-    let avgMemberRating: Double
+public struct WineAverageReviewModel {
+    public let avgMemberRating: Double
+    
+    public init(avgMemberRating: Double) {
+        self.avgMemberRating = avgMemberRating
+    }
 }
 
-struct WineData {
-    let top : WineDetailTopModel
-    let info : WineDetailInfoModel
-    let rate : WineViVinoRatingModel
-    let avg : WineAverageTastingNoteModel
-    let review : WineAverageReviewModel
+public struct WineDetailData {
+    public let top : WineDetailTopModel
+    public let info : WineDetailInfoModel
+    public let rate : WineViVinoRatingModel
+    public let avg : WineAverageTastingNoteModel
+    public let review : WineAverageReviewModel
     
-    init(top: WineDetailTopModel, info: WineDetailInfoModel, rate: WineViVinoRatingModel, avg: WineAverageTastingNoteModel, review: WineAverageReviewModel) {
+    public init(top: WineDetailTopModel, info: WineDetailInfoModel, rate: WineViVinoRatingModel, avg: WineAverageTastingNoteModel, review: WineAverageReviewModel) {
         self.top = top
         self.info = info
         self.rate = rate

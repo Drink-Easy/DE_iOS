@@ -4,6 +4,7 @@ import UIKit
 import Authentication
 import TastingNote
 import UserSurveyModule
+import SettingModule
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 

@@ -78,14 +78,12 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                 print("⚠️ 저장된 유저 이름이 없습니다.")
                 return
             }
-            
             self.userName = user.userName ?? "이름없음"
         }
-
     }
     
     @objc
-    private func goToMoreLikely() async {
+    private func goToMoreLikely() {
         let vc = MoreLikelyWineViewController()
         vc.userName = self.userName
         navigationController?.pushViewController(vc, animated: true)
@@ -376,7 +374,9 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 1 || collectionView.tag == 2 {
-            //let vc = WineDetailViewController
+            let vc = HomeWineDetailViewController()
+            vc.wineId = (collectionView.tag == 1) ? recommendWineDataList[indexPath.row].wineId : popularWineDataList[indexPath.row].wineId
+            navigationController?.pushViewController(vc, animated: true)
         }
     }
     

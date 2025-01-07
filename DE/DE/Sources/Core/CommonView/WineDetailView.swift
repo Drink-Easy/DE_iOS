@@ -5,7 +5,7 @@ import Then
 import CoreModule
 import SDWebImage
 
-class WineDetailView: UIView {
+public class WineDetailView: UIView {
     
     // 이미지 그림자 전용 뷰 (그림자만 표시)
     public lazy var shadowContainerView = UIView().then {

@@ -2,7 +2,7 @@
 
 import UIKit
 
-class EntireReviewView: UIView {
+public class EntireReviewView: UIView {
     
     private let title = TitleWithBarView(title: "리뷰 전체보기", subTitle: "")
     public let dropdownView = CustomDropdownView(options: ["최신 순", "오래된 순", "별점 높은 순", "별점 낮은 순"])
@@ -18,7 +18,7 @@ class EntireReviewView: UIView {
         $0.showsVerticalScrollIndicator = false
     }
 
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .white
         self.addComponents()

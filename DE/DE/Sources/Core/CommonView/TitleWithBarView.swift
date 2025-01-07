@@ -5,7 +5,7 @@ import SnapKit
 import Then
 import CoreModule
 
-class TitleWithBarView: UIView {
+public class TitleWithBarView: UIView {
     private let titleLabel = UILabel().then {
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 20)
         $0.textColor = AppColor.black
@@ -20,7 +20,7 @@ class TitleWithBarView: UIView {
         $0.backgroundColor = Constants.AppColor.purple50
     }
 
-    init(title: String, subTitle: String) {
+    public init(title: String, subTitle: String) {
         super.init(frame: .zero)
         backgroundColor = Constants.AppColor.grayBG
         setupView()

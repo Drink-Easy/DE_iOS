@@ -5,6 +5,7 @@ import SnapKit
 import CoreModule
 import Network
 import Then
+import SearchModule
 
 class MoreLikelyWineViewController: UIViewController {
 
@@ -20,7 +21,7 @@ class MoreLikelyWineViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         self.view = moreLikelyWineView
-        self.moreLikelyWineView.title.text = "\(userName) 님이 좋아할 만한 와인"
+        self.moreLikelyWineView.title.setPartialTextStyle(text: moreLikelyWineView.title.text ?? "", targetText: "\(userName)", color: AppColor.purple100 ?? .purple, font: UIFont.ptdSemiBoldFont(ofSize: 30))
         setupNavigationBar()
     }
     
@@ -43,10 +44,11 @@ class MoreLikelyWineViewController: UIViewController {
             }
             do {
                 // 1. 캐시 데이터 우선 사용
-                let wineList = try WineDataManager.shared.fetchWineDataList(userId: userId, wineListType: .recommended)
+                wineList = try WineDataManager.shared.fetchWineDataList(userId: userId, wineListType: .recommended)
                 if !wineList.isEmpty {
                     print("✅ 캐시된 데이터 사용: \(wineList.count)개")
-                    moreLikelyWineView.moreWineTableView.reloadData()
+                    print(wineList[0].wineName)
+                    self.moreLikelyWineView.moreWineTableView.reloadData()
                     return
                 }
             } catch {
@@ -56,7 +58,7 @@ class MoreLikelyWineViewController: UIViewController {
             // 2. 캐시 데이터가 없으면 네트워크 요청
             print("🌐 네트워크 요청 시작")
             await fetchWinesFromNetwork(type: .recommended)
-            moreLikelyWineView.moreWineTableView.reloadData()
+            self.moreLikelyWineView.moreWineTableView.reloadData()
         }
         
     }
@@ -112,8 +114,6 @@ class MoreLikelyWineViewController: UIViewController {
     }
     
     private lazy var moreLikelyWineView = MoreRecomWineView().then {
-        $0.title.setPartialTextStyle(text: $0.title.text ?? "", targetText: "\(userName)", color: AppColor.purple100 ?? .purple, font: UIFont.ptdSemiBoldFont(ofSize: 30))
-        
         $0.moreWineTableView.dataSource = self
         $0.moreWineTableView.delegate = self
     }
@@ -150,8 +150,8 @@ extension MoreLikelyWineViewController: UITableViewDelegate, UITableViewDataSour
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let vc = WineDetailViewController()
-//        vc.wineId = wineResults[indexPath.row].wineId
-//        navigationController?.pushViewController(vc, animated: true)
+        let vc = HomeWineDetailViewController()
+        vc.wineId = wineList[indexPath.row].wineId
+        navigationController?.pushViewController(vc, animated: true)
     }
 }

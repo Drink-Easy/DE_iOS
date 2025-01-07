@@ -4,11 +4,11 @@ import UIKit
 import CoreModule
 import Then
 
-class ReviewCollectionViewCell: UICollectionViewCell {
+public class ReviewCollectionViewCell: UICollectionViewCell {
     
-    static let identifier = "ReviewCollectionViewCell"
+    public static let identifier = "ReviewCollectionViewCell"
     var isExpanded = false
-    var onToggle: (() -> Void)?
+    public var onToggle: (() -> Void)?
     
     public lazy var nickname = UILabel().then {
         $0.textColor = .black
@@ -40,7 +40,7 @@ class ReviewCollectionViewCell: UICollectionViewCell {
         $0.isHidden = true
     }
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.backgroundColor = AppColor.gray10
         contentView.layer.cornerRadius = 14

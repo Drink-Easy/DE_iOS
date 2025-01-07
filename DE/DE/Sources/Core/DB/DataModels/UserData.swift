@@ -7,6 +7,7 @@ import SwiftData
 public class UserData {
     @Attribute(.unique) public var userId : Int
     public var userName: String?
+<<<<<<< Updated upstream
     
     @Relationship public var wines : [WineList] = [] // 홈에서 사용하는 와인
     @Relationship public var controllerCounters: [APIControllerCounter] = [] // API 호출 횟수 기록
@@ -20,5 +21,14 @@ public class UserData {
         self.wines = wines
         self.controllerCounters = controllerCounters
         self.wishlist = wishlist
+=======
+    @Relationship public var wines : [WineList] = []
+//        var wishlist: Wishlist
+    
+    init(userId: Int, userName: String? = nil, wines: [WineList]) {
+        self.userId = userId
+        self.userName = userName
+        self.wines = wines
+>>>>>>> Stashed changes
     }
 }
