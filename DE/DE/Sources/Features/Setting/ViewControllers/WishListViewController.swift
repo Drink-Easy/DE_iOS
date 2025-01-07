@@ -25,7 +25,7 @@ class WishListViewController: UIViewController {
         setupNavigationBar()
         addComponents()
         setConstraints()
-        callLikeAPI()
+        callFetchWishlistAPI()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
