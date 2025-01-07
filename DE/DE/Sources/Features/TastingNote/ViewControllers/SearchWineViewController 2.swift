@@ -2,41 +2,45 @@
 
 import UIKit
 import CoreModule
+import Network
 import SnapKit
 import Then
-import Network
 
-public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
-    
+public class SearchWineViewController : UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
     let navigationBarManager = NavigationBarManager()
+    // TODO : 상단 네비게이션 바 추가하는거 하셈!!
     var wineResults: [SearchResultModel] = []
     let networkService = WineService()
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.isNavigationBarHidden = false
         view.backgroundColor = Constants.AppColor.grayBG
         self.view = searchHomeView
+        
+        searchHomeView.searchResultTableView.dataSource = self
+        searchHomeView.searchResultTableView.delegate = self
+        searchHomeView.searchResultTableView.register(
+            SearchResultTableViewCell.self,
+            forCellReuseIdentifier: "SearchResultTableViewCell"
+        )
+        searchHomeView.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         setupNavigationBar()
-    }
-    
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.navigationController?.setNavigationBarHidden(false, animated: animated)
-    }
-    
-    public override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
     private lazy var searchHomeView = SearchHomeView(
         titleText: "검색하고 싶은\n와인을 입력해주세요",
         placeholder: "검색어 입력"
-    ).then {
-        $0.searchResultTableView.dataSource = self
-        $0.searchResultTableView.delegate = self
-        $0.searchBar.delegate = self
-        //$0.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+    )
+    
+    private func setupNavigationBar() {
+        navigationBarManager.setTitle(to: navigationItem, title: "", textColor: AppColor.black!)
+        navigationBarManager.addBackButton(
+            to: navigationItem,
+            target: self,
+            action: #selector(prevVC),
+            tintColor: AppColor.gray80!
+        )
     }
     
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -44,47 +48,19 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
         self.view.endEditing(true)  //firstresponder가 전부 사라짐
     }
     
-    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let query = searchHomeView.searchBar.text, query.count >= 2 {
-            callSearchAPI(query: query)
+    @objc
+    private func textFieldDidChange(_ textField: UITextField) {
+        let query = textField.text ?? ""
+        filterSuggestions(with: query)
+    }
+    
+    func filterSuggestions(with query: String) {
+        if query.isEmpty {
+            wineResults = []
+            self.searchHomeView.searchResultTableView.reloadData()
         } else {
-            showCharacterLimitAlert()
+            callSearchAPI(query: query)
         }
-        return true
-    }
-
-    private func showCharacterLimitAlert() {
-        let alert = UIAlertController(title: "경고", message: "최소 2자 이상 입력해 주세요.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
-        present(alert, animated: true, completion: nil)
-    }
-    
-//    @objc
-//    private func textFieldDidChange(_ textField: UITextField) {
-//        let query = textField.text ?? ""
-//        filterSuggestions(with: query)
-//    }
-//
-//    func filterSuggestions(with query: String) {
-//        if query.isEmpty {
-//            wineResults = []
-//            self.searchHomeView.searchResultTableView.reloadData()
-//        } else {
-//            callSearchAPI(query: query)
-//        }
-//    }
-    
-    private func setupNavigationBar() {
-        navigationBarManager.addBackButton(
-            to: navigationItem,
-            target: self,
-            action: #selector(prevVC),
-            tintColor: AppColor.gray70!
-        )
-    }
-    
-    @objc func prevVC() {
-        navigationController?.popViewController(animated: true)
     }
     
     func callSearchAPI(query: String) {
@@ -111,9 +87,10 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
             }
         }
     }
-}
-
-extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    @objc func prevVC() {
+        navigationController?.popViewController(animated: true)
+    }
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return wineResults.count
     }
@@ -124,15 +101,20 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         let wine = wineResults[indexPath.row]
-        let searchText = searchHomeView.searchBar.text ?? ""
-        cell.configure(model: wine, highlightText: searchText.isEmpty ? nil : searchText)
+        cell.configure(model: wine)
         
         return cell
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = WineDetailViewController()
-        vc.wineId = wineResults[indexPath.row].wineId
+        let vc = TastedDateViewController()
+        UserDefaults.standard.set(wineResults[indexPath.row].wineName, forKey: "wineName")
+        UserDefaults.standard.set(wineResults[indexPath.row].wineId, forKey: "wineId")
+        UserDefaults.standard.set(wineResults[indexPath.row].sort, forKey: "wineSort")
+        UserDefaults.standard.set(wineResults[indexPath.row].area, forKey: "wineArea")
+        UserDefaults.standard.set(wineResults[indexPath.row].imageURL, forKey: "wineImage")
+        print("와인id 저장됨: \(wineResults[indexPath.row].wineId)")
         navigationController?.pushViewController(vc, animated: true)
     }
 }
+
