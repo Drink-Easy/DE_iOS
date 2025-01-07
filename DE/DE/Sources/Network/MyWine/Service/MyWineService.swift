@@ -32,17 +32,23 @@ public final class MyWineService : NetworkManager {
         return MyWineUpdateRequest(purchaseData: buyDate, purchasePrice: buyPrice)
     }
     
-    /// 보유와인 가져오기
+    /// 보유와인 가져오기 API
     public func fetchAllMyWines(completion: @escaping (Result<[MyWineResponse]?, NetworkError>) -> Void) {
         requestOptional(target: .getMyWines, decodingType: [MyWineResponse].self, completion: completion)
     }
     
-    /// 새 보유와인 등록하기
+    /// 새 보유와인 등록하기 API
     public func postMyWine(data: MyWineRequest, completion: @escaping (Result<String, NetworkError>) -> Void) {
         request(target: .postMyWine(data: data), decodingType: String.self, completion: completion)
     }
     
+    /// 보유와인 정보 업데이트 API
     public func updateMyWine(myWineId: Int, data: MyWineUpdateRequest, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .patchMyWine(wineId: myWineId, data: data), decodingType: String.self, completion: completion)
+        request(target: .patchMyWine(myWineId: myWineId, data: data), decodingType: String.self, completion: completion)
+    }
+    
+    /// 보유와인 삭제하기 API
+    public func deleteMyWine(myWineId: Int, completion: @escaping (Result<String, NetworkError>) -> Void) {
+        request(target: .deleteMyWine(myWineId: myWineId), decodingType: String.self, completion: completion)
     }
 }
