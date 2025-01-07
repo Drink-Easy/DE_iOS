@@ -21,3 +21,7 @@ public struct MemberResponseDTO : Codable {
     let wineArea : [String]
     let region : String
 }
+
+public struct UsernameCheckResponse: Decodable {
+    let isDuplicate : Bool
+}
