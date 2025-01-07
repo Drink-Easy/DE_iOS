@@ -6,7 +6,8 @@
 //
 
 import UIKit
-import CoreModule
+import SnapKit
+import Then
 
 public class SearchBar: UITextField {
     

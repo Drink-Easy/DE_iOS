@@ -17,13 +17,7 @@ class EntireReviewViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Constants.AppColor.grayBG
-        self.navigationController?.navigationBar.prefersLargeTitles = true
-        self.navigationItem.largeTitleDisplayMode = .automatic
-        self.navigationController?.navigationBar.largeTitleTextAttributes = [
-            .font: UIFont.ptdSemiBoldFont(ofSize: 24),
-            .foregroundColor: AppColor.black!
-        ]
-        
+
         addView()
         constraints()
         callEntireReviewAPI(wineId: self.wineId, orderByLatest: true)
@@ -43,8 +37,6 @@ class EntireReviewViewController: UIViewController {
     
     private func setupNavigationBar() {
         
-        self.title = wineName
-        
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
@@ -56,6 +48,13 @@ class EntireReviewViewController: UIViewController {
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)
     }
+    
+    private lazy var largeTitleLabel = UILabel().then {
+        $0.text = wineName
+        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.numberOfLines = 0
+        $0.textColor = AppColor.black
+    }
 
     private lazy var entireReviewView = EntireReviewView().then {
         $0.reviewCollectionView.delegate = self
@@ -63,13 +62,17 @@ class EntireReviewViewController: UIViewController {
     }
     
     private func addView() {
-        [entireReviewView].forEach{ view.addSubview($0) }
+        [largeTitleLabel, entireReviewView].forEach{ view.addSubview($0) }
     }
     
     private func constraints() {
+        largeTitleLabel.snp.makeConstraints {
+            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(25)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(10)
+        }
         
         entireReviewView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(10)
+            $0.top.equalTo(largeTitleLabel.snp.bottom).offset(36)
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
@@ -78,10 +81,14 @@ class EntireReviewViewController: UIViewController {
     private func setupDropdownAction() {
         entireReviewView.dropdownView.onOptionSelected = { [weak self] selectedOption in
             guard let self = self else { return }
-            if selectedOption == "최신순" {
+            if selectedOption == "최신 순" {
                 self.reviewResults.sort { $0.createdAt > $1.createdAt }
-            } else if selectedOption == "별점순" {
+            } else if selectedOption == "오래된 순" {
+                self.reviewResults.sort { $0.createdAt < $1.createdAt }
+            } else if selectedOption == "별점 높은 순" {
                 self.reviewResults.sort { $0.rating > $1.rating }
+            } else if selectedOption == "별점 낮은 순" {
+                self.reviewResults.sort { $0.rating < $1.rating }  
             }
             self.entireReviewView.reviewCollectionView.reloadData()
         }
