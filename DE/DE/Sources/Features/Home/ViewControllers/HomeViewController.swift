@@ -13,6 +13,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     var popularWineDataList: [HomeWineModel] = []
     
     private let maxShowWineCount = 5
+    public var userId : Int?
     
     public var userName: String = "" {
         didSet {
@@ -67,8 +68,24 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         $0.moreBtn.addTarget(self, action: #selector(goToMoreLikely), for: .touchUpInside)
     }
     
+    public func fetchName() {
+        Task {
+            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+                print("⚠️ userId가 UserDefaults에 없습니다.")
+                return
+            }
+            guard let user = await UserDataManager.shared.fetchUser(userId: userId) else {
+                print("⚠️ 저장된 유저 이름이 없습니다.")
+                return
+            }
+            
+            self.userName = user.userName ?? "이름없음"
+        }
+
+    }
+    
     @objc
-    private func goToMoreLikely() {
+    private func goToMoreLikely() async {
         let vc = MoreLikelyWineViewController()
         vc.userName = self.userName
         navigationController?.pushViewController(vc, animated: true)
@@ -103,6 +120,8 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         
         fetchWines(type: .recommended)
         fetchWines(type: .popular)
+        fetchName()
+        
     }
     
     private func addComponents() {
@@ -192,6 +211,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
+            self.userId = userId
             do {
                 // 1. 캐시 데이터 우선 사용
                 let cachedWines = try WineDataManager.shared.fetchWineDataList(userId: userId, wineListType: type)

@@ -68,6 +68,7 @@ public final class UserDataManager {
         do {
             let descriptor = FetchDescriptor<UserData>(predicate: #Predicate { $0.userId == userId })
             let users = try context.fetch(descriptor)
+            print("✅ 유저 정보 불러오기 성공: \(users.first?.userName)")
             return users.first
         } catch {
             print("❌ 유저 정보 불러오기 실패: \(error)")

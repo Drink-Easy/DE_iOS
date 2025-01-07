@@ -20,15 +20,14 @@ class MoreLikelyWineViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         self.view = moreLikelyWineView
+        self.moreLikelyWineView.title.text = "\(userName) 님이 좋아할 만한 와인"
         setupNavigationBar()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        Task {
-            print("✅ 불러온 와인 데이터: \(wineList.count)개")
-        }
+        fetchWineData()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -113,7 +112,6 @@ class MoreLikelyWineViewController: UIViewController {
     }
     
     private lazy var moreLikelyWineView = MoreRecomWineView().then {
-        $0.title.text = "\(userName) 님이 좋아할 만한 와인"
         $0.title.setPartialTextStyle(text: $0.title.text ?? "", targetText: "\(userName)", color: AppColor.purple100 ?? .purple, font: UIFont.ptdSemiBoldFont(ofSize: 30))
         
         $0.moreWineTableView.dataSource = self

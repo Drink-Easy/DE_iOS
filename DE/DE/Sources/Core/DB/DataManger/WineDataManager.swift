@@ -93,7 +93,7 @@ public final class WineDataManager {
     
     /// WineList 검색
     func fetchWineList(for userId: Int, type: WineListType, in context: ModelContext) throws -> WineList {
-        let descriptor = FetchDescriptor<WineList>(predicate: #Predicate { $0.user!.userId == userId && $0.type == type.rawValue })
+        let descriptor = FetchDescriptor<WineList>(predicate: #Predicate { $0.user?.userId == userId && $0.type == type.rawValue })
         let wineLists = try context.fetch(descriptor)
         
         guard let wineList = wineLists.first else {
