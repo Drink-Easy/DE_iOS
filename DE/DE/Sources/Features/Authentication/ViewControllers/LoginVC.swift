@@ -112,9 +112,9 @@ class LoginVC: UIViewController {
             case .success(let response):
                 SelectLoginTypeVC.keychain.set(usernameString, forKey: "savedUserEmail")
                 // userId 저장
-                saveUserId(userId: response.userId)
+                saveUserId(userId: response.id)
                 Task {
-                    await UserDataManager.shared.createUser(userId: response.userId)
+                    await UserDataManager.shared.createUser(userId: response.id)
                 }
                 self.goToNextView(response.isFirst)
             case .failure(let error):

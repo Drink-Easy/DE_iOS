@@ -66,45 +66,45 @@ public class TestVC: UIViewController {
         
         let data = networkService.makeUserInfoDTO(name: "도연이다", isNewBie: false, monthPrice: 100000, wineSort: ["레드"], wineArea: ["호주", "프랑스"], region: "서울시 마포구")
         
-        networkService.sendMemberInfo(data: data) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(_):
-                sampleLabel.text = "데이터 전송 성공!"
-                Task {
-                    let userId: Int
-                    if let userIdString = SelectLoginTypeVC.keychain.get("userId"),
-                       let keychainUserId = Int(userIdString) {
-                        userId = keychainUserId
-                    } else if UserDefaults.standard.integer(forKey: "userId") != 0 {
-                        userId = UserDefaults.standard.integer(forKey: "userId")
-                    } else {
-                        print("❌ userId가 존재하지 않습니다.")
-                        return
-                    }
-                    
-                    // 유저 이름 업데이트 - 취향찾기 api 쏘고 나서 Success일떄 처리
-                    await UserDataManager.shared.updateUserName(userId: userId, userName: data.name)
-                    
-                    // UI 전환
-                    await MainActor.run {
-                        let homeTabBarController = MainTabBarController()
-                        homeTabBarController.userName = data.name
-                        
-                        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                           let window = windowScene.windows.first {
-                            window.rootViewController = homeTabBarController
-                            UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
-                        }
-                    }
-                }
-                
-            case .failure(let error):
-                print("\(error)")
-                sampleLabel.text = "데이터 전송 실패!"
-            }
-        }
+//        networkService.sendMemberInfo(data: data) { [weak self] result in
+//            guard let self = self else { return }
+//            
+//            switch result {
+//            case .success(_):
+//                sampleLabel.text = "데이터 전송 성공!"
+//                Task {
+//                    let userId: Int
+//                    if let userIdString = SelectLoginTypeVC.keychain.get("userId"),
+//                       let keychainUserId = Int(userIdString) {
+//                        userId = keychainUserId
+//                    } else if UserDefaults.standard.integer(forKey: "userId") != 0 {
+//                        userId = UserDefaults.standard.integer(forKey: "userId")
+//                    } else {
+//                        print("❌ userId가 존재하지 않습니다.")
+//                        return
+//                    }
+//                    
+//                    // 유저 이름 업데이트 - 취향찾기 api 쏘고 나서 Success일떄 처리
+//                    await UserDataManager.shared.updateUserName(userId: userId, userName: data.name)
+//                    
+//                    // UI 전환
+//                    await MainActor.run {
+//                        let homeTabBarController = MainTabBarController()
+//                        homeTabBarController.userName = data.name
+//                        
+//                        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+//                           let window = windowScene.windows.first {
+//                            window.rootViewController = homeTabBarController
+//                            UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+//                        }
+//                    }
+//                }
+//                
+//            case .failure(let error):
+//                print("\(error)")
+//                sampleLabel.text = "데이터 전송 실패!"
+//            }
+//        }
         
 //        networkService.logout { [weak self] result in
 //            guard let self = self else { return }

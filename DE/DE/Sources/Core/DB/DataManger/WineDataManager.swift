@@ -5,15 +5,22 @@ import UIKit
 
 public final class WineDataManager {
     public static let shared = WineDataManager()
-    let container: ModelContainer
-    
-    private init() {
+    lazy var container: ModelContainer = {
         do {
-            container = try ModelContainer(for: UserData.self, WineList.self, WineData.self)
+            let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
+            let container = try ModelContainer(
+                for: UserData.self, WineList.self, WineData.self,
+                configurations: configuration
+            )
+            print("✅ SwiftData 초기화 성공!")
+            return container
         } catch {
+            print("❌ SwiftData 초기화 실패: \(error.localizedDescription)")
             fatalError("SwiftData 초기화 실패: \(error.localizedDescription)")
         }
-    }
+    }()
+    
+    private init() {}
     
     /// 와인 데이터를 저장하는 메서드
     @MainActor
@@ -86,7 +93,7 @@ public final class WineDataManager {
     
     /// WineList 검색
     func fetchWineList(for userId: Int, type: WineListType, in context: ModelContext) throws -> WineList {
-        let descriptor = FetchDescriptor<WineList>(predicate: #Predicate { $0.user!.userId == userId && $0.type == type })
+        let descriptor = FetchDescriptor<WineList>(predicate: #Predicate { $0.user!.userId == userId && $0.type == type.rawValue })
         let wineLists = try context.fetch(descriptor)
         
         guard let wineList = wineLists.first else {

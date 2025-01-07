@@ -8,7 +8,6 @@ import Then
 class MorePopularWineViewController: UIViewController {
 
     let navigationBarManager = NavigationBarManager()
-    let dataManger = WineDataManager.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()

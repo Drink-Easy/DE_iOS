@@ -31,8 +31,8 @@ public class MainTabBarController: UITabBarController {
             Task {
                 if let userData = await UserDataManager.shared.fetchUser(userId: userId) {
                     print("✅ SwiftData에서 닉네임 가져오기 성공")
-                    homeVC.userName = userData.userName
-                    classVC.userName = userData.userName
+                    homeVC.userName = userData.userName ?? "unknown"
+                    classVC.userName = userData.userName ?? "unknown"
                 } else {
                     print("⚠️ SwiftData에서 닉네임을 찾을 수 없습니다.")
                     homeVC.userName = "noname"

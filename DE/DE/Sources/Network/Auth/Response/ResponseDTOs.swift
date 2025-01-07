@@ -6,7 +6,7 @@ public struct LoginResponseDTO : Decodable {
     public let username : String?
     public let role : String?
     public let isFirst : Bool
-    public let userId: Int
+    public let id: Int
 }
 
 public struct MemberResponseDTO : Codable {

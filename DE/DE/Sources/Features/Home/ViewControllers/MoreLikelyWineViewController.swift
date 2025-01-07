@@ -3,6 +3,7 @@
 import UIKit
 import SnapKit
 import CoreModule
+import Network
 import Then
 
 class MoreLikelyWineViewController: UIViewController {
@@ -10,6 +11,7 @@ class MoreLikelyWineViewController: UIViewController {
     let navigationBarManager = NavigationBarManager()
     let userDataManager = UserDataManager.shared
     let wineDataManger = WineDataManager.shared
+    let networkService = WineService()
     
     var userName = ""
     private var wineList: [WineData] = []
@@ -25,7 +27,6 @@ class MoreLikelyWineViewController: UIViewController {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         Task {
-            wineList = await wineDataManger.fetchWines(type: .recommended)
             print("✅ 불러온 와인 데이터: \(wineList.count)개")
         }
     }
@@ -35,10 +36,80 @@ class MoreLikelyWineViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
-    @MainActor
-    private func fetchWineData() async {
-        wineList = wineDataManger.fetchWines(type: .recommended)
-        moreLikelyWineView.moreWineTableView.reloadData()
+    private func fetchWineData() {
+        Task {
+            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+                print("⚠️ userId가 UserDefaults에 없습니다.")
+                return
+            }
+            do {
+                // 1. 캐시 데이터 우선 사용
+                let wineList = try WineDataManager.shared.fetchWineDataList(userId: userId, wineListType: .recommended)
+                if !wineList.isEmpty {
+                    print("✅ 캐시된 데이터 사용: \(wineList.count)개")
+                    moreLikelyWineView.moreWineTableView.reloadData()
+                    return
+                }
+            } catch {
+                print("⚠️ 캐시된 데이터 없음")
+            }
+            
+            // 2. 캐시 데이터가 없으면 네트워크 요청
+            print("🌐 네트워크 요청 시작")
+            await fetchWinesFromNetwork(type: .recommended)
+            moreLikelyWineView.moreWineTableView.reloadData()
+        }
+        
+    }
+    
+    // MARK: - 네트워크 요청 처리
+    private func fetchWinesFromNetwork(type: WineListType) async {
+        let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
+
+        switch type {
+        case .recommended:
+            fetchFunction = networkService.fetchRecommendWines
+        case .popular:
+            fetchFunction = networkService.fetchPopularWines
+        }
+
+        await withCheckedContinuation { continuation in
+            fetchFunction { [weak self] result in
+                guard let self = self else { return }
+
+                switch result {
+                case .success(let responseData):
+                    Task {
+                        await self.processWineData(type: type, responseData: responseData.0, time: responseData.1 ?? 3600)
+                        continuation.resume()
+                    }
+                case .failure(let error):
+                    print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
+                    continuation.resume()
+                }
+            }
+        }
+    }
+    
+    private func processWineData(type: WineListType, responseData: [HomeWineDTO], time: TimeInterval) async {
+        let wines = responseData.map {
+            WineData(wineId: $0.wineId,
+                     imageUrl: $0.imageUrl,
+                     wineName: $0.wineName,
+                     sort: $0.sort,
+                     price: $0.price,
+                     vivinoRating: $0.vivinoRating)
+        }
+        
+        do {
+            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+                print("⚠️ userId가 UserDefaults에 없습니다.")
+                return
+            }
+            try await WineDataManager.shared.saveWineData(userId: userId, wineListType: type, wineData: wines, expirationInterval: time)
+        } catch {
+            print("❌ 데이터 저장 중 오류 발생: \(error)")
+        }
     }
     
     private lazy var moreLikelyWineView = MoreRecomWineView().then {

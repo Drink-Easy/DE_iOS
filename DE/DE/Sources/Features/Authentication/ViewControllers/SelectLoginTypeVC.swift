@@ -91,10 +91,10 @@ public class SelectLoginTypeVC: UIViewController {
             switch result {
             case .success(let response):
                 print("카카오 로그인 성공")
-                saveUserId(userId: response.userId)
+                saveUserId(userId: response.id)
                 Task {
                     // userID저장
-                    await UserDataManager.shared.createUser(userId: response.userId)
+                    await UserDataManager.shared.createUser(userId: response.id)
                 }
                 self.goToNextView(response.isFirst)
             case .failure(let error):
