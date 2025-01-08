@@ -28,7 +28,7 @@ class LoginVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-        
+        validationManager.isEmailDuplicate = false
         setupActions()
         setupNavigationBar()
     }
@@ -126,7 +126,7 @@ class LoginVC: UIViewController {
     
     private func goToNextView(_ isFirstLogin: Bool) {
         if isFirstLogin {
-            let enterTasteTestViewController = TestVC()
+            let enterTasteTestViewController = TermsOfServiceVC()
             navigationController?.pushViewController(enterTasteTestViewController, animated: true)
         } else {
             let homeViewController = MainTabBarController()
