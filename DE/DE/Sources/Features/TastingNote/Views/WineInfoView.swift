@@ -169,7 +169,8 @@ public class WineInfoView: UIView {
         a.text = "API"
         a.textColor = AppColor.gray70
         a.font = UIFont.ptdSemiBoldFont(ofSize: 14)
-        a.textAlignment = .center
+        a.textAlignment = .left
+        a.numberOfLines = 0
         return a
     }()
     
@@ -417,6 +418,7 @@ public class WineInfoView: UIView {
         noseDescriptionLabel.snp.makeConstraints { make in
             make.top.equalTo(noseVector.snp.bottom).offset(10)
             make.leading.equalTo(noseVector.snp.leading).offset(6)
+            make.trailing.equalTo(noseVector.snp.trailing).offset(-6)
         }
         
         graphView.addSubview(rateLabel)

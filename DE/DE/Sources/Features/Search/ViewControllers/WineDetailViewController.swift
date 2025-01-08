@@ -1,14 +1,14 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
-import CoreModule
 import Then
+import CoreModule
 import Network
 
 class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     
     let navigationBarManager = NavigationBarManager()
-    var wineId: Int = 0
+    public var wineId: Int = 0
     var wineName: String = ""
     var isLiked: Bool = false
     var originalIsLiked: Bool = false
@@ -34,16 +34,15 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
-        // 원래 상태와 변경된 상태를 비교
         if originalIsLiked != isLiked {
             (originalIsLiked ? calldeleteLikedAPI : callLikeAPI)(wineId)
         }
     }
     
-    private func setupNavigationBar() {
+    func setupNavigationBar() {
         
         largeTitleLabel.text = wineName
         

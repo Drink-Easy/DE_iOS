@@ -42,8 +42,8 @@ class MoreRecomWineView: UIView {
         
         moreWineTableView.snp.makeConstraints {
             $0.top.equalTo(title.snp.bottom).offset(25)
-            $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(18)
-            $0.bottom.equalTo(safeAreaLayoutGuide)
+            $0.leading.trailing.equalTo(safeAreaLayoutGuide).inset(18)
+            $0.bottom.equalTo(safeAreaLayoutGuide.snp.bottom)
         }
     }
 }

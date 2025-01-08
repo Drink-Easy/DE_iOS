@@ -75,11 +75,11 @@ class MoreWineTableViewCell: UITableViewCell {
     
     public override func prepareForReuse() {
         super.prepareForReuse()
-//        self.image.image = nil
-//        self.name.text = nil
-//        self.kind.text = nil
-//        self.score.text = nil
-//        self.price.text = nil
+        self.image.image = nil
+        self.name.text = nil
+        self.kind.text = nil
+        self.score.text = nil
+        self.price.text = nil
     }
     
     required init?(coder: NSCoder) {
@@ -145,7 +145,7 @@ class MoreWineTableViewCell: UITableViewCell {
         name.text = model.wineName
         kind.text = "와인 > \(model.sort)"
         score.text = "★ \(String(format: "%.1f", model.vivinoRating))"
-        price.text = "₩ \(model.price)만원대"
+        price.text = "₩ \(model.price / 10000)만원 대"
     }
 
 }

@@ -59,7 +59,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     }
     
     private lazy var likeWineListView = RecomView().then {
-        $0.title.text = "\(userName) 님이 좋아할 만한 와인"
+        $0.title.text = "For \(userName),"
         $0.title.setPartialTextStyle(text: $0.title.text ?? "", targetText: "\(userName)", color: AppColor.purple100 ?? .purple, font: UIFont.ptdSemiBoldFont(ofSize: 26))
         $0.recomCollectionView.delegate = self
         $0.recomCollectionView.dataSource = self
@@ -78,14 +78,12 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                 print("⚠️ 저장된 유저 이름이 없습니다.")
                 return
             }
-            
             self.userName = user.userName ?? "이름없음"
         }
-
     }
     
     @objc
-    private func goToMoreLikely() async {
+    private func goToMoreLikely() {
         let vc = MoreLikelyWineViewController()
         vc.userName = self.userName
         navigationController?.pushViewController(vc, animated: true)
@@ -283,7 +281,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     }
     
     private func updateLikeWineListView() {
-        likeWineListView.title.text = "\(userName) 님이 좋아할 만한 와인"
+        likeWineListView.title.text = "For \(userName),"
         likeWineListView.title.setPartialTextStyle(
             text: likeWineListView.title.text ?? "",
             targetText: "\(userName)",
@@ -376,7 +374,9 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 1 || collectionView.tag == 2 {
-            //let vc = WineDetailViewController
+            let vc = HomeWineDetailViewController()
+            vc.wineId = (collectionView.tag == 1) ? recommendWineDataList[indexPath.row].wineId : popularWineDataList[indexPath.row].wineId
+            navigationController?.pushViewController(vc, animated: true)
         }
     }
     

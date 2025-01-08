@@ -54,22 +54,3 @@ public struct LoginDTO : Codable {
         self.password = password
     }
 }
-
-// 사용자 초기 정보 추가
-public struct MemberRequestDTO : Codable {
-    public let name : String
-    let isNewBie : Bool
-    let monthPrice : Int
-    let wineSort : [String]
-    let wineArea : [String]
-    let region : String
-    
-    init(name: String, isNewBie: Bool, monthPrice: Int, wineSort: [String], wineArea: [String], region: String) {
-        self.name = name
-        self.isNewBie = isNewBie
-        self.monthPrice = monthPrice
-        self.wineSort = wineSort
-        self.wineArea = wineArea
-        self.region = region
-    }
-}

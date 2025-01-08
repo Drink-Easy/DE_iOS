@@ -4,8 +4,9 @@ import UIKit
 import SnapKit
 import Then
 import CoreModule
+import Network
 
-class WishListViewController: UIViewController {
+public class WishListViewController: UIViewController {
     
     private let navigationBarManager = NavigationBarManager()
     var wineResults: [SearchResultModel] = []
@@ -19,7 +20,7 @@ class WishListViewController: UIViewController {
         $0.delegate = self
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         setupNavigationBar()
@@ -66,6 +67,7 @@ class WishListViewController: UIViewController {
             make.top.equalTo(view.safeAreaLayoutGuide).offset(11)
             make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(18)
             make.bottom.equalTo(view.safeAreaLayoutGuide)
+            make.height.equalTo(651)
         }
     }
     
@@ -75,16 +77,18 @@ class WishListViewController: UIViewController {
             
             switch result {
             case .success(let responseData) :
-                self.wineResults = responseData.map { data in
-                    SearchResultModel(wineId: data.wineId,
-                                      wineName: data.name,
-                                      imageURL: data.imageUrl,
-                                      sort: data.sort,
-                                      satisfaction: data.viviniRating,
-                                      area: data.area)
-                }
-                DispatchQueue.main.async {
-                    self.searchResultTableView.reloadData()
+                if let responseData = responseData {
+                    self.wineResults = responseData.map { data in
+                        SearchResultModel(wineId: data.wineId,
+                                          wineName: data.name,
+                                          imageURL: data.imageUrl,
+                                          sort: data.sort,
+                                          satisfaction: data.vivinoRating,
+                                          area: data.area)
+                    }
+                    DispatchQueue.main.async {
+                        self.searchResultTableView.reloadData()
+                    }
                 }
             case .failure(let error) :
                 print("\(error)")
@@ -111,7 +115,7 @@ extension WishListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = WineDetailViewController()
+        let vc = WishListWineDetailViewController()
         vc.wineId = wineResults[indexPath.row].wineId
         navigationController?.pushViewController(vc, animated: true)
     }

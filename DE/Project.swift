@@ -432,6 +432,17 @@ let project = Project(
             ]
         ),
         .target(
+            name: "SearchModule",
+            destinations: .iOS,
+            product: .staticFramework,
+            bundleId: "\(bundleId).\(bundleMid).SearchModule",
+            sources: ["DE/Sources/Features/Search/**"],
+            resources: ["DE/Resources/**"],
+            dependencies: [
+                .target(name: "Network")
+            ]
+        ),
+        .target(
             name: "HomeModule",
             destinations: .iOS,
             product: .staticFramework,
@@ -441,18 +452,8 @@ let project = Project(
             dependencies: [
                 .target(name: "SearchModule"),
                 .target(name: "TastingNote"),
-                .target(name: "CommunityModule")
-            ]
-        ),
-        .target(
-            name: "SearchModule",
-            destinations: .iOS,
-            product: .staticFramework,
-            bundleId: "\(bundleId).\(bundleMid).SearchModule",
-            sources: ["DE/Sources/Features/Search/**"],
-            resources: ["DE/Resources/**"],
-            dependencies: [
-                .target(name: "Network")
+                .target(name: "CommunityModule"),
+                .target(name: "SettingModule")
             ]
         ),
         .target(
@@ -472,6 +473,17 @@ let project = Project(
             product: .staticFramework,
             bundleId: "\(bundleId).\(bundleMid).UserSurveyModule",
             sources: ["DE/Sources/Features/UserSurvey/**"],
+            resources: ["DE/Resources/**"],
+            dependencies: [
+                .target(name: "Network")
+            ]
+        ),
+        .target(
+            name: "SettingModule",
+            destinations: .iOS,
+            product: .staticFramework,
+            bundleId: "\(bundleId).\(bundleMid).SettingModule",
+            sources: ["DE/Sources/Features/Setting/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
                 .target(name: "Network")

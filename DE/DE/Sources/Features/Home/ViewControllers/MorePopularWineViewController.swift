@@ -4,10 +4,13 @@ import UIKit
 import SnapKit
 import CoreModule
 import Then
+import SearchModule
 
 class MorePopularWineViewController: UIViewController {
 
     let navigationBarManager = NavigationBarManager()
+    
+    private var wineList: [WineData] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -66,9 +69,9 @@ extension MorePopularWineViewController: UITableViewDelegate, UITableViewDataSou
         return cell
     }
     
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 //        let vc = WineDetailViewController()
-//        vc.wineId = wineResults[indexPath.row].wineId
+//        vc.wineId = WineList[indexPath.row].wineId
 //        navigationController?.pushViewController(vc, animated: true)
-    }
+//    }
 }
