@@ -9,6 +9,8 @@ import UIKit
 import SnapKit
 import Then
 
+import CoreModule
+
 public class AddNewWineView: UIView {
     
     public lazy var title = UILabel().then {

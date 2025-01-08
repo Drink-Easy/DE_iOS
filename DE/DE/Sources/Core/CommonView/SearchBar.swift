@@ -11,7 +11,7 @@ import Then
 
 public class SearchBar: UITextField {
     
-    var placeholderText: String?
+    public var placeholderText: String?
     private let imageView = UIImageView()
     
     override init(frame: CGRect) {
