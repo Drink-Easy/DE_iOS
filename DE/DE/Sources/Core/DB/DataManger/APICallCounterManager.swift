@@ -55,6 +55,76 @@ public final class APICallCounterManager {
         }
     }
     
+    @MainActor
+    private func fetchUser(by userId: Int, in context: ModelContext) throws -> UserData {
+        let descriptor = FetchDescriptor<UserData>(predicate: #Predicate { $0.userId == userId })
+        let users = try context.fetch(descriptor)
+        
+        guard let user = users.first else {
+            throw APICallCounterError.userNotFound
+        }
+        
+        return user
+    }
+    
+    @MainActor
+    private func fetchController(for user: UserData, controllerName: String) throws -> APIControllerCounter {
+        guard let controller = user.controllerCounters.first(where: { $0.name == controllerName }) else {
+            throw APICallCounterError.controllerAlreadyExists(name: controllerName)
+        }
+        return controller
+    }
+    
+    @MainActor
+    private func incrementCount(
+        for userId: Int,
+        controllerName: String,
+        incrementAction: (APICounter) -> Void
+    ) async throws {
+        let context = container.mainContext
+        
+        // 1. 사용자 검색
+        let user = try fetchUser(by: userId, in: context)
+        
+        // 2. 컨트롤러 검색
+        let controller = try fetchController(for: user, controllerName: controllerName)
+        
+        // 3. 카운트 증가
+        incrementAction(controller.counter)
+        
+        // 4. 저장
+        do {
+            try context.save()
+            print("✅ \(controllerName)의 카운트 증가 및 저장 완료!")
+        } catch {
+            throw APICallCounterError.saveFailed(reason: error.localizedDescription)
+        }
+    }
+    
+    /// POST 호출 카운트 증가
+    @MainActor
+    public func incrementPost(for userId: Int, controllerName: String) async throws {
+        try await incrementCount(for: userId, controllerName: controllerName) { counter in
+            counter.incrementPost()
+        }
+    }
+    
+    /// PATCH 호출 카운트 증가
+    @MainActor
+    public func incrementPatch(for userId: Int, controllerName: String) async throws {
+        try await incrementCount(for: userId, controllerName: controllerName) { counter in
+            counter.incrementPatch()
+        }
+    }
+    
+    /// DELETE 호출 카운트 증가
+    @MainActor
+    public func incrementDelete(for userId: Int, controllerName: String) async throws {
+        try await incrementCount(for: userId, controllerName: controllerName) { counter in
+            counter.incrementDelete()
+        }
+    }
+    
     
 }
 
