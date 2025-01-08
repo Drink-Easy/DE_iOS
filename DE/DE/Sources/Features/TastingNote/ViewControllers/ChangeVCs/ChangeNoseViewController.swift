@@ -9,6 +9,9 @@ public class ChangeNoseViewController: UIViewController {
     private var collectionView: UICollectionView!
     var sections: [NoseSectionModel] = NoseSectionModel.sections() // 섹션 데이터
     var selectedItems: [String: [NoseModel]] = [:]
+    var allNoseModels: [NoseModel]  {
+        selectedItems.values.flatMap { $0 }
+    }
     
     let chooseNoseView = ChangeNoseView()
     let navigationBarManager = NavigationBarManager()
@@ -29,10 +32,14 @@ public class ChangeNoseViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.gray20
+        print(dto)
         setupUI()
         setupCollectionView() // CollectionView 설정
         setupActions()
         setupNavigationBar()
+        
+        loadInitialData()
+        
         chooseNoseView.updateUI(wineName: dto.wineName)
     }
     
@@ -89,16 +96,19 @@ public class ChangeNoseViewController: UIViewController {
         }
         
         callNotePatchNose()
-        
         dismiss(animated: true, completion: nil)
     }
     
     // MARK: - 초기 데이터 로트
     private func loadInitialData() {
         selectedItems = noseMapListToSelectItems(dto.noseMapList)
-        chooseNoseView.updateSelectedCollectionViewHeight()
-        chooseNoseView.collectionView.reloadData()
-        chooseNoseView.selectedCollectionView.reloadData()
+        
+        // ✅ UI 업데이트를 메인 스레드에서 수행
+        DispatchQueue.main.async {
+            self.chooseNoseView.collectionView.reloadData()
+            self.chooseNoseView.selectedCollectionView.reloadData()
+            self.chooseNoseView.updateSelectedCollectionViewHeight(itemCount: self.allNoseModels.count)
+        }
     }
     
     
@@ -190,7 +200,7 @@ extension ChangeNoseViewController: UICollectionViewDelegate, UICollectionViewDa
         if collectionView.tag == 0 {
             return sections.count
         } else if collectionView.tag == 1 {
-            return selectedItems.values.count
+            return 1 //selectedItems.values.count
         }
         return 0
     }
@@ -200,9 +210,7 @@ extension ChangeNoseViewController: UICollectionViewDelegate, UICollectionViewDa
         if collectionView.tag == 0 {
             return sections[section].isExpanded ? sections[section].items.count : 0
         } else if collectionView.tag == 1 {
-            let keys = Array(selectedItems.keys)
-            let key = keys[section]
-            return selectedItems[key]?.count ?? 0
+            return allNoseModels.count
         }
         return 0
     }
@@ -230,15 +238,14 @@ extension ChangeNoseViewController: UICollectionViewDelegate, UICollectionViewDa
             }
         } else if collectionView.tag == 1 {
             // tag == 1: 선택된 항목
-            let keys = Array(selectedItems.keys)
-            let key = keys[indexPath.section]
-            if let item = selectedItems[key]?[indexPath.item] {
+//            let keys = Array(selectedItems.keys)
+//            let key = keys[indexPath.section]
+            let item = allNoseModels[indexPath.item]
                 cell.menuLabel.text = item.type
                 cell.menuView.backgroundColor = AppColor.purple10
                 cell.menuLabel.textColor = AppColor.purple100
                 cell.menuView.layer.borderColor = AppColor.purple100?.cgColor
             }
-        }
         return cell
     }
     
@@ -335,7 +342,7 @@ extension ChangeNoseViewController {
             // tag == 0 및 tag == 1 컬렉션 뷰 모두 업데이트
             collectionView.reloadItems(at: [indexPath])
             chooseNoseView.selectedCollectionView.reloadData()
-            chooseNoseView.updateSelectedCollectionViewHeight()
+            chooseNoseView.updateSelectedCollectionViewHeight(itemCount: self.allNoseModels.count)
             chooseNoseView.updateNoseCollectionViewHeight()
         }
     }
