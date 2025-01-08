@@ -10,4 +10,3 @@ public struct MemberInfoResponse : Decodable {
     public let authType : String
     public let adult : Bool
 }
-

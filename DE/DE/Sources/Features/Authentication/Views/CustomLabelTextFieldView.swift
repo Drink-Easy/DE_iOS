@@ -121,14 +121,14 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
             make.top.equalToSuperview()
             make.leading.equalToSuperview().offset(16)
         }
-        validationLabel.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(10)
-            make.centerY.equalTo(descriptionLabel)
-        }
         textField.snp.makeConstraints { make in
             make.top.equalTo(descriptionLabel.snp.bottom).offset(10)
             make.leading.trailing.bottom.equalToSuperview()
             make.height.equalTo(60)
+        }
+        validationLabel.snp.makeConstraints { make in
+            make.top.equalTo(textField.snp.bottom).offset(5)
+            make.leading.equalTo(descriptionLabel.snp.leading)
         }
     }
     
@@ -144,27 +144,9 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
     }
     
     // MARK: - 유효성 검사 업데이트
-    func updateValidationText(_ text: String, isHidden: Bool) {
+    func updateValidationText(_ text: String, isHidden: Bool, color: UIColor?) {
         validationLabel.text = text
         validationLabel.isHidden = isHidden
-    }
-    
-    private func updateTextFieldStyle(isEditing: Bool) {
-        if !isEditing {
-            textField.backgroundColor = AppColor.gray10
-            textField.layer.borderColor = AppColor.gray10?.cgColor
-            textField.textColor = AppColor.gray70
-            iconImageView.tintColor = AppColor.gray50
-            validationLabel.isHidden = true
-        }
-    }
-    
-    // MARK: - 텍스트필드 델리게이트
-    public func textFieldDidBeginEditing(_ textField: UITextField) {
-        updateTextFieldStyle(isEditing: true)
-    }
-    
-    public func textFieldDidEndEditing(_ textField: UITextField) {
-        updateTextFieldStyle(isEditing: false)
+        validationLabel.textColor = color
     }
 }

@@ -15,6 +15,8 @@ class SignUpVC: UIViewController {
     let navigationBarManager = NavigationBarManager()
     let validationManager = ValidationManager()
     
+    var isEmailDuplicate : Bool = true
+    
     override func loadView() {
         view = signUpView
     }
@@ -49,6 +51,7 @@ class SignUpVC: UIViewController {
     
     private func setupActions() {
         signUpView.usernameField.textField.addTarget(self, action: #selector(usernameValidate), for: .editingChanged)
+        signUpView.checkEmailButton.addTarget(self, action: #selector(checkEmailDuplicate), for: .touchUpInside)
         signUpView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .editingChanged)
         signUpView.confirmPasswordField.textField.addTarget(self, action: #selector(confirmPasswordValidate), for: .editingChanged)
         
@@ -79,8 +82,18 @@ class SignUpVC: UIViewController {
     }
     
     @objc func usernameValidate() {
+        validationManager.isEmailDuplicate = true
         validationManager.isUsernameValid = validationManager.validateUsername(signUpView.usernameField)
         validateInputs()
+    }
+    
+    @objc private func checkEmailDuplicate() {
+        guard let email = signUpView.usernameField.text, !email.isEmpty else {
+            print("이메일이 없습니다")
+            return
+        }
+        
+        validationManager.checkEmailDuplicate(email: email, view: signUpView.usernameField)
     }
     
     @objc func passwordValidate() {
@@ -96,7 +109,7 @@ class SignUpVC: UIViewController {
     private func validateInputs() {
         let isValid = validationManager.isUsernameValid &&
         validationManager.isPasswordValid &&
-        validationManager.isConfirmPasswordValid
+        validationManager.isConfirmPasswordValid && !validationManager.isEmailDuplicate
         
         signUpView.signupButton.isEnabled = isValid
         signUpView.signupButton.isEnabled(isEnabled: isValid)

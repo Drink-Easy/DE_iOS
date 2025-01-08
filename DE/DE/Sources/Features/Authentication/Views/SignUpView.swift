@@ -16,7 +16,13 @@ class SignUpView: UIView {
         textFieldPlaceholder: "이메일을 입력해 주세요",
         validationText: "유효하지 않은 이메일 형식입니다"
     ).then {
-        $0.textField.keyboardType = .default
+        $0.textField.keyboardType = .emailAddress
+    }
+    
+    let checkEmailButton = UIButton().then {
+        $0.setTitle("중복 확인", for: .normal)
+        $0.setTitleColor(AppColor.gray70, for: .normal)
+        $0.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 12)
     }
 
     let passwordField = CustomLabelTextFieldView(
@@ -61,7 +67,7 @@ class SignUpView: UIView {
     
     // MARK: - Setup UI
     private func setupUI() {
-        [usernameField, passwordField, confirmPasswordField, signupButton].forEach {
+        [usernameField, checkEmailButton, passwordField, confirmPasswordField, signupButton].forEach {
             addSubview($0)
         }
     }
@@ -71,6 +77,10 @@ class SignUpView: UIView {
         usernameField.snp.makeConstraints { make in
             make.top.equalTo(Constants.superViewHeight * 0.2)
             make.leading.trailing.equalToSuperview().inset(Constants.padding)
+        }
+        checkEmailButton.snp.makeConstraints { make in
+            make.top.equalTo(Constants.superViewHeight * 0.2)
+            make.trailing.equalToSuperview().inset(Constants.padding)
         }
         passwordField.snp.makeConstraints { make in
             make.top.equalTo(usernameField.snp.bottom).offset(32)

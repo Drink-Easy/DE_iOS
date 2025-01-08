@@ -10,7 +10,7 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
     public let textField: PaddedTextField
     let validationLabel: UILabel
     
-    var text: String? {
+    public var text: String? {
         get {
             //필요한 연산 과정
             return textField.text
@@ -52,7 +52,7 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
         // 텍스트 필드 설정
         textField.placeholder = textFieldPlaceholder
         textField.borderStyle = .none
-        textField.font = UIFont.systemFont(ofSize: 16)
+        textField.font = UIFont.ptdSemiBoldFont(ofSize: 14)
         textField.backgroundColor = AppColor.gray10
         textField.delegate = self
         textField.layer.borderColor = AppColor.gray10?.cgColor
@@ -85,49 +85,39 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
             make.height.equalTo(48)
         }
         validationLabel.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(10)
-            make.centerY.equalTo(descriptionLabel)
+            make.top.equalTo(textField.snp.bottom).offset(5)
+            make.leading.equalToSuperview().inset(8)
         }
     }
     
-    private func updateTextFieldStyle(isEditing: Bool) {
-        if !isEditing {
-            textField.backgroundColor = AppColor.gray10
-            textField.layer.borderColor = AppColor.gray10?.cgColor
-            textField.textColor = AppColor.gray70
-        }
-    }
-    
-    func updateValidationText(_ text: String, isHidden: Bool) {
+    public func updateValidationText(_ text: String, isHidden: Bool, color: UIColor?) {
         validationLabel.text = text
         validationLabel.isHidden = isHidden
+        validationLabel.textColor = color
     }
     
-    private func showCharacterLimit() {
-        validationLabel.text = "n자 이하의 닉네임을 설정해 주세요"
+    private func showCharacterLimit(message: String) {
+        validationLabel.text = message
         validationLabel.isHidden = false
+        validationLabel.textColor = AppColor.red
     }
     
     // MARK: - 텍스트필드 델리게이트
-    public func textFieldDidBeginEditing(_ textField: UITextField) {
-        updateTextFieldStyle(isEditing: true)
-    }
-    
-    public func textFieldDidEndEditing(_ textField: UITextField) {
-        updateTextFieldStyle(isEditing: false)
-    }
     
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let currentText = textField.text else { return true }
         
+        // 입력 중인 텍스트 (현재 텍스트와 대체 텍스트를 합침)
+        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: string)
+        
+        // 한글 입력 중인지 확인
         if let markedTextRange = textField.markedTextRange,
            let _ = textField.position(from: markedTextRange.start, offset: 0) {
             return true
         }
         
-        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: string)
+        //15자 이상 입력 받지 않음
         if updatedText.count > 15 {
-            showCharacterLimit()
             return false
         }
         return true
