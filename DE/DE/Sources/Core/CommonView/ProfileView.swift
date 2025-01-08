@@ -101,10 +101,10 @@ public class ProfileView: UIView {
         myLocationTextField.snp.makeConstraints { make in
             make.top.equalTo(nicknameTextField.snp.bottom).offset(32)
             make.leading.equalToSuperview().inset(24)
-            make.trailing.equalToSuperview().inset(72)
+            make.trailing.equalToSuperview().inset(80)
         }
         locationImageIconButton.snp.makeConstraints { make in
-            make.width.height.equalTo(50)
+            make.width.height.equalTo(48)
             make.leading.equalTo(myLocationTextField.snp.trailing).offset(8)
             make.bottom.equalTo(myLocationTextField.snp.bottom)
         }

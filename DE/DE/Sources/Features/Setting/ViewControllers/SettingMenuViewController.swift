@@ -44,6 +44,7 @@ public final class SettingMenuViewController : UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = AppColor.bgGray
         setupUI()
         setupTableView()
         setupNavigationBar()
@@ -51,7 +52,13 @@ public final class SettingMenuViewController : UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
         fetchMemberInfo()
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     private func setupTableView() {
@@ -59,6 +66,7 @@ public final class SettingMenuViewController : UIViewController {
         tableView.dataSource = self
         tableView.isScrollEnabled = false
         tableView.rowHeight = 50
+        tableView.backgroundColor = .clear
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
@@ -113,10 +121,17 @@ extension SettingMenuViewController: UITableViewDataSource {
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        cell.backgroundColor = .clear
         cell.textLabel?.text = settingMenuItems[indexPath.row].name
-        cell.textLabel?.font = UIFont.ptdRegularFont(ofSize: 18)
+        cell.textLabel?.font = UIFont.ptdRegularFont(ofSize: 16)
         cell.textLabel?.textColor = AppColor.black
         cell.selectionStyle = .none
+
+        // Chevron 추가
+        let chevronImage = UIImageView(image: UIImage(systemName: "chevron.right"))
+        chevronImage.tintColor = AppColor.gray70 // 원하는 색상
+        cell.accessoryView = chevronImage
+
         return cell
     }
 }

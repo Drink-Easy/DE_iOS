@@ -19,12 +19,29 @@ public class NavigationBarManager {
     }
     
     // MARK: - 오른쪽 커스텀 버튼 생성
-    public func addRightButton(to navigationItem: UINavigationItem, icon: String, target: Any?, action: Selector, tintColor: UIColor = .label) {
+    public func addRightButton(
+        to navigationItem: UINavigationItem,
+        title: String? = nil,
+        icon: String? = nil,
+        target: Any?,
+        action: Selector,
+        tintColor: UIColor = .label,
+        font: UIFont = .systemFont(ofSize: 16, weight: .medium)
+    ) {
         let rightButton = UIButton(type: .system)
-        rightButton.setImage(UIImage(systemName: icon), for: .normal)
-        rightButton.tintColor = tintColor
-        rightButton.addTarget(target, action: action, for: .touchUpInside)
         
+        if let title = title {
+            // 텍스트 버튼
+            rightButton.setTitle(title, for: .normal)
+            rightButton.setTitleColor(tintColor, for: .normal)
+            rightButton.titleLabel?.font = font
+        } else if let icon = icon {
+            // 이미지 버튼
+            rightButton.setImage(UIImage(systemName: icon), for: .normal)
+            rightButton.tintColor = tintColor
+        }
+        
+        rightButton.addTarget(target, action: action, for: .touchUpInside)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightButton)
     }
     
