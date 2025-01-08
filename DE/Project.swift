@@ -241,7 +241,7 @@ let project = Project(
                 .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK"),
                 .external(name: "AMPopTip"),
-                .external(name: "StepSlider")
+                .external(name: "PolyKit")
             ]
         ),
         .target(
@@ -428,7 +428,7 @@ let project = Project(
             dependencies: [
                 .target(name: "Network"),
                 .external(name: "AMPopTip"),
-                .external(name: "StepSlider")
+                .external(name: "PolyKit")
             ]
         ),
         .target(

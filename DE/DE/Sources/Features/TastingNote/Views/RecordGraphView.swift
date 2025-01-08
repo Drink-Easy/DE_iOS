@@ -3,6 +3,7 @@
 import UIKit
 import CoreModule
 import AMPopTip
+import SwiftUI
 
 class RecordGraphView: UIView, UIScrollViewDelegate {
     
@@ -75,6 +76,13 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         return p
     }()
 
+    let hostingController: UIHostingController<PentagonChartView> = {
+        let chartView = PentagonChartView()
+        let hosting = UIHostingController(rootView: chartView)
+        hosting.view.backgroundColor = .clear
+        return hosting
+    }()
+    
     let graphRecordLabel: UILabel = {
         let g = UILabel()
         g.text = "Graph Record"
@@ -307,8 +315,9 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
             make.centerX.equalToSuperview()
         }
         
-        contentView.addSubview(polygonChart)
-        polygonChart.snp.makeConstraints { make in
+        let chartView = hostingController.view!
+        contentView.addSubview(chartView)
+        chartView.snp.makeConstraints { make in
             make.top.equalTo(vector.snp.bottom).offset(25)
             make.leading.equalTo(vector.snp.leading) // .offset()
             make.centerX.equalTo(vector.snp.centerX)
@@ -317,7 +326,7 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         
         contentView.addSubview(graphRecordLabel)
         graphRecordLabel.snp.makeConstraints { make in
-            make.top.equalTo(polygonChart.snp.bottom).offset(57)
+            make.top.equalTo(chartView.snp.bottom).offset(57)
             make.leading.equalTo(graphLabel.snp.leading)
         }
         
