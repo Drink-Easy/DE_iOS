@@ -4,7 +4,7 @@ import UIKit
 import Then
 import CoreModule
 
-class DescriptionUIView: UIView {
+public class DescriptionUIView: UIView {
 
     let backgroundView = UIView().then {
         $0.backgroundColor = .white
@@ -97,13 +97,13 @@ class DescriptionUIView: UIView {
         }
     }
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .white
         setupUI()
     }
     
-    required init? (coder: NSCoder) {
+    public required init? (coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 

@@ -7,6 +7,7 @@ import CommunityModule
 import HomeModule
 
 import UserSurveyModule
+import SettingModule
 
 public class MainTabBarController: UITabBarController {
     
@@ -62,8 +63,8 @@ public class MainTabBarController: UITabBarController {
         let nav2 = UINavigationController(rootViewController: classVC)
         let nav3 = UINavigationController(rootViewController: NoteListViewController())
         let nav4 = UINavigationController(rootViewController: CommunityVC())
-//        let nav5 = UINavigationController(rootViewController: LogoutTestVC())
-        let nav5 = UINavigationController(rootViewController: GetProfileVC())
+        let nav5 = UINavigationController(rootViewController: SettingMenuViewController())
+//        let nav5 = UINavigationController(rootViewController: GetProfileVC())
         
         let home = UIImage(named: "TabHome")?.resize(to: CGSize(width: 35, height: 35))
         let cclass = UIImage(named: "TabClass")?.resize(to: CGSize(width: 35, height: 35))

@@ -4,6 +4,8 @@ import UIKit
 import CoreModule
 import Network
 
+import TastingNote
+
 public class BuyNewWineDateViewController: UIViewController {
 
     let tastedDateView = BuyNewWineDateView()
