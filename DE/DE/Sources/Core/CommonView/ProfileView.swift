@@ -33,6 +33,12 @@ public class ProfileView: UIView {
         validationText: ""
     )
     
+    public let checkDuplicateButton = UIButton().then {
+        $0.setTitle("중복 확인", for: .normal)
+        $0.setTitleColor(AppColor.gray70, for: .normal)
+        $0.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 12)
+    }
+    
     public let myLocationTextField = CustomTextFieldView(
         descriptionLabelText: "내 동네",
         textFieldPlaceholder: "",
@@ -47,6 +53,9 @@ public class ProfileView: UIView {
         $0.tintColor = AppColor.gray70
         $0.imageView?.contentMode = .scaleAspectFit
         $0.clipsToBounds = true
+        $0.backgroundColor = AppColor.gray30
+        $0.layer.cornerRadius = 8
+        $0.layer.masksToBounds = true
     }
     
     public override init(frame: CGRect) {
@@ -61,7 +70,7 @@ public class ProfileView: UIView {
     }
     
     private func setupUI() {
-        [profileImageView, profileImageEditButton, profileImageIconView, nicknameTextField, myLocationTextField, locationImageIconButton].forEach {
+        [profileImageView, profileImageEditButton, profileImageIconView, nicknameTextField, checkDuplicateButton, myLocationTextField, locationImageIconButton].forEach {
             addSubview($0)
         }
     }
@@ -85,15 +94,19 @@ public class ProfileView: UIView {
             make.top.equalTo(profileImageView.snp.bottom).offset(32)
             make.leading.trailing.equalToSuperview().inset(24)
         }
+        checkDuplicateButton.snp.makeConstraints { make in
+            make.top.equalTo(profileImageView.snp.bottom).offset(32)
+            make.trailing.equalToSuperview().inset(24)
+        }
         myLocationTextField.snp.makeConstraints { make in
-            make.top.equalTo(nicknameTextField.snp.bottom).offset(20)
+            make.top.equalTo(nicknameTextField.snp.bottom).offset(32)
             make.leading.equalToSuperview().inset(24)
             make.trailing.equalToSuperview().inset(72)
         }
         locationImageIconButton.snp.makeConstraints { make in
-            make.width.height.equalTo(24)
-            make.leading.equalTo(myLocationTextField.snp.trailing).offset(16)
-            make.bottom.equalTo(myLocationTextField.snp.bottom).offset(-12)
+            make.width.height.equalTo(50)
+            make.leading.equalTo(myLocationTextField.snp.trailing).offset(8)
+            make.bottom.equalTo(myLocationTextField.snp.bottom)
         }
     }
 }

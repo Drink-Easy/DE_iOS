@@ -170,7 +170,7 @@ class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegat
     
     @objc private func startButtonTapped() {
         //TODO: 취향찾기 뷰컨 연결
-            print("모든 필수 약관에 동의하셨습니다. 서비스를 시작합니다.")
+        print("모든 필수 약관에 동의하셨습니다. 서비스를 시작합니다.")
     }
     
     @objc private func backButtonTapped() {

@@ -17,7 +17,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     private let profileView = ProfileView()
     
-    private var isNicknameDuplicate : Bool = true
+    private let ValidationManager = NicknameValidateManager()
     
     private let headerLabel = UILabel().then {
         $0.text = "프로필을 만들어 보세요!"
@@ -90,9 +90,9 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
 
     func setupActions() {
         profileView.profileImageEditButton.addTarget(self, action: #selector(selectProfileImage), for: .touchUpInside)
-        profileView.nicknameTextField.textField.addTarget(self, action: #selector(checkFormValidity), for: .allEditingEvents) // TODO: 닉네임 중복 확인 api 연결
-        profileView.nicknameTextField.textField.addTarget(self, action: #selector(checkNicknameValidity), for: .editingDidEnd)
-        profileView.myLocationTextField.textField.addTarget(self, action: #selector(checkFormValidity), for: .editingChanged)
+        profileView.nicknameTextField.textField.addTarget(self, action: #selector(validateNickname), for: .editingChanged)
+        profileView.checkDuplicateButton.addTarget(self, action: #selector(checkNicknameValidity), for: .touchUpInside)
+        profileView.myLocationTextField.textField.addTarget(self, action: #selector(checkFormValidity), for: .allEditingEvents)
         profileView.locationImageIconButton.addTarget(self, action: #selector(getMyLocation), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
     }
@@ -137,23 +137,26 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
         }
     }
     
-    //MARK: - 닉네임 중복 확인
-    @objc func checkNicknameValidity() {
-        networkService.checkNickname(name: profileView.nicknameTextField.textField.text! ) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(_):
-                self.isNicknameDuplicate = false
-            case .failure(let error):
-                print(error)
-            }
+    //MARK: - 닉네임 중복 검사
+    @objc func checkNicknameValidity(){
+        print("checkNicknameDuplicate Tapped")
+        guard let nickname = profileView.nicknameTextField.text, !nickname.isEmpty else {
+            print("닉네임이 없습니다")
+            return
         }
+        
+        ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField)
     }
     
     //MARK: - 폼 유효성 검사
+    @objc func validateNickname(){
+        ValidationManager.isNicknameCanUse = false
+        ValidationManager.validateNickname(profileView.nicknameTextField)
+        checkFormValidity()
+    }
+    
     @objc func checkFormValidity() {
-        let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true) && !isNicknameDuplicate
+        let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true) && !ValidationManager.isNicknameCanUse
         let isLocationValid = !(profileView.myLocationTextField.textField.text?.isEmpty ?? true)
         let isImageSelected = profileView.profileImageView.image != nil
         let isFormValid = isNicknameValid && isLocationValid && isImageSelected

@@ -135,7 +135,7 @@ class LoginVC: UIViewController {
     }
     
     @objc private func joinButtonTapped() {
-        let joinViewController = GetProfileVC()
+        let joinViewController = SignUpVC()
         navigationController?.pushViewController(joinViewController, animated: true)
     }
     
