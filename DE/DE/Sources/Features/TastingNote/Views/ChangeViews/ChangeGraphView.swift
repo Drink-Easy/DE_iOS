@@ -4,7 +4,6 @@ import UIKit
 import CoreModule
 import AMPopTip
 import Network
-import StepSlider
 
 class ChangeGraphView: UIView, UIScrollViewDelegate {
     
