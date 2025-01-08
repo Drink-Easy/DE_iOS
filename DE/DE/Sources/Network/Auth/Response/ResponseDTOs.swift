@@ -23,5 +23,5 @@ public struct MemberResponseDTO : Codable {
 }
 
 public struct UsernameCheckResponse: Decodable {
-    let isDuplicate : Bool
+    public let isDuplicate : Bool
 }

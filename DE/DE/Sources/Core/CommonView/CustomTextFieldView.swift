@@ -90,14 +90,6 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
         }
     }
     
-    private func updateTextFieldStyle(isEditing: Bool) {
-        if !isEditing {
-            textField.backgroundColor = AppColor.gray10
-            textField.layer.borderColor = AppColor.gray10?.cgColor
-            textField.textColor = AppColor.gray70
-        }
-    }
-    
     func updateValidationText(_ text: String, isHidden: Bool) {
         validationLabel.text = text
         validationLabel.isHidden = isHidden
@@ -109,13 +101,6 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
     }
     
     // MARK: - 텍스트필드 델리게이트
-    public func textFieldDidBeginEditing(_ textField: UITextField) {
-        updateTextFieldStyle(isEditing: true)
-    }
-    
-    public func textFieldDidEndEditing(_ textField: UITextField) {
-        updateTextFieldStyle(isEditing: false)
-    }
     
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let currentText = textField.text else { return true }
