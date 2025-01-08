@@ -1,11 +1,21 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+
+import SnapKit
+import Then
+import SDWebImage
+
 import CoreModule
 import Network
 
 public final class SettingMenuViewController : UIViewController {
+    
+    private let networkService = MemberService()
+    private var memberData: MemberInfoResponse?
+    
     private var tableView = UITableView()
+    let navigationBarManager = NavigationBarManager()
     
     private let settingMenuItems: [SettingMenuModel] = [
         SettingMenuItems.accountInfo,
@@ -17,19 +27,83 @@ public final class SettingMenuViewController : UIViewController {
         SettingMenuItems.inquiry
     ]
 
+    public let profileImageView = UIImageView().then {
+        $0.image = UIImage(named: "profilePlaceholder")
+        $0.contentMode = .scaleAspectFill
+        $0.layer.cornerRadius = 50
+        $0.clipsToBounds = true
+    }
+    
+    public let nameLabel = UILabel().then {
+        $0.text = "드링키지"
+        $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
+        $0.textAlignment = .center
+        $0.textColor = AppColor.black
+        $0.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
+        setupUI()
         setupTableView()
+        setupNavigationBar()
     }
-
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchMemberInfo()
+    }
+    
     private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.isScrollEnabled = false
+        tableView.rowHeight = 50
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         view.addSubview(tableView)
-        tableView.frame = view.bounds
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(nameLabel.snp.bottom).offset(16)
+            make.trailing.equalToSuperview().inset(16)
+            make.leading.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
     }
 
+    public func fetchMemberInfo() {
+        networkService.fetchUserInfo(completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                let profileImgURL = URL(string: data.imageUrl)
+                self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
+                self.nameLabel.text = "\(data.username)님"
+            case .failure(let error):
+                print("Error: \(error)")
+            }
+        })
+    }
+    
+    // MARK: - UI Setup
+    private func setupNavigationBar() {
+        navigationBarManager.setTitle(to: navigationItem, title: "마이페이지", textColor: AppColor.black!)
+    }
+    
+    private func setupUI(){
+        [profileImageView, nameLabel].forEach {
+            view.addSubview($0)
+        }
+        
+        profileImageView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
+            make.centerX.equalToSuperview()
+            make.width.height.equalTo(100)
+        }
+        nameLabel.snp.makeConstraints { make in
+            make.top.equalTo(profileImageView.snp.bottom).offset(16)
+            make.centerX.equalToSuperview()
+        }
+    }
+    
 }
 
 extension SettingMenuViewController: UITableViewDataSource {
@@ -40,6 +114,9 @@ extension SettingMenuViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = settingMenuItems[indexPath.row].name
+        cell.textLabel?.font = UIFont.ptdRegularFont(ofSize: 18)
+        cell.textLabel?.textColor = AppColor.black
+        cell.selectionStyle = .none
         return cell
     }
 }
