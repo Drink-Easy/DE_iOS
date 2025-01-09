@@ -48,7 +48,7 @@ public class NicknameValidateManager {
             switch result {
             case .success(let response):
                 
-                if response { // 닉네임 사용 가능 CanUse: true
+                if response.canUse { // 닉네임 사용 가능 CanUse: true
                     self.hideValidationError(view, message: "사용 가능한 닉네임이에요")
                     self.isNicknameCanUse = false
                 } else { // 닉네임 중복
