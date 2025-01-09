@@ -96,7 +96,7 @@ final class ValidationManager {
     }
     
     // MARK: - UI 업데이트 메서드
-    private func showValidationError(_ view: CustomLabelTextFieldView, message: String) {
+    func showValidationError(_ view: CustomLabelTextFieldView, message: String) {
         view.updateValidationText(message, isHidden: false, color: AppColor.red)
         view.textField.layer.borderColor = AppColor.red?.cgColor
         view.textField.backgroundColor = AppColor.red?.withAlphaComponent(0.1)
@@ -104,7 +104,7 @@ final class ValidationManager {
         view.iconImageView.tintColor = AppColor.red
     }
     
-    private func hideValidationError(_ view: CustomLabelTextFieldView, message: String) {
+    func hideValidationError(_ view: CustomLabelTextFieldView, message: String) {
         view.updateValidationText(message, isHidden: false, color: AppColor.purple100)
         view.textField.layer.borderColor = AppColor.purple100?.cgColor
         view.textField.backgroundColor = AppColor.purple10

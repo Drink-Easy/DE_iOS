@@ -120,6 +120,10 @@ class LoginVC: UIViewController {
                 self.goToNextView(response.isFirst)
             case .failure(let error):
                 print(error)
+                self.loginView.loginButton.isEnabled = false
+                self.loginView.loginButton.isEnabled(isEnabled: false)
+                self.validationManager.showValidationError(loginView.usernameField, message: "")
+                self.validationManager.showValidationError(loginView.passwordField, message: "회원 정보를 다시 확인해 주세요")
             }
         }
     }
