@@ -82,7 +82,7 @@ extension MemberEndpoint: TargetType {
                     provider: .data(imageData),
                     name: "multipartFile",
                     fileName: fileName,
-                    mimeType: "image/jpeg"
+                    mimeType: "multipart/form-data"
                 )
                 multipartData.append(fileFormData)
             }
@@ -94,7 +94,7 @@ extension MemberEndpoint: TargetType {
                 )
                 multipartData.append(jsonFormData)
             }
-            
+
             return .uploadMultipart(multipartData)
         }
     }
@@ -102,7 +102,12 @@ extension MemberEndpoint: TargetType {
     public var headers: [String : String]? {
         switch self {
         case .patchMemeberPersonalInfo, .patchMemberInfo :
-            return ["Content-type": "multipart/form-data"]
+            return [
+                "Content-type": "multipart/octet-stream",
+                "Custom-Image-type": "multipart/form-data",
+//                "Custom-Image-type": "image/jpeg",
+                "Custom-Json-type": "application/json"
+            ]
         default :
             return ["Content-Type": "application/json"]
         }

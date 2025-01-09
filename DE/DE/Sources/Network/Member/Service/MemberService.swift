@@ -32,8 +32,8 @@ public final class MemberService : NetworkManager {
     }
     
     /// 닉네임 체크 API
-    public func checkNickname(name: String, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
-        request(target: .checkNickname(nickname: name), decodingType: Bool.self, completion: completion)
+    public func checkNickname(name: String, completion: @escaping (Result<NameCheckResponse, NetworkError>) -> Void) {
+        request(target: .checkNickname(nickname: name), decodingType: NameCheckResponse.self, completion: completion)
     }
     
     /// 취향찾기 등록 API
