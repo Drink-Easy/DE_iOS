@@ -1,6 +1,6 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
-import Foundation
+import UIKit
 import Moya
 
 public final class MemberService : NetworkManager {
@@ -37,13 +37,13 @@ public final class MemberService : NetworkManager {
     }
     
     /// 취향찾기 등록 API
-    public func patchUserSurvey(imageName fileName: String, imageData fileData: Data, body: MemberRequestDTO, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .patchMemberInfo(fileData: fileData, fileName: fileName, body: body), decodingType: String.self, completion: completion)
+    public func patchUserSurvey(imageName fileName: String, imageData: UIImage, body: MemberRequestDTO, completion: @escaping (Result<String, NetworkError>) -> Void) {
+        request(target: .patchMemberInfo(image: imageData, imageName: fileName, body: body), decodingType: String.self, completion: completion)
     }
     
     /// 개인정보 갱신 API
-    public func patchUserInfo(imageName fileName: String, imageData fileData: Data, body: MemberUpdateRequest, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .patchMemeberPersonalInfo(fileData: fileData, fileName: fileName, body: body), decodingType: String.self, completion: completion)
+    public func patchUserInfo(imageName fileName: String, imageData: UIImage, body: MemberUpdateRequest, completion: @escaping (Result<String, NetworkError>) -> Void) {
+        request(target: .patchMemeberPersonalInfo(image: imageData, imageName: fileName, body: body), decodingType: String.self, completion: completion)
     }
     
     /// 개인정보 불러오기 API
