@@ -16,26 +16,38 @@ class AppInfoViewController : UIViewController {
     private let networkService = MemberService()
     private var memberData: MemberInfoResponse?
     
+    private lazy var appVersion: String = {
+        return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
+    }()
+    
     private var tableView = UITableView()
     
     private let appInfoItems: [String] = [
         "서비스 이용약관", "개인정보 처리방침", "위치정보 이용약관", "오픈소스 라이브러리"
     ]
     
-    public override func viewDidLoad() {
+    lazy var appVersionLabel = UILabel().then {
+        $0.text = "버전 정보"
+        $0.font = UIFont.ptdMediumFont(ofSize: 14)
+        $0.textColor = AppColor.gray70
+        $0.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-        setupUI()
+        appVersionLabel.text = "버전 정보 \(appVersion)"
         setupTableView()
+        setupUI()
         setupNavigationBar()
     }
     
-    public override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
-    public override func viewWillDisappear(_ animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: false)
     }
@@ -47,13 +59,6 @@ class AppInfoViewController : UIViewController {
         tableView.rowHeight = 50
         tableView.backgroundColor = .clear
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        view.addSubview(tableView)
-        tableView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
-            make.trailing.equalToSuperview().inset(16)
-            make.leading.equalToSuperview()
-            make.bottom.equalToSuperview()
-        }
     }
     
     // MARK: - UI Setup
@@ -63,6 +68,19 @@ class AppInfoViewController : UIViewController {
     }
     
     private func setupUI(){
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
+            make.trailing.equalToSuperview().inset(16)
+            make.leading.equalToSuperview()
+            make.height.equalTo(200)
+        }
+        
+        view.addSubview(appVersionLabel)
+        appVersionLabel.snp.makeConstraints { make in
+            make.top.equalTo(tableView.snp.bottom).offset(10)
+            make.leading.equalToSuperview().inset(20)
+        }
     }
     
     @objc private func backButtonTapped() {

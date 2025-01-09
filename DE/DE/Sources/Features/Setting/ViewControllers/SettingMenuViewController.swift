@@ -84,7 +84,8 @@ public final class SettingMenuViewController : UIViewController {
             case .success(let data):
                 let profileImgURL = URL(string: data.imageUrl)
                 self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
-                self.nameLabel.text = "\(data.username)님"
+//                self.nameLabel.text = "\(data.username)님"
+                self.nameLabel.text = "\(data.email)님"
             case .failure(let error):
                 print("Error: \(error)")
             }

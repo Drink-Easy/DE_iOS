@@ -6,6 +6,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import UserSurveyModule
 
 class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegate {
     
@@ -54,6 +55,11 @@ class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegat
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     override func viewDidLoad() {
@@ -169,8 +175,8 @@ class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegat
     }
     
     @objc private func startButtonTapped() {
-        //TODO: 취향찾기 뷰컨 연결
-        print("모든 필수 약관에 동의하셨습니다. 서비스를 시작합니다.")
+        let vc = WelcomeVC()
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc private func backButtonTapped() {

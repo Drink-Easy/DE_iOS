@@ -9,8 +9,12 @@ import CoreModule
 import Network
 
 class AccountInfoViewController: UIViewController {
-
+    
     private let navigationBarManager = NavigationBarManager()
+    private let memberService = MemberService()
+    private let authService = AuthService()
+    
+    lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
     private var userProfile: MemberInfoResponse?
     
     private let profileImageView = UIImageView().then {
@@ -29,7 +33,7 @@ class AccountInfoViewController: UIViewController {
     }
     
     private let logoutButton = UIButton().then {
-        $0.setTitle("로그아웃", for: .normal)
+        $0.setTitle("로그아웃   |", for: .normal)
         $0.setTitleColor(AppColor.gray50, for: .normal)
         $0.titleLabel?.font = UIFont.ptdMediumFont(ofSize: 11)
     }
@@ -57,6 +61,7 @@ class AccountInfoViewController: UIViewController {
         view.backgroundColor = AppColor.bgGray
         setupNavigationBar()
         setupUI()
+        setupAction()
         tableView.dataSource = self
         tableView.delegate = self
         fetchUserProfile()
@@ -75,42 +80,46 @@ class AccountInfoViewController: UIViewController {
         )
     }
     
+    private func setupAction() {
+        logoutButton.addTarget(self, action: #selector(logoutButtonTapped), for: .touchUpInside)
+        deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
+    }
+    
     private func setupUI() {
         [profileImageView, tableView, logoutButton, deleteButton].forEach {
             view.addSubview($0)
         }
         
         profileImageView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(20)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(32)
             make.centerX.equalToSuperview()
             make.width.height.equalTo(120)
         }
         
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(profileImageView.snp.bottom).offset(20)
+            make.top.equalTo(profileImageView.snp.bottom).offset(32)
             make.leading.trailing.equalToSuperview().inset(16)
-            make.height.equalTo(200) // 적절히 설정 가능
+            make.height.equalTo(200)
         }
         
         logoutButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-16)
-            make.trailing.equalTo(view.snp.centerX).offset(-16)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-48)
+            make.trailing.equalTo(view.snp.centerX)
         }
         
         deleteButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-16)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-48)
             make.centerY.equalTo(logoutButton)
-            make.leading.equalTo(view.snp.centerX).inset(16)
+            make.leading.equalTo(view.snp.centerX).offset(8)
         }
     }
     
     private func fetchUserProfile() {
-        // Mock network request
         let jsonData = """
         {
-            "imageUrl": "null",
+            "imageUrl": "https://i.pinimg.com/736x/44/d8/38/44d838a67e02e8ddb77903cff8f62d82.jpg",
             "username": "null",
-            "email": "Newnew1@g.com",
+            "email": "example@g.com",
             "city": "null",
             "authType": "Drinkeg",
             "adult": false
@@ -157,6 +166,84 @@ class AccountInfoViewController: UIViewController {
     @objc private func goToProfileEditView() {
         let vc = ProfileEditVC()
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    @objc private func logoutButtonTapped() {
+        print("logout Tapped")
+        authService.logout() { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(_):
+                //                if /*authType = kakao*/ {
+                //                    self.kakaoAuthVM.kakaoLogout()
+                //                    //정보 삭제 처리
+                //                    Toaster.shared.makeToast("로그아웃")
+                //                    self.showSplashScreen()
+                //                } else {
+                //                    //정보 삭제 처리
+                //                    Toaster.shared.makeToast("로그아웃")
+                //                    self.showSplashScreen()
+                //                }
+                print("로그아웃 완료")
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    @objc private func deleteButtonTapped() {
+        print("delete Tapped")
+        
+        let alert = UIAlertController(
+            title: "계정 삭제",
+            message: "계정을 정말 삭제하시겠습니까?",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        
+        alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { [weak self] _ in
+            self?.performUserDeletion()
+        }))
+        
+        present(alert, animated: true, completion: nil)
+    }
+
+    private func performUserDeletion() {
+        memberService.deleteUser() { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(_):
+                print("회원탈퇴 완료")
+                // 카카오 연동 해제 및 처리
+                // if /*authType == kakao*/ {
+                //    self.kakaoAuthVM.unlinkKakaoAccount()
+                // }
+                // self.showSplashScreen()
+                
+            case .failure(let error):
+                print("회원탈퇴 실패: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    func showSplashScreen() {
+        //        let splashViewController = SplashVC()
+        //
+        //        // 현재 윈도우 가져오기
+        //        guard let window = UIApplication.shared.connectedScenes
+        //            .compactMap({ $0 as? UIWindowScene })
+        //            .first?.windows
+        //            .first else {
+        //            print("윈도우를 가져올 수 없습니다.")
+        //            return
+        //        }
+        //
+        //        UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve, animations: {
+        //            window.rootViewController = splashViewController
+        //        }, completion: nil)
     }
 }
 

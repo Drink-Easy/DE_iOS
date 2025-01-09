@@ -6,26 +6,26 @@ import KakaoSDKAuth
 import KakaoSDKUser
 import KeychainSwift
 
-class KakaoAuthVM: ObservableObject {
+public class KakaoAuthVM: ObservableObject {
     
-    var subscriptions = Set<AnyCancellable>()
+    public var subscriptions = Set<AnyCancellable>()
 
-    @Published var isLoggedIn: Bool = false
-    @Published var errorMessage: String? // 에러 메시지를 저장하는 변수
+    @Published public var isLoggedIn: Bool = false
+    @Published public var errorMessage: String? // 에러 메시지를 저장하는 변수
     
     // 사용자 토큰 저장을 위한 변수
-    @Published private(set) var oauthToken: String? {
+    @Published public private(set) var oauthToken: String? {
         didSet {
             isLoggedIn = oauthToken != nil
         }
     }
     
-    init() {
+    public init() {
         print("KakaoAuthVM - init() called")
     }
     
     @MainActor
-    func kakaoLogin(completion: @escaping (Bool) -> Void) {
+    public func kakaoLogin(completion: @escaping (Bool) -> Void) {
         if UserApi.isKakaoTalkLoginAvailable() {
             UserApi.shared.loginWithKakaoTalk { [weak self] (oauthToken, error) in
                 if let error = error {
@@ -52,7 +52,7 @@ class KakaoAuthVM: ObservableObject {
     }
     
     @MainActor
-    func kakaoLogout() {
+    public func kakaoLogout() {
         Task {
             if await handleKakaoLogOut() {
                 self.isLoggedIn = false
@@ -60,7 +60,7 @@ class KakaoAuthVM: ObservableObject {
         }
     }
     
-    func handleKakaoLogOut() async -> Bool {
+    public func handleKakaoLogOut() async -> Bool {
         await withCheckedContinuation { continuation in
             UserApi.shared.logout { [weak self] (error) in
                 if let error = error {
@@ -75,7 +75,7 @@ class KakaoAuthVM: ObservableObject {
         }
     }
     
-    func unlinkKakaoAccount(completion : @escaping (Bool) -> Void) {
+    public func unlinkKakaoAccount(completion : @escaping (Bool) -> Void) {
         UserApi.shared.unlink { error in
             if let error = error {
                 print("🔴 카카오 계정 연동 해제 실패: \(error.localizedDescription)")
