@@ -24,6 +24,7 @@ public struct Constants {
         public static let wishlistURL = "\(baseURL)/wine-wishlist"
         public static let myWineURL = "\(baseURL)/my-wine"
         public static let memberURL = "\(baseURL)/member"
+        public static let noticeURL = "\(baseURL)/notice"
     }
     
 

@@ -14,7 +14,11 @@ class MoreLikelyWineViewController: UIViewController {
     let wineDataManger = WineDataManager.shared
     let networkService = WineService()
     
-    var userName = ""
+    public var userName: String = "" {
+        didSet {
+            updateLikeWineListView()
+        }
+    }
     private var wineList: [WineData] = []
     
     override func viewDidLoad() {
@@ -114,6 +118,7 @@ class MoreLikelyWineViewController: UIViewController {
     }
     
     private lazy var moreLikelyWineView = MoreRecomWineView().then {
+        $0.title.text = "\(userName) 님을 위한 추천 와인"
         $0.moreWineTableView.dataSource = self
         $0.moreWineTableView.delegate = self
     }
@@ -130,7 +135,16 @@ class MoreLikelyWineViewController: UIViewController {
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)
     }
-
+    
+    private func updateLikeWineListView() {
+        moreLikelyWineView.title.text = "\(userName) 님을 위한 추천 와인"
+        moreLikelyWineView.title.setPartialTextStyle(
+            text: moreLikelyWineView.title.text ?? "",
+            targetText: "\(userName)",
+            color: AppColor.purple100 ?? .purple,
+            font: UIFont.ptdSemiBoldFont(ofSize: 30)
+        )
+    }
 }
 
 extension MoreLikelyWineViewController: UITableViewDelegate, UITableViewDataSource {

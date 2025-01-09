@@ -17,6 +17,8 @@ public class RatingWineViewController: UIViewController {
     let wineImage = UserDefaults.standard.string(forKey: "wineImage")
     let wineSort = UserDefaults.standard.string(forKey: "wineSort")
     
+    let userDefaultsKeys = ["wineName", "wineId", "wineSort", "wineArea", "wineImage", "tasteDate", "color", "nose", "sliderValues", "rating", "review"]
+    
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         DispatchQueue.main.async {
@@ -73,6 +75,10 @@ public class RatingWineViewController: UIViewController {
             guard let self = self else { return }
             switch result {
             case.success(let str):
+                for i in userDefaultsKeys {
+                    UserDefaults.standard.removeObject(forKey: "\(i)")
+                }
+                print("UserDefaults 값 삭제 !!!!!!")
                 DispatchQueue.main.async {
                     let nextVC = NoteListViewController()
                     self.navigationController?.pushViewController(nextVC, animated: true)

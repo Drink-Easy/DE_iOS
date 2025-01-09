@@ -8,6 +8,7 @@ import Then
 import HomeModule
 import CoreModule
 import Network
+import UserSurveyModule
 
 class LoginVC: UIViewController {
     // MARK: - Properties
@@ -27,7 +28,7 @@ class LoginVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-        
+        validationManager.isEmailDuplicate = false
         setupActions()
         setupNavigationBar()
     }
@@ -59,8 +60,8 @@ class LoginVC: UIViewController {
     
     // MARK: - Action 설정
     private func setupActions() {
-        loginView.usernameField.textField.addTarget(self, action: #selector(usernameValidate), for: .editingChanged)
-        loginView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .editingChanged)
+        loginView.usernameField.textField.addTarget(self, action: #selector(usernameValidate), for: .allEditingEvents)
+        loginView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .allEditingEvents)
         loginView.idSaveCheckBox.addTarget(self, action: #selector(idSaveCheckBoxTapped), for: .touchUpInside)
         loginView.joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
         
@@ -119,13 +120,17 @@ class LoginVC: UIViewController {
                 self.goToNextView(response.isFirst)
             case .failure(let error):
                 print(error)
+                self.loginView.loginButton.isEnabled = false
+                self.loginView.loginButton.isEnabled(isEnabled: false)
+                self.validationManager.showValidationError(loginView.usernameField, message: "")
+                self.validationManager.showValidationError(loginView.passwordField, message: "회원 정보를 다시 확인해 주세요")
             }
         }
     }
     
     private func goToNextView(_ isFirstLogin: Bool) {
         if isFirstLogin {
-            let enterTasteTestViewController = TestVC()
+            let enterTasteTestViewController = TermsOfServiceVC()
             navigationController?.pushViewController(enterTasteTestViewController, animated: true)
         } else {
             let homeViewController = MainTabBarController()

@@ -8,6 +8,9 @@ public class ChooseNoseViewController: UIViewController {
     private var collectionView: UICollectionView!
     var sections: [NoseSectionModel] = NoseSectionModel.sections() // 섹션 데이터
     var selectedItems: [String:[NoseModel]] = [:]
+    var allNoseModels: [NoseModel]  {
+        selectedItems.values.flatMap { $0 }
+    }
     
     let chooseNoseView = ChooseNoseView()
     let navigationBarManager = NavigationBarManager()
@@ -98,8 +101,7 @@ extension ChooseNoseViewController: UICollectionViewDelegate, UICollectionViewDa
         if collectionView.tag == 0 {
             return sections[section].isExpanded ? sections[section].items.count : 0
         } else if collectionView.tag == 1 {
-            let allSelectedItems = selectedItems.values.flatMap { $0 } // 모든 섹션의 아이템 합침
-            return allSelectedItems.count
+            return allNoseModels.count
         }
         return 0
     }
@@ -127,14 +129,11 @@ extension ChooseNoseViewController: UICollectionViewDelegate, UICollectionViewDa
             }
         } else if collectionView.tag == 1 {
             // tag == 1: 선택된 항목
-            let keys = Array(selectedItems.keys)
-            let key = keys[indexPath.section]
-            if let item = selectedItems[key]?[indexPath.item] {
-                cell.menuLabel.text = item.type
-                cell.menuView.backgroundColor = AppColor.purple10
-                cell.menuLabel.textColor = AppColor.purple100
-                cell.menuView.layer.borderColor = AppColor.purple100?.cgColor
-            }
+            let item = allNoseModels[indexPath.item]
+            cell.menuLabel.text = item.type
+            cell.menuView.backgroundColor = AppColor.purple10
+            cell.menuLabel.textColor = AppColor.purple100
+            cell.menuView.layer.borderColor = AppColor.purple100?.cgColor
         }
         return cell
     }

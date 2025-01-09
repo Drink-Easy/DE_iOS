@@ -8,12 +8,16 @@ import Then
 
 import CoreModule
 import CoreLocation
+import Network
 
-class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
+public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
     
     private let navigationBarManager = NavigationBarManager()
+    private let networkService = MemberService()
     
     private let profileView = ProfileView()
+    
+    private let ValidationManager = NicknameValidateManager()
     
     private let headerLabel = UILabel().then {
         $0.text = "프로필을 만들어 보세요!"
@@ -30,17 +34,17 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
         $0.isEnabled = false
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         
@@ -86,8 +90,9 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
 
     func setupActions() {
         profileView.profileImageEditButton.addTarget(self, action: #selector(selectProfileImage), for: .touchUpInside)
-        profileView.nicknameTextField.textField.addTarget(self, action: #selector(checkFormValidity), for: .editingDidEnd)
-        profileView.myLocationTextField.textField.addTarget(self, action: #selector(checkFormValidity), for: .editingDidEnd)
+        profileView.nicknameTextField.textField.addTarget(self, action: #selector(validateNickname), for: .editingChanged)
+        profileView.checkDuplicateButton.addTarget(self, action: #selector(checkNicknameValidity), for: .touchUpInside)
+        profileView.myLocationTextField.textField.addTarget(self, action: #selector(checkFormValidity), for: .allEditingEvents)
         profileView.locationImageIconButton.addTarget(self, action: #selector(getMyLocation), for: .touchUpInside)
         nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
     }
@@ -132,12 +137,28 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
         }
     }
     
-    // 폼 유효성 검사
+    //MARK: - 닉네임 중복 검사
+    @objc func checkNicknameValidity(){
+        print("checkNicknameDuplicate Tapped")
+        guard let nickname = profileView.nicknameTextField.text, !nickname.isEmpty else {
+            print("닉네임이 없습니다")
+            return
+        }
+        
+        ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField)
+    }
+    
+    //MARK: - 폼 유효성 검사
+    @objc func validateNickname(){
+        ValidationManager.isNicknameCanUse = false
+        ValidationManager.validateNickname(profileView.nicknameTextField)
+        checkFormValidity()
+    }
+    
     @objc func checkFormValidity() {
-        let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true)
+        let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true) && !ValidationManager.isNicknameCanUse
         let isLocationValid = !(profileView.myLocationTextField.textField.text?.isEmpty ?? true)
         let isImageSelected = profileView.profileImageView.image != nil
-        print(isImageSelected)
         let isFormValid = isNicknameValid && isLocationValid && isImageSelected
 
         nextButton.isEnabled = isFormValid
@@ -146,7 +167,7 @@ class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigat
 }
 
 extension GetProfileVC: PHPickerViewControllerDelegate {
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+    public func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true, completion: nil)
 
         guard let result = results.first else { return }
