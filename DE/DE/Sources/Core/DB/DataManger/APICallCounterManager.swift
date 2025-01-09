@@ -20,40 +20,7 @@ public final class APICallCounterManager {
         }
     }()
     
-    /// 새로운 APICounter 생성 및 저장
-    @MainActor
-    public func createAPIControllerCounter(
-        for userId: Int,
-        controllerName: String
-    ) async throws {
-        let context = container.mainContext
-
-        // 1. 사용자 검색 : 현재 로그인한 유저를 디비에서 찾기
-        let descriptor = FetchDescriptor<UserData>(predicate: #Predicate { $0.userId == userId })
-        let users = try context.fetch(descriptor)
-
-        guard let user = users.first else {
-            throw APICallCounterError.userNotFound
-        }
-
-        // 2. 중복 컨트롤러 검사 : 현재 counting하는 컨트롤러 종류 찾기
-        if user.controllerCounters.contains(where: { $0.name == controllerName }) {
-            throw APICallCounterError.controllerAlreadyExists(name: controllerName)
-        }
-
-        // 3. 새로운 APICounter 및 APIControllerCounter 생성 : 없으면 새로 생성
-        let apiCounter = APICounter()
-        let controllerCounter = APIControllerCounter(name: controllerName, counter: apiCounter, user: user)
-        user.controllerCounters.append(controllerCounter)
-
-        // 4. 저장 : 저장하기 - 초기값은 모두 0
-        do {
-            try context.save()
-            print("✅ APIControllerCounter \(controllerName) 생성 및 저장 완료!")
-        } catch {
-            throw APICallCounterError.saveFailed(reason: error.localizedDescription)
-        }
-    }
+    // MARK: - 내부 함수
     
     /// 유저 검증
     @MainActor
@@ -106,6 +73,41 @@ public final class APICallCounterManager {
     
     //MARK: -  실제 호출하는 함수
     
+    /// 새로운 APICounter 생성 및 저장
+    @MainActor
+    public func createAPIControllerCounter(
+        for userId: Int,
+        controllerName: EndpointType
+    ) async throws {
+        let context = container.mainContext
+
+        // 1. 사용자 검색 : 현재 로그인한 유저를 디비에서 찾기
+        let descriptor = FetchDescriptor<UserData>(predicate: #Predicate { $0.userId == userId })
+        let users = try context.fetch(descriptor)
+
+        guard let user = users.first else {
+            throw APICallCounterError.userNotFound
+        }
+
+        // 2. 중복 컨트롤러 검사 : 현재 counting하는 컨트롤러 종류 찾기
+        if user.controllerCounters.contains(where: { $0.name == controllerName.rawValue }) {
+            throw APICallCounterError.controllerAlreadyExists(name: controllerName.rawValue)
+        }
+
+        // 3. 새로운 APICounter 및 APIControllerCounter 생성 : 없으면 새로 생성
+        let apiCounter = APICounter()
+        let controllerCounter = APIControllerCounter(name: controllerName, counter: apiCounter, user: user)
+        user.controllerCounters.append(controllerCounter)
+
+        // 4. 저장 : 저장하기 - 초기값은 모두 0
+        do {
+            try context.save()
+            print("✅ APIControllerCounter \(controllerName.rawValue) 생성 및 저장 완료!")
+        } catch {
+            throw APICallCounterError.saveFailed(reason: error.localizedDescription)
+        }
+    }
+    
     /// POST 호출 카운트 증가
     @MainActor
     public func incrementPost(for userId: Int, controllerName: String) async throws {
@@ -148,14 +150,14 @@ public final class APICallCounterManager {
     
     /// 호출 카운트 초기화
     @MainActor
-    public func resetCallCount(for userId: Int, controllerName: String) async throws {
+    public func resetCallCount(for userId: Int, controllerName: EndpointType) async throws {
         let context = container.mainContext
 
         // 1. 사용자 검색
         let user = try fetchUser(by: userId, in: context)
         
         // 2. 컨트롤러 검색
-        let controller = try fetchController(for: user, controllerName: controllerName)
+        let controller = try fetchController(for: user, controllerName: controllerName.rawValue)
         
         // 3. 호출 카운트 초기화
         let counter = controller.counter
@@ -166,7 +168,7 @@ public final class APICallCounterManager {
         // 4. 저장
         do {
             try context.save()
-            print("✅ \(controllerName)의 API 호출 카운트가 초기화되었습니다.")
+            print("✅ \(controllerName.rawValue)의 API 호출 카운트가 초기화되었습니다.")
         } catch {
             throw APICallCounterError.saveFailed(reason: error.localizedDescription)
         }

@@ -1,6 +1,6 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
-import Foundation
+import UIKit
 import SwiftData
 
 public final class WishlistDataManager {
@@ -21,9 +21,136 @@ public final class WishlistDataManager {
         }
     }()
     
-    // fetch
+    //MARK: - Methods
     
-    // create
+    /// 위시리스트 최초 생성 함수
+    @MainActor
+    public func createWishlistIfNeeded(for userId: Int, with newWines: [WineData]) async throws {
+        let context = container.mainContext
+
+        // 1. 사용자 확인
+        let user = try fetchUser(by: userId, in: context)
+
+        // 2. 위시리스트 존재 여부 확인
+        if user.wishlist != nil {
+            print("✅ 유저의 위시리스트가 이미 존재합니다.")
+            return
+        }
+
+        // 3. 위시리스트 생성
+        let newWishlist = Wishlist(wishlishWines: newWines, user: user) // 초기에는 빈 위시리스트
+        user.wishlist = newWishlist // 유저 연결
+
+        do {
+            try context.save()
+            print("✅ 새로운 위시리스트가 생성되었습니다.")
+        } catch {
+            throw WishlistError.saveFailed(reason: error.localizedDescription)
+        }
+    }
     
-    // delete
+    /// 위시리스트 와인 목록 가져오기
+    @MainActor
+    public func fetchWishlist(for userId: Int) async throws -> [WineData] {
+        let context = container.mainContext
+
+        // 1. 사용자 확인
+        let user = try fetchUser(by: userId, in: context)
+
+        // 2. 위시리스트 확인
+        guard let wishlist = user.wishlist else {
+            throw WishlistError.userNotFound
+        }
+
+        // 3. 위시리스트의 WineData 반환
+        return wishlist.wishlishWines
+    }
+    
+    /// 위시리스트 와인 목록 업데이트
+    @MainActor
+    public func updateWishlist(for userId: Int, with newWines: [WineData]) async throws {
+        let context = container.mainContext
+
+        // 1. 사용자 확인
+        let user = try fetchUser(by: userId, in: context)
+
+        // 2. 위시리스트 확인
+        guard let wishlist = user.wishlist else {
+            throw WishlistError.userNotFound
+        }
+
+        // 3. 위시리스트 업데이트
+        wishlist.wishlishWines = newWines
+
+        // 4. 저장
+        do {
+            try context.save()
+            print("✅ 위시리스트가 업데이트되었습니다. 새로운 와인: \(newWines.count)개")
+        } catch {
+            throw WishlistError.saveFailed(reason: error.localizedDescription)
+        }
+    }
+    
+    /// 위시리스트 삭제
+    @MainActor
+    public func deleteWishlist(for userId: Int) async throws {
+        let context = container.mainContext
+
+        // 1. 사용자 확인
+        let user = try fetchUser(by: userId, in: context)
+
+        // 2. 위시리스트 확인
+        guard let wishlist = user.wishlist else {
+            throw WishlistError.userNotFound
+        }
+
+        // 3. 위시리스트 삭제
+        context.delete(wishlist)
+        user.wishlist = nil // 유저와의 관계 해제
+
+        // 4. 저장
+        do {
+            try context.save()
+            print("✅ 위시리스트가 삭제되었습니다.")
+        } catch {
+            throw WishlistError.saveFailed(reason: error.localizedDescription)
+        }
+    }
+    
+    // MARK: - 내부 함수
+    
+    /// 유저 검증
+    @MainActor
+    private func fetchUser(by userId: Int, in context: ModelContext) throws -> UserData {
+        let descriptor = FetchDescriptor<UserData>(predicate: #Predicate { $0.userId == userId })
+        let users = try context.fetch(descriptor)
+        
+        guard let user = users.first else {
+            throw WishlistError.userNotFound
+        }
+        
+        return user
+    }
+}
+
+public enum WishlistError: Error {
+    case userNotFound
+    case controllerAlreadyExists(name: String)
+    case saveFailed(reason: String)
+    case unknown
+}
+
+extension WishlistError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .userNotFound:
+            return "사용자를 찾을 수 없습니다."
+        case .controllerAlreadyExists(let name):
+            return "The controller '\(name)' already exists for this user."
+        case .saveFailed(let reason):
+            return "Failed to save data. Reason: \(reason)"
+        case .unknown:
+            return "An unknown error occurred."
+        }
+    }
 }

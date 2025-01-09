@@ -16,7 +16,7 @@ public final class UserDataManager {
         }
     }
     
-    // MARK: - 유저 ID 생성 (기본 정보만)
+    /// 유저 ID 생성 (기본 정보만)
     @MainActor public func createUser(userId: Int) async {
         let context = container.mainContext
         
@@ -39,7 +39,7 @@ public final class UserDataManager {
         }
     }
     
-    // MARK: - 유저 이름 업데이트
+    /// 유저 이름 업데이트
     @MainActor public func updateUserName(userId: Int, userName: String) async {
         let context = container.mainContext
         
@@ -61,7 +61,7 @@ public final class UserDataManager {
         }
     }
     
-    // MARK: - 유저 이름 불러오기
+    /// 유저 이름 불러오기
     @MainActor public func fetchUser(userId: Int) async -> UserData? {
         let context = container.mainContext
         
@@ -76,7 +76,7 @@ public final class UserDataManager {
         }
     }
     
-    // MARK: - 유저 데이터 삭제
+    /// 유저 데이터 삭제
     @MainActor
     func deleteUser(userId: Int) {
         let context = container.mainContext
