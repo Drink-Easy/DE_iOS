@@ -35,4 +35,5 @@ public struct TastingNotePreviewResponseDTO : Decodable {
     public let noteId : Int
     public let wineName : String
     public let imageUrl : String
+    public let sort: String
 }
