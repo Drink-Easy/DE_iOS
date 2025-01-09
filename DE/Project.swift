@@ -57,9 +57,10 @@ let project = Project(
                         "NSAllowsArbitraryLoads" : true
                     ],
                     "UILaunchStoryboardName": "",
-                    "NSLocationWhenInUseUsageDescription" : "드링키지 어플을 사용일 때만 사용자의 위치를 가져옵니다.",
-                    "NSLocationAlwaysUsageDescription" : "항상 사용자의 위치를 가져옵니다.",
-                    "NSLocationAlwaysAndWhenInUseUsageDescription" : "앱 사용 중 및 백그라운드에서 사용자의 위치를 가져옵니다.",
+                    "NSLocationAlwaysAndWhenInUseUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 항상 혹은 앱 활성 시에만 허용하시겠습니까?",
+                    "NSLocationWhenInUseUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 앱 활성 시에만 허용하시겠습니까?",
+                    "NSLocationAlwaysUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 항상 허용하시겠습니까?",
+                    "NSCameraUsageDescription" : "사용자 프로필 설정을 위한 카메라 사용 권한을 허용하시겠습니까?",
 //                    // 런치 스크린
 //                    "UILaunchScreen" : [
 //                        "UIColorName" : "LaunchScreenBGColor",
@@ -150,6 +151,10 @@ let project = Project(
                         "NSAllowsArbitraryLoads" : true
                     ],
                     "UILaunchStoryboardName": "",
+                    "NSLocationAlwaysAndWhenInUseUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 항상 혹은 앱 활성 시에만 허용하시겠습니까?",
+                    "NSLocationWhenInUseUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 앱 활성 시에만 허용하시겠습니까?",
+                    "NSLocationAlwaysUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 항상 허용하시겠습니까?",
+                    "NSCameraUsageDescription" : "사용자 프로필 설정을 위한 카메라 사용 권한을 허용하시겠습니까?",
                     // 런치 스크린
                     //                    "UILaunchScreen" : [
                     //                        "UIColorName" : "LaunchScreenBGColor",

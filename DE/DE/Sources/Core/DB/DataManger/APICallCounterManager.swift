@@ -186,7 +186,7 @@ extension APICallCounterError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .userNotFound:
-            return "User not found."
+            return "사용자를 찾을 수 없습니다."
         case .controllerAlreadyExists(let name):
             return "The controller '\(name)' already exists for this user."
         case .saveFailed(let reason):
