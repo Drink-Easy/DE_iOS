@@ -19,6 +19,9 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     private let ValidationManager = NicknameValidateManager()
     
+    lazy var profileImgFileName: String = ""
+    lazy var profileImg: UIImage? = nil
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
@@ -39,7 +42,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         setupActions()
         configureTapGestureForDismissingPicker()
     }
-        
+    
     // MARK: - 네비게이션 바 설정
     func setupNavigationBar() {
         navigationBarManager.setTitle(to: navigationItem, title: "프로필 설정", textColor: AppColor.black!)
@@ -66,7 +69,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
             make.height.equalTo(Constants.superViewHeight * 0.9)
         }
     }
-
+    
     func setupActions() {
         profileView.profileImageEditButton.addTarget(self, action: #selector(selectProfileImage), for: .touchUpInside)
         profileView.nicknameTextField.textField.addTarget(self, action: #selector(validateNickname), for: .editingChanged)
@@ -81,7 +84,17 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     }
     
     @objc private func editCompleteTapped() {
-        navigationController?.popViewController(animated: true)
+        let profileDTO = networkService.makeMemberInfoUpdateRequestDTO(username: profileView.nicknameTextField.text! , city: profileView.myLocationTextField.text ?? "예시 위치 정보")
+        networkService.patchUserInfo(imageName: profileImgFileName, imageData: profileImg!, body: profileDTO) { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let response):
+                print("프로필 업데이트 완료")
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
     
     func configureTapGestureForDismissingPicker() {
@@ -96,22 +109,47 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     // 프로필 이미지 선택
     @objc func selectProfileImage() {
-        var configuration = PHPickerConfiguration()
-        configuration.filter = .images // 이미지만 선택 가능
-        configuration.selectionLimit = 1 // 하나의 이미지만 선택
-
-        let picker = PHPickerViewController(configuration: configuration)
-        picker.delegate = self
-        present(picker, animated: true, completion: nil)
+        let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = .photoLibrary // 사진 라이브러리에서 선택
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true // 선택 후 편집 가능
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true, completion: nil) // Picker 닫기
+        
+        // 이미지를 편집했는지 확인하고, 없으면 원본 이미지 사용
+        if let editedImage = info[.editedImage] as? UIImage {
+            profileView.profileImageView.image = editedImage
+            handleImage(editedImage)
+        } else if let originalImage = info[.originalImage] as? UIImage {
+            profileView.profileImageView.image = originalImage
+            handleImage(originalImage)
+        } else {
+            print("이미지를 불러올 수 없습니다.")
+        }
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil) // Picker 닫기
+    }
+    
+    private func handleImage(_ image: UIImage) {
+        // 고유한 파일 이름 생성
+        profileImgFileName = "\(UUID().uuidString).jpeg"
+        
+        // 이미지를 저장하는 추가 작업 수행
+        profileImg = image
     }
     
     //MARK: - 위치 정보 불러오기 로직
     @objc func getMyLocation() {
-//        LocationManager.shared.requestLocationPermission { [weak self] address in
-//            DispatchQueue.main.async {
-//                self?.profileView.myLocationTextField.textField.text = address ?? ""
-//            }
-//        }
+        //        LocationManager.shared.requestLocationPermission { [weak self] address in
+        //            DispatchQueue.main.async {
+        //                self?.profileView.myLocationTextField.textField.text = address ?? ""
+        //            }
+        //        }
     }
     
     //MARK: - 닉네임 중복 검사
@@ -136,29 +174,5 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         let isLocationValid = !(profileView.myLocationTextField.textField.text?.isEmpty ?? true)
         let isImageSelected = profileView.profileImageView.image != nil
         let isFormValid = isNicknameValid && isLocationValid && isImageSelected
-    }
-}
-
-extension ProfileEditVC: PHPickerViewControllerDelegate {
-    public func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        picker.dismiss(animated: true, completion: nil)
-
-        guard let result = results.first else { return }
-
-        if result.itemProvider.canLoadObject(ofClass: UIImage.self) {
-            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (object, error) in
-                guard let self = self else { return }
-                if let image = object as? UIImage {
-                    DispatchQueue.main.async {
-                        self.profileView.profileImageView.image = image
-                        //TODO: 이미지 데이터 어디에 저장?
-                    }
-                } else {
-                    print("이미지를 불러오지 못했습니다: \(error?.localizedDescription ?? "알 수 없는 오류")")
-                }
-            }
-        } else {
-            print("선택한 항목에서 이미지를 로드할 수 없습니다.")
-        }
     }
 }
