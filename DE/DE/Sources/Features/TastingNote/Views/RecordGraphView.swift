@@ -3,6 +3,7 @@
 import UIKit
 import CoreModule
 import AMPopTip
+import SwiftUI
 
 class RecordGraphView: UIView, UIScrollViewDelegate {
     
@@ -20,8 +21,8 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
     let pageLabel: UILabel = {
         let p = UILabel()
         p.textColor = AppColor.gray80
-        let fullText = "3/5"
-        let coloredText = "3"
+        let fullText = "4/5"
+        let coloredText = "4"
         let attributedString = fullText.withColor(for: coloredText, color: AppColor.purple70 ?? UIColor(hex: "9741BF")!)
         p.attributedText = attributedString
         p.font = .ptdMediumFont(ofSize: 16)
@@ -33,7 +34,8 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         w.text = "루이 로드레 크리스탈 2015"
         w.font = .ptdSemiBoldFont(ofSize: 24)
         w.textColor = .black
-        w.textAlignment = .center
+        w.textAlignment = .left
+        w.numberOfLines = 0
         return w
     }()
     
@@ -47,7 +49,7 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
     
     let graphLabel: UILabel = {
         let g = UILabel()
-        g.text = "Graph"
+        g.text = "Palate"
         g.textColor = .black
         g.textAlignment = .center
         g.font = .ptdSemiBoldFont(ofSize: 20)
@@ -56,7 +58,7 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
     
     let graphLabelKorean: UILabel = {
         let g = UILabel()
-        g.text = "그래프"
+        g.text = "맛"
         g.textColor = UIColor(hex: "919191")
         g.textAlignment = .center
         g.font = .ptdRegularFont(ofSize: 14)
@@ -65,7 +67,7 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
     
     let vector: UIView = {
         let v = UIView()
-        v.backgroundColor = UIColor(hex: "#B06FCD")
+        v.backgroundColor = AppColor.purple50
         return v
     }()
     
@@ -74,6 +76,13 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         return p
     }()
 
+    let hostingController: UIHostingController<PentagonChartView> = {
+        let chartView = PentagonChartView()
+        let hosting = UIHostingController(rootView: chartView)
+        hosting.view.backgroundColor = .clear
+        return hosting
+    }()
+    
     let graphRecordLabel: UILabel = {
         let g = UILabel()
         g.text = "Graph Record"
@@ -94,7 +103,7 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
     
     let vector2: UIView = {
         let v = UIView()
-        v.backgroundColor = UIColor(hex: "#B06FCD")
+        v.backgroundColor = AppColor.purple50
         return v
     }()
     
@@ -121,8 +130,8 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         return s
     }()
     
-    let sweetSlider: CustomSlider = {
-        let c = CustomSlider()
+    let sweetSlider: CustomStepSlider = {
+        let c = CustomStepSlider()
         return c
     }()
     
@@ -149,8 +158,8 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         return s
     }()
     
-    let acidSlider: CustomSlider = {
-        let c = CustomSlider()
+    let acidSlider: CustomStepSlider = {
+        let c = CustomStepSlider()
         return c
     }()
     
@@ -177,8 +186,8 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         return s
     }()
     
-    let tanninSlider: CustomSlider = {
-        let c = CustomSlider()
+    let tanninSlider: CustomStepSlider = {
+        let c = CustomStepSlider()
         return c
     }()
     
@@ -205,8 +214,8 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         return s
     }()
     
-    let bodySlider: CustomSlider = {
-        let c = CustomSlider()
+    let bodySlider: CustomStepSlider = {
+        let c = CustomStepSlider()
         return c
     }()
     
@@ -233,8 +242,8 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         return s
     }()
     
-    let alcoholSlider: CustomSlider = {
-        let c = CustomSlider()
+    let alcoholSlider: CustomStepSlider = {
+        let c = CustomStepSlider()
         return c
     }()
     
@@ -247,6 +256,10 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         n.layer.cornerRadius = 14
         return n
     }()
+    
+    func updateUI(wineName: String) {
+        wineNameLabel.text = wineName
+    }
     
     func setupUI() {
         addSubview(scrollView)
@@ -272,6 +285,7 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         wineNameLabel.snp.makeConstraints { make in
             make.top.equalTo(pageLabel.snp.bottom).offset(2)
             make.leading.equalToSuperview().offset(24)
+            make.trailing.equalToSuperview().offset(-24)
         }
         
         contentView.addSubview(wineImage)
@@ -284,7 +298,7 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         graphLabel.snp.makeConstraints { make in
             make.top.equalTo(wineNameLabel.snp.bottom).offset(38)
             make.leading.equalToSuperview().offset(24)
-            make.width.equalTo(57)
+            // make.width.equalTo(57)
         }
         
         contentView.addSubview(graphLabelKorean)
@@ -301,17 +315,18 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
             make.centerX.equalToSuperview()
         }
         
-        contentView.addSubview(polygonChart)
-        polygonChart.snp.makeConstraints { make in
+        let chartView = hostingController.view!
+        contentView.addSubview(chartView)
+        chartView.snp.makeConstraints { make in
             make.top.equalTo(vector.snp.bottom).offset(25)
-            make.leading.equalTo(vector.snp.leading).offset(17)
+            make.leading.equalTo(vector.snp.leading) // .offset()
             make.centerX.equalTo(vector.snp.centerX)
-            make.height.equalTo(311)
+            make.height.equalTo(250)
         }
         
         contentView.addSubview(graphRecordLabel)
         graphRecordLabel.snp.makeConstraints { make in
-            make.top.equalTo(polygonChart.snp.bottom).offset(57)
+            make.top.equalTo(chartView.snp.bottom).offset(57)
             make.leading.equalTo(graphLabel.snp.leading)
         }
         
@@ -331,15 +346,16 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         
         contentView.addSubview(sweetnessLabel)
         sweetnessLabel.snp.makeConstraints { make in
-            make.top.equalTo(vector2.snp.bottom).offset(58)
+            make.top.equalTo(vector2.snp.bottom).offset(70)
             make.leading.equalTo(vector2.snp.leading)
         }
         
         contentView.addSubview(sweetToolTip)
         sweetToolTip.snp.makeConstraints { make in
-            make.top.equalTo(sweetnessLabel).offset(6)
+            // make.top.equalTo(sweetnessLabel).offset(6)
             make.centerY.equalTo(sweetnessLabel)
             make.leading.equalTo(sweetnessLabel.snp.trailing).offset(4)
+            make.width.height.equalTo(12)
         }
         
         contentView.addSubview(sweetSlider)
@@ -348,6 +364,7 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
             make.leading.equalTo(sweetToolTip.snp.trailing).offset(23)
             make.centerY.equalTo(sweetToolTip.snp.centerY)
             make.trailing.equalTo(vector2.snp.trailing)
+            make.width.equalTo(250)
         }
         
         contentView.addSubview(acidLabel)
@@ -358,17 +375,18 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         
         contentView.addSubview(acidToolTip)
         acidToolTip.snp.makeConstraints { make in
-            make.top.equalTo(acidLabel).offset(6)
             make.centerY.equalTo(acidLabel)
             make.leading.equalTo(acidLabel.snp.trailing).offset(4)
+            make.width.height.equalTo(12)
         }
         
         contentView.addSubview(acidSlider)
         acidSlider.snp.makeConstraints { make in
             make.top.equalTo(acidToolTip.snp.top).offset(3)
-            make.leading.trailing.equalTo(sweetSlider)
+            make.leading.equalTo(acidToolTip.snp.trailing).offset(23)
             make.centerY.equalTo(acidToolTip.snp.centerY)
-            make.trailing.equalTo(sweetSlider.snp.trailing)
+            make.trailing.equalTo(vector2.snp.trailing)
+            make.width.equalTo(250)
         }
         
         contentView.addSubview(tanninLabel)
@@ -379,17 +397,18 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         
         contentView.addSubview(tanninToolTip)
         tanninToolTip.snp.makeConstraints { make in
-            make.top.equalTo(tanninLabel).offset(6)
             make.centerY.equalTo(tanninLabel)
             make.leading.equalTo(tanninLabel.snp.trailing).offset(4)
+            make.width.height.equalTo(12)
         }
         
         contentView.addSubview(tanninSlider)
         tanninSlider.snp.makeConstraints { make in
             make.top.equalTo(tanninToolTip.snp.top).offset(3)
-            make.leading.trailing.equalTo(acidSlider)
+            make.leading.equalTo(tanninToolTip.snp.trailing).offset(23)
             make.centerY.equalTo(tanninToolTip.snp.centerY)
-            make.trailing.equalTo(acidSlider.snp.trailing)
+            make.trailing.equalTo(vector2.snp.trailing)
+            make.width.equalTo(250)
         }
         
         contentView.addSubview(bodyLabel)
@@ -400,17 +419,18 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         
         contentView.addSubview(bodyToolTip)
         bodyToolTip.snp.makeConstraints { make in
-            make.top.equalTo(bodyLabel).offset(6)
             make.centerY.equalTo(bodyLabel)
             make.leading.equalTo(bodyLabel.snp.trailing).offset(4)
+            make.width.height.equalTo(12)
         }
         
         contentView.addSubview(bodySlider)
         bodySlider.snp.makeConstraints { make in
             make.top.equalTo(bodyToolTip.snp.top).offset(3)
-            make.leading.trailing.equalTo(tanninSlider)
+            make.leading.equalTo(bodyToolTip.snp.trailing).offset(23)
             make.centerY.equalTo(bodyToolTip.snp.centerY)
-            make.trailing.equalTo(tanninSlider.snp.trailing)
+            make.trailing.equalTo(vector2.snp.trailing)
+            make.width.equalTo(250)
         }
         
         contentView.addSubview(alcoholLabel)
@@ -421,17 +441,18 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         
         contentView.addSubview(alcoholToolTip)
         alcoholToolTip.snp.makeConstraints { make in
-            make.top.equalTo(alcoholLabel).offset(6)
             make.centerY.equalTo(alcoholLabel)
             make.leading.equalTo(alcoholLabel.snp.trailing).offset(4)
+            make.width.height.equalTo(12)
         }
         
         contentView.addSubview(alcoholSlider)
         alcoholSlider.snp.makeConstraints { make in
             make.top.equalTo(alcoholToolTip.snp.top).offset(3)
-            make.leading.trailing.equalTo(bodySlider)
+            make.leading.equalTo(alcoholToolTip.snp.trailing).offset(23)
             make.centerY.equalTo(alcoholToolTip.snp.centerY)
-            make.trailing.equalTo(bodySlider.snp.trailing)
+            make.trailing.equalTo(vector2)
+            make.width.equalTo(250)
         }
         
         contentView.addSubview(nextButton)

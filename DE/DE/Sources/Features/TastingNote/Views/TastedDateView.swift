@@ -3,9 +3,22 @@
 import UIKit
 import CoreModule
 import Then
+import Network
 
 class TastedDateView: UIView {
-
+    
+    private let scrollView: UIScrollView = {
+        let s = UIScrollView()
+        s.backgroundColor = .clear
+        return s
+    }()
+    
+    private let contentView: UIView = {
+        let c = UIView()
+        c.backgroundColor = AppColor.gray20
+        return c
+    }()
+    
     let pageLabel = UILabel().then {
         $0.textColor = AppColor.gray80
         let fullText = "1/5"
@@ -19,6 +32,7 @@ class TastedDateView: UIView {
         $0.text = "루이 로드레 크리스탈 2015"
         $0.textColor = UIColor(hex: "#7E13B1")
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.numberOfLines = 0
     }
     
     let label = UILabel().then {
@@ -34,7 +48,7 @@ class TastedDateView: UIView {
         $0.fontDesign = .rounded
         $0.layer.cornerRadius = 10
         $0.wantsDateDecorations = true
-        $0.tintColor = UIColor(hex: "#7E13B1")
+        $0.tintColor = AppColor.purple100
     }
     
     let nextButton = UIButton().then {
@@ -48,26 +62,40 @@ class TastedDateView: UIView {
     func setupUI() {
         backgroundColor = AppColor.gray20
         
-        addSubview(pageLabel)
+        addSubview(scrollView)
+        scrollView.snp.makeConstraints { make in
+            make.top.equalTo(safeAreaLayoutGuide)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
+        
+        scrollView.addSubview(contentView)
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalToSuperview()
+        }
+        
+        contentView.addSubview(pageLabel)
         pageLabel.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide).offset(10)
+            make.top.equalToSuperview().offset(10)
             make.leading.equalToSuperview().offset(24)
         }
         
-        addSubview(wineName)
+        contentView.addSubview(wineName)
         wineName.snp.makeConstraints { make in
             make.top.equalTo(pageLabel.snp.bottom).offset(2)
             make.leading.equalTo(pageLabel)
+            make.trailing.equalToSuperview().offset(-25)
         }
         
-        addSubview(label)
+        contentView.addSubview(label)
         label.snp.makeConstraints { make in
             make.top.equalTo(wineName.snp.bottom).offset(1)
             make.leading.equalTo(wineName.snp.leading)
             
         }
         
-        addSubview(calender)
+        contentView.addSubview(calender)
         calender.snp.makeConstraints { make in
             make.top.equalTo(label.snp.bottom).offset(36)
             make.leading.equalToSuperview().offset(21)
@@ -75,13 +103,21 @@ class TastedDateView: UIView {
             make.height.equalTo(Constants.superViewHeight*0.5)
         }
         
-        addSubview(nextButton)
+        contentView.addSubview(nextButton)
         nextButton.snp.makeConstraints { make in
-            make.bottom.equalTo(safeAreaLayoutGuide).offset(-42)
+            make.top.equalTo(calender.snp.bottom).offset(130)
             make.centerX.equalToSuperview()
             make.leading.equalToSuperview().offset(28)
             make.height.equalTo(Constants.superViewHeight*0.06)
         }
+        
+        contentView.snp.makeConstraints { make in
+            make.bottom.equalTo(nextButton.snp.bottom).offset(40)
+        }
+    }
+
+    func updateUI(wineName: String) {
+        self.wineName.text = wineName
     }
     
     override init(frame: CGRect) {

@@ -57,6 +57,9 @@ let project = Project(
                         "NSAllowsArbitraryLoads" : true
                     ],
                     "UILaunchStoryboardName": "",
+                    "NSLocationWhenInUseUsageDescription" : "드링키지 어플을 사용일 때만 사용자의 위치를 가져옵니다.",
+                    "NSLocationAlwaysUsageDescription" : "항상 사용자의 위치를 가져옵니다.",
+                    "NSLocationAlwaysAndWhenInUseUsageDescription" : "앱 사용 중 및 백그라운드에서 사용자의 위치를 가져옵니다.",
 //                    // 런치 스크린
 //                    "UILaunchScreen" : [
 //                        "UIColorName" : "LaunchScreenBGColor",
@@ -237,7 +240,8 @@ let project = Project(
                 
                 .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK"),
-                .external(name: "AMPopTip")
+                .external(name: "AMPopTip"),
+                .external(name: "PolyKit")
             ]
         ),
         .target(
@@ -411,7 +415,7 @@ let project = Project(
             dependencies: [
                 .target(name: "Network"),
                 .target(name: "HomeModule"),
-                
+                .target(name: "UserSurveyModule")
             ]
         ),
         .target(
@@ -423,20 +427,8 @@ let project = Project(
             resources: ["DE/Resources/**"],
             dependencies: [
                 .target(name: "Network"),
-                .external(name: "AMPopTip")
-            ]
-        ),
-        .target(
-            name: "HomeModule",
-            destinations: .iOS,
-            product: .staticFramework,
-            bundleId: "\(bundleId).\(bundleMid).HomeModule",
-            sources: ["DE/Sources/Features/Home/**"],
-            resources: ["DE/Resources/**"],
-            dependencies: [
-                .target(name: "SearchModule"),
-                .target(name: "TastingNote"),
-                .target(name: "CommunityModule")
+                .external(name: "AMPopTip"),
+                .external(name: "PolyKit")
             ]
         ),
         .target(
@@ -451,11 +443,47 @@ let project = Project(
             ]
         ),
         .target(
+            name: "HomeModule",
+            destinations: .iOS,
+            product: .staticFramework,
+            bundleId: "\(bundleId).\(bundleMid).HomeModule",
+            sources: ["DE/Sources/Features/Home/**"],
+            resources: ["DE/Resources/**"],
+            dependencies: [
+                .target(name: "SearchModule"),
+                .target(name: "TastingNote"),
+                .target(name: "CommunityModule"),
+                .target(name: "SettingModule")
+            ]
+        ),
+        .target(
             name: "CommunityModule",
             destinations: .iOS,
             product: .staticFramework,
             bundleId: "\(bundleId).\(bundleMid).CommunityModule",
             sources: ["DE/Sources/Features/Community/**"],
+            resources: ["DE/Resources/**"],
+            dependencies: [
+                .target(name: "Network")
+            ]
+        ),
+        .target(
+            name: "UserSurveyModule",
+            destinations: .iOS,
+            product: .staticFramework,
+            bundleId: "\(bundleId).\(bundleMid).UserSurveyModule",
+            sources: ["DE/Sources/Features/UserSurvey/**"],
+            resources: ["DE/Resources/**"],
+            dependencies: [
+                .target(name: "Network")
+            ]
+        ),
+        .target(
+            name: "SettingModule",
+            destinations: .iOS,
+            product: .staticFramework,
+            bundleId: "\(bundleId).\(bundleMid).SettingModule",
+            sources: ["DE/Sources/Features/Setting/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
                 .target(name: "Network")

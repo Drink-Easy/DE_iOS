@@ -10,13 +10,19 @@ import CoreModule
 class SignUpView: UIView {
     
     // MARK: - UI Components
-    let emailField = CustomLabelTextFieldView(
+    lazy var usernameField = CustomLabelTextFieldView(
         descriptionImageIcon: "person.fill",
         descriptionLabelText: "이메일",
         textFieldPlaceholder: "이메일을 입력해 주세요",
-        validationText: "이메일 형식이 올바르지 않습니다"
+        validationText: "유효하지 않은 이메일 형식입니다"
     ).then {
         $0.textField.keyboardType = .emailAddress
+    }
+    
+    let checkEmailButton = UIButton().then {
+        $0.setTitle("중복 확인", for: .normal)
+        $0.setTitleColor(AppColor.gray70, for: .normal)
+        $0.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 12)
     }
 
     let passwordField = CustomLabelTextFieldView(
@@ -42,7 +48,7 @@ class SignUpView: UIView {
     let signupButton = CustomButton(
         title: "회원가입",
         titleColor: .white,
-        backgroundColor: AppColor.gray80!
+        isEnabled: false
     ).then {
         $0.isEnabled = false
     }
@@ -61,19 +67,23 @@ class SignUpView: UIView {
     
     // MARK: - Setup UI
     private func setupUI() {
-        [emailField, passwordField, confirmPasswordField, signupButton].forEach {
+        [usernameField, checkEmailButton, passwordField, confirmPasswordField, signupButton].forEach {
             addSubview($0)
         }
     }
     
     // MARK: - Setup Constraints
     private func setupConstraints() {
-        emailField.snp.makeConstraints { make in
+        usernameField.snp.makeConstraints { make in
             make.top.equalTo(Constants.superViewHeight * 0.2)
             make.leading.trailing.equalToSuperview().inset(Constants.padding)
         }
+        checkEmailButton.snp.makeConstraints { make in
+            make.top.equalTo(Constants.superViewHeight * 0.2)
+            make.trailing.equalToSuperview().inset(Constants.padding)
+        }
         passwordField.snp.makeConstraints { make in
-            make.top.equalTo(emailField.snp.bottom).offset(32)
+            make.top.equalTo(usernameField.snp.bottom).offset(32)
             make.leading.trailing.equalToSuperview().inset(Constants.padding)
         }
         confirmPasswordField.snp.makeConstraints { make in

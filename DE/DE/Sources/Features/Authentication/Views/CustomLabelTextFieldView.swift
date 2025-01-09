@@ -1,4 +1,4 @@
-// Copyright © 2024 RT4. All rights reserved
+// Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
 import CoreModule
@@ -61,7 +61,7 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
         // 아이콘 설정
         iconImageView.image = UIImage(systemName: descriptionImageIcon)?.withRenderingMode(.alwaysTemplate)
         iconImageView.contentMode = .scaleAspectFit
-        iconImageView.tintColor = AppColor.gray60
+        iconImageView.tintColor = AppColor.gray50
         
         // 설명 라벨 설정
         descriptionLabel.text = descriptionLabelText
@@ -71,15 +71,15 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
         // 텍스트 필드 설정
         textField.placeholder = textFieldPlaceholder
         textField.borderStyle = .none
-        textField.font = UIFont.systemFont(ofSize: 16)
-        textField.backgroundColor = AppColor.gray30
+        textField.font = UIFont.ptdMediumFont(ofSize: 14)
+        textField.backgroundColor = AppColor.gray10
         textField.delegate = self
-        textField.layer.borderColor = AppColor.gray30?.cgColor
+        textField.layer.borderColor = AppColor.gray10?.cgColor
         textField.layer.borderWidth = 2
-        textField.layer.cornerRadius = 15
+        textField.layer.cornerRadius = 10
         textField.isSecureTextEntry = isPasswordField // 비밀번호 필드 여부에 따라 처리
         
-        let placeholderColor = AppColor.gray80
+        let placeholderColor = AppColor.gray70
         textField.attributedPlaceholder = NSAttributedString(
             string: textFieldPlaceholder,
             attributes: [NSAttributedString.Key.foregroundColor: placeholderColor ?? UIColor.systemGray]
@@ -88,7 +88,7 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
         // 유효성 라벨 설정
         validationLabel.text = validationText
         validationLabel.textColor = AppColor.red
-        validationLabel.font = UIFont.systemFont(ofSize: 12)
+        validationLabel.font = UIFont.ptdMediumFont(ofSize: 12)
         validationLabel.isHidden = true
         
         // UI 추가
@@ -101,7 +101,7 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
         if let toggleButton = toggleButton {
             addSubview(toggleButton)
             toggleButton.setImage(UIImage(systemName: "eye.slash"), for: .normal)
-            toggleButton.tintColor = AppColor.gray60
+            toggleButton.tintColor = AppColor.gray50
             toggleButton.addTarget(self, action: #selector(togglePasswordVisibility), for: .touchUpInside)
             
             toggleButton.snp.makeConstraints { make in
@@ -121,14 +121,14 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
             make.top.equalToSuperview()
             make.leading.equalToSuperview().offset(16)
         }
-        validationLabel.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(10)
-            make.centerY.equalTo(descriptionLabel)
-        }
         textField.snp.makeConstraints { make in
             make.top.equalTo(descriptionLabel.snp.bottom).offset(10)
             make.leading.trailing.bottom.equalToSuperview()
             make.height.equalTo(60)
+        }
+        validationLabel.snp.makeConstraints { make in
+            make.top.equalTo(textField.snp.bottom).offset(5)
+            make.leading.equalTo(descriptionLabel.snp.leading)
         }
     }
     
@@ -144,26 +144,9 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
     }
     
     // MARK: - 유효성 검사 업데이트
-    func updateValidationText(_ text: String, isHidden: Bool) {
+    func updateValidationText(_ text: String, isHidden: Bool, color: UIColor?) {
         validationLabel.text = text
         validationLabel.isHidden = isHidden
-    }
-    
-    private func updateTextFieldStyle(isEditing: Bool) {
-        if !isEditing {
-            textField.backgroundColor = AppColor.gray30
-            textField.layer.borderColor = AppColor.gray30?.cgColor
-            iconImageView.tintColor = AppColor.gray60
-            validationLabel.isHidden = true
-        }
-    }
-    
-    // MARK: - 텍스트필드 델리게이트
-    public func textFieldDidBeginEditing(_ textField: UITextField) {
-        updateTextFieldStyle(isEditing: true)
-    }
-    
-    public func textFieldDidEndEditing(_ textField: UITextField) {
-        updateTextFieldStyle(isEditing: false)
+        validationLabel.textColor = color
     }
 }

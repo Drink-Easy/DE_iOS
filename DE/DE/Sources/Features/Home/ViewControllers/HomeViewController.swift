@@ -13,6 +13,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     var popularWineDataList: [HomeWineModel] = []
     
     private let maxShowWineCount = 5
+    public var userId : Int?
     
     public var userName: String = "" {
         didSet {
@@ -58,11 +59,34 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     }
     
     private lazy var likeWineListView = RecomView().then {
-        $0.title.text = "\(userName) 님이 좋아할 만한 와인"
+        $0.title.text = "For \(userName),"
         $0.title.setPartialTextStyle(text: $0.title.text ?? "", targetText: "\(userName)", color: AppColor.purple100 ?? .purple, font: UIFont.ptdSemiBoldFont(ofSize: 26))
         $0.recomCollectionView.delegate = self
         $0.recomCollectionView.dataSource = self
         $0.recomCollectionView.tag = 1
+        
+        $0.moreBtn.addTarget(self, action: #selector(goToMoreLikely), for: .touchUpInside)
+    }
+    
+    public func fetchName() {
+        Task {
+            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+                print("⚠️ userId가 UserDefaults에 없습니다.")
+                return
+            }
+            guard let user = await UserDataManager.shared.fetchUser(userId: userId) else {
+                print("⚠️ 저장된 유저 이름이 없습니다.")
+                return
+            }
+            self.userName = user.userName ?? "이름없음"
+        }
+    }
+    
+    @objc
+    private func goToMoreLikely() {
+        let vc = MoreLikelyWineViewController()
+        vc.userName = self.userName
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     private lazy var popularWineListView = RecomView().then {
@@ -70,6 +94,14 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         $0.recomCollectionView.delegate = self
         $0.recomCollectionView.dataSource = self
         $0.recomCollectionView.tag = 2
+        
+        $0.moreBtn.addTarget(self, action: #selector(goToMorePopular), for: .touchUpInside)
+    }
+    
+    @objc
+    private func goToMorePopular() {
+        let vc = MorePopularWineViewController()
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     public override func viewDidLoad() {
@@ -86,6 +118,8 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         
         fetchWines(type: .recommended)
         fetchWines(type: .popular)
+        fetchName()
+        
     }
     
     private func addComponents() {
@@ -110,7 +144,6 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
             $0.edges.equalTo(scrollView) // 스크롤뷰의 모든 가장자리에 맞춰 배치
             $0.width.equalTo(scrollView.snp.width) // 가로 스크롤을 방지, 스크롤뷰와 같은 너비로 설정
             $0.bottom.equalTo(popularWineListView.snp.bottom).offset(46)
-            
         }
         
         adCollectionView.snp.makeConstraints {
@@ -172,22 +205,32 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     
     func fetchWines(type: WineListType) {
         Task {
-            // 1. 캐시 데이터 확인
-            let cachedWines = await WineDataManager.shared.fetchWines(type: type)
-            if !cachedWines.isEmpty {
-                print("✅ 캐시된 \(type.rawValue) 데이터 사용: \(cachedWines.count)개")
-                updateCollectionView(type: type, with: cachedWines) // 👉 바로 업데이트
+            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+                print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
+            self.userId = userId
+            do {
+                // 1. 캐시 데이터 우선 사용
+                let cachedWines = try WineDataManager.shared.fetchWineDataList(userId: userId, wineListType: type)
+                if !cachedWines.isEmpty {
+                    print("✅ 캐시된 \(type.rawValue) 데이터 사용: \(cachedWines.count)개")
+                    updateCollectionView(type: type, with: cachedWines) // 👉 바로 업데이트
+                    return
+                }
+            } catch {
+                print("⚠️ 캐시된 데이터 없음")
+            }
             
-            // 2. 네트워크 요청 처리
+            // 2. 캐시 데이터가 없으면 네트워크 요청
+            print("🌐 네트워크 요청 시작")
             await fetchWinesFromNetwork(type: type)
         }
     }
 
     // MARK: - 네트워크 요청 처리
     private func fetchWinesFromNetwork(type: WineListType) async {
-        let fetchFunction: (@escaping (Result<[HomeWineDTO], NetworkError>) -> Void) -> Void
+        let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
 
         switch type {
         case .recommended:
@@ -203,7 +246,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                 switch result {
                 case .success(let responseData):
                     Task {
-                        await self.processWineData(type: type, responseData: responseData)
+                        await self.processWineData(type: type, responseData: responseData.0, time: responseData.1 ?? 3600)
                         continuation.resume()
                     }
                 case .failure(let error):
@@ -214,7 +257,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         }
     }
     
-    private func processWineData(type: WineListType, responseData: [HomeWineDTO]) async {
+    private func processWineData(type: WineListType, responseData: [HomeWineDTO], time: TimeInterval) async {
         let wines = responseData.map {
             WineData(wineId: $0.wineId,
                      imageUrl: $0.imageUrl,
@@ -225,11 +268,12 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         }
         
         do {
-            // 1. 기존 데이터 삭제 및 저장
-            try await WineDataManager.shared.deleteWineList(type: type)
-            try await WineDataManager.shared.saveWines(wines, type: type)
+            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+                print("⚠️ userId가 UserDefaults에 없습니다.")
+                return
+            }
+            try await WineDataManager.shared.saveWineData(userId: userId, wineListType: type, wineData: wines, expirationInterval: time)
             print("✅ \(type.rawValue) 저장 완료: \(wines.count)개")
-            
             updateCollectionView(type: type, with: wines)
         } catch {
             print("❌ 데이터 저장 중 오류 발생: \(error)")
@@ -237,7 +281,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     }
     
     private func updateLikeWineListView() {
-        likeWineListView.title.text = "\(userName) 님이 좋아할 만한 와인"
+        likeWineListView.title.text = "For \(userName),"
         likeWineListView.title.setPartialTextStyle(
             text: likeWineListView.title.text ?? "",
             targetText: "\(userName)",
@@ -330,7 +374,9 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 1 || collectionView.tag == 2 {
-            //let vc = WineDetailViewController
+            let vc = HomeWineDetailViewController()
+            vc.wineId = (collectionView.tag == 1) ? recommendWineDataList[indexPath.row].wineId : popularWineDataList[indexPath.row].wineId
+            navigationController?.pushViewController(vc, animated: true)
         }
     }
     

@@ -10,13 +10,13 @@ import CoreModule
 final class LoginView: UIView {
     
     // MARK: - UI Components
-    lazy var emailField = CustomLabelTextFieldView(
+    lazy var usernameField = CustomLabelTextFieldView(
         descriptionImageIcon: "person.fill",
         descriptionLabelText: "이메일",
-        textFieldPlaceholder: "이메일을 입력해 주세요",
-        validationText: "사용할 수 없는 이메일입니다"
+        textFieldPlaceholder: "이메일 입력해 주세요",
+        validationText: "유효하지 않은 이메일 형식입니다"
     ).then {
-        $0.textField.keyboardType = .emailAddress
+        $0.textField.keyboardType = .default
     }
 
     lazy var passwordField = CustomLabelTextFieldView(
@@ -30,18 +30,18 @@ final class LoginView: UIView {
     }
     
     let joinStackView = JoinStackView()
-    lazy var emailSaveCheckBox = CustomCheckSquareButton(title: "아이디 저장하기")
+    lazy var idSaveCheckBox = CustomCheckSquareButton(title: "아이디 저장하기")
     
     let idSearchButton = UIButton().then {
         $0.setTitle("아이디 / 비밀번호 찾기", for: .normal)
-        $0.setTitleColor(UIColor(hex: "#191919"), for: .normal)
+        $0.setTitleColor(AppColor.black, for: .normal)
         $0.titleLabel?.font = UIFont.ptdMediumFont(ofSize: 14)
     }
     
     let loginButton = CustomButton(
         title: "로그인",
         titleColor: .white,
-        backgroundColor: AppColor.gray80!
+        isEnabled: false
     )
     
     // MARK: - 초기화
@@ -57,27 +57,27 @@ final class LoginView: UIView {
     
     // MARK: - UI 설정
     private func setupUI() {
-        [emailField, passwordField, emailSaveCheckBox, idSearchButton, joinStackView, loginButton].forEach {
+        [usernameField, passwordField, idSaveCheckBox, idSearchButton, joinStackView, loginButton].forEach {
             addSubview($0)
         }
     }
     
     // MARK: - Constraints
     private func setupConstraints() {
-        emailField.snp.makeConstraints { make in
+        usernameField.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(Constants.superViewHeight * 0.2)
             make.leading.trailing.equalToSuperview().inset(Constants.padding)
         }
         passwordField.snp.makeConstraints { make in
-            make.top.equalTo(emailField.snp.bottom).offset(32)
+            make.top.equalTo(usernameField.snp.bottom).offset(32)
             make.leading.trailing.equalToSuperview().inset(Constants.padding)
         }
-        emailSaveCheckBox.snp.makeConstraints { make in
+        idSaveCheckBox.snp.makeConstraints { make in
             make.top.equalTo(passwordField.snp.bottom).offset(32)
             make.leading.equalToSuperview().inset(Constants.padding)
         }
         idSearchButton.snp.makeConstraints { make in
-            make.centerY.equalTo(emailSaveCheckBox)
+            make.centerY.equalTo(idSaveCheckBox)
             make.trailing.equalToSuperview().inset(Constants.padding)
         }
         loginButton.snp.makeConstraints { make in

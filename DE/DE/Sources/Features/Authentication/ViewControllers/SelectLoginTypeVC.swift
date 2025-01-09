@@ -9,6 +9,7 @@ import KeychainSwift
 import Network
 import CoreModule
 import HomeModule
+import UserSurveyModule
 
 import AuthenticationServices
 import KakaoSDKUser
@@ -24,6 +25,11 @@ public class SelectLoginTypeVC: UIViewController {
     private let mainView = SelectLoginTypeView()
     
     // MARK: - Life Cycle
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
     public override func loadView() {
         self.view = mainView
     }
@@ -85,6 +91,11 @@ public class SelectLoginTypeVC: UIViewController {
             switch result {
             case .success(let response):
                 print("카카오 로그인 성공")
+                saveUserId(userId: response.id)
+                Task {
+                    // userID저장
+                    await UserDataManager.shared.createUser(userId: response.id)
+                }
                 self.goToNextView(response.isFirst)
             case .failure(let error):
                 print(error)
@@ -104,11 +115,18 @@ public class SelectLoginTypeVC: UIViewController {
     
     func goToNextView(_ isFirstLogin: Bool) {
         if isFirstLogin {
-            let enterTasteTestViewController = TestVC()
+            let enterTasteTestViewController = SplashVC()
             navigationController?.pushViewController(enterTasteTestViewController, animated: true)
         } else {
             let homeViewController = MainTabBarController()
             navigationController?.pushViewController(homeViewController, animated: true)
         }
+    }
+    
+    func saveUserId(userId : Int) {
+        // 로그아웃 시, 이 데이터 모두 삭제
+        let userIdString = "\(userId)"
+        SelectLoginTypeVC.keychain.set(userIdString, forKey: "userId")
+        UserDefaults.standard.set(userId, forKey: "userId")
     }
 }

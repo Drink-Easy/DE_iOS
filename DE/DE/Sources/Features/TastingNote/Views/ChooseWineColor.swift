@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import Network
 
 class ChooseWineColor: UIView {
     
@@ -21,7 +22,8 @@ class ChooseWineColor: UIView {
         w.text = "루이 로드레 크리스탈 2015"
         w.font = .ptdSemiBoldFont(ofSize: 24)
         w.textColor = .black
-        w.textAlignment = .center
+        w.textAlignment = .left
+        w.numberOfLines = 0
         return w
     }()
     
@@ -65,10 +67,9 @@ class ChooseWineColor: UIView {
         return v
     }()
     
-    let colorStackView1 = ColorStackView()
-    let colorStackView2 = ColorStackView()
-    let colorStackView3 = ColorStackView()
-    let colorStackView4 = ColorStackView()
+    lazy var colorStackView1 = ColorStackView(colors: ChooseColorModel().colorData.map { row in
+        row.compactMap { $0 } // Optional 제거
+    })
     
     let nextButton: UIButton = {
         let b = UIButton()
@@ -93,6 +94,7 @@ class ChooseWineColor: UIView {
         wineNameLabel.snp.makeConstraints { make in
             make.top.equalTo(pageLabel.snp.bottom).offset(2)
             make.leading.equalTo(pageLabel)
+            make.trailing.equalToSuperview().offset(-25)
         }
         
         addSubview(wineImage)
@@ -106,6 +108,7 @@ class ChooseWineColor: UIView {
         descriptionView.snp.makeConstraints { make in
             make.top.bottom.equalTo(wineImage)
             make.leading.equalTo(wineImage.snp.trailing).offset(8)
+            make.trailing.equalToSuperview().offset(-24)
         }
         
         addSubview(colorLabel)
@@ -136,24 +139,6 @@ class ChooseWineColor: UIView {
             // make.trailing.equalTo(vector.snp.trailing).offset(-62)
         }
         
-        addSubview(colorStackView2)
-        colorStackView2.snp.makeConstraints { make in
-            make.top.equalTo(colorStackView1.snp.bottom).offset(15)
-            make.leading.equalTo(colorStackView1)
-        }
-        
-        addSubview(colorStackView3)
-        colorStackView3.snp.makeConstraints { make in
-            make.top.equalTo(colorStackView2.snp.bottom).offset(15)
-            make.leading.equalTo(colorStackView2)
-        }
-        
-        addSubview(colorStackView4)
-        colorStackView4.snp.makeConstraints { make in
-            make.top.equalTo(colorStackView3.snp.bottom).offset(15)
-            make.leading.equalTo(colorStackView3)
-        }
-        
         addSubview(nextButton)
         nextButton.snp.makeConstraints { make in
             make.bottom.equalTo(safeAreaLayoutGuide).offset(-42)
@@ -161,6 +146,14 @@ class ChooseWineColor: UIView {
             make.centerX.equalToSuperview()
             make.height.equalTo(Constants.superViewHeight*0.06)
         }
+    }
+    
+    func updateUI(wineName: String, wineSort: String, imageUrl: String, wineArea: String) {
+        wineNameLabel.text = wineName
+        descriptionView.kindDescription.text = wineSort
+        // descriptionView.breedDescription.text
+        descriptionView.fromDescription.text = wineArea
+        wineImage.sd_setImage(with: URL(string: imageUrl), placeholderImage: UIImage())
     }
     
     override init(frame: CGRect) {

@@ -39,7 +39,7 @@ class SelectLoginTypeView: UIView {
     let loginButton = CustomButton(
         title: "로그인",
         titleColor: .white,
-        backgroundColor: AppColor.purple100!
+        isEnabled: true
     )
     
     let joinStackView = JoinStackView()

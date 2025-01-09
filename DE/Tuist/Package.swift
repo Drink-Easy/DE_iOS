@@ -44,6 +44,7 @@ let package = Package(
         .package(url: "https://github.com/noeyiz/SwiftyToaster.git", from: "1.0.2"),
         .package(url: "https://github.com/devxoul/Then", from: "3.0.0"),
         .package(url: "https://github.com/evgenyneu/Cosmos.git", from: "25.0.1"),
-        .package(url: "https://github.com/andreamazz/AMPopTip", from: "4.12.0")
+        .package(url: "https://github.com/andreamazz/AMPopTip", from: "4.12.0"),
+        .package(url: "https://github.com/heestand-xyz/PolyKit.git", from: "2.0.0")
     ]
 )

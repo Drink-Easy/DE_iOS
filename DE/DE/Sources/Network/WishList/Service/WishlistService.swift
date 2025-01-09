@@ -9,7 +9,7 @@ public final class WishlistService: NetworkManager {
     // Provider 설정
     let provider: MoyaProvider<WishlistEndpoint>
     
-    init(provider: MoyaProvider<WishlistEndpoint>? = nil) {
+    public init(provider: MoyaProvider<WishlistEndpoint>? = nil) {
         // 플러그인 추가
         let plugins: [PluginType] = [
             CookiePlugin(),
@@ -20,26 +20,22 @@ public final class WishlistService: NetworkManager {
         self.provider = provider ?? MoyaProvider<WishlistEndpoint>(plugins: plugins)
     }
     
-    /// 위시리스트 등록 데이터 생성
-    public func makePostDTO(wineId: Int) -> WineWishlistRequestDTO {
-        return WineWishlistRequestDTO(wineId: wineId)
-    }
-    
     //MARK: - API funcs
     
     /// 위시리스트 조회 API
-    public func fetchWishlist(completion: @escaping (Result<[WineWishlistResponseDTO], NetworkError>) -> Void) {
-        request(target: .getWishList, decodingType: [WineWishlistResponseDTO].self, completion: completion)
+    public func fetchWishlist(completion: @escaping (Result<[WinePreviewResponse]?, NetworkError>) -> Void) {
+//        request(target: .getWishList, decodingType: [WinePreviewResponse].self, completion: completion)
+        requestOptional(target: .getWishList, decodingType: [WinePreviewResponse].self, completion: completion)
     }
     
     /// 위시리스트 등록 API
-    public func postWishlist(data: WineWishlistRequestDTO, completion: @escaping (Result<WineWishlistResponseDTO, NetworkError>) -> Void) {
-        request(target: .postWishList(data: data), decodingType: WineWishlistResponseDTO.self, completion: completion)
+    public func postWishlist(wineId: Int, completion: @escaping (Result<String, NetworkError>) -> Void) {
+        request(target: .postWishList(wineId: wineId), decodingType: String.self, completion: completion)
     }
     
     /// 위시리스트 삭제 API
-    public func deleteWishlist(wineWishlistId: Int, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .deleteWineLike(wineWishlistId: wineWishlistId), decodingType: String.self, completion: completion)
+    public func deleteWishlist(wineId: Int, completion: @escaping (Result<String, NetworkError>) -> Void) {
+        request(target: .deleteWineLike(wineId: wineId), decodingType: String.self, completion: completion)
     }
 }
 

@@ -6,8 +6,8 @@ import CoreModule
 
 public enum WishlistEndpoint {
     case getWishList
-    case postWishList(data: WineWishlistRequestDTO)
-    case deleteWineLike(wineWishlistId: Int)
+    case postWishList(wineId: Int)
+    case deleteWineLike(wineId: Int)
 }
 
 extension WishlistEndpoint: TargetType {
@@ -20,8 +20,10 @@ extension WishlistEndpoint: TargetType {
     
     public  var path: String {
         switch self {
-        case .deleteWineLike(let wineWishlistId):
-            return "/\(wineWishlistId)"
+        case .postWishList(let wineId):
+            return "/\(wineId)"
+        case .deleteWineLike(let wineId):
+            return "/\(wineId)"
         default:
             return ""
         }
@@ -42,9 +44,9 @@ extension WishlistEndpoint: TargetType {
         switch self {
         case .getWishList:
             return .requestPlain
-        case .postWishList(let data):
-            return .requestJSONEncodable(data)
-        case .deleteWineLike(let wineWishlistId):
+        case .postWishList(_):
+            return .requestPlain
+        case .deleteWineLike(_):
             return .requestPlain
         }
     }

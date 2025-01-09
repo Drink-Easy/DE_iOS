@@ -6,7 +6,7 @@ import SnapKit
 import Then
 import Network
 
-public class SearchHomeViewController : UIViewController {
+public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     
     let navigationBarManager = NavigationBarManager()
     var wineResults: [SearchResultModel] = []
@@ -24,13 +24,19 @@ public class SearchHomeViewController : UIViewController {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
     private lazy var searchHomeView = SearchHomeView(
         titleText: "검색하고 싶은\n와인을 입력해주세요",
         placeholder: "검색어 입력"
     ).then {
         $0.searchResultTableView.dataSource = self
         $0.searchResultTableView.delegate = self
-        $0.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        $0.searchBar.delegate = self
+        //$0.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
     }
     
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -38,20 +44,35 @@ public class SearchHomeViewController : UIViewController {
         self.view.endEditing(true)  //firstresponder가 전부 사라짐
     }
     
-    @objc
-    private func textFieldDidChange(_ textField: UITextField) {
-        let query = textField.text ?? ""
-        filterSuggestions(with: query)
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let query = searchHomeView.searchBar.text, query.count >= 2 {
+            callSearchAPI(query: query)
+        } else {
+            showCharacterLimitAlert()
+        }
+        return true
     }
 
-    func filterSuggestions(with query: String) {
-        if query.isEmpty {
-            wineResults = []
-            self.searchHomeView.searchResultTableView.reloadData()
-        } else {
-            callSearchAPI(query: query)
-        }
+    private func showCharacterLimitAlert() {
+        let alert = UIAlertController(title: "경고", message: "최소 2자 이상 입력해 주세요.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
+    
+//    @objc
+//    private func textFieldDidChange(_ textField: UITextField) {
+//        let query = textField.text ?? ""
+//        filterSuggestions(with: query)
+//    }
+//
+//    func filterSuggestions(with query: String) {
+//        if query.isEmpty {
+//            wineResults = []
+//            self.searchHomeView.searchResultTableView.reloadData()
+//        } else {
+//            callSearchAPI(query: query)
+//        }
+//    }
     
     private func setupNavigationBar() {
         navigationBarManager.addBackButton(
@@ -79,7 +100,8 @@ public class SearchHomeViewController : UIViewController {
                             wineName: data.name,
                             imageURL: data.imageUrl,
                             sort: data.sort,
-                            satisfaction: data.vivinoRating
+                            satisfaction: data.vivinoRating,
+                            area: data.area
                         )
                     }
                     self.searchHomeView.searchResultTableView.reloadData()
@@ -102,7 +124,8 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         let wine = wineResults[indexPath.row]
-        cell.configure(model: wine)
+        let searchText = searchHomeView.searchBar.text ?? ""
+        cell.configure(model: wine, highlightText: searchText.isEmpty ? nil : searchText)
         
         return cell
     }

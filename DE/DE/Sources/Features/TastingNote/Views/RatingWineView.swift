@@ -23,7 +23,8 @@ class RatingWineView: UIView {
         let w = UILabel()
         w.text = "루이 로드레 크리스탈 2015"
         w.textColor = .black
-        w.textAlignment = .center
+        w.textAlignment = .left
+        w.numberOfLines = 0
         w.font = UIFont(name: "Pretendard-SemiBold", size: 24)
         return w
     }()
@@ -44,7 +45,7 @@ class RatingWineView: UIView {
     private let rateLabel: UILabel = {
         let r = UILabel()
         r.text = "Rate"
-        r.font = UIFont.ptdBoldFont(ofSize: 14)
+        r.font = UIFont.ptdSemiBoldFont(ofSize: 22)
         return r
     }()
     
@@ -75,6 +76,7 @@ class RatingWineView: UIView {
         r.rating = 2.5
         r.settings.fillMode = .half
         r.settings.emptyBorderColor = .clear
+        r.settings.filledBorderColor = .clear
         r.settings.starSize = 20
         r.settings.starMargin = 5
         r.settings.filledColor = UIColor(hex: "#7E13B1")!
@@ -85,7 +87,7 @@ class RatingWineView: UIView {
     private let reviewLabel: UILabel = {
         let r = UILabel()
         r.text = "Review"
-        r.font = .ptdSemiBoldFont(ofSize: 20)
+        r.font = .ptdSemiBoldFont(ofSize: 22)
         r.textColor = .black
         return r
     }()
@@ -109,7 +111,7 @@ class RatingWineView: UIView {
         // r.placeholder = "추가적으로 기록하고 싶은 것들을 기록해 보세요 !"
         r.textColor = AppColor.gray80
         r.font = .ptdMediumFont(ofSize: 14)
-        r.backgroundColor = .white
+        r.backgroundColor = AppColor.gray10
         return r
     }()
     
@@ -122,6 +124,12 @@ class RatingWineView: UIView {
         n.layer.cornerRadius = 14
         return n
     }()
+    
+    func updateUI(wineName: String, wineSort: String, wineArea: String, wineImage: String) {
+        self.wineName.text = wineName
+        descriptionView.fromDescription.text = wineArea
+        self.wineImage.sd_setImage(with: URL(string: wineImage), placeholderImage: UIImage())
+    }
     
     func setupUI() {
         backgroundColor = AppColor.gray20
@@ -143,6 +151,7 @@ class RatingWineView: UIView {
         wineName.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(10)
             make.leading.equalToSuperview().offset(25)
+            make.trailing.equalToSuperview().offset(-24)
         }
         
         contentView.addSubview(wineImage)
@@ -156,7 +165,7 @@ class RatingWineView: UIView {
         descriptionView.snp.makeConstraints { make in
             make.top.bottom.equalTo(wineImage)
             make.leading.equalTo(wineImage.snp.trailing).offset(8)
-            //make.trailing.equalToSuperview().offset(24)
+            make.trailing.equalToSuperview().offset(-24)
         }
         
         contentView.addSubview(rateLabel)

@@ -3,6 +3,7 @@
 import UIKit
 import AuthenticationServices
 import Network
+import CoreModule
 
 extension SelectLoginTypeVC: ASAuthorizationControllerDelegate {
     public func startAppleLoginProcess() {
@@ -53,6 +54,10 @@ extension SelectLoginTypeVC: ASAuthorizationControllerDelegate {
                 
                 switch result {
                 case .success(let response):
+                    saveUserId(userId: response.id)
+                    Task {
+                        await UserDataManager.shared.createUser(userId: response.id)
+                    }
                     self.goToNextView(response.isFirst)
                 case .failure(let error):
                     print(error)

@@ -7,28 +7,53 @@ import Network
 
 class EntireReviewViewController: UIViewController {
     
+    let navigationBarManager = NavigationBarManager()
     var wineId: Int = 0
     var wineName: String = ""
     var reviewResults: [WineReviewModel] = []
     let networkService = WineService()
+    private var expandedCells: [Bool] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Constants.AppColor.grayBG
-        
+
         addView()
         constraints()
         callEntireReviewAPI(wineId: self.wineId, orderByLatest: true)
+        setupDropdownAction()
+        setupNavigationBar()
     }
     
-    private lazy var topNameView = TopNameView().then {
-        $0.name.text = self.wineName
-        $0.backBtn.addTarget(self, action: #selector(goToBack), for: .touchUpInside)
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
-    @objc
-    private func goToBack() {
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    private func setupNavigationBar() {
+        
+        navigationBarManager.addBackButton(
+            to: navigationItem,
+            target: self,
+            action: #selector(prevVC),
+            tintColor: AppColor.gray70!
+        )
+    }
+    
+    @objc func prevVC() {
         navigationController?.popViewController(animated: true)
+    }
+    
+    private lazy var largeTitleLabel = UILabel().then {
+        $0.text = wineName
+        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.numberOfLines = 0
+        $0.textColor = AppColor.black
     }
 
     private lazy var entireReviewView = EntireReviewView().then {
@@ -37,19 +62,35 @@ class EntireReviewViewController: UIViewController {
     }
     
     private func addView() {
-        [topNameView, entireReviewView].forEach{ view.addSubview($0) }
+        [largeTitleLabel, entireReviewView].forEach{ view.addSubview($0) }
     }
     
     private func constraints() {
-        topNameView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide)
-            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
+        largeTitleLabel.snp.makeConstraints {
+            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(25)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(10)
         }
         
         entireReviewView.snp.makeConstraints {
-            $0.top.equalTo(topNameView.snp.bottom).offset(40)
+            $0.top.equalTo(largeTitleLabel.snp.bottom).offset(36)
             $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
+    }
+    
+    private func setupDropdownAction() {
+        entireReviewView.dropdownView.onOptionSelected = { [weak self] selectedOption in
+            guard let self = self else { return }
+            if selectedOption == "최신 순" {
+                self.reviewResults.sort { $0.createdAt > $1.createdAt }
+            } else if selectedOption == "오래된 순" {
+                self.reviewResults.sort { $0.createdAt < $1.createdAt }
+            } else if selectedOption == "별점 높은 순" {
+                self.reviewResults.sort { $0.rating > $1.rating }
+            } else if selectedOption == "별점 낮은 순" {
+                self.reviewResults.sort { $0.rating < $1.rating }  
+            }
+            self.entireReviewView.reviewCollectionView.reloadData()
         }
     }
     
@@ -71,6 +112,7 @@ class EntireReviewViewController: UIViewController {
                         return WineReviewModel(name: name, contents: review, rating: rating, createdAt: createdAt)
                     } ?? []
                     self.entireReviewView.reviewCollectionView.reloadData()
+                    self.expandedCells = Array(repeating: false, count: self.reviewResults.count)
                 }
             case .failure(let error):
                 print("Error fetching reviews: \(error)")
@@ -88,14 +130,43 @@ extension EntireReviewViewController: UICollectionViewDataSource, UICollectionVi
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ReviewCollectionViewCell.identifier, for: indexPath) as! ReviewCollectionViewCell
         
-        let review = reviewResults[indexPath.row]
-        cell.configure(model: review)
+        let review = reviewResults[indexPath.item]
+        cell.configure(model: review, isExpanded: expandedCells[indexPath.item])
+        
+        cell.onToggle = {
+            self.expandedCells[indexPath.item].toggle()
+            
+            UIView.animate(withDuration: 0, animations: {
+                collectionView.performBatchUpdates(nil, completion: nil)
+            }) { _ in
+                // 텍스트를 약간 늦춰서 줄이기
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    cell.review.numberOfLines = self.expandedCells[indexPath.item] ? 0 : 2
+                }
+            }
+        }
         
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width, height: 82) // 셀 크기
+        
+        let width = collectionView.frame.width
+        let text = reviewResults[indexPath.item].contents
+        let isExpanded = expandedCells[indexPath.item]
+        
+        // 텍스트 높이 계산 + 패딩
+        let labelFont = UIFont.ptdMediumFont(ofSize: 14)
+        let lineSpacing = labelFont.pointSize * 0.3
+        let labelWidth = width - 30
+        //let estimatedHeight = text.heightWithConstrainedWidth(width: labelWidth, font: labelFont)
+        let numberOfLines = text.numberOfLines(width: labelWidth, font: labelFont, lineSpacing: lineSpacing)
+        let lineHeight = labelFont.lineHeight + lineSpacing
+        
+        let cellHeight = isExpanded
+                ? CGFloat(numberOfLines - 2) * lineHeight + 104
+                : 104
+        return CGSize(width: width, height: cellHeight)
     }
 }
 

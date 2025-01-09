@@ -8,6 +8,7 @@ import Then
 import HomeModule
 import CoreModule
 import Network
+import UserSurveyModule
 
 class LoginVC: UIViewController {
     // MARK: - Properties
@@ -17,8 +18,8 @@ class LoginVC: UIViewController {
     let validationManager = ValidationManager()
     let networkService = AuthService()
     
-    var isSavingEmail : Bool = false
-    var emailString : String = ""
+    var isSavingId : Bool = false
+    var usernameString : String = ""
     
     override func loadView() {
         view = loginView // 커스텀 뷰 사용
@@ -27,7 +28,7 @@ class LoginVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-        
+        validationManager.isEmailDuplicate = false
         setupActions()
         setupNavigationBar()
     }
@@ -53,15 +54,15 @@ class LoginVC: UIViewController {
             to: navigationItem,
             target: self,
             action: #selector(backButtonTapped),
-            tintColor: AppColor.gray80!
+            tintColor: AppColor.gray70!
         )
     }
     
     // MARK: - Action 설정
     private func setupActions() {
-        loginView.emailField.textField.addTarget(self, action: #selector(emailValidate), for: .editingChanged)
-        loginView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .editingChanged)
-        loginView.emailSaveCheckBox.addTarget(self, action: #selector(emailSaveCheckBoxTapped), for: .touchUpInside)
+        loginView.usernameField.textField.addTarget(self, action: #selector(usernameValidate), for: .allEditingEvents)
+        loginView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .allEditingEvents)
+        loginView.idSaveCheckBox.addTarget(self, action: #selector(idSaveCheckBoxTapped), for: .touchUpInside)
         loginView.joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -78,8 +79,8 @@ class LoginVC: UIViewController {
         self.view.endEditing(true)
     }
     
-    @objc func emailValidate() {
-        validationManager.isEmailValid = validationManager.validateEmail(loginView.emailField)
+    @objc func usernameValidate() {
+        validationManager.isUsernameValid = validationManager.validateUsername(loginView.usernameField)
         validateInputs()
     }
     
@@ -89,38 +90,47 @@ class LoginVC: UIViewController {
     }
     
     private func validateInputs() {
-        let isValid = validationManager.isEmailValid &&
+        let isValid = validationManager.isUsernameValid &&
         validationManager.isPasswordValid
         
         loginView.loginButton.isEnabled = isValid
-        loginView.loginButton.backgroundColor = isValid ? AppColor.purple100 : AppColor.gray80
+        loginView.loginButton.isEnabled(isEnabled: isValid)
     }
     
-    @objc private func emailSaveCheckBoxTapped() {
-        loginView.emailSaveCheckBox.isSelected.toggle()
-        isSavingEmail = loginView.emailSaveCheckBox.isSelected
+    @objc private func idSaveCheckBoxTapped() {
+        loginView.idSaveCheckBox.isSelected.toggle()
+        isSavingId = loginView.idSaveCheckBox.isSelected
     }
     
     @objc private func loginButtonTapped() {
-        let loginDTO = networkService.makeLoginDTO(username: loginView.emailField.text!, password: loginView.passwordField.text!)
-        emailString = loginDTO.username
+        let loginDTO = networkService.makeLoginDTO(username: loginView.usernameField.text!, password: loginView.passwordField.text!)
+        usernameString = loginDTO.username
         
         networkService.login(data: loginDTO) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(let response):
-                SelectLoginTypeVC.keychain.set(emailString, forKey: "savedUserEmail")
+                SelectLoginTypeVC.keychain.set(usernameString, forKey: "savedUserEmail")
+                // userId 저장
+                saveUserId(userId: response.id)
+                Task {
+                    await UserDataManager.shared.createUser(userId: response.id)
+                }
                 self.goToNextView(response.isFirst)
             case .failure(let error):
                 print(error)
+                self.loginView.loginButton.isEnabled = false
+                self.loginView.loginButton.isEnabled(isEnabled: false)
+                self.validationManager.showValidationError(loginView.usernameField, message: "")
+                self.validationManager.showValidationError(loginView.passwordField, message: "회원 정보를 다시 확인해 주세요")
             }
         }
     }
     
     private func goToNextView(_ isFirstLogin: Bool) {
         if isFirstLogin {
-            let enterTasteTestViewController = TestVC()
+            let enterTasteTestViewController = TermsOfServiceVC()
             navigationController?.pushViewController(enterTasteTestViewController, animated: true)
         } else {
             let homeViewController = MainTabBarController()
@@ -133,9 +143,17 @@ class LoginVC: UIViewController {
         navigationController?.pushViewController(joinViewController, animated: true)
     }
     
-    func fillSavedEmail() {
-        if let email = SelectLoginTypeVC.keychain.get("savedUserEmail") {
-            loginView.emailField.text = email
+    func fillSavedId() {
+        if let id = SelectLoginTypeVC.keychain.get("savedUserId") {
+            loginView.usernameField.text = id
         }
     }
+    
+    func saveUserId(userId : Int) {
+        // 로그아웃 시, 이 데이터 모두 삭제
+        let userIdString = "\(userId)"
+        SelectLoginTypeVC.keychain.set(userIdString, forKey: "userId")
+        UserDefaults.standard.set(userId, forKey: "userId")
+    }
+    
 }

@@ -31,8 +31,8 @@ class ChooseNoseView: UIView {
     let pageLabel: UILabel = {
         let p = UILabel()
         p.textColor = AppColor.gray80
-        let fullText = "1/5"
-        let coloredText = "1"
+        let fullText = "3/5"
+        let coloredText = "3"
         let attributedString = fullText.withColor(for: coloredText, color: AppColor.purple70 ?? UIColor(hex: "9741BF")!)
         p.attributedText = attributedString
         p.font = .ptdMediumFont(ofSize: 16)
@@ -41,9 +41,10 @@ class ChooseNoseView: UIView {
     
     private let wineName: UILabel = {
         let w = UILabel()
-        w.text = "루이 로드레 크리스탈 2015"
+        // w.text = "루이 로드레 크리스탈 2015"
         w.font = UIFont.ptdSemiBoldFont(ofSize: 24)
         w.textColor = .black
+        w.numberOfLines = 0
         return w
     }()
     
@@ -122,6 +123,10 @@ class ChooseNoseView: UIView {
         return n
     }()
     
+    func updateUI(wineName: String) {
+        self.wineName.text = wineName
+    }
+    
     func setupUI() {
         backgroundColor = AppColor.gray20
         
@@ -148,6 +153,7 @@ class ChooseNoseView: UIView {
         wineName.snp.makeConstraints { make in
             make.top.equalTo(pageLabel.snp.bottom).offset(2)
             make.leading.equalTo(pageLabel)
+            make.trailing.equalToSuperview().offset(-25)
         }
         
         contentView.addSubview(noseLabel)

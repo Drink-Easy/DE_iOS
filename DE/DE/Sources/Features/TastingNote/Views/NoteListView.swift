@@ -7,15 +7,16 @@ import Then
 
 class NoteListView: UIView {
     
-    let navView = CustomSearchNavigationBar().then {
-        $0.backgroundColor = AppColor.gray20
-    }
-    
     private let noteListLabel =  UILabel().then {
         $0.text = "노트 보관함"
         $0.textColor = .black
         $0.textAlignment = .center
         $0.font = .ptdSemiBoldFont(ofSize: 24)
+    }
+    
+    let searchButton = UIButton().then {
+        $0.setImage(UIImage(systemName: "magnifyingglass"), for: .normal)
+        $0.tintColor = AppColor.gray90
     }
     
     private let vectorView = UIView().then {
@@ -47,19 +48,21 @@ class NoteListView: UIView {
     
     private func setupUI() {
         addSubview(noteListLabel)
+        addSubview(searchButton)
         addSubview(vectorView)
         addSubview(totalWineLabel)
-        addSubview(navView)
         addSubview(seeAllLabel)
         
-        navView.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide)
-            make.leading.trailing.equalToSuperview()
+        noteListLabel.snp.makeConstraints { make in
+            make.top.equalTo(safeAreaLayoutGuide).offset(23)
+            make.leading.equalToSuperview().offset(24)
         }
         
-        noteListLabel.snp.makeConstraints { make in
-            make.top.equalTo(navView.snp.bottom).offset(6)
-            make.leading.equalTo(navView.snp.leading).offset(24)
+        searchButton.snp.makeConstraints { make in
+            make.top.equalTo(noteListLabel.snp.top).offset(5)
+            make.centerY.equalTo(noteListLabel.snp.centerY)
+            make.trailing.equalToSuperview().offset(-24)
+            
         }
         
         vectorView.snp.makeConstraints { make in

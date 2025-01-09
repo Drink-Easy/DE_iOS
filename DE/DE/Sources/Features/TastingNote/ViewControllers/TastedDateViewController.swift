@@ -2,12 +2,22 @@
 
 import UIKit
 import CoreModule
+import Network
 
 public class TastedDateViewController: UIViewController {
 
     let tastedDateView = TastedDateView()
     var selectedDate: DateComponents?
     let navigationBarManager = NavigationBarManager()
+    
+    let wineName = UserDefaults.standard.string(forKey: "wineName")
+
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        DispatchQueue.main.async {
+            self.tastedDateView.updateUI(wineName: self.wineName ?? "")
+        }
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -86,8 +96,10 @@ extension TastedDateViewController: UICalendarViewDelegate {
         if dateComponents == selectedDate {
             return .customView {
                 let backgroundView = UIView()
-                backgroundView.backgroundColor = UIColor(hex: "#B06FCD")
-                backgroundView.layer.cornerRadius = 10
+                backgroundView.backgroundColor = AppColor.purple100
+                backgroundView.layer.cornerRadius = 18 // 원형으로 만들기 위해 cornerRadius를 반지름으로 설정
+                backgroundView.layer.masksToBounds = true
+                
                 return backgroundView
             }
         }

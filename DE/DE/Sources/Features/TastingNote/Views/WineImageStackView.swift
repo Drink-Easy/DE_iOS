@@ -48,9 +48,23 @@ class WineImageStackView: UIStackView {
             let count = counts[imageLabel] ?? 0
             let fullText = "\(imageLabel) \(count)"
             let coloredText = "\(count)"
-            let attributedString = fullText.withColor(for: coloredText, color: AppColor.purple100 ?? UIColor(hex: "#7E13B1")!)
+//            let attributedString = fullText.withColor(for: coloredText, color: AppColor.purple100 ?? UIColor(hex: "#7E13B1")!)
+//            label.attributedText = attributedString
+//            label.font = UIFont(name: "Pretendard-Regular", size: 12)
+            let attributedString = NSMutableAttributedString(
+                string: fullText,
+                attributes: [.font: UIFont.ptdRegularFont(ofSize: 12)]
+            )
+     
+            if let range = fullText.range(of: coloredText) {
+                let nsRange = NSRange(range, in: fullText)
+                attributedString.addAttributes([
+                    .font: UIFont.ptdSemiBoldFont(ofSize: 16),
+                    .foregroundColor: AppColor.purple100 ?? UIColor(hex: "#7E13B1")!
+                ], range: nsRange)
+            }
+            
             label.attributedText = attributedString
-            label.font = UIFont(name: "Pretendard-Regular", size: 14)
             
             let subStackView = UIStackView()
             subStackView.axis = .vertical

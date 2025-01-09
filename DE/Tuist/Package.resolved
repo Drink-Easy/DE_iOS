@@ -1,5 +1,5 @@
 {
-  "originHash" : "116dc2846d71a9afe33619fa0e361d508059871c080a3949bf2b2162fd1c887c",
+  "originHash" : "161551af71d8766e2dbcb94128fb6c75a1680a02ed79cff97218e08f7639f5bb",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -71,6 +71,15 @@
       "state" : {
         "revision" : "8eaa3a15e4dcabaca4c95aea4c0ff0c9b4a67213",
         "version" : "1.10.5"
+      }
+    },
+    {
+      "identity" : "polykit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/heestand-xyz/PolyKit.git",
+      "state" : {
+        "revision" : "4d84c4469daf5e9ee4d1768dd3018d6b985ee868",
+        "version" : "2.2.0"
       }
     },
     {

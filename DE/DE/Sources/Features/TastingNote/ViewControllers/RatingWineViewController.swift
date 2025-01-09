@@ -12,6 +12,20 @@ public class RatingWineViewController: UIViewController {
     
     let noteService = TastingNoteService()
     
+    let wineName = UserDefaults.standard.string(forKey: "wineName")
+    let wineArea = UserDefaults.standard.string(forKey: "wineArea")
+    let wineImage = UserDefaults.standard.string(forKey: "wineImage")
+    let wineSort = UserDefaults.standard.string(forKey: "wineSort")
+    
+    let userDefaultsKeys = ["wineName", "wineId", "wineSort", "wineArea", "wineImage", "tasteDate", "color", "nose", "sliderValues", "rating", "review"]
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        DispatchQueue.main.async {
+            self.ratingWineView.updateUI(wineName: self.wineName ?? "", wineSort: self.wineSort ?? "", wineArea: self.wineArea ?? "", wineImage: self.wineImage ?? "")
+        }
+    }
+    
     func callPost() {
         
         func getValue<T>(forKey key: String) -> T? {
@@ -61,7 +75,14 @@ public class RatingWineViewController: UIViewController {
             guard let self = self else { return }
             switch result {
             case.success(let str):
-                print(str)
+                for i in userDefaultsKeys {
+                    UserDefaults.standard.removeObject(forKey: "\(i)")
+                }
+                print("UserDefaults 값 삭제 !!!!!!")
+                DispatchQueue.main.async {
+                    let nextVC = NoteListViewController()
+                    self.navigationController?.pushViewController(nextVC, animated: true)
+                }
             case.failure(let error):
                 print(error)
             }
@@ -115,7 +136,5 @@ public class RatingWineViewController: UIViewController {
         print("저장된 데이터: \(reviewText), \(reviewRate)")
         
         callPost()
-        let nextVC = NoteListViewController()
-        navigationController?.pushViewController(nextVC, animated: true)
     }
 }
