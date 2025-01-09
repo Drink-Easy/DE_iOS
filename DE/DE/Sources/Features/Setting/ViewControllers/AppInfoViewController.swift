@@ -111,12 +111,26 @@ extension AppInfoViewController: UITableViewDataSource {
     }
 }
 
-//TODO: 뷰컨 or pdf?
 extension AppInfoViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("\(appInfoItems[indexPath.row]) Tapped")
-//        let selectedItem = settingMenuItems[indexPath.row]
-//        let vc = selectedItem.viewControllerType.init() // 해당 뷰컨트롤러 생성
-//        navigationController?.pushViewController(vc, animated: true)
+        let selectedItem = appInfoItems[indexPath.row] // 선택된 항목의 이름
+        var content: String
+        
+        // 선택된 항목에 따라 다른 내용 설정
+        switch selectedItem {
+        case "서비스 이용약관":
+            content = "서비스 이용약관의 내용입니다.\n\n1. 약관 개요\n2. 이용 조건\n3. 제한 사항\n..."
+        case "개인정보 처리방침":
+            content = "개인정보 처리방침의 내용입니다.\n\n1. 개인정보 수집 목적\n2. 제공 및 보관 기간\n..."
+        case "위치정보 이용약관":
+            content = "위치정보 이용약관의 내용입니다.\n\n1. 위치 데이터 사용 정책\n2. 서비스 제한\n..."
+        case "오픈소스 라이브러리":
+            content = "오픈소스 라이브러리 목록입니다.\n\n- Alamofire\n- SDWebImage\n- SnapKit\n..."
+        default:
+            content = "정보를 찾을 수 없습니다."
+        }
+        
+        let detailVC = DetailInfoVC(title: selectedItem, content: content)
+        navigationController?.pushViewController(detailVC, animated: true)
     }
 }
