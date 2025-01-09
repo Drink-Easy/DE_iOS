@@ -91,7 +91,7 @@ extension MemberEndpoint: TargetType {
             if let jsonData = try? JSONEncoder().encode(body) {
                 let jsonFormData = MultipartFormData(
                     provider: .data(jsonData),
-                    name: "memberRequest", // 서버가 요구하는 필드 이름
+                    name: "memberUpdateRequest", // 서버가 요구하는 필드 이름
                     fileName: "memberRequest.json",
                     mimeType: "application/json"
                 )
