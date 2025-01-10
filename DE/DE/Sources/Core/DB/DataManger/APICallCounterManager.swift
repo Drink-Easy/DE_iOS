@@ -190,11 +190,11 @@ extension APICallCounterError: LocalizedError {
         case .userNotFound:
             return "사용자를 찾을 수 없습니다."
         case .controllerAlreadyExists(let name):
-            return "The controller '\(name)' already exists for this user."
+            return "\(name) 엔드포인트가 이미 존재합니다."
         case .saveFailed(let reason):
-            return "Failed to save data. Reason: \(reason)"
+            return "데이터를 저장하는데 실패하였습니다. 원인: \(reason)"
         case .unknown:
-            return "An unknown error occurred."
+            return "알 수 없는 에러가 발생했습니다."
         }
     }
 }
