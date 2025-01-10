@@ -106,9 +106,28 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
             switch result {
             case .success(let response):
                 print("프로필 업데이트 완료")
+                Task {
+                    await self.updateCallCount()
+                }
             case .failure(let error):
                 print(error)
             }
+        }
+    }
+    
+    func updateCallCount() async {
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+            print("⚠️ userId가 UserDefaults에 없습니다.")
+            return
+        }
+        Task {
+            // patch count + 1
+            do {
+                try await APICallCounterManager.shared.incrementPatch(for: userId, controllerName: .member)
+            } catch {
+                print(error)
+            }
+            
         }
     }
     

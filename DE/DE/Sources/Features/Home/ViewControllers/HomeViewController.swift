@@ -271,7 +271,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
-            try await WineDataManager.shared.saveWineData(userId: userId, wineListType: type, wineData: wines, expirationInterval: time)
+            try WineDataManager.shared.saveWineData(userId: userId, wineListType: type, wineData: wines, expirationInterval: time)
             print("✅ \(type.rawValue) 저장 완료: \(wines.count)개")
             updateCollectionView(type: type, with: wines)
         } catch {

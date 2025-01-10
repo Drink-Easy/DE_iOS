@@ -37,9 +37,9 @@ public final class APICallCounterManager {
     
     /// API Endpoint 검증
     @MainActor
-    private func fetchController(for user: UserData, controllerName: String) throws -> APIControllerCounter {
-        guard let controller = user.controllerCounters.first(where: { $0.name == controllerName }) else {
-            throw APICallCounterError.controllerAlreadyExists(name: controllerName)
+    private func fetchController(for user: UserData, controllerName: EndpointType) throws -> APIControllerCounter {
+        guard let controller = user.controllerCounters.first(where: { $0.name == controllerName.rawValue }) else {
+            throw APICallCounterError.controllerAlreadyExists(name: controllerName.rawValue)
         }
         return controller
     }
@@ -48,7 +48,7 @@ public final class APICallCounterManager {
     @MainActor
     private func incrementCount(
         for userId: Int,
-        controllerName: String,
+        controllerName: EndpointType,
         incrementAction: (APICounter) -> Void
     ) async throws {
         let context = container.mainContext
@@ -110,7 +110,7 @@ public final class APICallCounterManager {
     
     /// POST 호출 카운트 증가
     @MainActor
-    public func incrementPost(for userId: Int, controllerName: String) async throws {
+    public func incrementPost(for userId: Int, controllerName: EndpointType) async throws {
         try await incrementCount(for: userId, controllerName: controllerName) { counter in
             counter.incrementPost()
         }
@@ -118,7 +118,7 @@ public final class APICallCounterManager {
     
     /// PATCH 호출 카운트 증가
     @MainActor
-    public func incrementPatch(for userId: Int, controllerName: String) async throws {
+    public func incrementPatch(for userId: Int, controllerName: EndpointType) async throws {
         try await incrementCount(for: userId, controllerName: controllerName) { counter in
             counter.incrementPatch()
         }
@@ -126,7 +126,7 @@ public final class APICallCounterManager {
     
     /// DELETE 호출 카운트 증가
     @MainActor
-    public func incrementDelete(for userId: Int, controllerName: String) async throws {
+    public func incrementDelete(for userId: Int, controllerName: EndpointType) async throws {
         try await incrementCount(for: userId, controllerName: controllerName) { counter in
             counter.incrementDelete()
         }
@@ -134,7 +134,7 @@ public final class APICallCounterManager {
     
     /// 호출 카운트 조회
     @MainActor
-    public func isCallCountZero(for userId: Int, controllerName: String) async throws -> Bool {
+    public func isCallCountZero(for userId: Int, controllerName: EndpointType) async throws -> Bool {
         let context = container.mainContext
 
         // 1. 사용자 검색
@@ -157,7 +157,7 @@ public final class APICallCounterManager {
         let user = try fetchUser(by: userId, in: context)
         
         // 2. 컨트롤러 검색
-        let controller = try fetchController(for: user, controllerName: controllerName.rawValue)
+        let controller = try fetchController(for: user, controllerName: controllerName)
         
         // 3. 호출 카운트 초기화
         let counter = controller.counter

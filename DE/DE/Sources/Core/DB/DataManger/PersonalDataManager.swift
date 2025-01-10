@@ -147,6 +147,8 @@ public final class PersonalDataManager {
         // 3. nil 값 검증
         return personalData.hasNilProperty()
     }
+
+    // TODO : 프로퍼티 2개만 nil 검사
     
     
     /// personal data  삭제

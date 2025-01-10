@@ -24,6 +24,8 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     lazy var profileImgFileName: String = ""
     lazy var profileImg: UIImage? = nil
     
+    private var userNickName : String?
+    
     private let headerLabel = UILabel().then {
         $0.text = "프로필을 만들어 보세요!"
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
@@ -173,5 +175,25 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
         
         nextButton.isEnabled = isFormValid
         nextButton.isEnabled(isEnabled: isFormValid)
+    }
+    
+    // 캐시 데이터 검증
+    func MakePersonalDataInDB() async {
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+            print("⚠️ userId가 UserDefaults에 없습니다.")
+            return
+        }
+        guard let nickName = userNickName else {
+            print("⚠️ 닉네임 설정 안됨.")
+            return
+        }
+        Task {
+            do {
+                try await PersonalDataManager.shared.createPersonalData(for: userId, userName: nickName)
+                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
+            } catch {
+                print(error)
+            }
+        }
     }
 }

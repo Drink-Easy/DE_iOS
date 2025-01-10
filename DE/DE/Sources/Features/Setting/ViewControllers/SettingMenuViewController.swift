@@ -19,7 +19,8 @@ import Network
 public final class SettingMenuViewController : UIViewController {
     
     private let networkService = MemberService()
-    private var memberData: MemberInfoResponse?
+//    private var memberData: MemberInfoResponse?
+    private var profileData: SimpleProfileInfoData?
     
     private var tableView = UITableView()
     let navigationBarManager = NavigationBarManager()
@@ -60,7 +61,9 @@ public final class SettingMenuViewController : UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        fetchMemberInfo()
+        Task {
+            CheckCacheData()
+        }
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -83,20 +86,95 @@ public final class SettingMenuViewController : UIViewController {
             make.bottom.equalToSuperview()
         }
     }
+    
+    func CheckCacheData() {
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+            print("⚠️ userId가 UserDefaults에 없습니다.")
+            return
+        }
+        
+        Task {
+            do {
+                if try await isCacheDataValid(for: userId) {
+                    await useCacheData(for: userId)
+                } else {
+                    fetchMemberInfo()
+                }
+            } catch {
+                print("⚠️ 캐시 데이터 검증 실패: \(error)")
+                fetchMemberInfo()
+            }
+            
+            // ui update
+            guard let name = self.profileData?.name else { return }
+            guard let imageURL = self.profileData?.imageURL else { return }
+            setUserData(userName: name, imageURL: imageURL)
+        }
+    }
+
+    // 캐시 데이터 검증
+    private func isCacheDataValid(for userId: Int) async throws -> Bool {
+        let isCallCountZero = try await APICallCounterManager.shared.isCallCountZero(for: userId, controllerName: .member)
+        let hasNoNilFields = try await PersonalDataManager.shared.checkPersonalDataHasNil(for: userId)
+        return isCallCountZero && hasNoNilFields
+    }
+
+    // 캐시 데이터 사용
+    private func useCacheData(for userId: Int) async {
+        do {
+            let data = try await PersonalDataManager.shared.fetchPersonalData(for: userId)
+            if let userName = data.userName, let imageURL = data.userImageURL {
+                // 데이터 할당
+                self.profileData = SimpleProfileInfoData(name: userName, imageURL: imageURL, uniqueUserId: userId)
+            }
+        } catch {
+            print("⚠️ 캐시 데이터 가져오기 실패: \(error)")
+        }
+    }
 
     public func fetchMemberInfo() {
         networkService.fetchUserInfo(completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let data):
-                let profileImgURL = URL(string: data.imageUrl)
-                self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
-//                self.nameLabel.text = "\(data.username)님"
-                self.nameLabel.text = "\(data.email)님"
+                guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+                    print("⚠️ userId가 UserDefaults에 없습니다.")
+                    return
+                }
+                Task {
+                    // 데이터 할당
+                    self.profileData = SimpleProfileInfoData(name: data.username, imageURL: data.imageUrl, uniqueUserId: userId)
+                    // 로컬 캐시 데이터에 저장(덮어쓰기)
+                    await self.saveUserInfo(data: SimpleProfileInfoData(name: data.username, imageURL: data.imageUrl, uniqueUserId: userId))
+                    do {
+                        // get api -> 모든 call counter 초기화
+                        try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
+                        return
+                    } catch {
+                        print(error)
+                    }
+                }
             case .failure(let error):
                 print("Error: \(error)")
             }
         })
+    }
+    
+    func setUserData(userName: String, imageURL: String) {
+        let profileImgURL = URL(string: imageURL)
+        self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
+        self.nameLabel.text = "\(userName)님"
+    }
+    
+    // 새로 받은 데이터 저장
+    func saveUserInfo(data: SimpleProfileInfoData) async {
+        do {
+            try await PersonalDataManager.shared.updatePersonalData(for: data.uniqueUserId,
+                                                                    userName: data.name,
+                                                                    userImageURL: data.imageURL)
+        } catch {
+            print(error)
+        }
     }
     
     // MARK: - UI Setup
