@@ -9,6 +9,13 @@ import SDWebImage
 import CoreModule
 import Network
 
+// get api 호출을 할거야
+// 캐시 데이터가 있어? -> 그거 써
+// 없어? get 해 -> get한 데이터 캐시에 저장
+// 일단 캐시 데이터 검증을 해
+// 검증 1: 지금 call counter가 모두 0인가
+// 검증 2: 데이터 필드 값 중에 nil이 없는가
+
 public final class SettingMenuViewController : UIViewController {
     
     private let networkService = MemberService()

@@ -22,7 +22,6 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     }
     
     private var homeTopView = HomeTopView()
-    let dataManger = WineDataManager.shared
     let networkService = WineService()
     
     // View 세팅
@@ -74,11 +73,11 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
-            guard let user = await UserDataManager.shared.fetchUser(userId: userId) else {
-                print("⚠️ 저장된 유저 이름이 없습니다.")
-                return
+            do {
+                self.userName = try await PersonalDataManager.shared.fetchUserName(for: userId)
+            } catch {
+                print(error.localizedDescription)
             }
-            self.userName = user.userName ?? "이름없음"
         }
     }
     

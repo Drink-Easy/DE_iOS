@@ -2,7 +2,6 @@
 
 import Foundation
 import Moya
-import CoreModule
 
 public enum TastingNoteEndpoint {
     case postNote(data : TastingNoteRequestDTO)

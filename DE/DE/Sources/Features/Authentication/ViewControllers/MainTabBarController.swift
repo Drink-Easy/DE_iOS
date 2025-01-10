@@ -32,14 +32,14 @@ public class MainTabBarController: UITabBarController {
             }
             
             Task {
-                if let userData = await UserDataManager.shared.fetchUser(userId: userId) {
-                    print("✅ SwiftData에서 닉네임 가져오기 성공")
-                    homeVC.userName = userData.userName ?? "unknown"
-                    classVC.userName = userData.userName ?? "unknown"
-                } else {
-                    print("⚠️ SwiftData에서 닉네임을 찾을 수 없습니다.")
-                    homeVC.userName = "noname"
-                    classVC.userName = "noname"
+                do {
+                    let name = try await PersonalDataManager.shared.fetchUserName(for: userId)
+                    homeVC.userName = name
+                    classVC.userName = name
+                } catch {
+                    print(error.localizedDescription)
+                    homeVC.userName = "노네임"
+                    classVC.userName = "노네임"
                 }
             }
         }
