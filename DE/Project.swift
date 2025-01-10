@@ -389,13 +389,12 @@ let project = Project(
             resources: ["DE/Resources/**"],
             dependencies: [
                 .external(name: "SnapKit"),
-                .external(name: "PinLayout"),
-                .external(name: "FlexLayout"),
                 .external(name: "SDWebImage"),
                 .external(name: "SwiftyToaster"),
                 .external(name: "Then"),
                 .external(name: "Cosmos"),
-                .external(name: "KakaoSDK")
+                .external(name: "KakaoSDK"),
+                .target(name: "Network"),
             ]
         ),
         .target(
@@ -406,7 +405,6 @@ let project = Project(
             sources: ["DE/Sources/Network/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
-                .target(name: "CoreModule"),
                 .external(name: "Moya")
             ]
         ),
@@ -418,9 +416,8 @@ let project = Project(
             sources: ["DE/Sources/Features/Authentication/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
-                .target(name: "Network"),
                 .target(name: "HomeModule"),
-                .target(name: "UserSurveyModule")
+                .target(name: "UserSurveyModule"),
             ]
         ),
         .target(
@@ -431,9 +428,8 @@ let project = Project(
             sources: ["DE/Sources/Features/TastingNote/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
-                .target(name: "Network"),
-                .external(name: "AMPopTip"),
-                .external(name: "PolyKit")
+                .target(name: "CoreModule"),
+                .external(name: "AMPopTip")
             ]
         ),
         .target(
@@ -444,7 +440,7 @@ let project = Project(
             sources: ["DE/Sources/Features/Search/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
-                .target(name: "Network")
+                .target(name: "CoreModule")
             ]
         ),
         .target(
@@ -469,9 +465,10 @@ let project = Project(
             sources: ["DE/Sources/Features/Community/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
-                .target(name: "Network")
+                .target(name: "CoreModule")
             ]
         ),
+        // 취향찾기
         .target(
             name: "UserSurveyModule",
             destinations: .iOS,
@@ -480,9 +477,10 @@ let project = Project(
             sources: ["DE/Sources/Features/UserSurvey/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
-                .target(name: "Network")
+                .target(name: "CoreModule")
             ]
         ),
+        // 마이페이지
         .target(
             name: "SettingModule",
             destinations: .iOS,
@@ -491,7 +489,7 @@ let project = Project(
             sources: ["DE/Sources/Features/Setting/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
-                .target(name: "Network")
+                .target(name: "CoreModule")
             ]
         ),
         // Tests

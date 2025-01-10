@@ -16,7 +16,7 @@ public final class UserDataManager {
         }
     }
     
-    /// 유저 ID 생성 (기본 정보만)
+    /// 유저 ID 생성 
     @MainActor public func createUser(userId: Int) async {
         let context = container.mainContext
         
@@ -27,7 +27,7 @@ public final class UserDataManager {
             
             if existingUsers.isEmpty {
                 // 2. 신규 유저 생성 (이름 없음)
-                let newUser = UserData(userId: userId, userName: "noname", wines: [], controllerCounters: [])
+                let newUser = UserData(userId: userId)
                 context.insert(newUser)
                 try context.save()
                 print("✅ 유저 ID 생성 완료: \(userId)")
@@ -36,43 +36,6 @@ public final class UserDataManager {
             }
         } catch {
             print("❌ 유저 ID 생성 실패: \(error)")
-        }
-    }
-    
-    /// 유저 이름 업데이트
-    @MainActor public func updateUserName(userId: Int, userName: String) async {
-        let context = container.mainContext
-        
-        do {
-            // 1. 해당 ID의 유저 검색
-            let descriptor = FetchDescriptor<UserData>(predicate: #Predicate { $0.userId == userId })
-            let users = try context.fetch(descriptor)
-            
-            if let user = users.first {
-                // 2. 유저 이름 업데이트
-                user.userName = userName
-                try context.save()
-                print("✅ 유저 이름 업데이트 완료: \(userName)")
-            } else {
-                print("⚠️ 해당 ID의 유저가 존재하지 않습니다: \(userId)")
-            }
-        } catch {
-            print("❌ 유저 이름 업데이트 실패: \(error)")
-        }
-    }
-    
-    /// 유저 이름 불러오기
-    @MainActor public func fetchUser(userId: Int) async -> UserData? {
-        let context = container.mainContext
-        
-        do {
-            let descriptor = FetchDescriptor<UserData>(predicate: #Predicate { $0.userId == userId })
-            let users = try context.fetch(descriptor)
-            print("✅ 유저 정보 불러오기 성공: \(users.first?.userName)")
-            return users.first
-        } catch {
-            print("❌ 유저 정보 불러오기 실패: \(error)")
-            return nil
         }
     }
     

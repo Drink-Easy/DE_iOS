@@ -1,6 +1,5 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
-import CoreModule
 import UIKit
 import Moya
 
@@ -17,7 +16,7 @@ public enum MemberEndpoint {
 
 extension MemberEndpoint: TargetType {
     public var baseURL: URL {
-        guard let url = URL(string: Constants.API.memberURL) else {
+        guard let url = URL(string: API.memberURL) else {
             fatalError("잘못된 URL")
         }
         return url
