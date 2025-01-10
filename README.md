@@ -65,6 +65,112 @@ version : 4.31.0(mise 통해서 설치)
    `tuist help`
 
 ## 📂 Foldering
+```
+.
+├── App
+├── Core
+│   ├── Common
+│   │   ├── Components
+│   │   ├── Model
+│   │   └── View
+│   ├── DB
+│   │   ├── DataManger
+│   │   └── DataModels
+│   ├── Extensions
+│   └── Utilities
+├── Features
+│   ├── Authentication
+│   │   ├── Models
+│   │   ├── ViewControllers
+│   │   └── Views
+│   ├── Community
+│   │   ├── Models
+│   │   ├── ViewControllers
+│   │   └── Views
+│   ├── Course
+│   │   ├── Models
+│   │   ├── ViewControllers
+│   │   └── Views
+│   ├── Custom
+│   │   ├── ViewControllers
+│   │   └── Views
+│   ├── Home
+│   │   ├── Models
+│   │   ├── ViewControllers
+│   │   └── Views
+│   ├── Search
+│   │   ├── ViewControllers
+│   │   └── Views
+│   ├── Setting
+│   │   ├── Models
+│   │   ├── ViewControllers
+│   │   │   ├── AccountInfo
+│   │   │   ├── AppInfo
+│   │   │   └── MyWine
+│   │   └── Views
+│   │       └── MyWine
+│   ├── TastingNote
+│   │   ├── Models
+│   │   ├── ViewControllers
+│   │   │   └── ChangeVCs
+│   │   └── Views
+│   │       ├── Cells
+│   │       ├── ChangeViews
+│   │       └── CustomUIs
+│   └── UserSurvey
+│       ├── Models
+│       ├── ViewControllers
+│       └── Views
+└── Network
+    ├── Auth
+    │   ├── Endpoints
+    │   ├── Request
+    │   ├── Response
+    │   └── Services
+    ├── Comment
+    │   ├── Endpoints
+    │   ├── Requests
+    │   ├── Responses
+    │   └── Services
+    ├── Common
+    │   ├── Extensions
+    │   ├── Plugins
+    │   ├── Protocols
+    │   └── Response
+    ├── Course
+    ├── Member
+    │   ├── Endpoint
+    │   ├── Request
+    │   ├── Response
+    │   └── Service
+    ├── MyWine
+    │   ├── Endpoint
+    │   ├── Request
+    │   ├── Response
+    │   └── Service
+    ├── Notice
+    │   ├── Endpoint
+    │   ├── Response
+    │   └── Service
+    ├── Party
+    │   ├── Endpoints
+    │   ├── Request
+    │   ├── Responses
+    │   └── Services
+    ├── TastingNote
+    │   ├── Endpoint
+    │   ├── Request
+    │   ├── Response
+    │   └── Service
+    ├── Wine
+    │   ├── Endpoint
+    │   ├── Response
+    │   └── Service
+    └── WishList
+        ├── Endpoint
+        ├── Response
+        └── Service
+```
 
 ## 🎁 Library
 | Name         | Version  |          |
