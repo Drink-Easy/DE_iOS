@@ -1,7 +1,6 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import Foundation
-import CoreModule
 import Moya
 
 public enum MyWineEndpoint {
@@ -13,7 +12,7 @@ public enum MyWineEndpoint {
 
 extension MyWineEndpoint: TargetType {
     public var baseURL: URL {
-        guard let url = URL(string: Constants.API.myWineURL) else {
+        guard let url = URL(string: API.myWineURL) else {
             fatalError("잘못된 URL")
         }
         return url

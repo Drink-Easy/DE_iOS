@@ -2,7 +2,6 @@
 
 import Foundation
 import Moya
-import CoreModule
 
 public enum WineEndpoint {
     case getWines(searchName: String)
@@ -14,7 +13,7 @@ public enum WineEndpoint {
 
 extension WineEndpoint: TargetType {
     public var baseURL: URL {
-        guard let url = URL(string: Constants.API.wineURL) else {
+        guard let url = URL(string: API.wineURL) else {
             fatalError("잘못된 URL")
         }
         return url

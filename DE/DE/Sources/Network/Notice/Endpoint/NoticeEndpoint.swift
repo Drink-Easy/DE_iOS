@@ -2,7 +2,6 @@
 
 import Foundation
 import Moya
-import CoreModule
 
 public enum NoticeEndpoint {
     case getAllNotices
@@ -11,7 +10,7 @@ public enum NoticeEndpoint {
 
 extension NoticeEndpoint: TargetType {
     public var baseURL: URL {
-        guard let url = URL(string: Constants.API.noticeURL) else {
+        guard let url = URL(string: API.noticeURL) else {
             fatalError("잘못된 URL")
         }
         return url
