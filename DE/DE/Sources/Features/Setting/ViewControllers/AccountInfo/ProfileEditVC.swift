@@ -13,6 +13,8 @@ import Network
 class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
     
     private let navigationBarManager = NavigationBarManager()
+    private let imagePickerManager = ImagePickerManager()
+    
     private let networkService = MemberService()
     
     private let profileView = ProfileView()
@@ -39,6 +41,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         setupUI()
         setupConstraints()
         setupNavigationBar()
+        setupImagePicker()
         setupActions()
         configureTapGestureForDismissingPicker()
     }
@@ -55,6 +58,18 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
             tintColor: AppColor.gray70 ?? .gray,
             font: UIFont.ptdSemiBoldFont(ofSize: 16)
         )
+    }
+    
+    // MARK: - 이미지 피커 설정
+    private func setupImagePicker() {
+        // 이미지 선택 후 동작 설정
+        imagePickerManager.onImagePicked = { [weak self] image, fileName in
+            guard let self = self else { return }
+            print("setupImagePicker")
+            self.profileView.profileImageView.image = image
+            self.profileImgFileName = fileName
+            self.profileImg = image
+        }
     }
     
     // MARK: UI Component 설정
@@ -109,38 +124,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     // 프로필 이미지 선택
     @objc func selectProfileImage() {
-        let imagePicker = UIImagePickerController()
-        imagePicker.sourceType = .photoLibrary // 사진 라이브러리에서 선택
-        imagePicker.delegate = self
-        imagePicker.allowsEditing = true // 선택 후 편집 가능
-        present(imagePicker, animated: true, completion: nil)
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        picker.dismiss(animated: true, completion: nil) // Picker 닫기
-        
-        // 이미지를 편집했는지 확인하고, 없으면 원본 이미지 사용
-        if let editedImage = info[.editedImage] as? UIImage {
-            profileView.profileImageView.image = editedImage
-            handleImage(editedImage)
-        } else if let originalImage = info[.originalImage] as? UIImage {
-            profileView.profileImageView.image = originalImage
-            handleImage(originalImage)
-        } else {
-            print("이미지를 불러올 수 없습니다.")
-        }
-    }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true, completion: nil) // Picker 닫기
-    }
-    
-    private func handleImage(_ image: UIImage) {
-        // 고유한 파일 이름 생성
-        profileImgFileName = "\(UUID().uuidString).jpeg"
-        
-        // 이미지를 저장하는 추가 작업 수행
-        profileImg = image
+        imagePickerManager.presentImagePicker(from: self)
     }
     
     //MARK: - 위치 정보 불러오기 로직

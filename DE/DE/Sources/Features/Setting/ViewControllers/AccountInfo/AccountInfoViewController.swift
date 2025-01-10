@@ -25,7 +25,7 @@ class AccountInfoViewController: UIViewController {
     
     private let tableView = UITableView().then {
         $0.backgroundColor = .white // 테이블 뷰 배경색
-        $0.separatorStyle = .none
+        $0.separatorStyle = .singleLine
         $0.isScrollEnabled = false
         $0.rowHeight = 40
         $0.layer.cornerRadius = 12 // 코너 반경 설정

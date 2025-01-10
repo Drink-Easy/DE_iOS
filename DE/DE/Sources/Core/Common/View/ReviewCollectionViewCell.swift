@@ -1,7 +1,6 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
-import CoreModule
 import Then
 
 public class ReviewCollectionViewCell: UICollectionViewCell {
