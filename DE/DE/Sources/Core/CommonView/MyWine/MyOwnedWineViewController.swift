@@ -8,13 +8,21 @@ public class MyOwnedWineViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .blue
-        // Do any additional setup after loading the view.
+        view.backgroundColor = .white
+        setupUI()
+        setupTableView()
     }
     
     private func setupTableView() {
         myOwnedWineView.myOwnedWineTableView.dataSource = self
         myOwnedWineView.myOwnedWineTableView.delegate = self
+    }
+    
+    func setupUI() {
+        view.addSubview(myOwnedWineView)
+        myOwnedWineView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
 }
 

@@ -1,12 +1,12 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
-import CoreModule
 
 class MyOwnedWineView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setupUI()
         
     }
     

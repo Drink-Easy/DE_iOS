@@ -1,7 +1,7 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
-import CoreModule
+
 
 public class MyWineTableViewCell: UITableViewCell {
     
@@ -48,6 +48,7 @@ public class MyWineTableViewCell: UITableViewCell {
             make.leading.equalToSuperview()
             make.top.equalToSuperview().offset(6)
             make.centerY.equalToSuperview()
+            make.width.height.equalTo(70)
         }
         
         addSubview(wineName)
@@ -60,6 +61,12 @@ public class MyWineTableViewCell: UITableViewCell {
         winePrice.snp.makeConstraints { make in
             make.top.equalTo(wineName.snp.bottom).offset(8)
             make.leading.equalTo(wineName.snp.leading)
+        }
+        
+        addSubview(datePassed)
+        datePassed.snp.makeConstraints { make in
+            make.top.equalTo(wineImage.snp.top).offset(3)
+            make.trailing.equalToSuperview().offset(-25)
         }
     }
 

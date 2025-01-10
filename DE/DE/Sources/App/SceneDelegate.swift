@@ -5,6 +5,7 @@ import Authentication
 import TastingNote
 import UserSurveyModule
 import SettingModule
+import CoreModule
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
