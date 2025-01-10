@@ -3,16 +3,18 @@
 import UIKit
 import CoreModule
 
-class MyWineTableViewCell: UITableViewCell {
+public class MyWineTableViewCell: UITableViewCell {
     
     static let identifier = "MyWineTableViewCell"
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupUI()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        setupUI()
     }
     
     let wineImage = UIImageView().then {
@@ -61,5 +63,11 @@ class MyWineTableViewCell: UITableViewCell {
         }
     }
 
+    func configure(with model: MyOwnedWineModel) {
+        wineImage.image = model.wineImage
+        wineName.text = model.wineName
+        winePrice.text = "구매가 \(model.price)"
+        datePassed.text = model.buyDate
+    }
     
 }

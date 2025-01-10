@@ -4,8 +4,12 @@ import UIKit
 import CoreModule
 import AMPopTip
 import SwiftUI
+import Combine
 
-class RecordGraphView: UIView, UIScrollViewDelegate {
+class RecordGraphView: UIView {
+    
+    var sliderValues = SliderValues()
+
     
     let scrollView: UIScrollView = {
         let s = UIScrollView()
@@ -75,9 +79,9 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         let p = PolygonChartView()
         return p
     }()
-
-    let hostingController: UIHostingController<PentagonChartView> = {
-        let chartView = PentagonChartView()
+    
+    lazy var hostingController: UIHostingController<PentagonChartView> = {
+        let chartView = PentagonChartView(values: sliderValues)
         let hosting = UIHostingController(rootView: chartView)
         hosting.view.backgroundColor = .clear
         return hosting
@@ -512,16 +516,30 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
             from: buttonFrameInScrollView
         )
     }
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = AppColor.gray20
         setupUI()
         setupActions()
+        
+        sliderValues.objectWillChange
+            .sink { [weak self] _ in
+                self?.updateChartView()
+            }
+            .store(in: &cancellables)
     }
+    
+    private var cancellables = Set<AnyCancellable>()
+
     
     required init? (coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
+    func updateChartView() {
+        print("🚨 updateChartView called with values: \(sliderValues.values)")
+        hostingController.rootView.values = sliderValues
+    }
+    
 }

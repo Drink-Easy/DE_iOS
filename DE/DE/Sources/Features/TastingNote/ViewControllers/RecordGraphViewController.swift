@@ -93,17 +93,23 @@ public class RecordGraphViewController: UIViewController {
         switch sender {
         case recordGraphView.sweetSlider:
             sliderValues["Sweetness"] = Int(sender.value)
+            recordGraphView.sliderValues.values[0] = Double(sender.value)
         case recordGraphView.acidSlider:
             sliderValues["Acidity"] = Int(sender.value)
+            recordGraphView.sliderValues.values[1] = Double(sender.value)
         case recordGraphView.tanninSlider:
             sliderValues["Tannin"] = Int(sender.value)
+            recordGraphView.sliderValues.values[2] = Double(sender.value)
         case recordGraphView.bodySlider:
             sliderValues["Body"] = Int(sender.value)
+            recordGraphView.sliderValues.values[3] = Double(sender.value)
         case recordGraphView.alcoholSlider:
             sliderValues["Alcohol"] = Int(sender.value)
+            recordGraphView.sliderValues.values[4] = Double(sender.value)
         default:
             break
         }
+        recordGraphView.updateChartView()
     }
     
 }
