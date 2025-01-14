@@ -76,12 +76,12 @@ final class LoginView: UIView {
             make.top.equalTo(passwordField.snp.bottom).offset(32)
             make.leading.equalToSuperview().inset(Constants.padding)
         }
-        idSearchButton.snp.makeConstraints { make in
-            make.centerY.equalTo(idSaveCheckBox)
-            make.trailing.equalToSuperview().inset(Constants.padding)
-        }
+//        idSearchButton.snp.makeConstraints { make in
+//            make.centerY.equalTo(idSaveCheckBox)
+//            make.trailing.equalToSuperview().inset(Constants.padding)
+//        }
         loginButton.snp.makeConstraints { make in
-            make.top.equalTo(idSearchButton.snp.bottom).offset(64)
+            make.top.equalTo(idSaveCheckBox.snp.bottom).offset(64)
             make.leading.trailing.equalToSuperview().inset(Constants.padding)
         }
         joinStackView.snp.makeConstraints { make in

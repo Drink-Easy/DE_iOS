@@ -38,7 +38,10 @@ public class IsNewbieViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
-        let vc = (isNewbie ?? true) ? NewbieEnjoyDrinkingViewController() : ManiaConsumeViewController()
+        // 정보 저장
+        guard let isnewbie = self.isNewbie else { return }
+        UserSurveyManager.shared.setUserType(isNewbie: isnewbie)
+        let vc = isnewbie ? NewbieEnjoyDrinkingViewController() : ManiaConsumeViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
     
