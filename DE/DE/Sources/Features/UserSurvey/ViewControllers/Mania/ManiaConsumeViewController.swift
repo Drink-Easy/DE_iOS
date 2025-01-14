@@ -49,12 +49,16 @@ class ManiaConsumeViewController: UIViewController {
     
     @objc private func sliderValueChanged(_ sender: UISlider) {
         selectedItem = sender.value
-        
+
         surveySliderView.nextButton.isEnabled = true
         surveySliderView.nextButton.isEnabled(isEnabled: true)
     }
     
     @objc func nextButtonTapped() {
+        // 정보 저장
+        guard let price = self.selectedItem else {return}
+        UserSurveyManager.shared.setPrice(Int(price))
+        
         let vc = ManiaKindViewController()
         navigationController?.pushViewController(vc, animated: true)
     }

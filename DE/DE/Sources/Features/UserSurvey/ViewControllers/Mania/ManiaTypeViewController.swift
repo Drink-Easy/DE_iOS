@@ -6,11 +6,11 @@ import Then
 import CoreModule
 import SwiftyToaster
 
-class ManiaCountryViewController: UIViewController {
+class ManiaTypeViewController: UIViewController {
 
     private let navigationBarManager = NavigationBarManager()
     
-    let cellData = ["프랑스", "이탈리아", "미국", "스페인", "아르헨티나", "독일", "호주", "포르투갈", "캐나다", "뉴질랜드", "슬로베니아", "헝가리", "오스트리아", "대한민국", "그리스", "칠레"]
+    let cellData = ["까베르네쇼비뇽", "샤도네이", "메를로", "까베르네프랑", "피노누아", "시라/쉬라즈", "쁘띠베르도", "쇼비뇽블랑", "그르나슈", "말벡", "산지오베제", "리슬링", "모스카토", "블렌드", "네비올로", "카르메너르", "무르베드르", "템프라니요"]
     
     private var selectedItems: [String] = []
     private let maxSelectionCount = 2
@@ -45,7 +45,7 @@ class ManiaCountryViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    private lazy var surveyKindView = SurveyKindView(titleText: "선호하는 와인 생산국을\n골라주세요(2개 선택)", currentPage: 4, entirePage: 4, buttonTitle: "내 취향 저장하기").then {
+    private lazy var surveyKindView = SurveyKindView(titleText: "선호하는 와인 품종을\n골라주세요(2개 선택)", currentPage: 3, entirePage: 4, buttonTitle: "다음").then {
         $0.surveyKindCollectionView.delegate = self
         $0.surveyKindCollectionView.dataSource = self
         
@@ -53,13 +53,13 @@ class ManiaCountryViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
-        let vc = ManiaTypeViewController()
+        UserSurveyManager.shared.setVariety(selectedItems)
+        let vc = ManiaCountryViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
-
 }
 
-extension ManiaCountryViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
+extension ManiaTypeViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return cellData.count
     }
@@ -108,3 +108,4 @@ extension ManiaCountryViewController: UICollectionViewDelegateFlowLayout, UIColl
         return CGSize(width: cellWidth, height: 49)
     }
 }
+

@@ -55,6 +55,10 @@ class NewbieConsumeViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
+        // 정보 저장
+        guard let price = self.selectedItem else {return}
+        UserSurveyManager.shared.setPrice(Int(price))
+        
         let vc = IsNewbieViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
