@@ -4,23 +4,26 @@ import Foundation
 import SwiftData
 
 @Model
-public class PreviewData {
+public class TastingNoteData {
     @Attribute public var noteId : Int
     @Attribute public var wineName : String
     @Attribute public var imageURL : String
     @Attribute public var sort : String
     
+    @Relationship var user: UserData?
     
-    init(noteId: Int, wineName: String, imageURL: String, sort: String) {
+    
+    public init(noteId: Int,
+         wineName: String,
+         imageURL: String,
+         sort: String,
+         user: UserData?
+    ) {
         self.noteId = noteId
         self.wineName = wineName
         self.imageURL = imageURL
         self.sort = sort
+        self.user = user
     }
 }
 
-// 노트 카운터만 담은 클래스
-
-// 노트 카운터랑 프리뷰데이터를 담은 클래스
-
-// 

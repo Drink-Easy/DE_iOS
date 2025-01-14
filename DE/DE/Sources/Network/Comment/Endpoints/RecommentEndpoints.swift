@@ -1,6 +1,5 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
-import CoreModule
 import Foundation
 import Moya
 
@@ -11,7 +10,7 @@ public enum RecommentEndpoints {
 
 extension RecommentEndpoints : TargetType {
     public var baseURL: URL {
-        guard let url = URL(string: Constants.API.recommentURL) else {
+        guard let url = URL(string: API.recommentURL) else {
             fatalError("잘못된 URL")
         }
         return url

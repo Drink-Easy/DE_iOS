@@ -10,3 +10,7 @@ public struct MemberInfoResponse : Decodable {
     public let authType : String
     public let adult : Bool
 }
+
+public struct NameCheckResponse : Decodable {
+    public let canUse : Bool
+}

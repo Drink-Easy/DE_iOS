@@ -2,7 +2,6 @@
 
 import Foundation
 import Moya
-import CoreModule
 
 public enum WishlistEndpoint {
     case getWishList
@@ -12,7 +11,7 @@ public enum WishlistEndpoint {
 
 extension WishlistEndpoint: TargetType {
     public var baseURL: URL {
-        guard let url = URL(string: Constants.API.wishlistURL) else {
+        guard let url = URL(string: API.wishlistURL) else {
             fatalError("잘못된 URL")
         }
         return url

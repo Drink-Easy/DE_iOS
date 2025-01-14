@@ -33,13 +33,20 @@ public class APICounter {
 
 @Model
 public class APIControllerCounter {
-    var name: String // 컨트롤러 이름
+    @Attribute var name: String
     @Relationship var counter: APICounter // APICounter와 연관 관계 설정
     @Relationship public var user: UserData? // 부모 관계 추가
 
-    init(name: String, counter: APICounter, user: UserData? = nil) {
-        self.name = name
+    init(name: EndpointType, counter: APICounter, user: UserData? = nil) {
+        self.name = name.rawValue
         self.counter = counter
         self.user = user
     }
+}
+
+public enum EndpointType: String, Codable {
+    case myWine = "myWine"
+    case wishlist = "wishlist"
+    case member = "member"
+    case tastingNote = "tastingNote"
 }

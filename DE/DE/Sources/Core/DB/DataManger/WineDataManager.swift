@@ -45,6 +45,7 @@ public final class WineDataManager {
         print("✅ 와인 데이터 저장 완료!")
     }
     
+    /// 와인 데이터 불러오기
     @MainActor
     public func fetchWineDataList(userId: Int, wineListType: WineListType) throws -> [WineData] {
         let context = container.mainContext
@@ -59,7 +60,7 @@ public final class WineDataManager {
         return wineList.wines
     }
     
-    /// 만료된 와인 데이터 삭제
+    /// 만료된 와인 데이터 삭제하기
     @MainActor
     public func deleteExpiredWineData() throws {
         let context = container.mainContext
@@ -79,6 +80,7 @@ public final class WineDataManager {
         print("✅ 만료된 와인 데이터가 삭제되었습니다: \(expiredWineLists.count)개")
     }
     
+    // MARK: - 내부 함수
     
     /// 사용자 검색
     private func fetchUser(by userId: Int, in context: ModelContext) throws -> UserData {
@@ -92,8 +94,8 @@ public final class WineDataManager {
         return user
     }
     
-    /// WineList 검색
-    func fetchWineList(for userId: Int, type: WineListType, in context: ModelContext) throws -> WineList {
+    /// WineList의 와인 목록 가져오기
+    private func fetchWineList(for userId: Int, type: WineListType, in context: ModelContext) throws -> WineList {
         let descriptor = FetchDescriptor<WineList>(predicate: #Predicate { $0.user?.userId == userId && $0.type == type.rawValue })
         let wineLists = try context.fetch(descriptor)
         
