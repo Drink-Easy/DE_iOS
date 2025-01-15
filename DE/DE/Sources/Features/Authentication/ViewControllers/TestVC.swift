@@ -2,7 +2,6 @@
 
 import UIKit
 
-import HomeModule
 import CoreModule
 import Network
 

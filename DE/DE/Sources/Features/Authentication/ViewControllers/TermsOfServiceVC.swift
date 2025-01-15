@@ -6,7 +6,6 @@ import SnapKit
 import Then
 
 import CoreModule
-import UserSurveyModule
 
 class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegate {
     

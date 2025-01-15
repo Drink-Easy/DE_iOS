@@ -93,8 +93,8 @@ public final class AuthService : NetworkManager {
     }
     
     /// 이메일 중복 체크 API
-    public func checkEmail(data : UsernameCheckRequest, completion: @escaping (Result<UsernameCheckResponse, NetworkError>) -> Void) {
-        request(target: .emailVerification(data: data), decodingType: UsernameCheckResponse.self, completion: completion)
+    public func checkEmail(data : UsernameCheckRequest, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
+        request(target: .emailVerification(data: data), decodingType: Bool.self, completion: completion)
     }
     
     /// 토큰 재발급 API

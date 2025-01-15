@@ -30,7 +30,6 @@ public final class SettingMenuViewController : UIViewController {
         SettingMenuItems.accountInfo,
         SettingMenuItems.wishList,
         SettingMenuItems.ownedWine,
-        SettingMenuItems.schedule,
         SettingMenuItems.notice,
         SettingMenuItems.appInfo,
         SettingMenuItems.inquiry

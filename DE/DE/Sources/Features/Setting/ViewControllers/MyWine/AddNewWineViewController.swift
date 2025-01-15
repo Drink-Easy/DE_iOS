@@ -6,8 +6,6 @@ import Network
 import SnapKit
 import Then
 
-import TastingNote
-
 public class AddNewWineViewController : UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
     let navigationBarManager = NavigationBarManager()
     // TODO : 상단 네비게이션 바 추가하는거 하셈!!

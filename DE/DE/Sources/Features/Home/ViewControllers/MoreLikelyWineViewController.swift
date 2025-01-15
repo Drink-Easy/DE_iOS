@@ -5,7 +5,6 @@ import SnapKit
 import CoreModule
 import Network
 import Then
-import SearchModule
 
 class MoreLikelyWineViewController: UIViewController {
 

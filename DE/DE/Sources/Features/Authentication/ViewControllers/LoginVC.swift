@@ -5,10 +5,8 @@ import UIKit
 import SnapKit
 import Then
 
-import HomeModule
 import CoreModule
 import Network
-import UserSurveyModule
 
 class LoginVC: UIViewController {
     // MARK: - Properties

@@ -2,12 +2,6 @@
 
 import UIKit
 import CoreModule
-import TastingNote
-import CommunityModule
-import HomeModule
-
-import UserSurveyModule
-import SettingModule
 
 public class MainTabBarController: UITabBarController {
     

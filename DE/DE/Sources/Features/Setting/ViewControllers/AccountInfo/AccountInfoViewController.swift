@@ -230,20 +230,20 @@ class AccountInfoViewController: UIViewController {
     }
     
     func showSplashScreen() {
-        //        let splashViewController = SplashVC()
-        //
-        //        // 현재 윈도우 가져오기
-        //        guard let window = UIApplication.shared.connectedScenes
-        //            .compactMap({ $0 as? UIWindowScene })
-        //            .first?.windows
-        //            .first else {
-        //            print("윈도우를 가져올 수 없습니다.")
-        //            return
-        //        }
-        //
-        //        UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve, animations: {
-        //            window.rootViewController = splashViewController
-        //        }, completion: nil)
+        let splashViewController = SplashVC()
+        
+        // 현재 윈도우 가져오기
+        guard let window = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .first?.windows
+            .first else {
+            print("윈도우를 가져올 수 없습니다.")
+            return
+        }
+        
+        UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve, animations: {
+            window.rootViewController = splashViewController
+        }, completion: nil)
     }
 }
 

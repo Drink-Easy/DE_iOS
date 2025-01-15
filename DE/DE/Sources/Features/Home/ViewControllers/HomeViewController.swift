@@ -4,7 +4,6 @@ import UIKit
 import CoreModule
 import Then
 import Network
-import SearchModule
 
 public class HomeViewController: UIViewController, HomeTopViewDelegate {
     
