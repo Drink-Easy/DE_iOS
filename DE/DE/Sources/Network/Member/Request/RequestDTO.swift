@@ -3,12 +3,12 @@
 import Foundation
 
 public struct MemberUpdateRequest: Codable {
-    public let username : String?
-    public let city : String?
+    public let name : String?
+    public let region : String?
     
-    public init(username: String?, city: String?) {
-        self.username = username
-        self.city = city
+    public init(username: String? = "드링이", city: String? = "서울특별시 종로구") {
+        self.name = username
+        self.region = city
     }
 }
 
