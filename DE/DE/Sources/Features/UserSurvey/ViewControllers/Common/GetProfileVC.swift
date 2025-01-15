@@ -21,6 +21,8 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     private let ValidationManager = NicknameValidateManager()
     
+    var userName : String?
+    var userRegion : String?
     lazy var profileImgFileName: String = ""
     lazy var profileImg: UIImage? = nil
     
@@ -122,6 +124,12 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     }
     
     @objc func nextButtonTapped() {
+        // 정보 저장
+        guard let name = self.userName,
+              let addr = self.userRegion,
+              let profileImg = self.profileImg else { return }
+        UserSurveyManager.shared.setPersonalInfo(name: name, addr: addr, profileImg: profileImg)
+        
         let vc = IsNewbieViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -172,6 +180,10 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
         let isLocationValid = !(profileView.myLocationTextField.textField.text?.isEmpty ?? true)
         let isImageSelected = profileView.profileImageView.image != nil
         let isFormValid = isNicknameValid && isLocationValid && isImageSelected
+        
+        self.userName = profileView.nicknameTextField.textField.text
+        self.userRegion = profileView.myLocationTextField.textField.text
+        self.profileImg = profileView.profileImageView.image
         
         nextButton.isEnabled = isFormValid
         nextButton.isEnabled(isEnabled: isFormValid)
