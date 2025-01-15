@@ -36,14 +36,19 @@ public final class MemberService : NetworkManager {
         request(target: .checkNickname(nickname: name), decodingType: NameCheckResponse.self, completion: completion)
     }
     
-    /// 취향찾기 등록 API
-    public func patchUserSurvey(imageName fileName: String, imageData: UIImage, body: MemberRequestDTO, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .patchMemberInfo(image: imageData, imageName: fileName, body: body), decodingType: String.self, completion: completion)
+    /// 이미지 업로드 API
+    public func postImg(image: UIImage, completion: @escaping (Result<String, NetworkError>) -> Void) {
+        request(target: .postImage(image: image), decodingType: String.self, completion: completion)
     }
     
-    /// 개인정보 갱신 API
-    public func patchUserInfo(imageName fileName: String, imageData: UIImage, body: MemberUpdateRequest, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .patchMemeberPersonalInfo(image: imageData, imageName: fileName, body: body), decodingType: String.self, completion: completion)
+    /// 개인정보 갱신 API(마이페이지)
+    public func patchUserInfo(body: MemberUpdateRequest, completion: @escaping (Result<String, NetworkError>) -> Void) {
+        request(target: .patchMemeberPersonalInfo(body: body), decodingType: String.self, completion: completion)
+    }
+    
+    /// 취향찾기 등록 API
+    public func postUserInfo(body: MemberRequestDTO, completion: @escaping (Result<String, NetworkError>) -> Void) {
+        request(target: .patchMemberInfo(body: body), decodingType: String.self, completion: completion)
     }
     
     /// 개인정보 불러오기 API

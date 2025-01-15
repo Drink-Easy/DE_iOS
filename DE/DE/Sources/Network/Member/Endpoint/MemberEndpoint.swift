@@ -6,12 +6,14 @@ import Moya
 public enum MemberEndpoint {
     // 마이페이지
     case getMemberInfo
-    case patchMemeberPersonalInfo(image: UIImage, imageName: String, body : MemberUpdateRequest)
+    case patchMemeberPersonalInfo(body : MemberUpdateRequest)
     case checkNickname(nickname: String)
     case deleteMember
     
+    case postImage(image: UIImage)
+    
     // 취향찾기
-    case patchMemberInfo(image: UIImage, imageName: String, body : MemberRequestDTO)
+    case patchMemberInfo(body : MemberRequestDTO)
 }
 
 extension MemberEndpoint: TargetType {
@@ -30,6 +32,8 @@ extension MemberEndpoint: TargetType {
             return "/\(name)"
         case .deleteMember :
             return "/delete"
+        case .postImage:
+            return "/profileImage"
         default :
             return "/info"
         }
@@ -37,7 +41,7 @@ extension MemberEndpoint: TargetType {
     
     public var method: Moya.Method {
         switch self {
-        case .checkNickname :
+        case .checkNickname, .postImage :
             return .post
         case .getMemberInfo :
             return .get
@@ -56,56 +60,31 @@ extension MemberEndpoint: TargetType {
             return .requestPlain
         case .deleteMember:
             return .requestPlain
-        case .patchMemberInfo(let image, let fileName, let body):
+        case .postImage(let image):
             var multipartData: [MultipartFormData] = []
+            let fileName = "\(UUID().uuidString).jpeg"
             if let imageData = image.jpegData(compressionQuality: 0.5) {
                 let fileFormData = MultipartFormData(
                     provider: .data(imageData),
-                    name: "multipartFile",
+                    name: "profileImg",
                     fileName: fileName,
                     mimeType: "image/jpeg"
                 )
                 multipartData.append(fileFormData)
             }
-            
-            if let jsonData = try? JSONEncoder().encode(body) {
-                let jsonFormData = MultipartFormData(provider: .data(jsonData), name: "memberRequest")
-                multipartData.append(jsonFormData)
-            }
-
             return .uploadMultipart(multipartData)
-        case .patchMemeberPersonalInfo(let fileData, let fileName, let body) :
-            var multipartData: [MultipartFormData] = []
-            if let imageData = fileData.jpegData(compressionQuality: 0.5) {
-                let fileFormData = MultipartFormData(
-                    provider: .data(imageData),
-                    name: "multipartFile",
-                    fileName: fileName,
-                    mimeType: "multipart/form-data"
-                )
-                multipartData.append(fileFormData)
-            }
-            
-            if let jsonData = try? JSONEncoder().encode(body) {
-                let jsonFormData = MultipartFormData(
-                    provider: .data(jsonData),
-                    name: "memberUpdateRequest"
-                )
-                multipartData.append(jsonFormData)
-            }
-
-            return .uploadMultipart(multipartData)
+        case .patchMemberInfo(let body):
+            return .requestJSONEncodable(body)
+        case .patchMemeberPersonalInfo(let body) :
+            return .requestJSONEncodable(body)
         }
     }
     
     public var headers: [String : String]? {
         switch self {
-        case .patchMemeberPersonalInfo, .patchMemberInfo :
+        case .postImage:
             return [
-                "Content-type": "multipart/octet-stream",
-                "Custom-Image-type": "multipart/form-data",
-//                "Custom-Image-type": "image/jpeg",
-                "Custom-Json-type": "application/json"
+                "Content-type": "multipart/form-data",
             ]
         default :
             return ["Content-Type": "application/json"]
