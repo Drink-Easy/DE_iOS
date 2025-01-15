@@ -22,9 +22,14 @@ public final class WishlistDataManager {
     }()
     
     // MARK: - Methods
-    /// 위시리스트 최초 생성 함수
-    /// - 위시리스트 없으면 생성
-    ///
+    
+    /// 사용자에게 위시리스트가 없는 경우 새로 생성합니다.
+    /// - Parameters:
+    ///   - userId: 위시리스트를 생성할 사용자의 ID.
+    ///   - newWines: 초기 위시리스트에 저장할 와인 데이터 배열.
+    /// - Throws:
+    ///   - `WishlistError.userNotFound`: 사용자를 찾을 수 없는 경우.
+    ///   - `WishlistError.saveFailed`: 위시리스트 저장에 실패한 경우.
     @MainActor
     public func createWishlistIfNeeded(for userId: Int, with newWines: [WineData]) async throws {
         let context = container.mainContext
@@ -50,8 +55,12 @@ public final class WishlistDataManager {
         }
     }
     
-    /// 위시리스트 와인 목록 가져오기
-    /// - 위시리스트 get api 호출 전 사용
+    /// 사용자의 위시리스트에 저장된 와인 데이터를 가져옵니다.
+    /// - Parameter userId: 위시리스트를 가져올 사용자의 ID.
+    /// - Returns: 위시리스트에 저장된 `WineData` 배열.
+    /// - Throws:
+    ///   - `WishlistError.userNotFound`: 사용자를 찾을 수 없는 경우.
+    ///   - `WishlistError.wishlistNotFound`: 사용자의 위시리스트가 없는 경우.
     @MainActor
     public func fetchWishlist(for userId: Int) async throws -> [WineData] {
         let context = container.mainContext
@@ -61,15 +70,21 @@ public final class WishlistDataManager {
 
         // 2. 위시리스트 확인
         guard let wishlist = user.wishlist else {
-            throw WishlistError.userNotFound
+            throw WishlistError.wishlistNotFound
         }
 
         // 3. 위시리스트의 WineData 반환
         return wishlist.wishlishWines
     }
     
-    /// 위시리스트 와인 목록 업데이트
-    /// - 위시리스트 get api 호출 후에만 사용
+    /// 사용자의 위시리스트를 새로운 와인 데이터로 업데이트합니다.
+    /// - Parameters:
+    ///   - userId: 위시리스트를 업데이트할 사용자의 ID.
+    ///   - newWines: 새로운 와인 데이터 배열.
+    /// - Throws:
+    ///   - `WishlistError.userNotFound`: 사용자를 찾을 수 없는 경우.
+    ///   - `WishlistError.wishlistNotFound`: 사용자의 위시리스트가 없는 경우.
+    ///   - `WishlistError.saveFailed`: 위시리스트 저장에 실패한 경우.
     @MainActor
     public func updateWishlist(for userId: Int, with newWines: [WineData]) async throws {
         let context = container.mainContext
@@ -79,7 +94,7 @@ public final class WishlistDataManager {
 
         // 2. 위시리스트 확인
         guard let wishlist = user.wishlist else {
-            throw WishlistError.userNotFound
+            throw WishlistError.wishlistNotFound
         }
 
         // 3. 위시리스트 업데이트
@@ -94,8 +109,12 @@ public final class WishlistDataManager {
         }
     }
     
-    /// 위시리스트 삭제
-    /// - 탈퇴할때? 언제불러야할까
+    /// 사용자의 위시리스트를 삭제합니다.
+    /// - Parameter userId: 위시리스트를 삭제할 사용자의 ID.
+    /// - Throws:
+    ///   - `WishlistError.userNotFound`: 사용자를 찾을 수 없는 경우.
+    ///   - `WishlistError.wishlistNotFound`: 사용자의 위시리스트가 없는 경우.
+    ///   - `WishlistError.saveFailed`: 위시리스트 삭제에 실패한 경우.
     @MainActor
     public func deleteWishlist(for userId: Int) async throws {
         let context = container.mainContext
@@ -105,7 +124,7 @@ public final class WishlistDataManager {
 
         // 2. 위시리스트 확인
         guard let wishlist = user.wishlist else {
-            throw WishlistError.userNotFound
+            throw WishlistError.wishlistNotFound
         }
 
         // 3. 위시리스트 삭제
@@ -123,7 +142,13 @@ public final class WishlistDataManager {
     
     // MARK: - 내부 함수
     
-    /// 유저 검증
+    /// 사용자를 검색하여 반환합니다.
+    /// - Parameters:
+    ///   - userId: 검색할 사용자의 ID.
+    ///   - context: SwiftData의 컨텍스트 객체.
+    /// - Returns: `UserData` 객체.
+    /// - Throws:
+    ///   - `WishlistError.userNotFound`: 사용자를 찾을 수 없는 경우.
     @MainActor
     private func fetchUser(by userId: Int, in context: ModelContext) throws -> UserData {
         let descriptor = FetchDescriptor<UserData>(predicate: #Predicate { $0.userId == userId })
@@ -138,9 +163,16 @@ public final class WishlistDataManager {
 }
 
 public enum WishlistError: Error {
+    /// 사용자를 찾을 수 없는 경우.
     case userNotFound
-    case controllerAlreadyExists(name: String)
+    
+    /// 사용자의 위시리스트가 없는 경우.
+    case wishlistNotFound
+    
+    /// 데이터를 저장하는 데 실패한 경우.
     case saveFailed(reason: String)
+    
+    /// 알 수 없는 에러.
     case unknown
 }
 
@@ -149,10 +181,10 @@ extension WishlistError: LocalizedError {
         switch self {
         case .userNotFound:
             return "사용자를 찾을 수 없습니다."
-        case .controllerAlreadyExists(let name):
-            return "The controller '\(name)' already exists for this user."
+        case .wishlistNotFound:
+            return "사용자의 위시리스트가 존재하지 않습니다."
         case .saveFailed(let reason):
-            return "데이터를 저장하는데 실패하였습니다. 원인: \(reason)"
+            return "데이터를 저장하는 데 실패하였습니다. 이유: \(reason)"
         case .unknown:
             return "알 수 없는 에러가 발생했습니다."
         }
