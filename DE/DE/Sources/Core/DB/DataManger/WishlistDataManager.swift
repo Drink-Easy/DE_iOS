@@ -21,9 +21,10 @@ public final class WishlistDataManager {
         }
     }()
     
-    //MARK: - Methods
-    
+    // MARK: - Methods
     /// 위시리스트 최초 생성 함수
+    /// - 위시리스트 없으면 생성
+    ///
     @MainActor
     public func createWishlistIfNeeded(for userId: Int, with newWines: [WineData]) async throws {
         let context = container.mainContext
@@ -50,6 +51,7 @@ public final class WishlistDataManager {
     }
     
     /// 위시리스트 와인 목록 가져오기
+    /// - 위시리스트 get api 호출 전 사용
     @MainActor
     public func fetchWishlist(for userId: Int) async throws -> [WineData] {
         let context = container.mainContext
@@ -67,6 +69,7 @@ public final class WishlistDataManager {
     }
     
     /// 위시리스트 와인 목록 업데이트
+    /// - 위시리스트 get api 호출 후에만 사용
     @MainActor
     public func updateWishlist(for userId: Int, with newWines: [WineData]) async throws {
         let context = container.mainContext
@@ -92,6 +95,7 @@ public final class WishlistDataManager {
     }
     
     /// 위시리스트 삭제
+    /// - 탈퇴할때? 언제불러야할까
     @MainActor
     public func deleteWishlist(for userId: Int) async throws {
         let context = container.mainContext
