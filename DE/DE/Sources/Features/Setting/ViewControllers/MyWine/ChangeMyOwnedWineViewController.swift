@@ -2,6 +2,9 @@
 
 import UIKit
 
+// 수정 뷰
+// TODO : 도연
+
 class ChangeMyOwnedWineViewController: UIViewController {
 
     override func viewDidLoad() {
