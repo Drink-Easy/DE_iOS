@@ -1,8 +1,10 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+
 import SnapKit
 import Then
+
 import SDWebImage
 
 public class SearchResultTableViewCell: UITableViewCell {

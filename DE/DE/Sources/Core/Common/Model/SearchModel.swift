@@ -2,10 +2,6 @@
 
 import UIKit
 
-struct SearchModel {
-    
-}
-
 struct Wine: Codable {
     let wineId: Int
     let name: String

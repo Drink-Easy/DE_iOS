@@ -1,6 +1,8 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+
+import SnapKit
 import Then
 
 public class ReviewCollectionViewCell: UICollectionViewCell {

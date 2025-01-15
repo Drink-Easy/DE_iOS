@@ -3,7 +3,6 @@
 import UIKit
 import SnapKit
 import Then
-import CoreModule
 
 public class TitleWithBarView: UIView {
     private let titleLabel = UILabel().then {
