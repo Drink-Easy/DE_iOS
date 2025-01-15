@@ -5,10 +5,12 @@ import SnapKit
 import Then
 import CoreModule
 import SwiftyToaster
+import Network
 
 class ManiaCountryViewController: UIViewController {
 
     private let navigationBarManager = NavigationBarManager()
+    let networkService = MemberService()
     
     let cellData = ["프랑스", "이탈리아", "미국", "스페인", "아르헨티나", "독일", "호주", "포르투갈", "캐나다", "뉴질랜드", "슬로베니아", "헝가리", "오스트리아", "대한민국", "그리스", "칠레"]
     
@@ -58,6 +60,19 @@ class ManiaCountryViewController: UIViewController {
 //        let vc = ManiaTypeViewController()
 //        navigationController?.pushViewController(vc, animated: true)
     }
+    
+    private func callPatchAPI() {
+        let userMng = UserSurveyManager.shared
+        
+        let bodyData = networkService.makeMemberInfoRequestDTO(name: userMng.name,
+                                                isNewbie: userMng.isNewbie,
+                                                monthPrice: userMng.monthPrice,
+                                                wineSort: userMng.wineSort,
+                                                wineArea: userMng.wineArea,
+                                                wineVariety: userMng.wineVariety,
+                                                region: userMng.region)
+    }
+    
 
 }
 
