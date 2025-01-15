@@ -6,6 +6,9 @@ import Network
 import SnapKit
 import Then
 
+// 기록할 와인 선택(검색) 뷰컨
+// TODO : 현주
+
 public class AddNewWineViewController : UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
     let navigationBarManager = NavigationBarManager()
     // TODO : 상단 네비게이션 바 추가하는거 하셈!!
@@ -107,14 +110,16 @@ public class AddNewWineViewController : UIViewController, UISearchBarDelegate, U
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = TastedDateViewController()
-        UserDefaults.standard.set(wineResults[indexPath.row].wineName, forKey: "wineName")
-        UserDefaults.standard.set(wineResults[indexPath.row].wineId, forKey: "wineId")
-        UserDefaults.standard.set(wineResults[indexPath.row].sort, forKey: "wineSort")
-        UserDefaults.standard.set(wineResults[indexPath.row].area, forKey: "wineArea")
-        UserDefaults.standard.set(wineResults[indexPath.row].imageURL, forKey: "wineImage")
-        print("와인id 저장됨: \(wineResults[indexPath.row].wineId)")
-        navigationController?.pushViewController(vc, animated: true)
+        let nextVc = BuyNewWineDateViewController()
+        // 그냥 와인모델 하나 만들어서 넘겨주세요
+        // 여기는 유저디폴츠 사용 안하고 그냥 뷰컨으로 데이터 넘기기 ㄱㄱ
+//        UserDefaults.standard.set(wineResults[indexPath.row].wineName, forKey: "wineName")
+//        UserDefaults.standard.set(wineResults[indexPath.row].wineId, forKey: "wineId")
+//        UserDefaults.standard.set(wineResults[indexPath.row].sort, forKey: "wineSort")
+//        UserDefaults.standard.set(wineResults[indexPath.row].area, forKey: "wineArea")
+//        UserDefaults.standard.set(wineResults[indexPath.row].imageURL, forKey: "wineImage")
+//        print("와인id 저장됨: \(wineResults[indexPath.row].wineId)")
+        navigationController?.pushViewController(nextVc, animated: true)
     }
 }
 

@@ -4,6 +4,9 @@ import UIKit
 import CoreModule
 import Network
 
+// 구매 시기 선택 뷰 컨트롤러
+// TODO : 도연
+
 public class BuyNewWineDateViewController: UIViewController {
 
     let tastedDateView = BuyNewWineDateView()
@@ -56,25 +59,18 @@ public class BuyNewWineDateViewController: UIViewController {
     
     @objc func nextVC() {
         guard let selectedDate = selectedDate else {
-            print("선택된 날짜가 없습니다.")
+            self.selectedDate = DateComponents() // 오늘 날짜 배정?
             return
         }
-        
+        let dateFormatter = DateFormatter()
         if let date = Calendar.current.date(from: selectedDate) {
-            // 날짜를 `String`으로 변환
-            let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd"
-            let dateString = dateFormatter.string(from: date)
-            
-            // UserDefaults에 저장
-            UserDefaults.standard.set(dateString, forKey: "tasteDate")
-            print("날짜 저장됨: \(dateString)")
         }
-        
-        let nextVC = ChooseWineColorViewController()
+        let dateString = dateFormatter.string(from: date)
+        let nextVC = PriceNewWineViewController()
+        nextVC.selectDate = dateString
         navigationController?.pushViewController(nextVC, animated: true)
     }
-    
 }
 
 extension BuyNewWineDateViewController: UICalendarSelectionSingleDateDelegate {
@@ -82,10 +78,8 @@ extension BuyNewWineDateViewController: UICalendarSelectionSingleDateDelegate {
         guard let validDateComponents = dateComponents else {
             return
         }
-        // 선택된 날짜를 저장
         selectedDate = validDateComponents
         
-        // 선택된 날짜에 대한 장식 업데이트
         tastedDateView.calender.reloadDecorations(forDateComponents: [validDateComponents], animated: true)
     }
 }
