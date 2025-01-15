@@ -59,4 +59,8 @@ public class PersonalData {
         return userName == nil || userImageURL == nil || userCity == nil || authType == nil || email == nil || adult == nil
     }
     
+    func checkTwoProperty() -> Bool {
+        return userName == nil || userImageURL == nil
+    }
+    
 }

@@ -148,7 +148,24 @@ public final class PersonalDataManager {
         return personalData.hasNilProperty()
     }
 
-    // TODO : 프로퍼티 2개만 nil 검사
+    // TODO : 프로퍼티 2개만 nil 검사 - name, image
+    
+    @MainActor
+    public func checkPersonalDataTwoPropertyHasNil(for userId: Int) async throws -> Bool {
+        let context = container.mainContext
+
+        // 1. 사용자 확인
+        let user = try fetchUser(by: userId, in: context)
+
+        // 2. PersonalData 확인
+        guard let personalData = user.userInfo else {
+            throw PersonalDataError.userNotFound
+        }
+
+        // 3. nil 값 검증
+        return personalData.checkTwoProperty()
+    }
+    
     
     
     /// personal data  삭제

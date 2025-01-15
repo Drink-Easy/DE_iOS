@@ -15,6 +15,7 @@ import Network
 // 일단 캐시 데이터 검증을 해
 // 검증 1: 지금 call counter가 모두 0인가
 // 검증 2: 데이터 필드 값 중에 nil이 없는가
+// 이름, 이미지만 캐시데이터 사용
 
 public final class SettingMenuViewController : UIViewController {
     
@@ -53,6 +54,7 @@ public final class SettingMenuViewController : UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
+        
         setupUI()
         setupTableView()
         setupNavigationBar()
@@ -62,6 +64,7 @@ public final class SettingMenuViewController : UIViewController {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         Task {
+            // 데이터 업데이트
             CheckCacheData()
         }
     }
@@ -87,6 +90,7 @@ public final class SettingMenuViewController : UIViewController {
         }
     }
     
+    /// UI에 사용할 데이터 불러오기(캐시 or 서버)
     func CheckCacheData() {
         guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
             print("⚠️ userId가 UserDefaults에 없습니다.")
@@ -112,14 +116,16 @@ public final class SettingMenuViewController : UIViewController {
         }
     }
 
-    // 캐시 데이터 검증
+    /// 캐시 데이터 검증
     private func isCacheDataValid(for userId: Int) async throws -> Bool {
         let isCallCountZero = try await APICallCounterManager.shared.isCallCountZero(for: userId, controllerName: .member)
-        let hasNoNilFields = try await PersonalDataManager.shared.checkPersonalDataHasNil(for: userId)
+        
+        // 이름, 이미지만 검증
+        let hasNoNilFields = try await PersonalDataManager.shared.checkPersonalDataTwoPropertyHasNil(for: userId)
         return isCallCountZero && hasNoNilFields
     }
 
-    // 캐시 데이터 사용
+    /// 캐시 데이터 사용
     private func useCacheData(for userId: Int) async {
         do {
             let data = try await PersonalDataManager.shared.fetchPersonalData(for: userId)
@@ -132,6 +138,7 @@ public final class SettingMenuViewController : UIViewController {
         }
     }
 
+    /// 서버에서 데이터 가져오기
     public func fetchMemberInfo() {
         networkService.fetchUserInfo(completion: { [weak self] result in
             guard let self = self else { return }
@@ -160,13 +167,15 @@ public final class SettingMenuViewController : UIViewController {
         })
     }
     
+    
+    /// UI update
     func setUserData(userName: String, imageURL: String) {
         let profileImgURL = URL(string: imageURL)
         self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
         self.nameLabel.text = "\(userName)님"
     }
     
-    // 새로 받은 데이터 저장
+    /// 새로 받은 데이터 저장
     func saveUserInfo(data: SimpleProfileInfoData) async {
         do {
             try await PersonalDataManager.shared.updatePersonalData(for: data.uniqueUserId,
@@ -215,7 +224,7 @@ extension SettingMenuViewController: UITableViewDataSource {
 
         // Chevron 추가
         let chevronImage = UIImageView(image: UIImage(systemName: "chevron.right"))
-        chevronImage.tintColor = AppColor.gray70 // 원하는 색상
+        chevronImage.tintColor = AppColor.gray70
         cell.accessoryView = chevronImage
 
         return cell
