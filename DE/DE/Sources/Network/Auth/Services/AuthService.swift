@@ -72,7 +72,14 @@ public final class AuthService : NetworkManager {
         provider.request(.postLogout) { result in
             switch result {
             case .success(let response):
-                completion(.success(()))
+                if response.statusCode == 200 {
+                    completion(.success(()))
+                } else {
+                    let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: response.data)
+                    let finalMessage = errorResponse?.message ?? "에러 메세지 없음"
+                    return completion(.failure(.serverError(statusCode: response.statusCode, message: finalMessage)))
+                }
+                
             case .failure(let error):
                 let networkError = self.handleNetworkError(error)
                 completion(.failure(networkError))
