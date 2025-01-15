@@ -14,7 +14,7 @@ public class UserData {
     @Relationship public var tastingNoteList: TastingNoteList? // 테이스팅 노트 저장
 //    @Relationship public var savedWineList: [SavedWineDataModel] = [] // 보유와인 저장
     
-    public init(userId: Int, userInfo: PersonalData? = nil, wines: [WineList], controllerCounters: [APIControllerCounter], wishlist: Wishlist? = nil, tastingNoteList: TastingNoteList? = nil) {
+    public init(userId: Int, userInfo: PersonalData? = nil, wines: [WineList] = [], controllerCounters: [APIControllerCounter] = [], wishlist: Wishlist? = nil, tastingNoteList: TastingNoteList? = nil) {
         self.userId = userId
         self.userInfo = userInfo
         self.wines = wines

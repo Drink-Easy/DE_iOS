@@ -9,7 +9,8 @@ import SwiftyToaster
 class ManiaTypeViewController: UIViewController {
 
     private let navigationBarManager = NavigationBarManager()
-    
+    // TODO : 도연
+    // 품종이름 Enum으로 통일하기
     let cellData = ["까베르네쇼비뇽", "샤도네이", "메를로", "까베르네프랑", "피노누아", "시라/쉬라즈", "쁘띠베르도", "쇼비뇽블랑", "그르나슈", "말벡", "산지오베제", "리슬링", "모스카토", "블렌드", "네비올로", "카르메너르", "무르베드르", "템프라니요"]
     
     private var selectedItems: [String] = []
