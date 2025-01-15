@@ -147,11 +147,13 @@ public final class SettingMenuViewController : UIViewController {
                     print("⚠️ userId가 UserDefaults에 없습니다.")
                     return
                 }
+                guard let username = data?.username,
+                      let imgUrl = data?.imageUrl else {return}
                 Task {
                     // 데이터 할당
-                    self.profileData = SimpleProfileInfoData(name: data.username, imageURL: data.imageUrl, uniqueUserId: userId)
+                    self.profileData = SimpleProfileInfoData(name: username, imageURL: imgUrl, uniqueUserId: userId)
                     // 로컬 캐시 데이터에 저장(덮어쓰기)
-                    await self.saveUserInfo(data: SimpleProfileInfoData(name: data.username, imageURL: data.imageUrl, uniqueUserId: userId))
+                    await self.saveUserInfo(data: SimpleProfileInfoData(name: username, imageURL: imgUrl, uniqueUserId: userId))
                     do {
                         // get api -> 모든 call counter 초기화
                         try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)

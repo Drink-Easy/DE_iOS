@@ -174,7 +174,7 @@ class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegat
     }
     
     @objc private func startButtonTapped() {
-        let vc = WelcomeVC()
+        let vc = MainTabBarController()
         navigationController?.pushViewController(vc, animated: true)
     }
     
