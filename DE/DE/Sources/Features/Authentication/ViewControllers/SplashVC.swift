@@ -12,7 +12,6 @@ import AdSupport
 
 import Network
 import CoreModule
-import HomeModule
 
 public class SplashVC : UIViewController {
     

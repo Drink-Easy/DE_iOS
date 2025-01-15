@@ -4,7 +4,6 @@ import UIKit
 import CoreModule
 import Then
 import Network
-import SearchModule
 
 public class HomeViewController: UIViewController, HomeTopViewDelegate {
     
@@ -22,7 +21,6 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     }
     
     private var homeTopView = HomeTopView()
-    let dataManger = WineDataManager.shared
     let networkService = WineService()
     
     // View 세팅
@@ -74,11 +72,11 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
-            guard let user = await UserDataManager.shared.fetchUser(userId: userId) else {
-                print("⚠️ 저장된 유저 이름이 없습니다.")
-                return
+            do {
+                self.userName = try await PersonalDataManager.shared.fetchUserName(for: userId)
+            } catch {
+                print(error.localizedDescription)
             }
-            self.userName = user.userName ?? "이름없음"
         }
     }
     
@@ -272,7 +270,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
-            try await WineDataManager.shared.saveWineData(userId: userId, wineListType: type, wineData: wines, expirationInterval: time)
+            try WineDataManager.shared.saveWineData(userId: userId, wineListType: type, wineData: wines, expirationInterval: time)
             print("✅ \(type.rawValue) 저장 완료: \(wines.count)개")
             updateCollectionView(type: type, with: wines)
         } catch {

@@ -1,9 +1,11 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
-import Cosmos
+
+import SnapKit
 import Then
-import CoreModule
+
+import Cosmos
 
 public class VivinoRateView: UIView {
     

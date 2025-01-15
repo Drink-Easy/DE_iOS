@@ -72,7 +72,14 @@ public final class AuthService : NetworkManager {
         provider.request(.postLogout) { result in
             switch result {
             case .success(let response):
-                completion(.success(()))
+                if response.statusCode == 200 {
+                    completion(.success(()))
+                } else {
+                    let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: response.data)
+                    let finalMessage = errorResponse?.message ?? "에러 메세지 없음"
+                    return completion(.failure(.serverError(statusCode: response.statusCode, message: finalMessage)))
+                }
+                
             case .failure(let error):
                 let networkError = self.handleNetworkError(error)
                 completion(.failure(networkError))
@@ -86,8 +93,8 @@ public final class AuthService : NetworkManager {
     }
     
     /// 이메일 중복 체크 API
-    public func checkEmail(data : UsernameCheckRequest, completion: @escaping (Result<UsernameCheckResponse, NetworkError>) -> Void) {
-        request(target: .emailVerification(data: data), decodingType: UsernameCheckResponse.self, completion: completion)
+    public func checkEmail(data : UsernameCheckRequest, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
+        request(target: .emailVerification(data: data), decodingType: Bool.self, completion: completion)
     }
     
     /// 토큰 재발급 API

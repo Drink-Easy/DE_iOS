@@ -119,8 +119,6 @@ public class UserSurveyManager {
                 print("잘못된 선택지입니다.")
             }
         }
-        
-        
     }
     
     

@@ -50,7 +50,7 @@ final class ValidationManager {
             
             switch result {
             case .success(let response):
-                if response.isDuplicate {
+                if response {
                     self.showValidationError(view, message: "이미 사용 중인 이메일입니다.")
                     self.isEmailDuplicate = true
                 } else {
