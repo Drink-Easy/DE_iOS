@@ -39,7 +39,8 @@ public final class APICallCounterManager {
     @MainActor
     private func fetchController(for user: UserData, controllerName: EndpointType) throws -> APIControllerCounter {
         guard let controller = user.controllerCounters.first(where: { $0.name == controllerName.rawValue }) else {
-            throw APICallCounterError.controllerAlreadyExists(name: controllerName.rawValue)
+            // 컨트롤러 없는 경우
+            throw APICallCounterError.controllerNotExists(name: controllerName.rawValue)
         }
         return controller
     }
@@ -173,13 +174,13 @@ public final class APICallCounterManager {
             throw APICallCounterError.saveFailed(reason: error.localizedDescription)
         }
     }
-    
 }
 
 
 public enum APICallCounterError: Error {
     case userNotFound
     case controllerAlreadyExists(name: String)
+    case controllerNotExists(name: String)
     case saveFailed(reason: String)
     case unknown
 }
@@ -191,6 +192,8 @@ extension APICallCounterError: LocalizedError {
             return "사용자를 찾을 수 없습니다."
         case .controllerAlreadyExists(let name):
             return "\(name) 엔드포인트가 이미 존재합니다."
+        case .controllerNotExists(let name):
+            return "\(name) 엔드포인트가 없습니다."
         case .saveFailed(let reason):
             return "데이터를 저장하는데 실패하였습니다. 원인: \(reason)"
         case .unknown:

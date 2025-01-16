@@ -22,7 +22,6 @@ public final class PersonalDataManager {
     }()
     
     //MARK: - Methods
-    
     /// personal data 생성
     @MainActor
     public func createPersonalData(
@@ -67,6 +66,8 @@ public final class PersonalDataManager {
     }
     
     /// personal data 불러오기
+    /// - 마이페이지 1번화면
+    /// - 마이페이지 2번화면
     @MainActor
     public func fetchPersonalData(for userId: Int) async throws -> PersonalData {
         let context = container.mainContext
@@ -83,6 +84,7 @@ public final class PersonalDataManager {
     }
     
     /// personal data 업데이트
+    /// 마이페이지 수정 후
     @MainActor
     public func updatePersonalData(
         for userId: Int,

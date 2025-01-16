@@ -3,12 +3,12 @@
 import Foundation
 
 public struct MemberInfoResponse : Decodable {
-    public let imageUrl : String
-    public let username : String
-    public let email : String
-    public let city : String
-    public let authType : String
-    public let adult : Bool
+    public let imageUrl : String?
+    public let username : String?
+    public let email : String?
+    public let city : String?
+    public let authType : String?
+    public let adult : Bool?
     
     public init(imageUrl: String, username: String, email: String, city: String, authType: String, adult: Bool) {
         self.imageUrl = imageUrl
@@ -18,8 +18,4 @@ public struct MemberInfoResponse : Decodable {
         self.authType = authType
         self.adult = adult
     }
-}
-
-public struct NameCheckResponse : Decodable {
-    public let canUse : Bool
 }

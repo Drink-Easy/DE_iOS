@@ -32,8 +32,8 @@ public final class MemberService : NetworkManager {
     }
     
     /// 닉네임 체크 API
-    public func checkNickname(name: String, completion: @escaping (Result<NameCheckResponse, NetworkError>) -> Void) {
-        request(target: .checkNickname(nickname: name), decodingType: NameCheckResponse.self, completion: completion)
+    public func checkNickname(name: String, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
+        request(target: .checkNickname(nickname: name), decodingType: Bool.self, completion: completion)
     }
     
     /// 이미지 업로드 API
@@ -52,8 +52,8 @@ public final class MemberService : NetworkManager {
     }
     
     /// 개인정보 불러오기 API
-    public func fetchUserInfo(completion: @escaping (Result<MemberInfoResponse, NetworkError>) -> Void) {
-        request(target: .getMemberInfo, decodingType: MemberInfoResponse.self, completion: completion)
+    public func fetchUserInfo(completion: @escaping (Result<MemberInfoResponse?, NetworkError>) -> Void) {
+        requestOptional(target: .getMemberInfo, decodingType: MemberInfoResponse.self, completion: completion)
     }
     
     /// 사용자 탈퇴 API

@@ -4,26 +4,35 @@ import Foundation
 import SwiftData
 
 @Model
-public class TastingNoteData {
-    @Attribute public var noteId : Int
+public class TastingNoteList {
+    @Attribute public var noteList : [TastingNote]?
+    
+    @Relationship var user: UserData?
+    
+    public init(noteList: [TastingNote]? = [], user: UserData? = nil) {
+        self.noteList = noteList
+        self.user = user
+    }
+}
+
+@Model
+public class TastingNote {
+    @Attribute(.unique) public var noteId : Int
     @Attribute public var wineName : String
     @Attribute public var imageURL : String
     @Attribute public var sort : String
-    
-    @Relationship var user: UserData?
     
     
     public init(noteId: Int,
          wineName: String,
          imageURL: String,
          sort: String,
-         user: UserData?
     ) {
         self.noteId = noteId
         self.wineName = wineName
         self.imageURL = imageURL
         self.sort = sort
-        self.user = user
     }
 }
+
 

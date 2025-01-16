@@ -12,6 +12,7 @@ import Network
 // get api 호출을 할거야
 // 캐시 데이터가 있어? -> 그거 써
 // 없어? get 해 -> get한 데이터 캐시에 저장
+
 // 일단 캐시 데이터 검증을 해
 // 검증 1: 지금 call counter가 모두 0인가
 // 검증 2: 데이터 필드 값 중에 nil이 없는가
@@ -147,11 +148,13 @@ public final class SettingMenuViewController : UIViewController {
                     print("⚠️ userId가 UserDefaults에 없습니다.")
                     return
                 }
+                guard let username = data?.username,
+                      let imgUrl = data?.imageUrl else {return}
                 Task {
                     // 데이터 할당
-                    self.profileData = SimpleProfileInfoData(name: data.username, imageURL: data.imageUrl, uniqueUserId: userId)
+                    self.profileData = SimpleProfileInfoData(name: username, imageURL: imgUrl, uniqueUserId: userId)
                     // 로컬 캐시 데이터에 저장(덮어쓰기)
-                    await self.saveUserInfo(data: SimpleProfileInfoData(name: data.username, imageURL: data.imageUrl, uniqueUserId: userId))
+                    await self.saveUserInfo(data: SimpleProfileInfoData(name: username, imageURL: imgUrl, uniqueUserId: userId))
                     do {
                         // get api -> 모든 call counter 초기화
                         try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
