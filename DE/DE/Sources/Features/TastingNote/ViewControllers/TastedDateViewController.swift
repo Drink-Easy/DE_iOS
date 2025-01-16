@@ -12,12 +12,12 @@ public class TastedDateViewController: UIViewController {
     var selectedDate: DateComponents?
     let navigationBarManager = NavigationBarManager()
     
-    let wineName = UserDefaults.standard.string(forKey: "wineName")
+    //let wineName = UserDefaults.standard.string(forKey: "wineName")
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         DispatchQueue.main.async {
-            self.tastedDateView.updateUI(wineName: self.wineName ?? "")
+            self.tastedDateView.updateUI(wineName: self.registerWine.wineName)
         }
     }
     

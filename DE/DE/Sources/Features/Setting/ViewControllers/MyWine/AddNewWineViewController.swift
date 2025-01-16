@@ -140,7 +140,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = TastedDateViewController()
         let selectedWine = wineResults[indexPath.row]
-        registerWine.updateWine(wineImg: selectedWine.imageURL, wineName: selectedWine.wineName)
+        registerWine.updateWine(wineId: selectedWine.wineId, wineName: selectedWine.wineName)
         vc.registerWine = self.registerWine
         navigationController?.pushViewController(vc, animated: true)
     }
