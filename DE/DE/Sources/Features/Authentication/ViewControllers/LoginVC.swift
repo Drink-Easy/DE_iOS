@@ -128,7 +128,7 @@ class LoginVC: UIViewController {
     
     private func goToNextView(_ isFirstLogin: Bool) {
         if isFirstLogin {
-            let enterTasteTestViewController = TermsOfServiceVC()
+            let enterTasteTestViewController = MainTabBarController()
             navigationController?.pushViewController(enterTasteTestViewController, animated: true)
         } else {
             let homeViewController = MainTabBarController()

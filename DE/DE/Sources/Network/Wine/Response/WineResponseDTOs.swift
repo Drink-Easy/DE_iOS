@@ -5,26 +5,31 @@ import Foundation
 public struct SearchWineResponseDTO: Decodable {
     public let wineId: Int
     public let name: String
+    public let nameEng: String
     public let imageUrl : String
     public let sort: String
-    public let area: String
+    public let country: String
+    public let region: String
+    public let variety: String
     public let vivinoRating: Double
     public let price: Int
 }
 
 public struct WineResponseWithThreeReviewsDTO: Decodable {
-    public let wineResponse: WineResponseDTO
+    public let wineInfoResponse: WineResponseDTO
     public let recentReviews: [WineReviewResponseDTO]?
 }
 
 public struct WineResponseDTO : Decodable {
     public let wineId: Int
     public let name: String
+    public let nameEng: String
     public let imageUrl: String
     public let price: Int
     public let sort: String
-    public let area: String
-    public let variety: String?
+    public let country: String
+    public let region: String
+    public let variety: String
     public let vivinoRating: Double
     public let avgSugarContent: Double
     public let avgAcidity: Double

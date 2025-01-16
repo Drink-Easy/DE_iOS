@@ -16,7 +16,7 @@ public class WineData {
     public var sort: String
     public var price: Int
     public var vivinoRating: Double
-
+    
     public init(wineId: Int, imageUrl: String, wineName: String, sort: String, price: Int, vivinoRating: Double) {
         self.wineId = wineId
         self.imageUrl = imageUrl

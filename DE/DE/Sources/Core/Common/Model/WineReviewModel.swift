@@ -29,13 +29,15 @@ public struct WineDetailTopModel {
 public struct WineDetailInfoModel {
     public let image: String
     public let sort: String
-    public let area: String
+    public let country: String
+    public let region: String
     public let variety: String
     
-    public init(image: String, sort: String, area: String, variety: String = "") {
+    public init(image: String, sort: String, country: String, region: String, variety: String) {
         self.image = image
         self.sort = sort
-        self.area = area
+        self.country = country
+        self.region = region
         self.variety = variety
     }
 }

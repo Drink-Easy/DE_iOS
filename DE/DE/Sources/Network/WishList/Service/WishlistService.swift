@@ -29,13 +29,25 @@ public final class WishlistService: NetworkManager {
     }
     
     /// 위시리스트 등록 API
-    public func postWishlist(wineId: Int, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .postWishList(wineId: wineId), decodingType: String.self, completion: completion)
+    /// - Parameter wineId: 위시리스트에 추가할 와인의 ID
+    /// - Throws: NetworkError
+    /// - Returns: 성공 메시지 (`String`)
+    public func postWishlist(wineId: Int) async throws -> String {
+        return try await requestAsync(
+            target: .postWishList(wineId: wineId),
+            decodingType: String.self
+        )
     }
-    
+
     /// 위시리스트 삭제 API
-    public func deleteWishlist(wineId: Int, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .deleteWineLike(wineId: wineId), decodingType: String.self, completion: completion)
+    /// - Parameter wineId: 위시리스트에서 삭제할 와인의 ID
+    /// - Throws: NetworkError
+    /// - Returns: 성공 메시지 (`String`)
+    public func deleteWishlist(wineId: Int) async throws -> String {
+        return try await requestAsync(
+            target: .deleteWineLike(wineId: wineId),
+            decodingType: String.self
+        )
     }
 }
 

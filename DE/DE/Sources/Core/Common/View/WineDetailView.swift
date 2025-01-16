@@ -15,7 +15,6 @@ public class WineDetailView: UIView {
         $0.layer.shadowOpacity = 0.07
         $0.layer.shadowOffset = CGSize(width: 0, height: 1)
         $0.layer.shadowRadius = 10.5
-        $0.backgroundColor = .clear
     }
 
     // 실제 콘텐츠를 담는 뷰 (cornerRadius 적용)
@@ -23,6 +22,8 @@ public class WineDetailView: UIView {
         $0.image = UIImage(named: "스파클링")
         $0.layer.cornerRadius = 14
         $0.layer.masksToBounds = true
+        $0.contentMode = .scaleAspectFit
+        $0.backgroundColor = .white
     }
     
     public lazy var labelView = UIView().then {
@@ -94,8 +95,9 @@ public class WineDetailView: UIView {
             $0.width.height.equalTo(100)
         }
         
-        image.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        image.snp.makeConstraints { 
+            $0.verticalEdges.equalToSuperview().inset(3)
+            $0.horizontalEdges.equalToSuperview()
         }
         
         labelView.snp.makeConstraints {
@@ -138,6 +140,6 @@ public class WineDetailView: UIView {
         }
         kindContents.text = model.sort
         typeContents.text = model.variety
-        countryContents.text = model.area
+        countryContents.text = "\(model.country), \(model.region)"
     }
 }

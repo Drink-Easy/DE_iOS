@@ -12,6 +12,9 @@ public class WishListViewController: UIViewController {
     var wineResults: [SearchResultModel] = []
     private let networkService = WishlistService()
     
+    // 상태 변수 추가
+    var shouldSkipWishlistUpdate = false
+    
     private lazy var searchResultTableView = UITableView().then {
         $0.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
@@ -19,14 +22,22 @@ public class WishListViewController: UIViewController {
         $0.dataSource = self
         $0.delegate = self
     }
-
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         setupNavigationBar()
         addComponents()
         setConstraints()
-        callFetchWishlistAPI()
+        
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if !shouldSkipWishlistUpdate {
+            callFetchWishlistAPI()
+        }
+        shouldSkipWishlistUpdate = false
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -61,7 +72,7 @@ public class WishListViewController: UIViewController {
     private func addComponents() {
         [searchResultTableView].forEach { view.addSubview($0) }
     }
-
+    
     private func setConstraints() {
         searchResultTableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(11)
@@ -72,30 +83,99 @@ public class WishListViewController: UIViewController {
     }
     
     func callFetchWishlistAPI() {
-        networkService.fetchWishlist() { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let responseData) :
-                if let responseData = responseData {
-                    self.wineResults = responseData.map { data in
-                        SearchResultModel(wineId: data.wineId,
-                                          wineName: data.name,
-                                          imageURL: data.imageUrl,
-                                          sort: data.sort,
-                                          satisfaction: data.vivinoRating,
-                                          area: data.area)
+        Task {
+            do {
+                guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+                    print("❌ 유저 ID를 찾을 수 없습니다.")
+                    return
+                }
+                 
+                let isZero = try await APICallCounterManager.shared.isCallCountZero(for: userId, controllerName: .wishlist)
+                
+                if isZero {
+                    // 호출 카운트가 0이면 캐시 사용
+                    print("✅ 호출 카운트 0: 캐시 사용")
+                    if let cachedWishlist = try? await WishlistDataManager.shared.fetchWishlist(for: userId) {
+                        self.wineResults = cachedWishlist.map { data in
+                            SearchResultModel(
+                                wineId: data.wineId,
+                                imageUrl: data.imageUrl,
+                                wineName: data.wineName,
+                                sort: data.sort,
+                                price: data.price,
+                                vivinoRating: data.vivinoRating
+                            )
+                        }
+                        DispatchQueue.main.async {
+                            self.searchResultTableView.reloadData()
+                        }
                     }
-                    DispatchQueue.main.async {
-                        self.searchResultTableView.reloadData()
+                } else {
+                    // 호출 카운트가 1 이상이면 API 호출
+                    print("✅ 호출 카운트 1 이상: API 호출")
+                    networkService.fetchWishlist { [weak self] result in
+                        guard let self = self else { return }
+                        
+                        switch result {
+                        case .success(let responseData):
+                            if let responseData = responseData {
+                                self.wineResults = responseData.map { data in
+                                    SearchResultModel(
+                                        wineId: data.wineId,
+                                        imageUrl: data.imageUrl,
+                                        wineName: data.name,
+                                        sort: data.sort,
+                                        price: data.price,
+                                        vivinoRating: data.vivinoRating
+                                    )
+                                }
+                                
+                                // API 데이터로 캐시 덮어쓰기
+                                Task {
+                                    do {
+                                        try await WishlistDataManager.shared.createWishlistIfNeeded(for: userId, with: self.wineResults.map { wine in
+                                            WineData(wineId: wine.wineId,
+                                                     imageUrl: wine.imageUrl,
+                                                     wineName: wine.wineName,
+                                                     sort: wine.sort,
+                                                     price: wine.price,
+                                                     vivinoRating: wine.vivinoRating
+                                            )
+                                        })
+                                        try await WishlistDataManager.shared.updateWishlist(
+                                            for: userId,
+                                            with: self.wineResults.map { wine in
+                                                WineData(wineId: wine.wineId,
+                                                         imageUrl: wine.imageUrl,
+                                                         wineName: wine.wineName,
+                                                         sort: wine.sort,
+                                                         price: wine.price,
+                                                         vivinoRating: wine.vivinoRating
+                                                )
+                                            }
+                                        )
+                                        
+                                        // 호출 카운트 초기화
+                                        try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .wishlist)
+                                    } catch {
+                                        print("❌ 캐시 업데이트 또는 호출 카운트 초기화 실패: \(error.localizedDescription)")
+                                    }
+                                }
+                                
+                                DispatchQueue.main.async {
+                                    self.searchResultTableView.reloadData()
+                                }
+                            }
+                        case .failure(let error):
+                            print("❌ 위시리스트 API 호출 실패: \(error.localizedDescription)")
+                        }
                     }
                 }
-            case .failure(let error) :
-                print("\(error)")
+            } catch {
+                print("❌ 호출 카운트 확인 실패: \(error.localizedDescription)")
             }
         }
     }
-
 }
 
 extension WishListViewController: UITableViewDelegate, UITableViewDataSource {
@@ -115,7 +195,7 @@ extension WishListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = WishListWineDetailViewController()
+        let vc = WineDetailViewController()
         vc.wineId = wineResults[indexPath.row].wineId
         navigationController?.pushViewController(vc, animated: true)
     }
