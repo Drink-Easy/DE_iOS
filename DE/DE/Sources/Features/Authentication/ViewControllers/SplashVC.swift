@@ -78,7 +78,8 @@ public class SplashVC : UIViewController {
                 guard let self = self else { return }
                 switch result {
                 case .success(let response):
-                    navigateToMainScreen()
+//                    navigateToMainScreen()
+                    navigateToOnBoaringScreen()
 //                    print(response)
                 case .failure(let error):
                     navigateToOnBoaringScreen()

@@ -5,10 +5,12 @@ import SnapKit
 import Then
 import CoreModule
 import SwiftyToaster
+import Network
 
 class ManiaCountryViewController: UIViewController {
-
+    
     private let navigationBarManager = NavigationBarManager()
+    let networkService = MemberService()
     
     let cellData = ["프랑스", "이탈리아", "미국", "스페인", "아르헨티나", "독일", "호주", "포르투갈", "캐나다", "뉴질랜드", "슬로베니아", "헝가리", "오스트리아", "대한민국", "그리스", "칠레"]
     
@@ -54,11 +56,66 @@ class ManiaCountryViewController: UIViewController {
     
     @objc func nextButtonTapped() {
         UserSurveyManager.shared.setArea(selectedItems)
-        // mainTabbar로 넘어가기
-//        let vc = ManiaTypeViewController()
-//        navigationController?.pushViewController(vc, animated: true)
+        callPatchAPI()
     }
-
+    
+    private func callPatchAPI() {
+        let userMng = UserSurveyManager.shared
+        let bodyData = networkService.makeMemberInfoRequestDTO(name: userMng.name,
+                                                               isNewbie: userMng.isNewbie,
+                                                               monthPrice: userMng.monthPrice,
+                                                               wineSort: userMng.wineSort,
+                                                               wineArea: userMng.wineArea,
+                                                               wineVariety: userMng.wineVariety,
+                                                               region: userMng.region)
+        
+        networkService.postUserInfo(body: bodyData) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let response):
+                print(response)
+                networkService.postImg(image: userMng.imageData) { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success (let response):
+                        
+                        Task {
+                            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+                                print("⚠️ userId가 UserDefaults에 없습니다.")
+                                return
+                            }
+                            
+                            do {
+                                // 캐시데이터에 기본 유저 정보 저장
+                                try await PersonalDataManager.shared.createPersonalData(for: userId, userName: userMng.name, userCity: userMng.region)
+                            } catch {
+                                print(error)
+                            }
+                            
+                            // UI 전환
+                            await MainActor.run {
+                                let homeTabBarController = MainTabBarController()
+                                homeTabBarController.userName = userMng.name
+                                
+                                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                                   let window = windowScene.windows.first {
+                                    window.rootViewController = homeTabBarController
+                                    UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+                                }
+                            }
+                        }
+                    case .failure(let error) :
+                        print(error)
+                    }
+                }
+            case .failure(let error) :
+                print(error)
+            }
+        }
+    }
+    
+    
+    
 }
 
 extension ManiaCountryViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {

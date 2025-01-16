@@ -169,12 +169,14 @@ class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegat
     
     private func updateStartButtonState() {
         let allRequiredAgreed = agreements.prefix(3).allSatisfy { $0 }
+        isAllAgreed = allRequiredAgreed
+        allToggleButton.tintColor = isAllAgreed ? AppColor.purple100 : AppColor.gray30
         startButton.isEnabled = allRequiredAgreed
         startButton.isEnabled(isEnabled: allRequiredAgreed)
     }
     
     @objc private func startButtonTapped() {
-        let vc = MainTabBarController()
+        let vc = WelcomeVC()
         navigationController?.pushViewController(vc, animated: true)
     }
     
