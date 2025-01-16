@@ -136,27 +136,28 @@ class AccountInfoViewController: UIViewController {
     }
     
     private func updateUI(with profile: MemberInfoResponse) {
-        if let url = URL(string: profile.imageUrl) {
-            DispatchQueue.global().async {
-                if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        self.profileImageView.image = image
-                    }
-                }
-            }
-        } else {
-            profileImageView.image = UIImage(named: "profilePlaceholder")
-        }
-        
-        infoItems = [
-            ("닉네임", profile.username ?? "설정되지 않음"),
-            ("내 동네", profile.city ?? "설정되지 않음"),
-            ("이메일", profile.email ?? "이메일 없음"),
-            ("연동 상태", profile.authType ?? "알 수 없음"),
-            ("성인 인증", profile.adult ? "인증 완료" : "미인증")
-        ]
-        
-        tableView.reloadData()
+//        guard let imageUrl = profile.imageUrl else {return }
+//        if let url = URL(string: imageUrl) {
+//            DispatchQueue.global().async {
+//                if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
+//                    DispatchQueue.main.async {
+//                        self.profileImageView.image = image
+//                    }
+//                }
+//            }
+//        } else {
+//            profileImageView.image = UIImage(named: "profilePlaceholder")
+//        }
+//        
+//        infoItems = [
+//            ("닉네임", profile.username ?? "설정되지 않음"),
+//            ("내 동네", profile.city ?? "설정되지 않음"),
+//            ("이메일", profile.email ?? "이메일 없음"),
+//            ("연동 상태", profile.authType ?? "알 수 없음"),
+//            ("성인 인증", profile.adult ? "인증 완료" : "미인증")
+//        ]
+//        
+//        tableView.reloadData()
     }
     
     @objc private func backButtonTapped() {
@@ -230,20 +231,20 @@ class AccountInfoViewController: UIViewController {
     }
     
     func showSplashScreen() {
-        //        let splashViewController = SplashVC()
-        //
-        //        // 현재 윈도우 가져오기
-        //        guard let window = UIApplication.shared.connectedScenes
-        //            .compactMap({ $0 as? UIWindowScene })
-        //            .first?.windows
-        //            .first else {
-        //            print("윈도우를 가져올 수 없습니다.")
-        //            return
-        //        }
-        //
-        //        UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve, animations: {
-        //            window.rootViewController = splashViewController
-        //        }, completion: nil)
+        let splashViewController = SplashVC()
+        
+        // 현재 윈도우 가져오기
+        guard let window = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .first?.windows
+            .first else {
+            print("윈도우를 가져올 수 없습니다.")
+            return
+        }
+        
+        UIView.transition(with: window, duration: 0.5, options: .transitionCrossDissolve, animations: {
+            window.rootViewController = splashViewController
+        }, completion: nil)
     }
 }
 

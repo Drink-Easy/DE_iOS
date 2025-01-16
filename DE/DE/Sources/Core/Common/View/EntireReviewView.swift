@@ -2,6 +2,9 @@
 
 import UIKit
 
+import SnapKit
+import Then
+
 public class EntireReviewView: UIView {
     
     private let title = TitleWithBarView(title: "리뷰 전체보기", subTitle: "")

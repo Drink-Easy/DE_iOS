@@ -2,7 +2,6 @@
 
 import UIKit
 
-import HomeModule
 import CoreModule
 import Network
 
@@ -77,7 +76,11 @@ public class TestVC: UIViewController {
             }
             
             // 유저 이름 업데이트 - 취향찾기 api 쏘고 나서 Success일떄 처리
-            await UserDataManager.shared.updateUserName(userId: userId, userName: "tempName")
+            do {
+                try await PersonalDataManager.shared.createPersonalData(for: userId)
+            } catch {
+                print(error)
+            }
             
             // UI 전환
             await MainActor.run {

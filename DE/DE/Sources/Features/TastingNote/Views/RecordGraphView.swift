@@ -76,12 +76,12 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         return p
     }()
 
-    let hostingController: UIHostingController<PentagonChartView> = {
-        let chartView = PentagonChartView()
-        let hosting = UIHostingController(rootView: chartView)
-        hosting.view.backgroundColor = .clear
-        return hosting
-    }()
+//    let hostingController: UIHostingController<PentagonChartView> = {
+//        let chartView = PentagonChartView()
+//        let hosting = UIHostingController(rootView: chartView)
+//        hosting.view.backgroundColor = .clear
+//        return hosting
+//    }()
     
     let graphRecordLabel: UILabel = {
         let g = UILabel()
@@ -315,18 +315,18 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
             make.centerX.equalToSuperview()
         }
         
-        let chartView = hostingController.view!
-        contentView.addSubview(chartView)
-        chartView.snp.makeConstraints { make in
-            make.top.equalTo(vector.snp.bottom).offset(25)
-            make.leading.equalTo(vector.snp.leading) // .offset()
-            make.centerX.equalTo(vector.snp.centerX)
-            make.height.equalTo(250)
-        }
+//        let chartView = hostingController.view!
+//        contentView.addSubview(chartView)
+//        chartView.snp.makeConstraints { make in
+//            make.top.equalTo(vector.snp.bottom).offset(25)
+//            make.leading.equalTo(vector.snp.leading) // .offset()
+//            make.centerX.equalTo(vector.snp.centerX)
+//            make.height.equalTo(250)
+//        }
         
         contentView.addSubview(graphRecordLabel)
         graphRecordLabel.snp.makeConstraints { make in
-            make.top.equalTo(chartView.snp.bottom).offset(57)
+            make.top.equalTo(vector.snp.bottom).offset(57)
             make.leading.equalTo(graphLabel.snp.leading)
         }
         

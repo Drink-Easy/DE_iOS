@@ -101,7 +101,8 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
                             imageURL: data.imageUrl,
                             sort: data.sort,
                             satisfaction: data.vivinoRating,
-                            area: data.area
+                            country: data.country,
+                            region: data.region
                         )
                     }
                     self.searchHomeView.searchResultTableView.reloadData()

@@ -16,7 +16,7 @@ public final class UserDataManager {
         }
     }
     
-    /// 유저 ID 생성 
+    /// 유저 ID 생성  -> 로그인
     @MainActor public func createUser(userId: Int) async {
         let context = container.mainContext
         
@@ -26,7 +26,6 @@ public final class UserDataManager {
             let existingUsers = try context.fetch(descriptor)
             
             if existingUsers.isEmpty {
-                // 2. 신규 유저 생성 (이름 없음)
                 let newUser = UserData(userId: userId)
                 context.insert(newUser)
                 try context.save()
@@ -39,7 +38,7 @@ public final class UserDataManager {
         }
     }
     
-    /// 유저 데이터 삭제
+    /// 유저 데이터 삭제 -> 탈퇴에서 사용
     @MainActor
     func deleteUser(userId: Int) {
         let context = container.mainContext

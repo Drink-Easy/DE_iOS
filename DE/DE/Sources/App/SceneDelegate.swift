@@ -1,10 +1,9 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
-import Authentication
-import TastingNote
-import UserSurveyModule
-import SettingModule
+import CoreModule
+import Features
+import Network
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 

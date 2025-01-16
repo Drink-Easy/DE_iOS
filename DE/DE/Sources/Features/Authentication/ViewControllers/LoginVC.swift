@@ -5,10 +5,8 @@ import UIKit
 import SnapKit
 import Then
 
-import HomeModule
 import CoreModule
 import Network
-import UserSurveyModule
 
 class LoginVC: UIViewController {
     // MARK: - Properties
@@ -113,7 +111,7 @@ class LoginVC: UIViewController {
             case .success(let response):
                 SelectLoginTypeVC.keychain.set(usernameString, forKey: "savedUserEmail")
                 // userId 저장
-                saveUserId(userId: response.id)
+                saveUserId(userId: response.id) // 현재 로그인한 유저 정보
                 Task {
                     await UserDataManager.shared.createUser(userId: response.id)
                 }
@@ -130,7 +128,7 @@ class LoginVC: UIViewController {
     
     private func goToNextView(_ isFirstLogin: Bool) {
         if isFirstLogin {
-            let enterTasteTestViewController = TermsOfServiceVC()
+            let enterTasteTestViewController = MainTabBarController()
             navigationController?.pushViewController(enterTasteTestViewController, animated: true)
         } else {
             let homeViewController = MainTabBarController()

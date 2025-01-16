@@ -22,7 +22,6 @@ public final class PersonalDataManager {
     }()
     
     //MARK: - Methods
-    
     /// personal data 생성
     @MainActor
     public func createPersonalData(
@@ -30,7 +29,9 @@ public final class PersonalDataManager {
         userName: String? = nil,
         userImageURL: String? = nil,
         userCity: String? = nil,
-        authType: String? = nil
+        authType: String? = nil,
+        email: String? = nil,
+        adult: Bool? = false
     ) async throws {
         let context = container.mainContext
 
@@ -49,7 +50,9 @@ public final class PersonalDataManager {
             userImageURL: userImageURL,
             userCity: userCity,
             authType: authType,
-            userData: user
+            email: email,
+            adult: adult,
+            user: user
         )
         user.userInfo = newPersonalData
 
@@ -63,6 +66,8 @@ public final class PersonalDataManager {
     }
     
     /// personal data 불러오기
+    /// - 마이페이지 1번화면
+    /// - 마이페이지 2번화면
     @MainActor
     public func fetchPersonalData(for userId: Int) async throws -> PersonalData {
         let context = container.mainContext
@@ -79,13 +84,16 @@ public final class PersonalDataManager {
     }
     
     /// personal data 업데이트
+    /// 마이페이지 수정 후
     @MainActor
     public func updatePersonalData(
         for userId: Int,
         userName: String? = nil,
         userImageURL: String? = nil,
         userCity: String? = nil,
-        authType: String? = nil
+        authType: String? = nil,
+        email: String? = nil,
+        adult: Bool? = nil
     ) async throws {
         let context = container.mainContext
 
@@ -110,6 +118,12 @@ public final class PersonalDataManager {
         if let authType = authType {
             personalData.authType = authType
         }
+        if let email = email {
+            personalData.email = email
+        }
+        if let adult = adult {
+            personalData.adult = adult
+        }
 
         // 4. 저장
         do {
@@ -119,6 +133,41 @@ public final class PersonalDataManager {
             throw PersonalDataError.saveFailed(reason: error.localizedDescription)
         }
     }
+    
+    @MainActor
+    public func checkPersonalDataHasNil(for userId: Int) async throws -> Bool {
+        let context = container.mainContext
+
+        // 1. 사용자 확인
+        let user = try fetchUser(by: userId, in: context)
+
+        // 2. PersonalData 확인
+        guard let personalData = user.userInfo else {
+            throw PersonalDataError.userNotFound
+        }
+
+        // 3. nil 값 검증
+        return personalData.hasNilProperty()
+    }
+
+    // TODO : 프로퍼티 2개만 nil 검사 - name, image
+    
+    @MainActor
+    public func checkPersonalDataTwoPropertyHasNil(for userId: Int) async throws -> Bool {
+        let context = container.mainContext
+
+        // 1. 사용자 확인
+        let user = try fetchUser(by: userId, in: context)
+
+        // 2. PersonalData 확인
+        guard let personalData = user.userInfo else {
+            throw PersonalDataError.userNotFound
+        }
+
+        // 3. nil 값 검증
+        return personalData.checkTwoProperty()
+    }
+    
     
     
     /// personal data  삭제
