@@ -6,7 +6,7 @@ public struct MemberUpdateRequest: Codable {
     public let name : String?
     public let region : String?
     
-    public init(username: String? = "드링이", city: String? = "서울특별시 종로구") {
+    public init(username: String?, city: String?) {
         self.name = username
         self.region = city
     }

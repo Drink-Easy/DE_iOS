@@ -11,7 +11,6 @@ import CoreLocation
 import Network
 
 class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
-    
     private let navigationBarManager = NavigationBarManager()
     private let imagePickerManager = ImagePickerManager()
     
@@ -19,8 +18,6 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     private let profileView = ProfileView()
     private let ValidationManager = NicknameValidateManager()
-    
-    
     
     lazy var profileImgFileName: String = ""
     lazy var profileImg: UIImage? = nil
@@ -100,37 +97,47 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     }
     
     @objc private func editCompleteTapped() {
+        let dispatchGroup = DispatchGroup()
+        
         guard let profileImg = self.profileImg else { return }
         
+        // 1. postImg 호출
+        dispatchGroup.enter()
         networkService.postImg(image: profileImg) { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case .success (let response):
-                self.navigationController?.popViewController(animated: true)
-                print("프로필 업데이트 완료")
-                Task {
-                    await self.updateCallCount()
-                }
-            case .failure(let error) :
-                print(error)
-            }
-        }
-        
-        guard let nickname = self.profileView.nicknameTextField.text else { return }
-        guard let userCity = self.profileView.myLocationTextField.text else { return }
-        
-        let profileDTO = networkService.makeMemberInfoUpdateRequestDTO(username: nickname , city: userCity)
-        networkService.patchUserInfo(body: profileDTO) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let response):
+            case .success(_):
                 Task {
                     await self.updateCallCount()
                 }
             case .failure(let error):
                 print(error)
             }
+            dispatchGroup.leave()
+        }
+        
+        // 2. patchUserInfo 호출
+        let profileDTO = networkService.makeMemberInfoUpdateRequestDTO(
+            username: self.profileView.nicknameTextField.text,
+            city: self.profileView.myLocationTextField.text
+        )
+        dispatchGroup.enter()
+        networkService.patchUserInfo(body: profileDTO) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(_):
+                Task {
+                    await self.updateCallCount()
+                }
+            case .failure(let error):
+                print(error)
+            }
+            dispatchGroup.leave()
+        }
+        
+        // 3. 모든 요청 완료 후 pop
+        dispatchGroup.notify(queue: .main) { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
         }
     }
     
