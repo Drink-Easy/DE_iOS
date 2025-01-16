@@ -12,7 +12,7 @@ public final class APICallCounterManager {
             let container = try ModelContainer(
                 for: UserData.self, APIControllerCounter.self, APICounter.self
             )
-            print("✅ SwiftData 초기화 성공!")
+            print("✅ APICallCounterManager SwiftData 초기화 성공!")
             return container
         } catch {
             print("❌ SwiftData 초기화 실패: \(error.localizedDescription)")

@@ -64,7 +64,6 @@ public final class SettingMenuViewController : UIViewController {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         Task {
-            // 데이터 업데이트
             CheckCacheData()
         }
     }
@@ -100,6 +99,7 @@ public final class SettingMenuViewController : UIViewController {
         Task {
             do {
                 if try await isCacheDataValid(for: userId) {
+                    print("✅ 캐시 데이터 사용 가능")
                     await useCacheData(for: userId)
                 } else {
                     fetchMemberInfo()
@@ -108,11 +108,6 @@ public final class SettingMenuViewController : UIViewController {
                 print("⚠️ 캐시 데이터 검증 실패: \(error)")
                 fetchMemberInfo()
             }
-            
-            // ui update
-            guard let name = self.profileData?.name else { return }
-            guard let imageURL = self.profileData?.imageURL else { return }
-            setUserData(userName: name, imageURL: imageURL)
         }
     }
 
@@ -130,8 +125,10 @@ public final class SettingMenuViewController : UIViewController {
         do {
             let data = try await PersonalDataManager.shared.fetchPersonalData(for: userId)
             if let userName = data.userName, let imageURL = data.userImageURL {
-                // 데이터 할당
                 self.profileData = SimpleProfileInfoData(name: userName, imageURL: imageURL, uniqueUserId: userId)
+                setUserData(userName: userName, imageURL: imageURL)
+            } else {
+                print("⚠️ 캐시 데이터에 필요한 정보가 없습니다.")
             }
         } catch {
             print("⚠️ 캐시 데이터 가져오기 실패: \(error)")
@@ -153,6 +150,7 @@ public final class SettingMenuViewController : UIViewController {
                 Task {
                     // 데이터 할당
                     self.profileData = SimpleProfileInfoData(name: username, imageURL: imgUrl, uniqueUserId: userId)
+                    self.setUserData(userName: username, imageURL: imgUrl)
                     // 로컬 캐시 데이터에 저장(덮어쓰기)
                     await self.saveUserInfo(data: SimpleProfileInfoData(name: username, imageURL: imgUrl, uniqueUserId: userId))
                     do {
@@ -160,7 +158,7 @@ public final class SettingMenuViewController : UIViewController {
                         try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
                         return
                     } catch {
-                        print(error)
+                        print("⚠️ API 호출 카운트 초기화 실패: \(error)")
                     }
                 }
             case .failure(let error):

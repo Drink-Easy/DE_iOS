@@ -88,6 +88,8 @@ class ManiaCountryViewController: UIViewController {
                             do {
                                 // 캐시데이터에 기본 유저 정보 저장
                                 try await PersonalDataManager.shared.createPersonalData(for: userId, userName: userMng.name, userCity: userMng.region)
+                                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
+                                try await APICallCounterManager.shared.incrementPatch(for: userId, controllerName: .member)
                             } catch {
                                 print(error)
                             }

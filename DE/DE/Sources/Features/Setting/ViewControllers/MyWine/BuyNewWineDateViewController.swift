@@ -63,9 +63,9 @@ public class BuyNewWineDateViewController: UIViewController {
             return
         }
         let dateFormatter = DateFormatter()
-        if let date = Calendar.current.date(from: selectedDate) {
-            dateFormatter.dateFormat = "yyyy-MM-dd"
-        }
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        guard let date = Calendar.current.date(from: selectedDate) else {return}
+        
         let dateString = dateFormatter.string(from: date)
         let nextVC = PriceNewWineViewController()
         nextVC.selectDate = dateString
