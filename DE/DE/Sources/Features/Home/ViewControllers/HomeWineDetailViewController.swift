@@ -265,29 +265,29 @@ class HomeWineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func callLikeAPI(wineId: Int) {
-        likedNetworkService.postWishlist(wineId: wineId) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let responseData) :
-                print(responseData)
-            case .failure(let error) :
-                print("\(error)")
-            }
-        }
+//        likedNetworkService.postWishlist(wineId: wineId) { [weak self] result in
+//            guard let self = self else { return }
+//            
+//            switch result {
+//            case .success(let responseData) :
+//                print(responseData)
+//            case .failure(let error) :
+//                print("\(error)")
+//            }
+//        }
     }
     
     func calldeleteLikedAPI(wineId: Int) {
-        likedNetworkService.deleteWishlist(wineId: wineId) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let responseData) :
-                print(responseData)
-            case .failure(let error) :
-                print("\(error)")
-            }
-        }
+//        likedNetworkService.deleteWishlist(wineId: wineId) { [weak self] result in
+//            guard let self = self else { return }
+//            
+//            switch result {
+//            case .success(let responseData) :
+//                print(responseData)
+//            case .failure(let error) :
+//                print("\(error)")
+//            }
+//        }
     }
     
     private func updateScrollViewHeight() {

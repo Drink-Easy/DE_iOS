@@ -83,6 +83,39 @@ extension NetworkManager {
         }
     }
     
+    func requestAsync<T: Decodable>(
+        target: Endpoint,
+        decodingType: T.Type = T.self
+    ) async throws -> T {
+        return try await withCheckedThrowingContinuation { continuation in
+            provider.request(target) { result in
+                switch result {
+                case .success(let response):
+                    do {
+                        // 상태 코드 검증
+                        guard (200...299).contains(response.statusCode) else {
+                            let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: response.data)
+                            let message = errorResponse?.message ?? "상태 코드 오류: \(response.statusCode)"
+                            throw NetworkError.serverError(statusCode: response.statusCode, message: message)
+                        }
+                        
+                        // 응답 디코딩
+                        let decodedResponse = try JSONDecoder().decode(ApiResponse<T>.self, from: response.data)
+                        if let result = decodedResponse.result {
+                            continuation.resume(returning: result)
+                        } else {
+                            continuation.resume(throwing: NetworkError.decodingError)
+                        }
+                    } catch {
+                        continuation.resume(throwing: NetworkError.decodingError)
+                    }
+                case .failure(let error):
+                    continuation.resume(throwing: self.handleNetworkError(error))
+                }
+            }
+        }
+    }
+    
     // MARK: - 상태 코드 처리 처리 함수
     private func handleResponse<T: Decodable>(
         _ response: Response,

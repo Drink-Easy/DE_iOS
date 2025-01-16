@@ -34,4 +34,5 @@ protocol NetworkManager {
         decodingType: T.Type,
         completion: @escaping (Result<(T, TimeInterval?), NetworkError>) -> Void
     )
+    
 }

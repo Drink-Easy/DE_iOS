@@ -12,6 +12,9 @@ public class WishListViewController: UIViewController {
     var wineResults: [SearchResultModel] = []
     private let networkService = WishlistService()
     
+    // 상태 변수 추가
+    var shouldSkipWishlistUpdate = false
+    
     private lazy var searchResultTableView = UITableView().then {
         $0.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
@@ -26,7 +29,15 @@ public class WishListViewController: UIViewController {
         setupNavigationBar()
         addComponents()
         setConstraints()
-        callFetchWishlistAPI()
+        
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if !shouldSkipWishlistUpdate {
+            callFetchWishlistAPI()
+        }
+        shouldSkipWishlistUpdate = false
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -74,13 +85,11 @@ public class WishListViewController: UIViewController {
     func callFetchWishlistAPI() {
         Task {
             do {
-                // UserDefaults에서 userId 가져오기
                 guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
                     print("❌ 유저 ID를 찾을 수 없습니다.")
                     return
                 }
-                
-                // 호출 카운트 확인
+                 
                 let isZero = try await APICallCounterManager.shared.isCallCountZero(for: userId, controllerName: .wishlist)
                 
                 if isZero {
@@ -124,6 +133,15 @@ public class WishListViewController: UIViewController {
                                 // API 데이터로 캐시 덮어쓰기
                                 Task {
                                     do {
+                                        try await WishlistDataManager.shared.createWishlistIfNeeded(for: userId, with: self.wineResults.map { wine in
+                                            WineData(wineId: wine.wineId,
+                                                     imageUrl: wine.imageUrl,
+                                                     wineName: wine.wineName,
+                                                     sort: wine.sort,
+                                                     price: wine.price,
+                                                     vivinoRating: wine.vivinoRating
+                                            )
+                                        })
                                         try await WishlistDataManager.shared.updateWishlist(
                                             for: userId,
                                             with: self.wineResults.map { wine in
