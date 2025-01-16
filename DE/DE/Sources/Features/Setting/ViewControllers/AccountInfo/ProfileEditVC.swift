@@ -22,6 +22,10 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     lazy var profileImgFileName: String = ""
     lazy var profileImg: UIImage? = nil
     
+    public var profileImgURL: String?
+    public var username: String?
+    public var userCity: String?
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
@@ -73,6 +77,14 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     // MARK: UI Component 설정
     func setupUI() {
         view.addSubview(profileView)
+        
+        guard let profileImg = self.profileImgURL,
+        let usernameText = self.username,
+              let usercityText = self.userCity else { return }
+        let imgURL = URL(string: profileImg)
+        self.profileView.profileImageView.sd_setImage(with: imgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
+        self.profileView.nicknameTextField.text = usernameText
+        self.profileView.myLocationTextField.text = usercityText
     }
     
     func setupConstraints() {
@@ -139,6 +151,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         dispatchGroup.notify(queue: .main) { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         }
+        self.navigationController?.popViewController(animated: true)
     }
     
     func updateCallCount() async {
@@ -187,14 +200,17 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
             print("닉네임이 없습니다")
             return
         }
-        
         ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField)
     }
     
     //MARK: - 폼 유효성 검사
     @objc func validateNickname(){
         ValidationManager.isNicknameCanUse = false
-        ValidationManager.validateNickname(profileView.nicknameTextField)
+        if username == profileView.nicknameTextField.text {
+            ValidationManager.noNeedToCheck(profileView.nicknameTextField)
+        } else {
+            ValidationManager.validateNickname(profileView.nicknameTextField)
+        }
         checkFormValidity()
     }
     

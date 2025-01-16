@@ -15,7 +15,12 @@ public class NicknameValidateManager {
     
     // MARK: - Validation Methods
     
-    public func validateNickname(_ view: CustomTextFieldView) -> Bool {
+    public func noNeedToCheck(_ view: CustomTextFieldView) -> Bool {
+        hideValidationError(view, message: "")
+        return true
+    }
+        
+        public func validateNickname(_ view: CustomTextFieldView) -> Bool {
         // 닉네임이 비어있는지 확인
         guard let username = view.text, !username.isEmpty else {
             showValidationError(view, message: "닉네임을 입력해 주세요")
