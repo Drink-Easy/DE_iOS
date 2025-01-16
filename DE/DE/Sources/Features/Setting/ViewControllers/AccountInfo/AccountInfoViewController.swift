@@ -8,6 +8,8 @@ import Then
 import CoreModule
 import Network
 
+import SwiftyToaster
+
 class AccountInfoViewController: UIViewController {
     
     private let navigationBarManager = NavigationBarManager()
@@ -125,7 +127,7 @@ class AccountInfoViewController: UIViewController {
             }
         }
     }
-
+    
     /// 캐시 데이터 검증
     private func isCacheDataValid(for userId: Int) async throws -> Bool {
         let isCallCountZero = try await APICallCounterManager.shared.isCallCountZero(for: userId, controllerName: .member)
@@ -134,7 +136,7 @@ class AccountInfoViewController: UIViewController {
         let hasNoNilFields = try await PersonalDataManager.shared.checkPersonalDataHasNil(for: userId)
         return isCallCountZero && hasNoNilFields
     }
-
+    
     /// 캐시 데이터 사용
     private func useCacheData(for userId: Int) async {
         do {
@@ -203,16 +205,14 @@ class AccountInfoViewController: UIViewController {
     /// UI update
     func setUserData(imageURL: String, username: String, email: String, city: String, authType: String, adult: Bool) {
         // 데이터 처리
-        print("데이터 정보 === Image URL: \(imageURL), Email: \(email), City: \(city), AuthType: \(authType), Adult: \(adult)")
-
         let profileImgURL = URL(string: imageURL)
         self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
         accountView.titleLabel.text = "내 정보"
         accountView.nickNameVal.text = username
-            accountView.emailVal.text = email
-            accountView.cityVal.text = city
-            accountView.loginTypeVal.text = authType
-            accountView.adultVal.text = adult ? "성인" : "미성년자"
+        accountView.emailVal.text = email
+        accountView.cityVal.text = city
+        accountView.loginTypeVal.text = authType
+        accountView.adultVal.text = adult ? "인증 완료" : "인증 전"
     }
     
     /// 새로 받은 데이터 저장
@@ -244,23 +244,21 @@ class AccountInfoViewController: UIViewController {
     }
     
     @objc private func logoutButtonTapped() {
-        print("logout Tapped")
         authService.logout() { [weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(_):
-                //                if /*authType = kakao*/ {
-                //                    self.kakaoAuthVM.kakaoLogout()
-                //                    //정보 삭제 처리
-                //                    Toaster.shared.makeToast("로그아웃")
-                //                    self.showSplashScreen()
-                //                } else {
-                //                    //정보 삭제 처리
-                //                    Toaster.shared.makeToast("로그아웃")
-                //                    self.showSplashScreen()
-                //                }
-                print("로그아웃 완료")
+                if userProfile?.authType == "kakao" {
+                    self.kakaoAuthVM.kakaoLogout()
+                    //정보 삭제 처리
+                    Toaster.shared.makeToast("로그아웃")
+                    self.showSplashScreen()
+                } else {
+                    //정보 삭제 처리
+                    Toaster.shared.makeToast("로그아웃")
+                    self.showSplashScreen()
+                }
             case .failure(let error):
                 print(error)
             }
@@ -268,8 +266,6 @@ class AccountInfoViewController: UIViewController {
     }
     
     @objc private func deleteButtonTapped() {
-        print("delete Tapped")
-        
         let alert = UIAlertController(
             title: "계정 삭제",
             message: "계정을 정말 삭제하시겠습니까?",
@@ -284,7 +280,7 @@ class AccountInfoViewController: UIViewController {
         
         present(alert, animated: true, completion: nil)
     }
-
+    
     private func performUserDeletion() {
         memberService.deleteUser() { [weak self] result in
             guard let self = self else { return }
@@ -292,11 +288,19 @@ class AccountInfoViewController: UIViewController {
             switch result {
             case .success(_):
                 print("회원탈퇴 완료")
-                // 카카오 연동 해제 및 처리
-                // if /*authType == kakao*/ {
-                //    self.kakaoAuthVM.unlinkKakaoAccount()
-                // }
-                // self.showSplashScreen()
+                //                 카카오 연동 해제 및 처리
+                if userProfile?.authType == "kakao" {
+                    self.kakaoAuthVM.unlinkKakaoAccount { isSuccess in
+                        if isSuccess {
+                            print("✅ 카카오 계정 연동 해제 성공")
+                            self.showSplashScreen()
+                        } else {
+                            print("❌ 카카오 계정 연동 해제 실패")
+                        }
+                    }
+                } else {
+                    self.showSplashScreen()
+                }
                 
             case .failure(let error):
                 print("회원탈퇴 실패: \(error.localizedDescription)")
@@ -321,23 +325,3 @@ class AccountInfoViewController: UIViewController {
         }, completion: nil)
     }
 }
-
-//extension AccountInfoViewController: UITableViewDataSource, UITableViewDelegate {
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return infoItems.count
-//    }
-//    
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = UITableViewCell(style: .value1, reuseIdentifier: "InfoCell")
-//        cell.selectionStyle = .none
-//        cell.textLabel?.text = infoItems[indexPath.row].0
-//        cell.textLabel?.font = UIFont.ptdRegularFont(ofSize: 14)
-//        cell.textLabel?.textColor = AppColor.black ?? .black
-//        
-//        cell.detailTextLabel?.text = infoItems[indexPath.row].1
-//        cell.detailTextLabel?.font = UIFont.ptdRegularFont(ofSize: 14)
-//        cell.detailTextLabel?.textColor = AppColor.gray50 ?? .gray
-//        
-//        return cell
-//    }
-//}

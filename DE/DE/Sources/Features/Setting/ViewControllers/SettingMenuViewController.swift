@@ -172,7 +172,7 @@ public final class SettingMenuViewController : UIViewController {
     func setUserData(userName: String, imageURL: String) {
         let profileImgURL = URL(string: imageURL)
         self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
-        self.nameLabel.text = "\(userName)님"
+        self.nameLabel.text = "\(userName) 님"
     }
     
     /// 새로 받은 데이터 저장

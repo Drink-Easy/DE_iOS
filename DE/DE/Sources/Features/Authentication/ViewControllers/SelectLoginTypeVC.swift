@@ -113,7 +113,7 @@ public class SelectLoginTypeVC: UIViewController {
     
     func goToNextView(_ isFirstLogin: Bool) {
         if isFirstLogin {
-            let enterTasteTestViewController = SplashVC()
+            let enterTasteTestViewController = TermsOfServiceVC()
             navigationController?.pushViewController(enterTasteTestViewController, animated: true)
         } else {
             let homeViewController = MainTabBarController()

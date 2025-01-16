@@ -23,11 +23,11 @@ public class NicknameValidateManager {
         }
         
         // 닉네임 길이 검증
-           if username.count < 3 {
-               showValidationError(view, message: "3자 이상의 닉네임을 입력해 주세요")
+           if username.count < 2 {
+               showValidationError(view, message: "2자 이상의 닉네임을 입력해 주세요")
                return false
-           } else if username.count > 15 {
-               showValidationError(view, message: "15자 이하의 닉네임만 가능해요")
+           } else if username.count > 10 {
+               showValidationError(view, message: "10자 이하의 닉네임만 가능해요")
                return false
            }
         
