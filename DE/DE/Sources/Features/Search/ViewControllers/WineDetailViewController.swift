@@ -203,7 +203,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func transformResponseData(_ responseData : WineResponseWithThreeReviewsDTO) {
-        let wineResponse = responseData.wineResponse
+        let wineResponse = responseData.wineInfoResponse
         self.wineId = wineResponse.wineId
         self.wineName = wineResponse.name
         self.isLiked = wineResponse.liked
@@ -221,7 +221,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
             self.updateReviewView()
         }
         
-        let infoData = WineDetailInfoModel(image: wineResponse.imageUrl, sort: wineResponse.sort, area: wineResponse.area)
+        let infoData = WineDetailInfoModel(image: wineResponse.imageUrl, sort: wineResponse.sort, country: wineResponse.country, region: wineResponse.region, variety: wineResponse.variety)
         let rateData = WineViVinoRatingModel(vivinoRating: wineResponse.vivinoRating)
         let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString, avgSugarContent: wineResponse.avgSugarContent, avgAcidity: wineResponse.avgAcidity, avgTannin: wineResponse.avgTannin, avgBody: wineResponse.avgBody, avgAlcohol: wineResponse.avgAlcohol)
         let roundedAvgMemberRating = (wineResponse.avgMemberRating * 10).rounded() / 10

@@ -99,20 +99,20 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     }
     
     @objc private func editCompleteTapped() {
-        let profileDTO = networkService.makeMemberInfoUpdateRequestDTO(username: profileView.nicknameTextField.text! , city: profileView.myLocationTextField.text ?? "예시 위치 정보")
-        networkService.patchUserInfo(imageName: profileImgFileName, imageData: profileImg!, body: profileDTO) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let response):
-                print("프로필 업데이트 완료")
-                Task {
-                    await self.updateCallCount()
-                }
-            case .failure(let error):
-                print(error)
-            }
-        }
+//        let profileDTO = networkService.makeMemberInfoUpdateRequestDTO(username: profileView.nicknameTextField.text! , city: profileView.myLocationTextField.text ?? "예시 위치 정보")
+//        networkService.patchUserInfo(imageName: profileImgFileName, imageData: profileImg!, body: profileDTO) { [weak self] result in
+//            guard let self = self else { return }
+//            
+//            switch result {
+//            case .success(let response):
+//                print("프로필 업데이트 완료")
+//                Task {
+//                    await self.updateCallCount()
+//                }
+//            case .failure(let error):
+//                print(error)
+//            }
+//        }
     }
     
     func updateCallCount() async {

@@ -79,12 +79,15 @@ public class WishListViewController: UIViewController {
             case .success(let responseData) :
                 if let responseData = responseData {
                     self.wineResults = responseData.map { data in
-                        SearchResultModel(wineId: data.wineId,
-                                          wineName: data.name,
-                                          imageURL: data.imageUrl,
-                                          sort: data.sort,
-                                          satisfaction: data.vivinoRating,
-                                          area: data.area)
+                        SearchResultModel(
+                            wineId: data.wineId,
+                            wineName: data.name,
+                            imageURL: data.imageUrl,
+                            sort: data.sort,
+                            satisfaction: data.vivinoRating,
+                            country: data.country,
+                            region: data.region
+                        )
                     }
                     DispatchQueue.main.async {
                         self.searchResultTableView.reloadData()
@@ -95,7 +98,6 @@ public class WishListViewController: UIViewController {
             }
         }
     }
-
 }
 
 extension WishListViewController: UITableViewDelegate, UITableViewDataSource {

@@ -5,19 +5,23 @@ import Foundation
 public struct WinePreviewResponse : Decodable {
     public let wineId : Int
     public let name : String
+    public let nameEng: String
     public let imageUrl : String
     public let sort : String
-    public let area : String
-    public let variety : String?
+    public let country : String
+    public let region: String
+    public let variety : String
     public let vivinoRating : Double
     public let price : Int
     
-    init(wineId: Int, name: String, imageUrl: String, sort: String, area: String, variety: String?, vivinoRating: Double, price: Int) {
+    public init(wineId: Int, name: String, nameEng: String, imageUrl: String, sort: String, country: String, region: String, variety: String, vivinoRating: Double, price: Int) {
         self.wineId = wineId
         self.name = name
+        self.nameEng = nameEng
         self.imageUrl = imageUrl
         self.sort = sort
-        self.area = area
+        self.country = country
+        self.region = region
         self.variety = variety
         self.vivinoRating = vivinoRating
         self.price = price

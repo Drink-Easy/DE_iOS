@@ -11,9 +11,15 @@ public class SearchResultTableViewCell: UITableViewCell {
     
     private let borderLayer = CALayer()
     
+    private lazy var imageBackground = UIView().then {
+        $0.layer.cornerRadius = 5
+        $0.layer.masksToBounds = true
+        $0.backgroundColor = UIColor(hex: "#2f2f2f")
+    }
+    
     private lazy var image = UIImageView().then {
         $0.image = UIImage(named: "스파클링")
-        $0.contentMode = .scaleAspectFill
+        $0.contentMode = .scaleAspectFit
         $0.layer.cornerRadius = 5
         $0.layer.masksToBounds = true
     }
@@ -105,19 +111,26 @@ public class SearchResultTableViewCell: UITableViewCell {
     }
     
     private func addComponents() {
-        [image, labelStackView, score].forEach{ self.addSubview($0) }
+        [imageBackground, labelStackView, score].forEach{ self.addSubview($0) }
+        imageBackground.addSubview(image)
     }
     
     private func constraints() {
-        image.snp.makeConstraints {
+        
+        imageBackground.snp.makeConstraints {
             $0.verticalEdges.equalToSuperview().inset(11)
             $0.leading.equalToSuperview().offset(6)
             $0.width.height.equalTo(70)
         }
+        
+        image.snp.makeConstraints {
+            $0.verticalEdges.equalToSuperview().inset(3)
+            $0.horizontalEdges.equalToSuperview()
+        }
 
         labelStackView.snp.makeConstraints {
-            $0.centerY.equalTo(image)
-            $0.leading.equalTo(image.snp.trailing).offset(18)
+            $0.centerY.equalTo(imageBackground)
+            $0.leading.equalTo(imageBackground.snp.trailing).offset(18)
             $0.trailing.equalToSuperview().offset(-6)
         }
         
