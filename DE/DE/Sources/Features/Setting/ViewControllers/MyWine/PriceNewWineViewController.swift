@@ -47,6 +47,7 @@ class PriceNewWineViewController: UIViewController {
     @objc func nextVC() {
         
         //        let nextVC = ChooseWineColorViewController()
+        let nextVC = TestVC()
         
 //        navigationController?.pushViewController(nextVC, animated: true)
     }

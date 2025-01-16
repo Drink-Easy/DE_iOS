@@ -161,7 +161,7 @@ public final class SettingMenuViewController : UIViewController {
                         print("⚠️ API 호출 카운트 초기화 실패: \(error)")
                     }
                 }
-            case .failure(let error):
+            case .failure(let error ):
                 print("Error: \(error)")
             }
         })
