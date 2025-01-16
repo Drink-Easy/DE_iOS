@@ -272,10 +272,12 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
                     print("❌ 유저 ID를 찾을 수 없습니다.")
                     return
                 }
+                print("✅ 유저 ID 확인: \(userId)")
                 
                 // APICounter 생성
                 do {
                     try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .wishlist)
+                    print("✅ APICounter 생성 완료")
                 } catch APICallCounterError.controllerAlreadyExists {
                     print("✅ APICounter가 이미 존재합니다.")
                 }
@@ -286,11 +288,12 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
                     
                     switch result {
                     case .success(let responseData):
-                        print(responseData)
+                        print("✅ 좋아요 API 호출 성공: \(responseData)")
                         Task {
                             do {
                                 // 호출 카운트 증가
                                 try await APICallCounterManager.shared.incrementPost(for: userId, controllerName: .wishlist)
+                                print("✅ 호출 카운트 증가 완료")
                             } catch {
                                 print("❌ 호출 카운트 증가 실패: \(error.localizedDescription)")
                             }
@@ -304,6 +307,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
             }
         }
     }
+
     
     func calldeleteLikedAPI(wineId: Int) {
         Task {

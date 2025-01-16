@@ -4,20 +4,18 @@ import UIKit
 
 public struct SearchResultModel {
     public let wineId: Int
+    public let imageUrl: String
     public let wineName: String
-    public let imageURL: String
     public let sort: String
-    public let satisfaction: Double
-    public let country: String
-    public let region: String
+    public let price: Int
+    public let vivinoRating: Double
     
-    public init(wineId: Int, wineName: String, imageURL: String, sort: String, satisfaction: Double, country: String, region: String) {
+    public init(wineId: Int, imageUrl: String, wineName: String, sort: String, price: Int, vivinoRating: Double) {
         self.wineId = wineId
+        self.imageUrl = imageUrl
         self.wineName = wineName
-        self.imageURL = imageURL
         self.sort = sort
-        self.satisfaction = satisfaction
-        self.country = country
-        self.region = region
+        self.price = price
+        self.vivinoRating = vivinoRating
     }
 }

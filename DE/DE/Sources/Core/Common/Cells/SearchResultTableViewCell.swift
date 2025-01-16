@@ -141,7 +141,7 @@ public class SearchResultTableViewCell: UITableViewCell {
     }
     
     public func configure(model: SearchResultModel, highlightText: String? = nil) {
-        if let url = URL(string: model.imageURL) {
+        if let url = URL(string: model.imageUrl) {
             image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
         } else {
             image.image = UIImage(named: "placeholder")
@@ -155,7 +155,7 @@ public class SearchResultTableViewCell: UITableViewCell {
         }
     
         kind.text = "와인 > \(model.sort)"
-        score.text = "★ \(String(format: "%.1f", model.satisfaction))"
+        score.text = "★ \(String(format: "%.1f", model.vivinoRating))"
     }
     
     private func highlightTextInLabel(text: String, highlight: String) -> NSAttributedString {

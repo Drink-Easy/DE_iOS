@@ -95,14 +95,12 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
             case .success(let responseData) :
                 DispatchQueue.main.async {
                     self.wineResults = responseData.map { data in
-                        SearchResultModel(
-                            wineId: data.wineId,
-                            wineName: data.name,
-                            imageURL: data.imageUrl,
-                            sort: data.sort,
-                            satisfaction: data.vivinoRating,
-                            country: data.country,
-                            region: data.region
+                        SearchResultModel.init(wineId: data.wineId,
+                                               imageUrl: data.imageUrl,
+                                               wineName: data.name,
+                                               sort: data.sort,
+                                               price: data.price,
+                                               vivinoRating: data.vivinoRating
                         )
                     }
                     self.searchHomeView.searchResultTableView.reloadData()

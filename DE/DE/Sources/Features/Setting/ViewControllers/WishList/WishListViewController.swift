@@ -90,12 +90,11 @@ public class WishListViewController: UIViewController {
                         self.wineResults = cachedWishlist.map { data in
                             SearchResultModel(
                                 wineId: data.wineId,
+                                imageUrl: data.imageUrl,
                                 wineName: data.wineName,
-                                imageURL: data.imageURL,
                                 sort: data.sort,
-                                satisfaction: data.satisfaction,
-                                country: data.country,
-                                region: data.region
+                                price: data.price,
+                                vivinoRating: data.vivinoRating
                             )
                         }
                         DispatchQueue.main.async {
@@ -114,12 +113,11 @@ public class WishListViewController: UIViewController {
                                 self.wineResults = responseData.map { data in
                                     SearchResultModel(
                                         wineId: data.wineId,
+                                        imageUrl: data.imageUrl,
                                         wineName: data.name,
-                                        imageURL: data.imageUrl,
                                         sort: data.sort,
-                                        satisfaction: data.vivinoRating,
-                                        country: data.country,
-                                        region: data.region
+                                        price: data.price,
+                                        vivinoRating: data.vivinoRating
                                     )
                                 }
                                 
@@ -130,12 +128,11 @@ public class WishListViewController: UIViewController {
                                             for: userId,
                                             with: self.wineResults.map { wine in
                                                 WineData(wineId: wine.wineId,
+                                                         imageUrl: wine.imageUrl,
                                                          wineName: wine.wineName,
-                                                         imageURL: wine.imageURL,
                                                          sort: wine.sort,
-                                                         satisfaction: wine.satisfaction,
-                                                         country: wine.country,
-                                                         region: wine.region
+                                                         price: wine.price,
+                                                         vivinoRating: wine.vivinoRating
                                                 )
                                             }
                                         )
