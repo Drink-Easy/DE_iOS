@@ -11,19 +11,21 @@ public enum WineListType: String, Codable {
 @Model // SwiftData 모델 선언
 public class WineData {
     public var wineId: Int
-    public var imageUrl: String
     public var wineName: String
+    public var imageURL: String
     public var sort: String
-    public var price: Int
-    public var vivinoRating: Double
-
-    public init(wineId: Int, imageUrl: String, wineName: String, sort: String, price: Int, vivinoRating: Double) {
+    public var satisfaction: Double
+    public var country: String
+    public var region: String
+    
+    public init(wineId: Int, wineName: String, imageURL: String, sort: String, satisfaction: Double, country: String, region: String) {
         self.wineId = wineId
-        self.imageUrl = imageUrl
         self.wineName = wineName
+        self.imageURL = imageURL
         self.sort = sort
-        self.price = price
-        self.vivinoRating = vivinoRating
+        self.satisfaction = satisfaction
+        self.country = country
+        self.region = region
     }
 }
 

@@ -265,27 +265,83 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func callLikeAPI(wineId: Int) {
-        likedNetworkService.postWishlist(wineId: wineId) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let responseData) :
-                print(responseData)
-            case .failure(let error) :
-                print("\(error)")
+        Task {
+            do {
+                // UserDefaults에서 userId 가져오기
+                guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+                    print("❌ 유저 ID를 찾을 수 없습니다.")
+                    return
+                }
+                
+                // APICounter 생성
+                do {
+                    try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .wishlist)
+                } catch APICallCounterError.controllerAlreadyExists {
+                    print("✅ APICounter가 이미 존재합니다.")
+                }
+                
+                // 좋아요 API 호출
+                likedNetworkService.postWishlist(wineId: wineId) { [weak self] result in
+                    guard let self = self else { return }
+                    
+                    switch result {
+                    case .success(let responseData):
+                        print(responseData)
+                        Task {
+                            do {
+                                // 호출 카운트 증가
+                                try await APICallCounterManager.shared.incrementPost(for: userId, controllerName: .wishlist)
+                            } catch {
+                                print("❌ 호출 카운트 증가 실패: \(error.localizedDescription)")
+                            }
+                        }
+                    case .failure(let error):
+                        print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")
+                    }
+                }
+            } catch {
+                print("❌ 유저 검증 실패: \(error.localizedDescription)")
             }
         }
     }
     
     func calldeleteLikedAPI(wineId: Int) {
-        likedNetworkService.deleteWishlist(wineId: wineId) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let responseData) :
-                print(responseData)
-            case .failure(let error) :
-                print("\(error)")
+        Task {
+            do {
+                // UserDefaults에서 userId 가져오기
+                guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+                    print("❌ 유저 ID를 찾을 수 없습니다.")
+                    return
+                }
+                
+                // APICounter 생성
+                do {
+                    try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .wishlist)
+                } catch APICallCounterError.controllerAlreadyExists {
+                    print("✅ APICounter가 이미 존재합니다.")
+                }
+                
+                // 좋아요 취소 API 호출
+                likedNetworkService.deleteWishlist(wineId: wineId) { [weak self] result in
+                    guard let self = self else { return }
+                    
+                    switch result {
+                    case .success(let responseData):
+                        print(responseData)
+                        Task {
+                            do {
+                                // 호출 카운트 증가
+                                try await APICallCounterManager.shared.incrementDelete(for: userId, controllerName: .wishlist)
+                            } catch {
+                                print("❌ 호출 카운트 증가 실패: \(error.localizedDescription)")
+                            }
+                        }
+                    case .failure(let error):
+                        print("❌ 좋아요 취소 API 호출 실패: \(error.localizedDescription)")
+                    }
+                }
+            } catch {
+                print("❌ 유저 검증 실패: \(error.localizedDescription)")
             }
         }
     }
