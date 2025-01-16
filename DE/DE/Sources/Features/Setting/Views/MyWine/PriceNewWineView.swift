@@ -13,11 +13,15 @@ class PriceNewWineView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    let wineName = UILabel().then {
+    public lazy var wineName = UILabel().then {
         $0.text = "루이 로드레 크리스탈 2015"
         $0.textColor = UIColor(hex: "#7E13B1")
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
         $0.numberOfLines = 0
+    }
+    
+    func setWineName(_ name :String) {
+        self.wineName.text = name
     }
     
     let label = UILabel().then {

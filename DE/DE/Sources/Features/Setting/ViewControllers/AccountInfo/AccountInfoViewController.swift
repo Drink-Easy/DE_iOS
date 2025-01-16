@@ -23,14 +23,7 @@ class AccountInfoViewController: UIViewController {
         $0.layer.cornerRadius = 60
     }
     
-    private let tableView = UITableView().then {
-        $0.backgroundColor = .white // 테이블 뷰 배경색
-        $0.separatorStyle = .singleLine
-        $0.isScrollEnabled = false
-        $0.rowHeight = 40
-        $0.layer.cornerRadius = 12 // 코너 반경 설정
-        $0.layer.masksToBounds = true // 코너 반경 적용
-    }
+    private let accountView = SimpleListView()
     
     private let logoutButton = UIButton().then {
         $0.setTitle("로그아웃   |", for: .normal)
@@ -44,11 +37,12 @@ class AccountInfoViewController: UIViewController {
         $0.titleLabel?.font = UIFont.ptdMediumFont(ofSize: 11)
     }
     
-    private var infoItems: [(String, String)] = []
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        Task {
+            CheckCacheData()
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -62,9 +56,6 @@ class AccountInfoViewController: UIViewController {
         setupNavigationBar()
         setupUI()
         setupAction()
-        tableView.dataSource = self
-        tableView.delegate = self
-        fetchUserProfile()
     }
     
     private func setupNavigationBar() {
@@ -86,7 +77,7 @@ class AccountInfoViewController: UIViewController {
     }
     
     private func setupUI() {
-        [profileImageView, tableView, logoutButton, deleteButton].forEach {
+        [profileImageView, accountView, logoutButton, deleteButton].forEach {
             view.addSubview($0)
         }
         
@@ -96,10 +87,9 @@ class AccountInfoViewController: UIViewController {
             make.width.height.equalTo(120)
         }
         
-        tableView.snp.makeConstraints { make in
+        accountView.snp.makeConstraints { make in
             make.top.equalTo(profileImageView.snp.bottom).offset(32)
             make.leading.trailing.equalToSuperview().inset(16)
-            make.height.equalTo(200)
         }
         
         logoutButton.snp.makeConstraints { make in
@@ -114,50 +104,134 @@ class AccountInfoViewController: UIViewController {
         }
     }
     
-    private func fetchUserProfile() {
-        let jsonData = """
-        {
-            "imageUrl": "https://i.pinimg.com/736x/44/d8/38/44d838a67e02e8ddb77903cff8f62d82.jpg",
-            "username": "null",
-            "email": "example@g.com",
-            "city": "null",
-            "authType": "Drinkeg",
-            "adult": false
+    /// UI에 사용할 데이터 불러오기(캐시 or 서버)
+    func CheckCacheData() {
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+            print("⚠️ userId가 UserDefaults에 없습니다.")
+            return
         }
-        """.data(using: .utf8)!
         
-        do {
-            let profile = try JSONDecoder().decode(MemberInfoResponse.self, from: jsonData)
-            self.userProfile = profile
-            updateUI(with: profile)
-        } catch {
-            print("Failed to decode user profile: \(error)")
+        Task {
+            do {
+                if try await isCacheDataValid(for: userId) {
+                    print("✅ 캐시 데이터 사용 가능")
+                    await useCacheData(for: userId)
+                } else {
+                    fetchMemberInfo()
+                }
+            } catch {
+                print("⚠️ 캐시 데이터 검증 실패: \(error)")
+                fetchMemberInfo()
+            }
         }
     }
+
+    /// 캐시 데이터 검증
+    private func isCacheDataValid(for userId: Int) async throws -> Bool {
+        let isCallCountZero = try await APICallCounterManager.shared.isCallCountZero(for: userId, controllerName: .member)
+        
+        // 전체 유저 프로필 데이터 nil 검증
+        let hasNoNilFields = try await PersonalDataManager.shared.checkPersonalDataHasNil(for: userId)
+        return isCallCountZero && hasNoNilFields
+    }
+
+    /// 캐시 데이터 사용
+    private func useCacheData(for userId: Int) async {
+        do {
+            let data = try await PersonalDataManager.shared.fetchPersonalData(for: userId)
+            
+            if let username = data.userName, let imageURL = data.userImageURL, let email = data.email, let city = data.userCity, let authType = data.authType, let adult = data.adult {
+                self.userProfile = MemberInfoResponse(imageUrl: imageURL, username: username, email: email, city: city, authType: authType, adult: adult)
+                self.setUserData(
+                    imageURL: imageURL,
+                    username: username,
+                    email: email,
+                    city: city,
+                    authType: authType,
+                    adult: adult
+                )
+            } else {
+                print("⚠️ 캐시 데이터에 필요한 정보가 없습니다.")
+            }
+        } catch {
+            print("⚠️ 캐시 데이터 가져오기 실패: \(error)")
+        }
+    }
+    /// 서버에서 데이터 가져오기
+    private func fetchMemberInfo() {
+        memberService.fetchUserInfo(completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let data):
+                guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+                    print("⚠️ userId가 UserDefaults에 없습니다.")
+                    return
+                }
+                guard let username = data?.username,
+                      let imgUrl = data?.imageUrl,
+                      let email = data?.email,
+                      let city = data?.city,
+                      let authType = data?.authType,
+                      let adult = data?.adult else {return}
+                Task {
+                    // 데이터 할당
+                    self.userProfile = MemberInfoResponse(imageUrl: imgUrl, username: username, email: email, city: city, authType: authType, adult: adult)
+                    self.setUserData(
+                        imageURL: imgUrl,
+                        username: username,
+                        email: email,
+                        city: city,
+                        authType: authType,
+                        adult: adult
+                    )
+                    // 로컬 캐시 데이터에 저장(덮어쓰기)
+                    await self.saveUserInfo(data: MemberInfoResponse(imageUrl: imgUrl, username: username, email: email, city: city, authType: authType, adult: adult))
+                    do {
+                        // get api -> 모든 call counter 초기화
+                        try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
+                        return
+                    } catch {
+                        print("⚠️ API 호출 카운트 초기화 실패: \(error)")
+                    }
+                }
+            case .failure(let error ):
+                print("Error: \(error)")
+            }
+        })
+    }
     
-    private func updateUI(with profile: MemberInfoResponse) {
-//        guard let imageUrl = profile.imageUrl else {return }
-//        if let url = URL(string: imageUrl) {
-//            DispatchQueue.global().async {
-//                if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-//                    DispatchQueue.main.async {
-//                        self.profileImageView.image = image
-//                    }
-//                }
-//            }
-//        } else {
-//            profileImageView.image = UIImage(named: "profilePlaceholder")
-//        }
-//        
-//        infoItems = [
-//            ("닉네임", profile.username ?? "설정되지 않음"),
-//            ("내 동네", profile.city ?? "설정되지 않음"),
-//            ("이메일", profile.email ?? "이메일 없음"),
-//            ("연동 상태", profile.authType ?? "알 수 없음"),
-//            ("성인 인증", profile.adult ? "인증 완료" : "미인증")
-//        ]
-//        
-//        tableView.reloadData()
+    /// UI update
+    func setUserData(imageURL: String, username: String, email: String, city: String, authType: String, adult: Bool) {
+        // 데이터 처리
+        print("데이터 정보 === Image URL: \(imageURL), Email: \(email), City: \(city), AuthType: \(authType), Adult: \(adult)")
+
+        let profileImgURL = URL(string: imageURL)
+        self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
+        accountView.titleLabel.text = "내 정보"
+        accountView.nickNameVal.text = username
+            accountView.emailVal.text = email
+            accountView.cityVal.text = city
+            accountView.loginTypeVal.text = authType
+            accountView.adultVal.text = adult ? "성인" : "미성년자"
+    }
+    
+    /// 새로 받은 데이터 저장
+    func saveUserInfo(data: MemberInfoResponse) async {
+        do {
+            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+                print("⚠️ userId가 UserDefaults에 없습니다.")
+                return
+            }
+            try await PersonalDataManager.shared.updatePersonalData(for: userId,
+                                                                    userName: data.username,
+                                                                    userImageURL: data.imageUrl,
+                                                                    userCity: data.city,
+                                                                    authType: data.authType,
+                                                                    email: data.email,
+                                                                    adult: data.adult)
+        } catch {
+            print(error)
+        }
     }
     
     @objc private func backButtonTapped() {
@@ -248,22 +322,22 @@ class AccountInfoViewController: UIViewController {
     }
 }
 
-extension AccountInfoViewController: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return infoItems.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .value1, reuseIdentifier: "InfoCell")
-        cell.selectionStyle = .none
-        cell.textLabel?.text = infoItems[indexPath.row].0
-        cell.textLabel?.font = UIFont.ptdRegularFont(ofSize: 14)
-        cell.textLabel?.textColor = AppColor.black ?? .black
-        
-        cell.detailTextLabel?.text = infoItems[indexPath.row].1
-        cell.detailTextLabel?.font = UIFont.ptdRegularFont(ofSize: 14)
-        cell.detailTextLabel?.textColor = AppColor.gray50 ?? .gray
-        
-        return cell
-    }
-}
+//extension AccountInfoViewController: UITableViewDataSource, UITableViewDelegate {
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return infoItems.count
+//    }
+//    
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = UITableViewCell(style: .value1, reuseIdentifier: "InfoCell")
+//        cell.selectionStyle = .none
+//        cell.textLabel?.text = infoItems[indexPath.row].0
+//        cell.textLabel?.font = UIFont.ptdRegularFont(ofSize: 14)
+//        cell.textLabel?.textColor = AppColor.black ?? .black
+//        
+//        cell.detailTextLabel?.text = infoItems[indexPath.row].1
+//        cell.detailTextLabel?.font = UIFont.ptdRegularFont(ofSize: 14)
+//        cell.detailTextLabel?.textColor = AppColor.gray50 ?? .gray
+//        
+//        return cell
+//    }
+//}

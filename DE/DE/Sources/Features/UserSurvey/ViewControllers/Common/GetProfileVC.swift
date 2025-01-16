@@ -154,6 +154,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
         LocationManager.shared.requestLocationPermission { [weak self] address in
             DispatchQueue.main.async {
                 self?.profileView.myLocationTextField.textField.text = address ?? ""
+                self?.checkFormValidity()
             }
         }
     }
