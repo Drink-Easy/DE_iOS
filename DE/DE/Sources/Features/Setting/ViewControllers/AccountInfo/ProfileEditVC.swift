@@ -18,8 +18,9 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     private let networkService = MemberService()
     
     private let profileView = ProfileView()
-    
     private let ValidationManager = NicknameValidateManager()
+    
+    
     
     lazy var profileImgFileName: String = ""
     lazy var profileImg: UIImage? = nil
@@ -99,14 +100,31 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     }
     
     @objc private func editCompleteTapped() {
-        let profileDTO = networkService.makeMemberInfoUpdateRequestDTO(username: profileView.nicknameTextField.text! , city: profileView.myLocationTextField.text ?? "예시 위치 정보")
+        guard let profileImg = self.profileImg else { return }
+        
+        networkService.postImg(image: profileImg) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success (let response):
+                self.navigationController?.popViewController(animated: true)
+                print("프로필 업데이트 완료")
+                Task {
+                    await self.updateCallCount()
+                }
+            case .failure(let error) :
+                print(error)
+            }
+        }
+        
+        guard let nickname = self.profileView.nicknameTextField.text else { return }
+        guard let userCity = self.profileView.myLocationTextField.text else { return }
+        
+        let profileDTO = networkService.makeMemberInfoUpdateRequestDTO(username: nickname , city: userCity)
         networkService.patchUserInfo(body: profileDTO) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(let response):
-                self.navigationController?.popViewController(animated: true)
-                print("프로필 업데이트 완료")
                 Task {
                     await self.updateCallCount()
                 }
@@ -149,11 +167,11 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     //MARK: - 위치 정보 불러오기 로직
     @objc func getMyLocation() {
-                LocationManager.shared.requestLocationPermission { [weak self] address in
-                    DispatchQueue.main.async {
-                        self?.profileView.myLocationTextField.textField.text = address ?? ""
-                    }
-                }
+        LocationManager.shared.requestLocationPermission { [weak self] address in
+            DispatchQueue.main.async {
+                self?.profileView.myLocationTextField.textField.text = address ?? ""
+            }
+        }
     }
     
     //MARK: - 닉네임 중복 검사

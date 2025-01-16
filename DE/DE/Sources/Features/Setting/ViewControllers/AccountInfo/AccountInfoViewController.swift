@@ -133,8 +133,8 @@ class AccountInfoViewController: UIViewController {
         let isCallCountZero = try await APICallCounterManager.shared.isCallCountZero(for: userId, controllerName: .member)
         
         // 전체 유저 프로필 데이터 nil 검증
-        let hasNoNilFields = try await PersonalDataManager.shared.checkPersonalDataHasNil(for: userId)
-        return isCallCountZero && hasNoNilFields
+        let hasNilFields = try await PersonalDataManager.shared.checkPersonalDataHasNil(for: userId)
+        return isCallCountZero && !hasNilFields
     }
     
     /// 캐시 데이터 사용
