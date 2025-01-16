@@ -10,6 +10,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     
     let navigationBarManager = NavigationBarManager()
     var wineResults: [SearchResultModel] = []
+    var registerWine: MyOwnedWine = MyOwnedWine()
     let networkService = WineService()
     
     public override func viewDidLoad() {
@@ -138,12 +139,9 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = TastedDateViewController()
-        UserDefaults.standard.set(wineResults[indexPath.row].wineName, forKey: "wineName")
-        UserDefaults.standard.set(wineResults[indexPath.row].wineId, forKey: "wineId")
-        UserDefaults.standard.set(wineResults[indexPath.row].sort, forKey: "wineSort")
-        UserDefaults.standard.set("\(wineResults[indexPath.row].country), \(wineResults[indexPath.row].region)", forKey: "wineArea")
-        UserDefaults.standard.set(wineResults[indexPath.row].imageURL, forKey: "wineImage")
-        print("와인id 저장됨: \(wineResults[indexPath.row].wineId)")
+        let selectedWine = wineResults[indexPath.row]
+        registerWine.updateWine(wineImg: selectedWine.imageURL, wineName: selectedWine.wineName)
+        vc.registerWine = self.registerWine
         navigationController?.pushViewController(vc, animated: true)
     }
 }

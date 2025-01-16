@@ -5,6 +5,8 @@ import CoreModule
 import Network
 
 public class TastedDateViewController: UIViewController {
+    
+    var registerWine: MyOwnedWine = MyOwnedWine()
 
     let tastedDateView = TastedDateView()
     var selectedDate: DateComponents?

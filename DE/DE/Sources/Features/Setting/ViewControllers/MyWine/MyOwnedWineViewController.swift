@@ -96,13 +96,14 @@ extension MyOwnedWineViewController: UITableViewDelegate, UITableViewDataSource 
         return cell
     }
     
+    //스와이프 시작 시 셀 배경색 변경
     func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) {
             cell.contentView.backgroundColor = AppColor.purple10
         }
     }
 
-    // 스와이프 종료 시 배경색 복원
+    // 스와이프 종료 시 셀 배경색 복원
     func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
         if let indexPath = indexPath, let cell = tableView.cellForRow(at: indexPath) {
             cell.contentView.backgroundColor = AppColor.bgGray
