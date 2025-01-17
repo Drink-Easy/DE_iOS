@@ -17,7 +17,6 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     var reviewData: [WineReviewModel] = []
     private var expandedCells: [Bool] = []
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.prefersLargeTitles = false

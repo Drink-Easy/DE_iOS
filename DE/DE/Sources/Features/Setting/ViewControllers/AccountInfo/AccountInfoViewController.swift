@@ -241,8 +241,8 @@ class AccountInfoViewController: UIViewController {
     @objc private func goToProfileEditView() {
         let vc = ProfileEditVC()
         vc.profileImgURL = userProfile?.imageUrl
-        vc.username = userProfile?.username
-        vc.userCity = userProfile?.city
+        vc.originUsername = userProfile?.username
+        vc.originUserCity = userProfile?.city
         navigationController?.pushViewController(vc, animated: true)
     }
     

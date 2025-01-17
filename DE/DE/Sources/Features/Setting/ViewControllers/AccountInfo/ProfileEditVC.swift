@@ -23,8 +23,8 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     lazy var profileImg: UIImage? = nil
     
     public var profileImgURL: String?
-    public var username: String?
-    public var userCity: String?
+    public var originUsername: String?
+    public var originUserCity: String?
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -79,8 +79,8 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         view.addSubview(profileView)
         
         guard let profileImg = self.profileImgURL,
-        let usernameText = self.username,
-              let usercityText = self.userCity else { return }
+              let usernameText = self.originUsername,
+              let usercityText = self.originUserCity else { return }
         let imgURL = URL(string: profileImg)
         self.profileView.profileImageView.sd_setImage(with: imgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
         self.profileView.nicknameTextField.text = usernameText
@@ -109,12 +109,11 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     }
     
     @objc private func editCompleteTapped() {
-        let dispatchGroup = DispatchGroup()
-        
         guard let profileImg = self.profileImg else { return }
+        guard let newUserName = self.profileView.nicknameTextField.text else { return }
+        guard let newUserCity = self.profileView.myLocationTextField.text else { return }
         
-        // 1. postImg 호출
-        dispatchGroup.enter()
+        
         networkService.postImg(image: profileImg) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -125,15 +124,13 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
             case .failure(let error):
                 print(error)
             }
-            dispatchGroup.leave()
         }
         
         // 2. patchUserInfo 호출
         let profileDTO = networkService.makeMemberInfoUpdateRequestDTO(
-            username: self.profileView.nicknameTextField.text,
-            city: self.profileView.myLocationTextField.text
+            username: newUserName,
+            city: newUserCity
         )
-        dispatchGroup.enter()
         networkService.patchUserInfo(body: profileDTO) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -144,13 +141,8 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
             case .failure(let error):
                 print(error)
             }
-            dispatchGroup.leave()
         }
         
-        // 3. 모든 요청 완료 후 pop
-        dispatchGroup.notify(queue: .main) { [weak self] in
-            self?.navigationController?.popViewController(animated: true)
-        }
         self.navigationController?.popViewController(animated: true)
     }
     
@@ -206,7 +198,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     //MARK: - 폼 유효성 검사
     @objc func validateNickname(){
         ValidationManager.isNicknameCanUse = false
-        if username == profileView.nicknameTextField.text {
+        if originUsername == profileView.nicknameTextField.text {
             ValidationManager.noNeedToCheck(profileView.nicknameTextField)
         } else {
             ValidationManager.validateNickname(profileView.nicknameTextField)
