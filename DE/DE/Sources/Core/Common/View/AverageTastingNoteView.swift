@@ -86,6 +86,7 @@ public class AverageTastingNoteView: UIView {
         noTastinNote.snp.makeConstraints { 
             $0.top.equalTo(title.snp.bottom).offset(16)
             $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
+            $0.bottom.equalToSuperview()
         }
     }
     
@@ -95,15 +96,15 @@ public class AverageTastingNoteView: UIView {
             palate.isHidden = true
             noseContents.isHidden = true
             palateContents.isHidden = true
+            [nose, palate, noseContents, palateContents].forEach { view in
+                view.removeFromSuperview()
+            }
             noTastinNote.isHidden = false
         } else {
-            nose.isHidden = false
-            palate.isHidden = false
-            noseContents.isHidden = false
-            palateContents.isHidden = false
-            noTastinNote.isHidden = true
+            [title, nose, palate, noseContents, palateContents].forEach{ self.addSubview($0) }
             noseContents.text = model.wineNoseText
             palateContents.text = "\(model.sugarContentDescription()), \(model.acidityDescription()), \(model.tanninDescription()),\n\(model.bodyDescription()), \(model.alcoholDescription())"
         }
+        self.layoutIfNeeded()
     }
 }

@@ -199,16 +199,17 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
             // 리뷰가 없을 때
             reviewView.moreBtn.isHidden = true
             reviewView.reviewCollectionView.isHidden = true
+            reviewView.reviewCollectionView.snp.updateConstraints {
+                $0.height.equalTo(0) // 높이를 0으로 설정
+            }
             reviewView.scoreLabel.isHidden = true
             reviewView.noReviewLabel.isHidden = false
-            scrollView.isScrollEnabled = false
         } else {
             // 리뷰가 있을 때
             reviewView.moreBtn.isHidden = false
             reviewView.reviewCollectionView.isHidden = false
             reviewView.scoreLabel.isHidden = false
             reviewView.noReviewLabel.isHidden = true
-            scrollView.isScrollEnabled = true
         }
     }
     

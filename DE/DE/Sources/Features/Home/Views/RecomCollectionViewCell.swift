@@ -70,6 +70,7 @@ class RecomCollectionViewCell: UICollectionViewCell {
             $0.top.equalToSuperview().offset(5)
             $0.bottom.equalTo(scoreNprice.snp.top).offset(-5)
             $0.centerX.equalToSuperview()
+            image.layer.cornerRadius = image.frame.width/4
         }
         
         name.snp.makeConstraints {
