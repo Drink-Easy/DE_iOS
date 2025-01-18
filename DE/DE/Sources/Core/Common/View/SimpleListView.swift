@@ -8,7 +8,7 @@ import Then
 public class SimpleListView: UIView {
     
     public lazy var titleLabel = UILabel().then {
-        $0.textColor = .black
+        $0.textColor = AppColor.black
         $0.font = .ptdSemiBoldFont(ofSize: 18)
     }
     
@@ -73,7 +73,7 @@ public class SimpleListView: UIView {
     public func createLabel(title: String, isTitle: Bool) -> UILabel {
         return UILabel().then {
             $0.font = .ptdRegularFont(ofSize: 14)
-            $0.textColor = isTitle ? .black : AppColor.gray50 ?? .gray
+            $0.textColor = isTitle ? AppColor.black : AppColor.gray50 ?? .gray
             $0.textAlignment = isTitle ? .left : .right
             $0.text = title
             $0.numberOfLines = 0

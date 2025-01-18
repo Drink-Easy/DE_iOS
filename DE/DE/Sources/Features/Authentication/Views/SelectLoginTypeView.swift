@@ -12,6 +12,8 @@ class SelectLoginTypeView: UIView {
     // MARK: - UI Components
     let imageView = UIImageView().then {
         $0.image = UIImage(named: "logo")
+        $0.contentMode = .scaleAspectFit
+        $0.clipsToBounds = true
     }
     
     let kakaoButton = UIButton().then {
@@ -85,8 +87,8 @@ class SelectLoginTypeView: UIView {
     private func setupConstraints() {
         imageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(Constants.superViewHeight * 0.3)
-            make.width.lessThanOrEqualTo(Constants.superViewWidth * 0.6)
+            make.top.equalTo(Constants.superViewHeight * 0.1)
+            make.width.lessThanOrEqualTo(Constants.superViewWidth * 0.3)
         }
         kakaoButton.snp.makeConstraints { make in
             make.top.equalTo(Constants.superViewHeight * 0.6)

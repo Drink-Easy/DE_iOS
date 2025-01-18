@@ -47,25 +47,28 @@ public class NicknameValidateManager {
         return true
     }
     
-    public func checkNicknameDuplicate(nickname: String, view: CustomTextFieldView) {
+    public func checkNicknameDuplicate(nickname: String, view: CustomTextFieldView, completion: (() -> Void)? = nil) {
         networkService.checkNickname(name: nickname) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
             case .success(let response):
-                
-                if response { // 닉네임 사용 가능 CanUse: true
+                if response {
                     self.hideValidationError(view, message: "사용 가능한 닉네임이에요")
-                    self.isNicknameCanUse = false
-                } else { // 닉네임 중복
-                    self.showValidationError(view, message: "이미 사용 중인 닉네임이에요")
                     self.isNicknameCanUse = true
+                } else {
+                    self.showValidationError(view, message: "이미 사용 중인 닉네임이에요")
+                    self.isNicknameCanUse = false
                 }
                 
             case .failure(let error):
                 print("네트워크 요청 실패: \(error)")
                 self.showValidationError(view, message: "네트워크 오류가 발생했습니다. 다시 시도해주세요.")
+                self.isNicknameCanUse = false
             }
+            
+            // 응답 완료 후 completion 호출
+            completion?()
         }
     }
     

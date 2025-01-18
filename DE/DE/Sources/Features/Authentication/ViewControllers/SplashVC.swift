@@ -51,7 +51,7 @@ public class SplashVC : UIViewController {
     }
     
     func setupViews() {
-        view.backgroundColor = .white
+        view.backgroundColor = AppColor.bgGray
         view.addSubview(logoImage)
     }
     

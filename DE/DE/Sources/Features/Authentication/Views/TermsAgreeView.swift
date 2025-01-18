@@ -31,7 +31,7 @@ class TermsAgreeView: UIView {
     private func setupUI() {
         titleLabel.font = UIFont.ptdSemiBoldFont(ofSize: 16)
         titleLabel.numberOfLines = 1
-        titleLabel.textColor = .black
+        titleLabel.textColor = AppColor.black
         titleLabel.isUserInteractionEnabled = true
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleButtonTapped))

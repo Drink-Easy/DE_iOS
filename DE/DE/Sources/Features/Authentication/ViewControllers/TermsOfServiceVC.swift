@@ -28,7 +28,7 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
     private let allTitleLabel = UILabel().then {
         $0.text = "전체 약관 동의"
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
-        $0.textColor = .black
+        $0.textColor = AppColor.black
     }
 
     private let dividerView = UIView().then {

@@ -50,7 +50,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     // MARK: - 네비게이션 바 설정
     func setupNavigationBar() {
-        navigationBarManager.setTitle(to: navigationItem, title: "프로필 설정", textColor: AppColor.black!)
+        navigationBarManager.setTitle(to: navigationItem, title: "프로필 수정", textColor: AppColor.black!)
         navigationBarManager.addBackButton(to: navigationItem, target: self, action: #selector(backButtonTapped))
         navigationBarManager.addRightButton(
             to: navigationItem,
