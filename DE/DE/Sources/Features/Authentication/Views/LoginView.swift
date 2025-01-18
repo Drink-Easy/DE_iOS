@@ -13,7 +13,7 @@ final class LoginView: UIView {
     lazy var usernameField = CustomLabelTextFieldView(
         descriptionImageIcon: "person.fill",
         descriptionLabelText: "이메일",
-        textFieldPlaceholder: "이메일 입력해 주세요",
+        textFieldPlaceholder: "이메일을 입력해 주세요",
         validationText: "유효하지 않은 이메일 형식입니다"
     ).then {
         $0.textField.keyboardType = .default
@@ -65,16 +65,16 @@ final class LoginView: UIView {
     // MARK: - Constraints
     private func setupConstraints() {
         usernameField.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(Constants.superViewHeight * 0.2)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
+            make.top.equalTo(safeAreaLayoutGuide).offset(Constants.superViewHeight * 0.1)
+            make.leading.trailing.equalToSuperview().inset(Constants.padding32)
         }
         passwordField.snp.makeConstraints { make in
             make.top.equalTo(usernameField.snp.bottom).offset(32)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
+            make.leading.trailing.equalToSuperview().inset(Constants.padding32)
         }
         idSaveCheckBox.snp.makeConstraints { make in
             make.top.equalTo(passwordField.snp.bottom).offset(32)
-            make.leading.equalToSuperview().inset(Constants.padding)
+            make.leading.equalToSuperview().inset(Constants.padding32)
         }
 //        idSearchButton.snp.makeConstraints { make in
 //            make.centerY.equalTo(idSaveCheckBox)
@@ -82,7 +82,7 @@ final class LoginView: UIView {
 //        }
         loginButton.snp.makeConstraints { make in
             make.top.equalTo(idSaveCheckBox.snp.bottom).offset(64)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
+            make.leading.trailing.equalToSuperview().inset(Constants.padding32)
         }
         joinStackView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()

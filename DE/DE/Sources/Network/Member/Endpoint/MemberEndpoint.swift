@@ -63,7 +63,7 @@ extension MemberEndpoint: TargetType {
         case .postImage(let image):
             var multipartData: [MultipartFormData] = []
             let fileName = "\(UUID().uuidString).jpeg"
-            if let imageData = image.jpegData(compressionQuality: 0.5) {
+            if let imageData = image.jpegData(compressionQuality: 0.2) {
                 let fileFormData = MultipartFormData(
                     provider: .data(imageData),
                     name: "profileImg",

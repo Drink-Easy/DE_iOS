@@ -6,10 +6,11 @@ import Network
 import SnapKit
 import Then
 
-public class AddNewWineViewController : UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
+public class AddNewWineViewController : UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
+    
     let navigationBarManager = NavigationBarManager()
-    // TODO : 상단 네비게이션 바 추가하는거 하셈!!
     var wineResults: [SearchResultModel] = []
+    var registerWine: MyOwnedWine = MyOwnedWine()
     let networkService = WineService()
     
     public override func viewDidLoad() {
@@ -24,7 +25,8 @@ public class AddNewWineViewController : UIViewController, UISearchBarDelegate, U
             SearchResultTableViewCell.self,
             forCellReuseIdentifier: "SearchResultTableViewCell"
         )
-        searchHomeView.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        searchHomeView.searchBar.delegate = self
+//        searchHomeView.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         setupNavigationBar()
     }
     
@@ -33,14 +35,27 @@ public class AddNewWineViewController : UIViewController, UISearchBarDelegate, U
         placeholder: "와인 이름을 적어 검색"
     )
     
-    private func setupNavigationBar() {
-        navigationBarManager.setTitle(to: navigationItem, title: "", textColor: AppColor.black!)
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    func setupNavigationBar() {
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
-            action: #selector(prevVC),
-            tintColor: AppColor.gray80!
+            action: #selector(backButtonTapped),
+            tintColor: AppColor.gray70!
         )
+    }
+    
+    @objc private func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
     }
     
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -48,20 +63,35 @@ public class AddNewWineViewController : UIViewController, UISearchBarDelegate, U
         self.view.endEditing(true)  //firstresponder가 전부 사라짐
     }
     
-    @objc
-    private func textFieldDidChange(_ textField: UITextField) {
-        let query = textField.text ?? ""
-        filterSuggestions(with: query)
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let query = searchHomeView.searchBar.text, query.count >= 2 {
+            callSearchAPI(query: query)
+        } else {
+            showCharacterLimitAlert()
+        }
+        return true
+    }
+
+    private func showCharacterLimitAlert() {
+        let alert = UIAlertController(title: "경고", message: "최소 2자 이상 입력해 주세요.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
     
-    func filterSuggestions(with query: String) {
-        if query.isEmpty {
-            wineResults = []
-            self.searchHomeView.searchResultTableView.reloadData()
-        } else {
-            callSearchAPI(query: query)
-        }
-    }
+//    @objc
+//    private func textFieldDidChange(_ textField: UITextField) {
+//        let query = textField.text ?? ""
+//        filterSuggestions(with: query)
+//    }
+//    
+//    func filterSuggestions(with query: String) {
+//        if query.isEmpty {
+//            wineResults = []
+//            self.searchHomeView.searchResultTableView.reloadData()
+//        } else {
+//            callSearchAPI(query: query)
+//        }
+//    }
     
     func callSearchAPI(query: String) {
         networkService.fetchWines(searchName: query) { [weak self] result in
@@ -71,13 +101,12 @@ public class AddNewWineViewController : UIViewController, UISearchBarDelegate, U
             case .success(let responseData) :
                 DispatchQueue.main.async {
                     self.wineResults = responseData.map { data in
-                        SearchResultModel(
-                            wineId: data.wineId,
-                            wineName: data.name,
-                            imageURL: data.imageUrl,
-                            sort: data.sort,
-                            satisfaction: data.vivinoRating,
-                            area: data.area
+                        SearchResultModel.init(wineId: data.wineId,
+                                               imageUrl: data.imageUrl,
+                                               wineName: data.name,
+                                               sort: data.sort,
+                                               price: data.price,
+                                               vivinoRating: data.vivinoRating
                         )
                     }
                     self.searchHomeView.searchResultTableView.reloadData()
@@ -108,12 +137,9 @@ public class AddNewWineViewController : UIViewController, UISearchBarDelegate, U
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = TastedDateViewController()
-        UserDefaults.standard.set(wineResults[indexPath.row].wineName, forKey: "wineName")
-        UserDefaults.standard.set(wineResults[indexPath.row].wineId, forKey: "wineId")
-        UserDefaults.standard.set(wineResults[indexPath.row].sort, forKey: "wineSort")
-        UserDefaults.standard.set(wineResults[indexPath.row].area, forKey: "wineArea")
-        UserDefaults.standard.set(wineResults[indexPath.row].imageURL, forKey: "wineImage")
-        print("와인id 저장됨: \(wineResults[indexPath.row].wineId)")
+        let selectedWine = wineResults[indexPath.row]
+        registerWine.updateWine(wineId: selectedWine.wineId, wineName: selectedWine.wineName)
+        vc.registerWine = self.registerWine
         navigationController?.pushViewController(vc, animated: true)
     }
 }

@@ -26,7 +26,7 @@ public class TastingNote {
     public init(noteId: Int,
          wineName: String,
          imageURL: String,
-         sort: String,
+         sort: String
     ) {
         self.noteId = noteId
         self.wineName = wineName

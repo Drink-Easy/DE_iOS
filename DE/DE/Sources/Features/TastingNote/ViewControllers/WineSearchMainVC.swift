@@ -71,13 +71,12 @@ public class WineSearchMainVC : UIViewController, UISearchBarDelegate, UITableVi
             case .success(let responseData) :
                 DispatchQueue.main.async {
                     self.wineResults = responseData.map { data in
-                        SearchResultModel(
-                            wineId: data.wineId,
-                            wineName: data.name,
-                            imageURL: data.imageUrl,
-                            sort: data.sort,
-                            satisfaction: data.vivinoRating,
-                            area: data.area
+                        SearchResultModel.init(wineId: data.wineId,
+                                               imageUrl: data.imageUrl,
+                                               wineName: data.name,
+                                               sort: data.sort,
+                                               price: data.price,
+                                               vivinoRating: data.vivinoRating
                         )
                     }
                     self.searchHomeView.searchResultTableView.reloadData()
@@ -106,15 +105,15 @@ public class WineSearchMainVC : UIViewController, UISearchBarDelegate, UITableVi
         return cell
     }
     
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = TastedDateViewController()
-        UserDefaults.standard.set(wineResults[indexPath.row].wineName, forKey: "wineName")
-        UserDefaults.standard.set(wineResults[indexPath.row].wineId, forKey: "wineId")
-        UserDefaults.standard.set(wineResults[indexPath.row].sort, forKey: "wineSort")
-        UserDefaults.standard.set(wineResults[indexPath.row].area, forKey: "wineArea")
-        UserDefaults.standard.set(wineResults[indexPath.row].imageURL, forKey: "wineImage")
-        print("와인id 저장됨: \(wineResults[indexPath.row].wineId)")
-        navigationController?.pushViewController(vc, animated: true)
-    }
+//    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        let vc = TastedDateViewController()
+//        UserDefaults.standard.set(wineResults[indexPath.row].wineName, forKey: "wineName")
+//        UserDefaults.standard.set(wineResults[indexPath.row].wineId, forKey: "wineId")
+//        UserDefaults.standard.set(wineResults[indexPath.row].sort, forKey: "wineSort")
+//        UserDefaults.standard.set(wineResults[indexPath.row].area, forKey: "wineArea")
+//        UserDefaults.standard.set(wineResults[indexPath.row].imageURL, forKey: "wineImage")
+//        print("와인id 저장됨: \(wineResults[indexPath.row].wineId)")
+//        navigationController?.pushViewController(vc, animated: true)
+//    }
 }
 

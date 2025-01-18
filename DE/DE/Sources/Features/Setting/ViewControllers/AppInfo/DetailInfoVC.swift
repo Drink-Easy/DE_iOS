@@ -8,9 +8,12 @@ class DetailInfoVC: UIViewController {
     // MARK: - Properties
     private let navigationBarManager = NavigationBarManager()
     
+    private let scrollView = UIScrollView()
+    private let contentView = UIView()
+    
     private let contentLabel = UILabel().then {
         $0.font = UIFont.ptdRegularFont(ofSize: 16)
-        $0.textColor = AppColor.gray70
+        $0.textColor = Constants.AppColor.gray100
         $0.textAlignment = .left
         $0.numberOfLines = 0
     }
@@ -41,6 +44,7 @@ class DetailInfoVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        fixNavigationBarAppearance()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -55,13 +59,41 @@ class DetailInfoVC: UIViewController {
         navigationBarManager.addBackButton(to: navigationItem, target: self, action: #selector(backButtonTapped))
     }
     
+    private func fixNavigationBarAppearance() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = AppColor.bgGray
+        appearance.titleTextAttributes = [.foregroundColor: AppColor.black!]
+        
+        appearance.shadowColor = nil
+        
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.compactAppearance = appearance
+    }
+    
     // MARK: - Setup UI
     private func setupUI() {
-        view.addSubview(contentLabel)
+        // 스크롤뷰 계층 구조 추가
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        contentView.addSubview(contentLabel)
         
+        // 스크롤뷰 제약 설정
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        // 컨텐츠 뷰 제약 설정
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalToSuperview() // 수평 스크롤 방지
+        }
+        
+        // 컨텐츠 라벨 제약 설정
         contentLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
-            make.leading.trailing.equalToSuperview().inset(16)
+            make.top.leading.trailing.equalToSuperview().inset(16)
+            make.bottom.equalToSuperview() // 컨텐츠 아래 공간 확보
         }
     }
     

@@ -11,18 +11,20 @@ import CoreLocation
 import Network
 
 class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
-    
     private let navigationBarManager = NavigationBarManager()
     private let imagePickerManager = ImagePickerManager()
     
     private let networkService = MemberService()
     
     private let profileView = ProfileView()
-    
     private let ValidationManager = NicknameValidateManager()
     
     lazy var profileImgFileName: String = ""
     lazy var profileImg: UIImage? = nil
+    
+    public var profileImgURL: String?
+    public var username: String?
+    public var userCity: String?
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -48,7 +50,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     // MARK: - 네비게이션 바 설정
     func setupNavigationBar() {
-        navigationBarManager.setTitle(to: navigationItem, title: "프로필 설정", textColor: AppColor.black!)
+        navigationBarManager.setTitle(to: navigationItem, title: "프로필 수정", textColor: AppColor.black!)
         navigationBarManager.addBackButton(to: navigationItem, target: self, action: #selector(backButtonTapped))
         navigationBarManager.addRightButton(
             to: navigationItem,
@@ -75,6 +77,14 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     // MARK: UI Component 설정
     func setupUI() {
         view.addSubview(profileView)
+        
+        guard let profileImg = self.profileImgURL,
+        let usernameText = self.username,
+              let usercityText = self.userCity else { return }
+        let imgURL = URL(string: profileImg)
+        self.profileView.profileImageView.sd_setImage(with: imgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
+        self.profileView.nicknameTextField.text = usernameText
+        self.profileView.myLocationTextField.text = usercityText
     }
     
     func setupConstraints() {
@@ -99,21 +109,49 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     }
     
     @objc private func editCompleteTapped() {
-        let profileDTO = networkService.makeMemberInfoUpdateRequestDTO(username: profileView.nicknameTextField.text! , city: profileView.myLocationTextField.text ?? "예시 위치 정보")
-        networkService.patchUserInfo(body: profileDTO) { [weak self] result in
+        let dispatchGroup = DispatchGroup()
+        
+        guard let profileImg = self.profileImg else { return }
+        
+        // 1. postImg 호출
+        dispatchGroup.enter()
+        networkService.postImg(image: profileImg) { [weak self] result in
             guard let self = self else { return }
-            
             switch result {
-            case .success(let response):
-                self.navigationController?.popViewController(animated: true)
-                print("프로필 업데이트 완료")
+            case .success(_):
                 Task {
                     await self.updateCallCount()
                 }
             case .failure(let error):
                 print(error)
             }
+            dispatchGroup.leave()
         }
+        
+        // 2. patchUserInfo 호출
+        let profileDTO = networkService.makeMemberInfoUpdateRequestDTO(
+            username: self.profileView.nicknameTextField.text,
+            city: self.profileView.myLocationTextField.text
+        )
+        dispatchGroup.enter()
+        networkService.patchUserInfo(body: profileDTO) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(_):
+                Task {
+                    await self.updateCallCount()
+                }
+            case .failure(let error):
+                print(error)
+            }
+            dispatchGroup.leave()
+        }
+        
+        // 3. 모든 요청 완료 후 pop
+        dispatchGroup.notify(queue: .main) { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }
+        self.navigationController?.popViewController(animated: true)
     }
     
     func updateCallCount() async {
@@ -149,11 +187,11 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     //MARK: - 위치 정보 불러오기 로직
     @objc func getMyLocation() {
-                LocationManager.shared.requestLocationPermission { [weak self] address in
-                    DispatchQueue.main.async {
-                        self?.profileView.myLocationTextField.textField.text = address ?? ""
-                    }
-                }
+        LocationManager.shared.requestLocationPermission { [weak self] address in
+            DispatchQueue.main.async {
+                self?.profileView.myLocationTextField.textField.text = address ?? ""
+            }
+        }
     }
     
     //MARK: - 닉네임 중복 검사
@@ -162,14 +200,17 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
             print("닉네임이 없습니다")
             return
         }
-        
         ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField)
     }
     
     //MARK: - 폼 유효성 검사
     @objc func validateNickname(){
         ValidationManager.isNicknameCanUse = false
-        ValidationManager.validateNickname(profileView.nicknameTextField)
+        if username == profileView.nicknameTextField.text {
+            ValidationManager.noNeedToCheck(profileView.nicknameTextField)
+        } else {
+            ValidationManager.validateNickname(profileView.nicknameTextField)
+        }
         checkFormValidity()
     }
     

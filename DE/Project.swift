@@ -28,7 +28,7 @@ let project = Project(
             deploymentTargets: .iOS("17.0"),
             infoPlist: .extendingDefault(
                 with: [
-                    "UIUserInterfaceStyle" : "Light", // 다크모드 제거
+//                    "UIUserInterfaceStyle" : "Light", // 다크모드 제거
                     "UISupportedInterfaceOrientations" : ["UIInterfaceOrientationPortrait"], // 화면 방향 세로 고정
                     "UIApplicationSceneManifest": [ // Scene 설정
                         "UIApplicationSupportsMultipleScenes": false,
@@ -100,7 +100,7 @@ let project = Project(
             bundleId: "\(bundleId).\(bundleMid).drinkig",
             infoPlist: .extendingDefault(
                 with: [
-                    "UIUserInterfaceStyle" : "Light", // 다크모드 제거
+//                    "UIUserInterfaceStyle" : "Light", // 다크모드 제거
                     "UISupportedInterfaceOrientations" : ["UIInterfaceOrientationPortrait"], // 화면 방향 세로 고정
                     "UIApplicationSceneManifest": [ // Scene 설정
                         "UIApplicationSupportsMultipleScenes": false,

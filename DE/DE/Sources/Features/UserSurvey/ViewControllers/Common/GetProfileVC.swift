@@ -154,6 +154,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
         LocationManager.shared.requestLocationPermission { [weak self] address in
             DispatchQueue.main.async {
                 self?.profileView.myLocationTextField.textField.text = address ?? ""
+                self?.checkFormValidity()
             }
         }
     }
@@ -165,18 +166,21 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
             return
         }
         
-        ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField)
+        ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField) {
+                self.checkFormValidity() // 네트워크 응답 후 호출
+            }
     }
     
-    //MARK: - 폼 유효성 검사
+    //MARK: - 닉네임 유효성 검사
     @objc func validateNickname(){
         ValidationManager.isNicknameCanUse = false
         ValidationManager.validateNickname(profileView.nicknameTextField)
         checkFormValidity()
     }
     
+    //MARK: - 폼 유효성 검사
     @objc func checkFormValidity() {
-        let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true) && !ValidationManager.isNicknameCanUse
+        let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true) && ValidationManager.isNicknameCanUse
         let isLocationValid = !(profileView.myLocationTextField.textField.text?.isEmpty ?? true)
         let isImageSelected = profileView.profileImageView.image != nil
         let isFormValid = isNicknameValid && isLocationValid && isImageSelected

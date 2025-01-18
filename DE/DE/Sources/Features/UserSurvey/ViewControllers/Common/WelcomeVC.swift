@@ -17,7 +17,7 @@ public class WelcomeVC: UIViewController {
     
     private let titleLabel = UILabel().then {
         $0.text = "드링키지에 온 걸 환영해요."
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 32)
+        $0.font = UIFont.ptdSemiBoldFont(ofSize: 28)
         $0.textColor = AppColor.black
         $0.textAlignment = .center
         $0.numberOfLines = 0

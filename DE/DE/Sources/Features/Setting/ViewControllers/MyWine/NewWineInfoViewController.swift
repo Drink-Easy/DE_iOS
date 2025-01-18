@@ -1,6 +1,8 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+// TODO : 도연
+// 시음 완료하는 뷰
 
 class NewWineInfoViewController: UIViewController {
 

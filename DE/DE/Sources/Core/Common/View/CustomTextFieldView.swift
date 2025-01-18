@@ -116,8 +116,8 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
             return true
         }
         
-        //15자 이상 입력 받지 않음
-        if updatedText.count > 15 {
+        //10자 이상 입력 받지 않음
+        if updatedText.count > 10 {
             return false
         }
         return true

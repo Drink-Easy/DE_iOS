@@ -1,15 +1,29 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+import SwiftUI
+
+import SnapKit
 
 import CoreModule
 import Network
+
+public class PalateViewModel: ObservableObject {
+    @Published var stats: [RadarData] = [RadarData(label: "당도", value: 0.2), RadarData(label: "알코올", value: 1.0), RadarData(label: "타닌", value: 0.2), RadarData(label: "바디", value: 0.6), RadarData(label: "산도" , value: 0.8)]
+}
 
 public class TestVC: UIViewController {
     
     let networkService = AuthService()
     
     // MARK: - UI Elements
+    
+    var viewModel = PalateViewModel()
+    lazy var palateChart = PalateChartView(viewModel: viewModel)
+    lazy var hostingController: UIHostingController<PalateChartView> = {
+        return UIHostingController(rootView: palateChart)
+    }()
+    
     private lazy var sampleButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Click Me", for: .normal)
@@ -38,22 +52,19 @@ public class TestVC: UIViewController {
     // MARK: - Setup Methods
     private func setupUI() {
         view.backgroundColor = .white
-        view.addSubview(sampleLabel)
-        view.addSubview(sampleButton)
+        addChild(hostingController)
+        view.addSubview(hostingController.view)
+//        view.addSubview(sampleButton)
         
-        // Layout using Auto Layout
-        sampleLabel.translatesAutoresizingMaskIntoConstraints = false
-        sampleButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            sampleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            sampleLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -20),
-            
-            sampleButton.topAnchor.constraint(equalTo: sampleLabel.bottomAnchor, constant: 20),
-            sampleButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            sampleButton.widthAnchor.constraint(equalToConstant: 120),
-            sampleButton.heightAnchor.constraint(equalToConstant: 40)
-        ])
+//        // Layout using Auto Layout
+//        sampleLabel.translatesAutoresizingMaskIntoConstraints = false
+//        sampleButton.translatesAutoresizingMaskIntoConstraints = false
+//        
+        hostingController.view.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(Constants.superViewHeight * 0.1)
+//            make.leading.trailing.equalToSuperview()
+            make.centerX.equalToSuperview()
+        }
     }
     
     
