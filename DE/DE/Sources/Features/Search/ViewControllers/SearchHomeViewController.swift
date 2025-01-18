@@ -118,7 +118,7 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource {
         
         let wine = wineResults[indexPath.row]
         let searchText = searchHomeView.searchBar.text ?? ""
-        cell.configure(model: wine, highlightText: searchText.isEmpty ? nil : searchText)
+        cell.configureSearch(model: wine, highlightText: searchText.isEmpty ? nil : searchText)
         
         return cell
     }

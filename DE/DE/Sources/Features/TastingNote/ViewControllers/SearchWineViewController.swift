@@ -94,7 +94,7 @@ public class SearchWineViewController : UIViewController, UISearchBarDelegate, U
         }
         
         let wine = wineResults[indexPath.row]
-        cell.configure(model: wine)
+        cell.configureSearch(model: wine)
         
         return cell
     }

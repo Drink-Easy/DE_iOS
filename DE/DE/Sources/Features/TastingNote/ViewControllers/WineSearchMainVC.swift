@@ -71,13 +71,7 @@ public class WineSearchMainVC : UIViewController, UISearchBarDelegate, UITableVi
             case .success(let responseData) :
                 DispatchQueue.main.async {
                     self.wineResults = responseData.map { data in
-                        SearchResultModel.init(wineId: data.wineId,
-                                               imageUrl: data.imageUrl,
-                                               wineName: data.name,
-                                               sort: data.sort,
-                                               price: data.price,
-                                               vivinoRating: data.vivinoRating
-                        )
+                        SearchResultModel(wineId: data.wineId, name: data.name, nameEng: data.nameEng, imageUrl: data.imageUrl, sort: data.sort, country: data.country, region: data.region, variety: data.variety, vivinoRating: data.vivinoRating, price: data.price)
                     }
                     self.searchHomeView.searchResultTableView.reloadData()
                 }
@@ -100,7 +94,7 @@ public class WineSearchMainVC : UIViewController, UISearchBarDelegate, UITableVi
         }
         
         let wine = wineResults[indexPath.row]
-        cell.configure(model: wine)
+        cell.configureSearch(model: wine)
         
         return cell
     }

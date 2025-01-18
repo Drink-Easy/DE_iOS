@@ -9,7 +9,7 @@ import Network
 public class WishListViewController: UIViewController {
     
     private let navigationBarManager = NavigationBarManager()
-    var wineResults: [SearchResultModel] = []
+    var wineResults: [WishResultModel] = []
     private let networkService = WishlistService()
     
     // 상태 변수 추가
@@ -23,13 +23,22 @@ public class WishListViewController: UIViewController {
         $0.delegate = self
     }
     
+    private lazy var noWineLabel = UILabel().then {
+        $0.numberOfLines = 0
+        $0.text = "위시리스트에 담긴 와인이 없어요.\n관심 있는 와인을 담아 보세요!"
+        $0.setLineSpacingPercentage(0.3)
+        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.textColor = AppColor.gray70
+        $0.textAlignment = .center
+        $0.isHidden = true
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         setupNavigationBar()
         addComponents()
         setConstraints()
-        
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -70,7 +79,7 @@ public class WishListViewController: UIViewController {
     }
     
     private func addComponents() {
-        [searchResultTableView].forEach { view.addSubview($0) }
+        [searchResultTableView, noWineLabel].forEach { view.addSubview($0) }
     }
     
     private func setConstraints() {
@@ -79,6 +88,10 @@ public class WishListViewController: UIViewController {
             make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(18)
             make.bottom.equalTo(view.safeAreaLayoutGuide)
             make.height.equalTo(651)
+        }
+        
+        noWineLabel.snp.makeConstraints {
+            $0.centerX.centerY.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
@@ -97,17 +110,11 @@ public class WishListViewController: UIViewController {
                     print("✅ 호출 카운트 0: 캐시 사용")
                     if let cachedWishlist = try? await WishlistDataManager.shared.fetchWishlist(for: userId) {
                         self.wineResults = cachedWishlist.map { data in
-                            SearchResultModel(
-                                wineId: data.wineId,
-                                imageUrl: data.imageUrl,
-                                wineName: data.wineName,
-                                sort: data.sort,
-                                price: data.price,
-                                vivinoRating: data.vivinoRating
-                            )
+                            WishResultModel(wineId: data.wineId, imageUrl: data.imageUrl, wineName: data.wineName, sort: data.sort, price: data.price, vivinoRating: data.vivinoRating)
                         }
                         DispatchQueue.main.async {
                             self.searchResultTableView.reloadData()
+                            self.noWineLabel.isHidden = !self.wineResults.isEmpty
                         }
                     }
                 } else {
@@ -120,14 +127,7 @@ public class WishListViewController: UIViewController {
                         case .success(let responseData):
                             if let responseData = responseData {
                                 self.wineResults = responseData.map { data in
-                                    SearchResultModel(
-                                        wineId: data.wineId,
-                                        imageUrl: data.imageUrl,
-                                        wineName: data.name,
-                                        sort: data.sort,
-                                        price: data.price,
-                                        vivinoRating: data.vivinoRating
-                                    )
+                                    WishResultModel(wineId: data.wineId, imageUrl: data.imageUrl, wineName: data.name, sort: data.sort, price: data.price, vivinoRating: data.vivinoRating)
                                 }
                                 
                                 // API 데이터로 캐시 덮어쓰기
@@ -164,6 +164,7 @@ public class WishListViewController: UIViewController {
                                 
                                 DispatchQueue.main.async {
                                     self.searchResultTableView.reloadData()
+                                    self.noWineLabel.isHidden = !self.wineResults.isEmpty
                                 }
                             }
                         case .failure(let error):
@@ -189,7 +190,7 @@ extension WishListViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         let wine = wineResults[indexPath.row]
-        cell.configure(model: wine)
+        cell.configureWish(model: wine)
         
         return cell
     }

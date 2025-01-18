@@ -140,7 +140,7 @@ public class SearchResultTableViewCell: UITableViewCell {
         }
     }
     
-    public func configure(model: SearchResultModel, highlightText: String? = nil) {
+    public func configureSearch(model: SearchResultModel, highlightText: String? = nil) {
         if let url = URL(string: model.imageUrl) {
             image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
         } else {
@@ -149,10 +149,23 @@ public class SearchResultTableViewCell: UITableViewCell {
         
         //하이라이트 적용
         if let highlightText = highlightText, !highlightText.isEmpty {
-            name.attributedText = highlightTextInLabel(text: model.wineName, highlight: highlightText)
+            name.attributedText = highlightTextInLabel(text: model.name, highlight: highlightText)
         } else {
-            name.text = model.wineName
+            name.text = model.name
         }
+    
+        kind.text = "와인 > \(model.sort)"
+        score.text = "★ \(String(format: "%.1f", model.vivinoRating))"
+    }
+    
+    public func configureWish(model: WishResultModel, highlightText: String? = nil) {
+        if let url = URL(string: model.imageUrl) {
+            image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+        } else {
+            image.image = UIImage(named: "placeholder")
+        }
+        
+        name.text = model.wineName
     
         kind.text = "와인 > \(model.sort)"
         score.text = "★ \(String(format: "%.1f", model.vivinoRating))"

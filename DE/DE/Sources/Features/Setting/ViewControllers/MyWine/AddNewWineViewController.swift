@@ -124,7 +124,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         }
         
         let wine = wineResults[indexPath.row]
-        cell.configure(model: wine)
+        cell.configureSearch(model: wine)
         
         return cell
     }

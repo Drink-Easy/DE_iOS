@@ -88,7 +88,7 @@ class RecomCollectionViewCell: UICollectionViewCell {
         image.sd_setImage(with: URL(string: imageURL), placeholderImage: UIImage(named: "placeholder")) // 로딩 중에는 placeholder 표시
         
         // 데이터 설정
-        scoreNprice.text = "★ \(score)  |  ₩ \(price)만원 대"
+        scoreNprice.text = Int(price) == 0 ? "★ \(score)  |  가격 없음" : "★ \(score)  |  ₩ \(price)만원 대"
         self.name.text = name
         self.kind.text = kind
     }
