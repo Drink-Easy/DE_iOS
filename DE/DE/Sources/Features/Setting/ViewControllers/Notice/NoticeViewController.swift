@@ -1,5 +1,6 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 // 공지사항 목록 페이지
+
 import UIKit
 
 import SnapKit
@@ -10,18 +11,49 @@ import Network
 
 class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     private let navigationBarManager = NavigationBarManager()
-    let noticeListView = UITableView()
+    private let networkService = NoticeService()
     var noticeData : [NoticeResponse] = []
+    
+    private lazy var noticeListView = UITableView().then {
+        $0.register(NoticeTableViewCell.self, forCellReuseIdentifier: NoticeTableViewCell.identifier)
+        $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
+        $0.backgroundColor = Constants.AppColor.grayBG
+        $0.rowHeight = 50
+        $0.estimatedRowHeight = 50
+        $0.dataSource = self
+        $0.delegate = self
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = AppColor.bgGray
         setupNavigationBar()
         setupUI()
+        callNoticeAPI()
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
     private func setupNavigationBar() {
         navigationBarManager.setTitle(to: navigationItem, title: "공지사항", textColor: AppColor.black!)
+        navigationBarManager.addBackButton(
+            to: navigationItem,
+            target: self,
+            action: #selector(backButtonTapped),
+            tintColor: AppColor.gray70!
+        )
+    }
+    
+    @objc private func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
     }
     
     private func setupUI(){
@@ -29,10 +61,26 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
             view.addSubview($0)
         }
         
-        profileImageView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(35)
-            make.leading.trailing.equalToSuperview()
-            maek.bottom.equalTo(view.safeAreaLayoutGuide).inset(10)
+        noticeListView.snp.makeConstraints {
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(35)
+            $0.horizontalEdges.equalToSuperview()
+            $0.bottom.equalTo(view.safeAreaLayoutGuide)
+        }
+    }
+    
+    func callNoticeAPI() {
+        networkService.fetchAllNotices() { [weak self] result in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let responseData) :
+                DispatchQueue.main.async {
+                    self.noticeData = responseData!
+                    self.noticeListView.reloadData()
+                }
+            case .failure(let error) :
+                print("\(error)")
+            }
         }
     }
     
@@ -42,15 +90,22 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "NoticeTableViewCell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: NoticeTableViewCell.identifier, for: indexPath) as? NoticeTableViewCell else {
+            return UITableViewCell()
+        }
         let data = self.noticeData[indexPath.row]
-        
-        // cell configure 함수로 세팅
+        cell.configure(data: data)
 
         return cell
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // url로 웹뷰? 아니면 사파리서비스
+        let data = self.noticeData[indexPath.row]
+        
+        guard let url = URL(string: data.contentUrl) else {
+            return
+        }
+        
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 }

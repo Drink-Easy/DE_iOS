@@ -4,6 +4,8 @@ import UIKit
 
 import SnapKit
 import Then
+import CoreModule
+import Network
 
 public class NoticeTableViewCell: UITableViewCell {
     
@@ -17,33 +19,43 @@ public class NoticeTableViewCell: UITableViewCell {
     
     public lazy var date = UILabel().then {
         $0.textColor = .black
-        $0.font = UIFont.ptdRegularFont(ofSize: 11)
+        $0.font = UIFont.ptdRegularFont(ofSize: 12)
         $0.numberOfLines = 1
     }
     
+    public override func awakeFromNib() {
+        super.awakeFromNib()
+        // Initialization code
+    }
     
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         contentView.backgroundColor = AppColor.bgGray
         contentView.layer.masksToBounds = true
         self.addComponents()
         self.constraints()
     }
     
+    public override func prepareForReuse() {
+        super.prepareForReuse()
+        self.title.text = nil
+        self.date.text = nil
+    }
         
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     private func addComponents() {
-        [title, date].forEach { contentView.addSubview($0) }
+        [title, date].forEach { self.addSubview($0) }
     }
     
     private func constraints() {
         title.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(12)
+            //$0.top.equalToSuperview().offset(12)
+            $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().offset(24)
-            $0.width.equalTo(superViewWidth*0.6)
+            $0.width.equalTo(Constants.superViewWidth * 0.6)
         }
         
         date.snp.makeConstraints {
@@ -52,9 +64,8 @@ public class NoticeTableViewCell: UITableViewCell {
         }
     }
     
-    public func configure(title : String, date: String) {
-        self.title.text = title
-        self.date.text = date
+    public func configure(data: NoticeResponse) {
+        self.title.text = "[\(data.tag)] \(data.title)"
+        self.date.text = data.createdAt
     }
-    
 }
