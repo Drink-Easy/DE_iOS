@@ -6,19 +6,19 @@ import CoreModule
 public final class WineColorManager {
     /// 와인 색상 리스트
     public let colors: [WineColor] = [
-        WineColor(colorName: "레몬 크림", colorHexCode: "F2EBC0"),
-        WineColor(colorName: "샴페인 골드", colorHexCode: "FDEFA4"),
-        WineColor(colorName: "스위트 콘", colorHexCode: "F8C34F"),
-        WineColor(colorName: "허니 골드", colorHexCode: "DDA736"),
-        WineColor(colorName: "로즈 캐러멜", colorHexCode: "BA7B39"),
-        WineColor(colorName: "다크 코코아", colorHexCode: "89271A"),
+        WineColor(colorName: "레몬 크림", colorHexCode: "F2EBC0", isLight: true),
+        WineColor(colorName: "샴페인 골드", colorHexCode: "FDEFA4", isLight: true),
+        WineColor(colorName: "스위트 콘", colorHexCode: "F8C34F", isLight: true),
+        WineColor(colorName: "허니 골드", colorHexCode: "DDA736", isLight: true),
+        WineColor(colorName: "멜론", colorHexCode: "FEB6B6", isLight: true),
+        WineColor(colorName: "로즈 캐러멜", colorHexCode: "BA7B39", isLight: true),
         
-        WineColor(colorName: "멜론", colorHexCode: "FEB6B6"),
-        WineColor(colorName: "칠리 페퍼 레드", colorHexCode: "BA2121"),
-        WineColor(colorName: "루비 와인", colorHexCode: "A7253B"),
-        WineColor(colorName: "체리 레드", colorHexCode: "6C0C16"),
-        WineColor(colorName: "초콜릿 브라운", colorHexCode: "5C1D37"),
-        WineColor(colorName: "캐러멜 브라운", colorHexCode: "2A1416")
+        WineColor(colorName: "다크 코코아", colorHexCode: "89271A", isLight: false),
+        WineColor(colorName: "체리 레드", colorHexCode: "6C0C16", isLight: false),
+        WineColor(colorName: "루비 와인", colorHexCode: "A7253B", isLight: false),
+        WineColor(colorName: "칠리 페퍼 레드", colorHexCode: "BA2121", isLight: false),
+        WineColor(colorName: "초콜릿 브라운", colorHexCode: "5C1D37", isLight: false),
+        WineColor(colorName: "캐러멜 브라운", colorHexCode: "2A1416", isLight: false)
         ]
     
     /// 컬러 이름으로 Hex 코드를 반환하는 함수
