@@ -31,7 +31,7 @@ public struct WineResponseDTO : Decodable {
     public let region: String
     public let variety: String
     public let vivinoRating: Double
-    public let avgSugarContent: Double
+    public let avgSweetness: Double
     public let avgAcidity: Double
     public let avgTannin: Double
     public let avgBody: Double

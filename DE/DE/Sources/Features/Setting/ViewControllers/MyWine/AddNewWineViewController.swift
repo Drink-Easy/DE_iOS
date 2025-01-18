@@ -101,13 +101,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
             case .success(let responseData) :
                 DispatchQueue.main.async {
                     self.wineResults = responseData.map { data in
-                        SearchResultModel.init(wineId: data.wineId,
-                                               imageUrl: data.imageUrl,
-                                               wineName: data.name,
-                                               sort: data.sort,
-                                               price: data.price,
-                                               vivinoRating: data.vivinoRating
-                        )
+                        SearchResultModel(wineId: data.wineId, name: data.name, nameEng: data.nameEng, imageUrl: data.imageUrl, sort: data.sort, country: data.country, region: data.region, variety: data.variety, vivinoRating: data.vivinoRating, price: data.price)
                     }
                     self.searchHomeView.searchResultTableView.reloadData()
                 }
@@ -138,7 +132,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = TastedDateViewController()
         let selectedWine = wineResults[indexPath.row]
-        registerWine.updateWine(wineId: selectedWine.wineId, wineName: selectedWine.wineName)
+        registerWine.updateWine(wineId: selectedWine.wineId, wineName: selectedWine.name)
         vc.registerWine = self.registerWine
         navigationController?.pushViewController(vc, animated: true)
     }
