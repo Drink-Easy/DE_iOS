@@ -400,5 +400,6 @@ public struct Constants {
     public static let superViewHeight = UIScreen.main.bounds.height
     public static let superViewWidth = UIScreen.main.bounds.width
     
-    public static let padding: CGFloat = 32.0
+    public static let padding20: CGFloat = 20.0 * (Constants.superViewHeight / 844)
+    public static let padding32: CGFloat = 32.0 * (Constants.superViewHeight / 844)
 }
