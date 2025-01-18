@@ -12,7 +12,7 @@ public struct AppColor {
     //        static public let purple10 = UIColor(hex: "#EEE1F0")
     //
     static public let grayBG = UIColor(hex: "F8F8FA")
-    static public let DGblack = UIColor(hex: "#121212")
+    static public let DGblack = AppColor.black
     //        static public let gray100 = UIColor(hex: "#434343")
     //        static public let gray90 = UIColor(hex: "#5D5D5D")
     static public let gray80 = UIColor(hex: "#A7A7A7")
@@ -75,7 +75,7 @@ public extension UIColor {
         self.init(red: r, green: g, blue: b, alpha: a)
     }
     
-    public func toHex() -> String? {
+    func toHex() -> String? {
         var r: CGFloat = 0
         var g: CGFloat = 0
         var b: CGFloat = 0
