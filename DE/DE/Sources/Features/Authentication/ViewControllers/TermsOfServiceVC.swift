@@ -53,6 +53,7 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
     // MARK: - Lifecycle
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        SelectLoginTypeVC.keychain.set(true, forKey: "isFirst")
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
