@@ -7,7 +7,7 @@ import Then
 
 import CoreModule
 
-class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegate {
+public class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegate {
     
     // MARK: - Properties
     let navigationBarManager = NavigationBarManager()
@@ -51,17 +51,17 @@ class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegat
     }
     
     // MARK: - Lifecycle
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
         setupUI()
@@ -88,10 +88,9 @@ class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegat
         
         for index in 0..<3 {
             let title = ["개인정보 수집 및 이용 동의 (필수)", "위치정보 이용약관 (필수)", "서비스 이용약관 (필수)"][index]
-            //TODO: pdf 추가 & 이름 설정
-            let pdfName = ["privacy_policy", "location", "service"][index]
-            let agreeView = createAgreeView(title: title, pdfName: pdfName, index: index)
-            
+            //TODO: 위치정보 약관 추가 필요
+            let contents = [Constants.Policy.privacy, "location", Constants.Policy.service][index]
+            let agreeView = createAgreeView(title: title, content: contents ,index: index)
             agreeItems.append(agreeView)
             view.addSubview(agreeView)
         }
@@ -141,11 +140,11 @@ class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegat
     
     
     // MARK: - Factory Method
-    private func createAgreeView(title: String, pdfName: String, index: Int) -> TermsAgreeView {
+    private func createAgreeView(title: String, content: String, index: Int) -> TermsAgreeView {
         return TermsAgreeView().then { agreeView in
             agreeView.configure(
                 title: title,
-                moreLink: pdfName,
+                content: content,
                 isChecked: agreements[index],
                 parentViewController: self
             )
@@ -182,10 +181,5 @@ class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegat
     
     @objc private func backButtonTapped() {
         navigationController?.popViewController(animated: true)
-    }
-    
-    // MARK: - UIDocumentInteractionControllerDelegate
-    func documentInteractionControllerViewControllerForPreview(_ controller: UIDocumentInteractionController) -> UIViewController {
-        return self
     }
 }
