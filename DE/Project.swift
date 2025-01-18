@@ -85,11 +85,9 @@ let project = Project(
             entitlements: "DE/DE.entitlements",
             scripts: [ ],
             dependencies: [
-                //                .target(name: "CoreModule"),
-                //                .target(name: "Network"),
-//                .target(name: "Authentication"),
+                .target(name: "Features"),
                 
-                    .external(name: "KeychainSwift"),
+                .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK")
             ]
         ),
@@ -98,6 +96,7 @@ let project = Project(
             destinations: .iOS,
             product: .app,
             bundleId: "\(bundleId).\(bundleMid).drinkig",
+            deploymentTargets: .iOS("17.0"),
             infoPlist: .extendingDefault(
                 with: [
 //                    "UIUserInterfaceStyle" : "Light", // 다크모드 제거
@@ -170,6 +169,7 @@ let project = Project(
             destinations: .iOS,
             product: .staticFramework,
             bundleId: "\(bundleId).\(bundleMid).CoreModule",
+            deploymentTargets: .iOS("17.0"),
             sources: ["DE/Sources/Core/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
@@ -188,6 +188,7 @@ let project = Project(
             destinations: .iOS,
             product: .staticFramework,
             bundleId: "\(bundleId).\(bundleMid).Network",
+            deploymentTargets: .iOS("17.0"),
             sources: ["DE/Sources/Network/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
@@ -199,6 +200,7 @@ let project = Project(
             destinations: .iOS,
             product: .staticFramework,
             bundleId: "\(bundleId).\(bundleMid).FeatureModule",
+            deploymentTargets: .iOS("17.0"),
             sources: ["DE/Sources/Features/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
