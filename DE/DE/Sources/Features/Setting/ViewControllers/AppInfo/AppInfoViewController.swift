@@ -122,9 +122,9 @@ extension AppInfoViewController: UITableViewDelegate {
             content = Constants.Policy.service
         case "개인정보 처리방침":
             content = Constants.Policy.privacy
-        //TODO: 위치정보 이용약관, 오픈소스 라이브러리 추가
         case "위치정보 이용약관":
-            content = "위치정보 이용약관의 내용입니다.\n\n1. 위치 데이터 사용 정책\n2. 서비스 제한\n..."
+            content = Constants.Policy.location
+        //TODO: 오픈소스 라이브러리 추가
         case "오픈소스 라이브러리":
             content = "오픈소스 라이브러리 목록입니다.\n\n- Alamofire\n- SDWebImage\n- SnapKit\n..."
         default:
