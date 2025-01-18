@@ -42,6 +42,7 @@ public struct Constants {
 //        
         static public let grayBG = UIColor(named: "background")
         static public let DGblack = UIColor(named: "Dblack")
+        static public let winebg = UIColor(named: "winebg")
 //        static public let gray100 = UIColor(hex: "#434343")
 //        static public let gray90 = UIColor(hex: "#5D5D5D")
         static public let gray80 = UIColor(hex: "#A7A7A7")
@@ -400,6 +401,14 @@ public struct Constants {
     public static let superViewHeight = UIScreen.main.bounds.height
     public static let superViewWidth = UIScreen.main.bounds.width
     
-    public static let padding20: CGFloat = 20.0 * (Constants.superViewHeight / 844)
-    public static let padding32: CGFloat = 32.0 * (Constants.superViewHeight / 844)
+}
+
+public struct DynamicPadding {
+    private static var superViewHeight: CGFloat {
+        UIScreen.main.bounds.height
+    }
+    
+    public static func dynamicValue(_ baseValue: CGFloat) -> CGFloat {
+        return baseValue * (superViewHeight / 844)
+    }
 }

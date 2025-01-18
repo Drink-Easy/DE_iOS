@@ -170,7 +170,7 @@ public class SimpleListView: UIView {
         }
         
         backView.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(4)
+            make.top.equalTo(titleLabel.snp.bottom).offset(DynamicPadding.dynamicValue(8.0))
             make.leading.trailing.equalToSuperview().inset(4)
             make.height.greaterThanOrEqualTo(204)
         }

@@ -82,7 +82,7 @@ public final class SettingMenuViewController : UIViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(nameLabel.snp.bottom).offset(16)
+            make.top.equalTo(nameLabel.snp.bottom).offset(DynamicPadding.dynamicValue(16.0))
             make.trailing.equalToSuperview().inset(16)
             make.leading.equalToSuperview()
             make.bottom.equalToSuperview()

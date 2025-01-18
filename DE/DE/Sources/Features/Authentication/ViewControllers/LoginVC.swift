@@ -58,8 +58,8 @@ class LoginVC: UIViewController {
     
     // MARK: - Action 설정
     private func setupActions() {
-        loginView.usernameField.textField.addTarget(self, action: #selector(usernameValidate), for: .allEditingEvents)
-        loginView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .allEditingEvents)
+        loginView.usernameField.textField.addTarget(self, action: #selector(usernameValidate), for: .editingChanged)
+        loginView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .editingChanged)
         loginView.idSaveCheckBox.addTarget(self, action: #selector(idSaveCheckBoxTapped), for: .touchUpInside)
         loginView.joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
         

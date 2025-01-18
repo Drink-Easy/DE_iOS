@@ -95,8 +95,8 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     func setupConstraints() {
         headerLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
-            make.leading.equalToSuperview().inset(30)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(16.0))
+            make.leading.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
         }
         profileView.snp.makeConstraints { make in
             make.top.equalTo(headerLabel.snp.bottom)
@@ -104,8 +104,8 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
             make.height.equalTo(Constants.superViewHeight * 0.5)
         }
         nextButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-40)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-DynamicPadding.dynamicValue(40.0))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
         }
     }
     
