@@ -8,12 +8,9 @@ import Then
 
 class SelectColorView: UIView {
     public lazy var header = TopView(currentPage: 2, entirePage: 5)
-    public lazy var infoView = DescriptionUIView().then{ d in
-        d.layer.cornerRadius = 14
-        d.backgroundColor = AppColor.white
-    }
+    public lazy var infoView = WineDetailView()
     public lazy var propertyHeader = PropertyTitleView(engName: "Color", korName: "색상")
-    
+    public lazy var colorCollectionView = UICollectionView()
     public lazy var nextButton = CustomButton(title: "다음", isEnabled: false)
 
     required init? (coder: NSCoder) {
@@ -33,19 +30,22 @@ class SelectColorView: UIView {
     }
     
     private func addComponents() {
-        [surveyTopView, nextButton].forEach{ addSubview($0) }
+        [header, infoView, propertyHeader, colorCollectionView, nextButton].forEach{ addSubview($0) }
     }
     
     private func setConstraints() {
-        surveyTopView.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).offset(10)
-            $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
+        header.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.trailing.equalToSuperview()
+            make.height.greaterThanOrEqualTo(62)
         }
         
-        nextButton.snp.makeConstraints {
-            $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(28)
-            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-42)
+        infoView.snp.makeConstraints { make in
+            make.top.equalTo(header.snp.bottom).offset(20) // TODO : 동적 기기 대응
+            make.leading.trailing.equalToSuperview()
         }
+        
+        
     }
     
 }
