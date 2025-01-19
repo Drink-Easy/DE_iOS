@@ -24,13 +24,13 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
         $0.textAlignment = .left
         $0.numberOfLines = 0
     }
-
+    
     private let allTitleLabel = UILabel().then {
         $0.text = "전체 약관 동의"
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
         $0.textColor = AppColor.black
     }
-
+    
     private let dividerView = UIView().then {
         $0.backgroundColor = AppColor.gray30
     }
@@ -55,6 +55,7 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
         super.viewWillAppear(animated)
         SelectLoginTypeVC.keychain.set(true, forKey: "isFirst")
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        self.navigationItem.leftBarButtonItem = nil
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -64,6 +65,19 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // 네비게이션 컨트롤러의 루트 뷰 초기화
+        let navController = UINavigationController(rootViewController: self)
+        navController.modalPresentationStyle = .fullScreen
+        
+        // 현재 창의 rootViewController 교체
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
+            window.rootViewController = navController
+            UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+        }
+        
+        
         setupNavigationBar()
         setupUI()
         setupConstraints()
@@ -72,12 +86,6 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
     // MARK: - UI Setup
     private func setupNavigationBar() {
         navigationBarManager.setTitle(to: navigationItem, title: "서비스 약관 동의", textColor: AppColor.black!)
-        navigationBarManager.addBackButton(
-            to: navigationItem,
-            target: self,
-            action: #selector(backButtonTapped),
-            tintColor: AppColor.gray70!
-        )
     }
     
     private func setupUI() {
@@ -89,8 +97,7 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
         
         for index in 0..<3 {
             let title = ["개인정보 수집 및 이용 동의 (필수)", "위치정보 이용약관 (필수)", "서비스 이용약관 (필수)"][index]
-            //TODO: 위치정보 약관 추가 필요
-            let contents = [Constants.Policy.privacy, "location", Constants.Policy.service][index]
+            let contents = [Constants.Policy.privacy, Constants.Policy.location, Constants.Policy.service][index]
             let agreeView = createAgreeView(title: title, content: contents ,index: index)
             agreeItems.append(agreeView)
             view.addSubview(agreeView)
@@ -99,12 +106,12 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
     
     private func setupConstraints() {
         subHeaderLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(30)
-            make.leading.equalToSuperview().inset(30)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(32.0))
+            make.leading.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
         }
         allToggleButton.snp.makeConstraints { make in
-            make.top.equalTo(subHeaderLabel.snp.bottom).offset(50)
-            make.leading.equalToSuperview().inset(30)
+            make.top.equalTo(subHeaderLabel.snp.bottom).offset(DynamicPadding.dynamicValue(50.0))
+            make.leading.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
             make.width.height.equalTo(24)
         }
         
@@ -115,8 +122,8 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
         
         dividerView.snp.makeConstraints { make in
             make.height.equalTo(1)
-            make.leading.trailing.equalToSuperview().inset(30)
-            make.top.equalTo(allTitleLabel.snp.bottom).offset(20)
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
+            make.top.equalTo(allTitleLabel.snp.bottom).offset(DynamicPadding.dynamicValue(20.0))
         }
         
         for (index, view) in agreeItems.enumerated() {
@@ -124,18 +131,18 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
                 make.leading.trailing.equalToSuperview()
                 
                 if index == 0 {
-                    make.top.equalTo(dividerView.snp.bottom).offset(20) // 첫 번째 뷰의 제약 조건
+                    make.top.equalTo(dividerView.snp.bottom).offset(DynamicPadding.dynamicValue(20.0)) // 첫 번째 뷰의 제약 조건
                 } else {
-                    make.top.equalTo(agreeItems[index - 1].snp.bottom).offset(10) // 이전 뷰의 아래쪽에 위치
+                    make.top.equalTo(agreeItems[index - 1].snp.bottom).offset(DynamicPadding.dynamicValue(10.0)) // 이전 뷰의 아래쪽에 위치
                 }
                 
-                make.height.equalTo(30)
+                make.height.equalTo(DynamicPadding.dynamicValue(32.0))
             }
         }
         
         startButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(20)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-20)
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-DynamicPadding.dynamicValue(40.0))
         }
     }
     
@@ -178,9 +185,5 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
     @objc private func startButtonTapped() {
         let vc = WelcomeVC()
         navigationController?.pushViewController(vc, animated: true)
-    }
-    
-    @objc private func backButtonTapped() {
-        navigationController?.popViewController(animated: true)
     }
 }

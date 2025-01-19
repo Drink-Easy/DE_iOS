@@ -82,7 +82,7 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
         textField.snp.makeConstraints { make in
             make.top.equalTo(descriptionLabel.snp.bottom).offset(10)
             make.leading.trailing.bottom.equalToSuperview()
-            make.height.equalTo(48)
+            make.height.equalTo(DynamicPadding.dynamicValue(48.0))
         }
         validationLabel.snp.makeConstraints { make in
             make.top.equalTo(textField.snp.bottom).offset(5)

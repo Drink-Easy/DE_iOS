@@ -51,7 +51,7 @@ class TermsAgreeView: UIView {
         }
         
         toggleButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(30)
+            make.leading.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
             make.centerY.equalToSuperview()
             make.width.height.equalTo(24)
         }
@@ -62,7 +62,7 @@ class TermsAgreeView: UIView {
         }
         
         moreButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(30)
+            make.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
             make.centerY.equalTo(toggleButton)
         }
     }
