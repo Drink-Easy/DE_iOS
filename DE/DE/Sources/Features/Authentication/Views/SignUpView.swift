@@ -75,24 +75,24 @@ class SignUpView: UIView {
     // MARK: - Setup Constraints
     private func setupConstraints() {
         usernameField.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide).offset(Constants.padding32)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding32)
+            make.top.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(32.0))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
         }
         checkEmailButton.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide).offset(Constants.padding32)
-            make.trailing.equalToSuperview().inset(Constants.padding32)
+            make.top.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(32.0))
+            make.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
         }
         passwordField.snp.makeConstraints { make in
-            make.top.equalTo(usernameField.snp.bottom).offset(Constants.padding20)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding32)
+            make.top.equalTo(usernameField.snp.bottom).offset(DynamicPadding.dynamicValue(32.0))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
         }
         confirmPasswordField.snp.makeConstraints { make in
-            make.top.equalTo(passwordField.snp.bottom).offset(Constants.padding20)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding32)
+            make.top.equalTo(passwordField.snp.bottom).offset(DynamicPadding.dynamicValue(32.0))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
         }
         signupButton.snp.makeConstraints { make in
-            make.top.equalTo(confirmPasswordField.snp.bottom).offset(Constants.padding20 * 2)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding32)
+            make.top.equalTo(confirmPasswordField.snp.bottom).offset(DynamicPadding.dynamicValue(32.0) * 2)
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
         }
     }
 }

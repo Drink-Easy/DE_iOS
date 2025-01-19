@@ -77,7 +77,7 @@ public class ProfileView: UIView {
     
     private func setupConstraints() {
         profileImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(48)
+            make.top.equalToSuperview().offset(DynamicPadding.dynamicValue(48.0))
             make.centerX.equalToSuperview()
             make.width.height.equalTo(100)
         }
@@ -91,20 +91,20 @@ public class ProfileView: UIView {
             make.centerX.centerY.equalTo(profileImageEditButton)
         }
         nicknameTextField.snp.makeConstraints { make in
-            make.top.equalTo(profileImageView.snp.bottom).offset(32)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.top.equalTo(profileImageView.snp.bottom).offset(DynamicPadding.dynamicValue(32.0))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
         }
         checkDuplicateButton.snp.makeConstraints { make in
-            make.top.equalTo(profileImageView.snp.bottom).offset(32)
-            make.trailing.equalToSuperview().inset(24)
+            make.top.equalTo(profileImageView.snp.bottom).offset(DynamicPadding.dynamicValue(32.0))
+            make.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
         }
         myLocationTextField.snp.makeConstraints { make in
-            make.top.equalTo(nicknameTextField.snp.bottom).offset(32)
-            make.leading.equalToSuperview().inset(24)
-            make.trailing.equalToSuperview().inset(80)
+            make.top.equalTo(nicknameTextField.snp.bottom).offset(DynamicPadding.dynamicValue(32.0))
+            make.leading.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
+            make.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(80.0))
         }
         locationImageIconButton.snp.makeConstraints { make in
-            make.width.height.equalTo(48)
+            make.width.height.equalTo(DynamicPadding.dynamicValue(48.0))
             make.leading.equalTo(myLocationTextField.snp.trailing).offset(8)
             make.bottom.equalTo(myLocationTextField.snp.bottom)
         }

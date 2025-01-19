@@ -45,11 +45,11 @@ class OnboardingCollectionViewCell: UICollectionViewCell {
         }
         label1.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(Constants.superViewHeight * 0.6)
-            make.leading.equalTo(Constants.padding32)
+            make.leading.equalTo(DynamicPadding.dynamicValue(32.0))
         }
         label2.snp.makeConstraints { make in
             make.top.equalTo(label1.snp.bottom).offset(20)
-            make.leading.equalTo(Constants.padding32)
+            make.leading.equalTo(DynamicPadding.dynamicValue(32.0))
         }
     }
     

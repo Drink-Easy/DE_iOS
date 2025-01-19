@@ -62,22 +62,22 @@ public class WelcomeVC: UIViewController {
         logoImageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(Constants.superViewHeight * 0.3)
-            make.width.height.equalTo(70)
+            make.width.height.equalTo(DynamicPadding.dynamicValue(100.0))
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(logoImageView.snp.bottom).offset(48)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.top.equalTo(logoImageView.snp.bottom).offset(DynamicPadding.dynamicValue(48.0))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
         }
         
         subtitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(32)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.top.equalTo(titleLabel.snp.bottom).offset(DynamicPadding.dynamicValue(32.0))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
         }
         
         startButton.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(24)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-40)
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-DynamicPadding.dynamicValue(40.0))
         }
     }
     

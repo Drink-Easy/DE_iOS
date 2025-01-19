@@ -13,6 +13,8 @@ import AdSupport
 import Network
 import CoreModule
 
+// SelectLoginTypeVC.keychain.getBool("isFirst")
+
 public class SplashVC : UIViewController {
     
     let networkService = AuthService()
