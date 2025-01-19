@@ -4,7 +4,7 @@ import UIKit
 import CoreModule
 import Network
 
-public class ChooseWineColorViewController: UIViewController, ColorStackViewDelegate {
+public class ChooseWineColorViewController: UIViewController {
     
     var selectedColor: UIColor?
     let chooseWineColor = ChooseWineColor()
@@ -24,7 +24,7 @@ public class ChooseWineColorViewController: UIViewController, ColorStackViewDele
         super.viewDidLoad()
         setupUI()
         setupActions()
-        setupDelegate()
+//        setupDelegate()
         setupNavigationBar()
     }
     
@@ -41,9 +41,9 @@ public class ChooseWineColorViewController: UIViewController, ColorStackViewDele
         chooseWineColor.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
     }
     
-    func setupDelegate() {
-        chooseWineColor.colorStackView1.delegate = self
-    }
+//    func setupDelegate() {
+//        chooseWineColor.colorStackView1.delegate = self
+//    }
     
     private func setupNavigationBar() {
         navigationBarManager.addBackButton(
@@ -71,8 +71,5 @@ public class ChooseWineColorViewController: UIViewController, ColorStackViewDele
         let nextVC = ChooseNoseViewController()
         navigationController?.pushViewController(nextVC, animated: true)
     }
-    
-    func colorStackView(_ stackView: ColorStackView, didSelectColor color: UIColor?) {
-        selectedColor = color
-    }
+
 }

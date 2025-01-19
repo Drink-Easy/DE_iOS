@@ -67,9 +67,9 @@ class ChooseWineColor: UIView {
         return v
     }()
     
-    lazy var colorStackView1 = ColorStackView(colors: ChooseColorModel().colorData.map { row in
-        row.compactMap { $0 } // Optional 제거
-    })
+//    lazy var colorStackView1 = ColorStackView(colors: ChooseColorModel().colorData.map { row in
+//        row.compactMap { $0 } // Optional 제거
+//    })
     
     let nextButton: UIButton = {
         let b = UIButton()
@@ -132,12 +132,12 @@ class ChooseWineColor: UIView {
             make.height.equalTo(1)
         }
         
-        addSubview(colorStackView1)
-        colorStackView1.snp.makeConstraints { make in
-            make.top.equalTo(vector.snp.bottom).offset(24)
-            make.leading.equalTo(vector.snp.leading)
-            // make.trailing.equalTo(vector.snp.trailing).offset(-62)
-        }
+//        addSubview(colorStackView1)
+//        colorStackView1.snp.makeConstraints { make in
+//            make.top.equalTo(vector.snp.bottom).offset(24)
+//            make.leading.equalTo(vector.snp.leading)
+//            // make.trailing.equalTo(vector.snp.trailing).offset(-62)
+//        }
         
         addSubview(nextButton)
         nextButton.snp.makeConstraints { make in
