@@ -46,7 +46,7 @@ class RecomCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private func configureShadow() {
         self.layer.shadowColor = UIColor(hex: "#9876A9")?.cgColor // 그림자 색상
         self.layer.shadowOpacity = 0.2 // 그림자 투명도 (0.0 ~ 1.0)
@@ -70,7 +70,11 @@ class RecomCollectionViewCell: UICollectionViewCell {
             $0.top.equalToSuperview().offset(5)
             $0.bottom.equalTo(scoreNprice.snp.top).offset(-5)
             $0.centerX.equalToSuperview()
-            image.layer.cornerRadius = image.frame.width/4
+        }
+        
+        DispatchQueue.main.async {
+            self.image.layer.cornerRadius = self.image.frame.width / 4
+            self.image.layer.masksToBounds = true // 마스킹 적용
         }
         
         name.snp.makeConstraints {
