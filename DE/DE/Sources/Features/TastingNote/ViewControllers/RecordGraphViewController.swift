@@ -42,9 +42,14 @@ public class RecordGraphViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        header.setTitleLabel(wineData.wineName)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
         chartView.propertyHeader.setName(eng: "Palate", kor: "맛")
         recordGraphView.propertyHeader.setName(eng: "Graph Record", kor: "그래프 상세 기록")
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
     public override func viewDidLoad() {
@@ -60,10 +65,9 @@ public class RecordGraphViewController: UIViewController {
         view.backgroundColor = AppColor.bgGray
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-        contentView.addSubview(header)
-        contentView.addSubview(chartView)
-        contentView.addSubview(recordGraphView)
-        contentView.addSubview(nextButton)
+        [header, chartView, recordGraphView, nextButton].forEach{
+            contentView.addSubview($0)
+        }
         
         scrollView.snp.makeConstraints { make in
             make.edges.equalToSuperview() // 화면 전체에 맞춤

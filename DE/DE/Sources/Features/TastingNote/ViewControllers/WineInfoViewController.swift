@@ -8,14 +8,14 @@ import Network
 public class WineInfoViewController: UIViewController {
     
     let wineInfoView = WineInfoView()
-    private let noteId: Int
+    public let noteId: Int
     let navigationBarManager = NavigationBarManager()
     let noteService = TastingNoteService()
     var changeNoseData: [String: String] = [:]
     
     var dto: TastingNoteResponsesDTO?
     
-    init(noteId: Int) {
+    public init(noteId: Int) {
         self.noteId = noteId
         super.init(nibName: nil, bundle: nil)
     }
@@ -24,9 +24,22 @@ public class WineInfoViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+//        chartView.propertyHeader.setName(eng: "Palate", kor: "맛")
+//        recordGraphView.propertyHeader.setName(eng: "Graph Record", kor: "그래프 상세 기록")
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.isNavigationBarHidden = false
+        view.backgroundColor = AppColor.bgGray
         setupUI()
         setupNavigationBar()
         setupActions()
@@ -55,7 +68,7 @@ public class WineInfoViewController: UIViewController {
             rightIcon: "trash",
             rightAction: #selector(deleteTapped),
             target: self,
-            tintColor: AppColor.gray90 ?? .black)
+            tintColor: AppColor.gray70 ?? .gray)
     }
     
     func callSelectedNote(noteId: Int) {
@@ -93,10 +106,10 @@ public class WineInfoViewController: UIViewController {
         let rateTapGesture = UITapGestureRecognizer(target: self, action: #selector(changeRate))
         let graphTapGesture = UITapGestureRecognizer(target: self, action: #selector(changeGraph))
         
-        wineInfoView.changeColor.addGestureRecognizer(colorTapGesture)
-        wineInfoView.changeNose.addGestureRecognizer(noseTapGesture)
-        wineInfoView.changeRate.addGestureRecognizer(rateTapGesture)
-        wineInfoView.changeGraph.addGestureRecognizer(graphTapGesture)
+//        wineInfoView.changeColor.addGestureRecognizer(colorTapGesture)
+//        wineInfoView.changeNose.addGestureRecognizer(noseTapGesture)
+//        wineInfoView.changeRate.addGestureRecognizer(rateTapGesture)
+//        wineInfoView.changeGraph.addGestureRecognizer(graphTapGesture)
     }
     
     

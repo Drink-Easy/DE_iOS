@@ -21,6 +21,26 @@ class PropertyTitleView: UIView {
     
     private lazy var line = UIView()
     
+    private lazy var editButton = UIButton().then {
+        $0.setAttributedTitle(
+            NSAttributedString(
+                string: "수정하기",
+                attributes: [
+                    .font: UIFont.ptdRegularFont(ofSize: 12), // 폰트 적용
+                    .underlineStyle: NSUnderlineStyle.single.rawValue,    // 밑줄 스타일
+                    .foregroundColor: AppColor.gray90!                // 텍스트 색상 (필요 시)
+                ]
+            ),
+            for: .normal
+        )
+        $0.isHidden = true
+    }
+    
+    private lazy var dateLabel = UILabel().then {
+        $0.textColor = AppColor.gray90
+        $0.font = UIFont.ptdRegularFont(ofSize: 12)
+    }
+    
     /// 기본 컬러가 보라50임
     init(barColor : UIColor = AppColor.purple50!) {
         super.init(frame: .zero)
@@ -36,12 +56,22 @@ class PropertyTitleView: UIView {
         self.korTitle.text = korTitle
     }
     
+    public func setType(showEditButton: Bool = false, showDateLabel: Bool = false) {
+        self.editButton.isHidden = !showEditButton
+        self.dateLabel.isHidden = !showDateLabel
+    }
+    
+    public func setDate(reviewDate: String) {
+        self.dateLabel.text = reviewDate
+        self.dateLabel.isHidden = false
+    }
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
 
     private func addComponents() {
-        [engTitle, korTitle, line].forEach{ self.addSubview($0) }
+        [engTitle, korTitle, line, editButton, dateLabel].forEach{ self.addSubview($0) }
     }
     
     private func constraints() {
@@ -51,7 +81,7 @@ class PropertyTitleView: UIView {
         }
         
         korTitle.snp.makeConstraints { make in
-            make.bottom.equalTo(engTitle.snp.bottom)
+            make.bottom.equalTo(engTitle.snp.bottom).inset(2)
             make.leading.equalTo(engTitle.snp.trailing).offset(6) // 폰트 사이즈 변화 없어서 6 고정
         }
         
@@ -59,6 +89,16 @@ class PropertyTitleView: UIView {
             make.leading.trailing.equalToSuperview()
             make.top.equalTo(engTitle.snp.bottom).offset(6)
             make.height.equalTo(1)
+        }
+        
+        editButton.snp.makeConstraints { make in
+            make.bottom.equalTo(engTitle.snp.bottom).offset(2)
+            make.trailing.equalToSuperview()
+        }
+        
+        dateLabel.snp.makeConstraints { make in
+            make.bottom.equalTo(engTitle.snp.bottom).offset(2)
+            make.trailing.equalToSuperview()
         }
         
     }

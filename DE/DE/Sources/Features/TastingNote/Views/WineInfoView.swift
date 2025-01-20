@@ -1,6 +1,10 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+
+import SnapKit
+import Then
+
 import CoreModule
 import Cosmos
 import Network
@@ -18,72 +22,21 @@ public class WineInfoView: UIView {
         return c
     }()
     
-    lazy var wineName: UILabel = {
-        let w = UILabel()
-        w.text = "루이 로드레 크리스탈 2015"
-        w.textColor = .black
-        w.textAlignment = .center
-        w.font = UIFont(name: "Pretendard-SemiBold", size: 24)
-        return w
-    }()
+    //TODO: 헤더, 와인 인포 뷰 추가
     
-    lazy var wineImage: UIImageView = {
-        let w = UIImageView()
-        w.contentMode = .scaleToFill
-        w.layer.cornerRadius = 12
-        w.clipsToBounds = true
-        return w
-    }()
     
-    lazy var descriptionView = DescriptionUIView().then {
-        $0.layer.cornerRadius = 14
-        $0.backgroundColor = .white
+    //디테일 뷰 담을 배경 뷰
+    let backgroundView = UIView().then {
+        $0.backgroundColor = AppColor.white
     }
     
-    private let graphView: UIView = {
-        let g = UIView()
-        g.backgroundColor = .white
-        g.layer.cornerRadius = 10
-        return g
-    }()
-    
-    private let graphLabel: UILabel = {
-        let g = UILabel()
-        g.text = "Palate Graph"
-        g.font = UIFont.ptdSemiBoldFont(ofSize: 20)
-        g.textColor = .black
-        return g
-    }()
-    
-    private let graphKoreanLabel: UILabel = {
-        let g = UILabel()
-        g.text = "팔렛 그래프"
-        g.font = .ptdRegularFont(ofSize: 12)
-        g.textColor = AppColor.gray90
-        return g
-    }()
-    
-    let changeGraph: UILabel = {
-        let c = UILabel()
-        c.text = "수정하기"
-        c.font = .ptdRegularFont(ofSize: 12)
-        c.textColor = AppColor.gray90
-        c.isUserInteractionEnabled = true
-        c.tag = 3
-        return c
-    }()
-    
-    private let graphVector: UIView = {
-        let v = UIView()
-        v.backgroundColor = UIColor(hex: "#B06FCD")
-        return v
-    }()
-    
-    let polygonChart: PolygonChartView = {
+    //그래프 뷰
+    let chartView: PolygonChartView = {
         let p = PolygonChartView()
         return p
     }()
     
+    //TODO: 컬러 뷰
     let colorLabel: UILabel = {
         let c = UILabel()
         c.text = "Color"
@@ -130,6 +83,7 @@ public class WineInfoView: UIView {
         return c
     }()
     
+    //TODO: 노즈 뷰
     private let noseLabel: UILabel = {
         let a = UILabel()
         a.text = "Nose"
@@ -174,6 +128,7 @@ public class WineInfoView: UIView {
         return a
     }()
     
+    //TODO: 별점 뷰
     private let rateLabel: UILabel = {
         let r = UILabel()
         r.text = "Rate"
@@ -230,6 +185,7 @@ public class WineInfoView: UIView {
         return r
     }()
     
+    //TODO: 리뷰 뷰
     private let reviewLabel: UILabel = {
         let r = UILabel()
         r.text = "Review"
@@ -272,255 +228,52 @@ public class WineInfoView: UIView {
     }()
     
     func setupUI() {
-        backgroundColor = AppColor.gray20
         addSubview(scrollView)
-        
-        scrollView.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide).offset(10)
-            make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
+        scrollView.addSubview(contentView)
+        [backgroundView].forEach{
+            contentView.addSubview($0)
         }
         
-        scrollView.addSubview(contentView)
+        [chartView].forEach{
+            backgroundView.addSubview($0)
+        }
+    }
+    
+    func setupConstraints() {
+        // scrollView 제약 조건
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalToSuperview() // 화면 전체에 맞춤
+        }
+        
+        // contentView 제약 조건
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-            make.width.equalTo(scrollView)
+            make.width.equalToSuperview() // 가로 크기를 scrollView에 맞춤
         }
         
-        contentView.addSubview(wineName)
-        wineName.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(10)
-            make.leading.equalToSuperview().offset(25)
+        // backgroundView 제약 조건
+        backgroundView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(24) // 상단 여백 추가
+            make.leading.trailing.equalToSuperview() // 좌우 화면에 맞춤
+            make.height.equalTo(Constants.superViewHeight * 0.5) // 높이 설정
         }
         
-        contentView.addSubview(wineImage)
-        wineImage.snp.makeConstraints { make in
-            make.top.equalTo(wineName.snp.bottom).offset(20)
-            make.leading.equalTo(wineName.snp.leading)
-            make.width.height.equalTo(100)
+        // chartView 제약 조건
+        chartView.snp.makeConstraints { make in
+            make.top.equalTo(backgroundView.snp.top).offset(16)
+            make.leading.equalTo(backgroundView.snp.leading).offset(16)
+            make.trailing.equalTo(backgroundView.snp.trailing).offset(-16)
+            make.height.equalTo(200) // 고정 높이
         }
         
-        contentView.addSubview(descriptionView)
-        descriptionView.snp.makeConstraints { make in
-            make.top.bottom.equalTo(wineImage)
-            make.leading.equalTo(wineImage.snp.trailing).offset(8)
-            make.trailing.equalToSuperview().offset(-24)
-        }
-        
-        contentView.addSubview(graphView)
-        graphView.snp.makeConstraints { make in
-            make.top.equalTo(descriptionView.snp.bottom).offset(24)
-            make.leading.equalTo(wineImage.snp.leading)
-            make.centerX.equalToSuperview()
-            make.height.greaterThanOrEqualTo(880)
-        }
-        
-        graphView.addSubview(graphLabel)
-        graphLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(16)
-            make.leading.equalToSuperview().offset(24)
-        }
-        
-        graphView.addSubview(graphKoreanLabel)
-        graphKoreanLabel.snp.makeConstraints { make in
-            make.top.equalTo(graphLabel.snp.top).offset(4)
-            make.leading.equalTo(graphLabel.snp.trailing).offset(10)
-        }
-        
-        graphView.addSubview(changeGraph)
-        changeGraph.snp.makeConstraints { make in
-            make.top.equalTo(graphKoreanLabel)
-            make.trailing.equalToSuperview().offset(-20)
-        }
-        
-        graphView.addSubview(graphVector)
-        graphVector.snp.makeConstraints { make in
-            make.top.equalTo(graphLabel.snp.bottom).offset(6)
-            make.leading.equalTo(graphLabel.snp.leading).offset(-4)
-            make.height.equalTo(1)
-            make.centerX.equalToSuperview()
-        }
-        
-        graphView.addSubview(polygonChart)
-        polygonChart.snp.makeConstraints { make in
-            make.top.equalTo(graphVector.snp.bottom).offset(62)
-            make.leading.equalTo(graphVector.snp.leading)
-            make.centerX.equalTo(graphVector.snp.centerX)
-            make.height.greaterThanOrEqualTo(312)
-        }
-        
-        graphView.addSubview(colorLabel)
-        colorLabel.snp.makeConstraints { make in
-            make.top.equalTo(polygonChart.snp.bottom).offset(40)
-            make.leading.equalTo(graphLabel)
-        }
-        
-        graphView.addSubview(colorLabelKorean)
-        colorLabelKorean.snp.makeConstraints { make in
-            make.top.equalTo(colorLabel.snp.top).offset(3)
-            make.leading.equalTo(colorLabel.snp.trailing).offset(10)
-        }
-        
-        graphView.addSubview(changeColor)
-        changeColor.snp.makeConstraints { make in
-            make.top.equalTo(colorLabelKorean.snp.top).offset(1)
-            make.trailing.equalToSuperview().offset(-20)
-        }
-        
-        graphView.addSubview(colorVector)
-        colorVector.snp.makeConstraints { make in
-            make.top.equalTo(colorLabel.snp.bottom).offset(5.06)
-            make.leading.trailing.equalTo(graphVector)
-            make.height.equalTo(1)
-            
-        }
-        
-        graphView.addSubview(colorBox)
-        colorBox.snp.makeConstraints { make in
-            make.top.equalTo(colorVector.snp.bottom).offset(10)
-            make.leading.equalTo(colorVector.snp.leading).offset(6)
-            make.width.height.greaterThanOrEqualTo(30)
-        }
-        
-        graphView.addSubview(colorName)
-        colorName.snp.makeConstraints { make in
-            make.top.equalTo(colorBox.snp.top).offset(6)
-            make.centerY.equalTo(colorBox.snp.centerY)
-            make.leading.equalTo(colorBox.snp.trailing).offset(12)
-        }
-        
-        graphView.addSubview(noseLabel)
-        noseLabel.snp.makeConstraints { make in
-            make.top.equalTo(colorBox.snp.bottom).offset(30)
-            make.leading.equalTo(colorLabel.snp.leading)
-        }
-        
-        graphView.addSubview(noseLabelKorean)
-        noseLabelKorean.snp.makeConstraints { make in
-            make.top.equalTo(noseLabel.snp.top).offset(3)
-            make.leading.equalTo(noseLabel.snp.trailing).offset(10)
-        }
-        
-        graphView.addSubview(changeNose)
-        changeNose.snp.makeConstraints { make in
-            make.top.equalTo(noseLabelKorean.snp.top).offset(1)
-            make.trailing.equalToSuperview().offset(-20)
-        }
-        
-        graphView.addSubview(noseVector)
-        noseVector.snp.makeConstraints { make in
-            make.top.equalTo(noseLabel.snp.bottom).offset(5.06)
-            make.leading.trailing.equalTo(colorVector)
-            make.height.equalTo(1)
-        }
-        
-        graphView.addSubview(noseDescriptionLabel)
-        noseDescriptionLabel.snp.makeConstraints { make in
-            make.top.equalTo(noseVector.snp.bottom).offset(10)
-            make.leading.equalTo(noseVector.snp.leading).offset(6)
-            make.trailing.equalTo(noseVector.snp.trailing).offset(-6)
-        }
-        
-        graphView.addSubview(rateLabel)
-        rateLabel.snp.makeConstraints { make in
-            make.top.equalTo(noseDescriptionLabel.snp.bottom).offset(30)
-            make.leading.equalTo(noseLabel.snp.leading)
-        }
-        
-        graphView.addSubview(rateKoreanLabel)
-        rateKoreanLabel.snp.makeConstraints { make in
-            make.top.equalTo(rateLabel.snp.top).offset(3)
-            make.leading.equalTo(rateLabel.snp.trailing).offset(10)
-        }
-        
-        graphView.addSubview(changeRate)
-        changeRate.snp.makeConstraints { make in
-            make.top.equalTo(rateKoreanLabel.snp.top).offset(1)
-            make.trailing.equalToSuperview().offset(-20)
-        }
-        
-        graphView.addSubview(rateVector)
-        rateVector.snp.makeConstraints { make in
-            make.top.equalTo(rateLabel.snp.bottom).offset(5.06)
-            make.leading.trailing.equalTo(noseVector)
-            make.height.equalTo(1)
-        }
-        
-        graphView.addSubview(ratingLabel)
-        ratingLabel.snp.makeConstraints { make in
-            make.top.equalTo(rateVector.snp.bottom).offset(10)
-            make.leading.equalTo(rateVector.snp.leading).offset(6)
-            make.width.equalTo(50)
-            make.height.equalTo(20)
-        }
-        
-        graphView.addSubview(ratingButton)
-        ratingButton.snp.makeConstraints { make in
-            make.top.equalTo(ratingLabel.snp.top).offset(-2)
-            make.centerY.equalTo(ratingLabel.snp.centerY)
-            make.leading.equalTo(ratingLabel.snp.trailing).offset(11.5)
-        }
-        
-        graphView.addSubview(reviewLabel)
-        reviewLabel.snp.makeConstraints { make in
-            make.top.equalTo(ratingButton.snp.bottom).offset(30)
-            make.leading.equalTo(rateLabel.snp.leading)
-        }
-        
-        graphView.addSubview(reviewKoreanLabel)
-        reviewKoreanLabel.snp.makeConstraints { make in
-            make.top.equalTo(reviewLabel.snp.top).offset(3)
-            make.leading.equalTo(reviewLabel.snp.trailing).offset(10)
-        }
-        
-        graphView.addSubview(dateLabel)
-        dateLabel.snp.makeConstraints { make in
-            make.top.equalTo(reviewKoreanLabel.snp.top).offset(1)
-            make.trailing.equalToSuperview().offset(-20)
-        }
-        
-        graphView.addSubview(reviewVector)
-        reviewVector.snp.makeConstraints { make in
-            make.top.equalTo(reviewLabel.snp.bottom).offset(5.06)
-            make.leading.trailing.equalTo(rateVector)
-            make.height.equalTo(1)
-        }
-        
-        graphView.addSubview(reviewDescription)
-        reviewDescription.snp.makeConstraints { make in
-            make.leading.equalTo(reviewVector.snp.leading).offset(6)
-            make.centerX.equalTo(reviewVector.snp.centerX)
-            make.top.equalTo(reviewVector.snp.bottom).offset(10)
-        }
-       
+        // contentView의 하단 제약 조건
         contentView.snp.makeConstraints { make in
-            make.bottom.equalTo(graphView.snp.bottom).offset(31)
+            make.bottom.equalTo(backgroundView.snp.bottom).offset(40)
         }
-        
     }
     
     func updateUI(_ data: TastingNoteResponsesDTO) {
-        wineName.text = data.wineName
-        wineImage.sd_setImage(with: URL(string: data.imageUrl), placeholderImage: UIImage())
-        descriptionView.kindDescription.text = data.sort
-        // descriptionView.breedDescription.text = data.
-        descriptionView.fromDescription.text = data.area
-        colorBox.backgroundColor = UIColor(hex: data.color)
-        ratingLabel.text = "\(data.rating) / 5.0"
-        ratingButton.rating = data.rating
-        // updateRatingLabel(with: data.rating)
-        dateLabel.text = data.tasteDate
-        reviewDescription.text = data.review
-        noseDescriptionLabel.text = data.noseMapList.compactMap { $0.values.first }.joined(separator: ", ")
-        
-//        let chartData = [
-//            RadarChartData(type: .sweetness, value: data.sugarContent),
-//            RadarChartData(type: .acid, value: data.acidity),
-//            RadarChartData(type: .tannin, value: data.tannin),
-//            RadarChartData(type: .bodied, value: data.body),
-//            RadarChartData(type: .alcohol, value: data.alcohol)
-//        ]
-//        polygonChart.dataList = chartData
+
         
         self.layoutIfNeeded()
     }
@@ -532,6 +285,7 @@ public class WineInfoView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .clear
+        chartView.propertyHeader.setName(eng: "Palate", kor: "맛")
         setupUI()
     }
     

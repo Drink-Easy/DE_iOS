@@ -12,7 +12,7 @@ struct PalateChartView: View {
     
     var body: some View {
         ZStack {
-            Color("background") // 원하는 색상으로 변경
+            Color(.clear) // 원하는 색상으로 변경
                         .edgesIgnoringSafeArea(.all)
             // 단계별 다각형과 레이블
             ForEach(1...levels, id: \.self) { level in
