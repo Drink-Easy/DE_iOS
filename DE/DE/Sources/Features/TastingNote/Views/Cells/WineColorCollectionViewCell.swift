@@ -8,11 +8,13 @@ import Then
 import CoreModule
 
 class WineColorCollectionViewCell: UICollectionViewCell {
+    
+    static let identifier = "WineColorCollectionViewCell"
 
     public lazy var colorView = UIView().then {
         $0.backgroundColor = .clear
         $0.layer.borderColor = UIColor.clear.cgColor
-        $0.layer.borderWidth = 1.5
+        $0.layer.borderWidth = 3
         $0.layer.cornerRadius = DynamicPadding.dynamicValue(10.0)
         $0.layer.masksToBounds = true
     }
@@ -47,22 +49,22 @@ class WineColorCollectionViewCell: UICollectionViewCell {
         
         colorView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-            make.width.height.equalTo(DynamicPadding.dynamicValue(64.0))
+            make.width.height.greaterThanOrEqualTo(DynamicPadding.dynamicValue(64.0))
         }
         
         checkmark.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
+            make.top.leading.bottom.trailing.equalToSuperview().inset(20)
         }
     }
     
-    func configure(colorName: UIColor?, isSelected: Bool, isLight: Bool) {
+    func configure(colorhex: UIColor?, isSelected: Bool, isLight: Bool) {
         if isSelected {
-            colorView.backgroundColor = colorName
+            colorView.backgroundColor = colorhex
             colorView.layer.borderColor = isLight ? AppColor.purple100?.cgColor ?? UIColor.clear.cgColor : AppColor.purple30?.cgColor ?? UIColor.clear.cgColor
             checkmark.tintColor = isLight ? AppColor.purple100 : AppColor.purple30
             checkmark.isHidden = false
         } else {
-            colorView.backgroundColor = colorName
+            colorView.backgroundColor = colorhex
             colorView.layer.borderColor = UIColor.clear.cgColor
             checkmark.isHidden = true
         }

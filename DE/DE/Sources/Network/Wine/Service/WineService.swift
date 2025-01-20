@@ -23,8 +23,8 @@ public final class WineService: NetworkManager {
     //MARK: - API funcs
 
     /// 와인 검색
-    public func fetchWines(searchName: String, completion: @escaping (Result<[SearchWineResponseDTO], NetworkError>) -> Void) {
-        request(target: .getWines(searchName: searchName), decodingType: [SearchWineResponseDTO].self, completion: completion)
+    public func fetchWines(searchName: String, page: Int) async throws -> PageSearchWineResponseDTO? {
+        return try await requestOptionalAsync(target: .getWines(searchName: searchName, page: page), decodingType: PageSearchWineResponseDTO.self)
     }
 
     /// 선택 와인 정보 조회

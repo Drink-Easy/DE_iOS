@@ -8,7 +8,6 @@ import Then
 
 public class WineSearchMainVC : UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
     let navigationBarManager = NavigationBarManager()
-    // TODO : 상단 네비게이션 바 추가하는거 하셈!!
     var wineResults: [SearchResultModel] = []
     let networkService = WineService()
     
@@ -64,21 +63,21 @@ public class WineSearchMainVC : UIViewController, UISearchBarDelegate, UITableVi
     }
     
     func callSearchAPI(query: String) {
-        networkService.fetchWines(searchName: query) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let responseData) :
-                DispatchQueue.main.async {
-                    self.wineResults = responseData.map { data in
-                        SearchResultModel(wineId: data.wineId, name: data.name, nameEng: data.nameEng, imageUrl: data.imageUrl, sort: data.sort, country: data.country, region: data.region, variety: data.variety, vivinoRating: data.vivinoRating, price: data.price)
-                    }
-                    self.searchHomeView.searchResultTableView.reloadData()
-                }
-            case .failure(let error) :
-                print("\(error)")
-            }
-        }
+//        networkService.fetchWines(searchName: query) { [weak self] result in
+//            guard let self = self else { return }
+//            
+//            switch result {
+//            case .success(let responseData) :
+//                DispatchQueue.main.async {
+//                    self.wineResults = responseData.map { data in
+//                        SearchResultModel(wineId: data.wineId, name: data.name, nameEng: data.nameEng, imageUrl: data.imageUrl, sort: data.sort, country: data.country, region: data.region, variety: data.variety, vivinoRating: data.vivinoRating, price: data.price)
+//                    }
+//                    self.searchHomeView.searchResultTableView.reloadData()
+//                }
+//            case .failure(let error) :
+//                print("\(error)")
+//            }
+//        }
     }
     
     @objc func prevVC() {

@@ -14,6 +14,8 @@ class TNWineDataManager {
     var imageUrl: String
     var variety: String
     
+    
+    
     // MARK: - Initializer
     private init(
         wineId: Int = 0,

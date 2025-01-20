@@ -6,7 +6,7 @@ import CoreModule
 import SnapKit
 
 /// 페이지네이션 + 빅타이틀
-class TopView: UIView {
+class DateTopView: UIView {
     
     var currentPage: Int?
     var entirePage: Int?
@@ -15,11 +15,7 @@ class TopView: UIView {
         $0.font = UIFont.ptdMediumFont(ofSize: 16)
     }
     
-    private lazy var title = UILabel().then {
-        $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
-        $0.numberOfLines = 0
-    }
+    public lazy var styledLabel =  UILabel()
 
     init(currentPage: Int, entirePage: Int) {
         super.init(frame: .zero)
@@ -37,8 +33,42 @@ class TopView: UIView {
         super.init(coder: coder)
     }
 
-    public func setTitleLabel(_ text: String) {
-        self.title.text = text
+    private func createStyledLabel(result: String, text: String) -> UILabel {
+        let label = UILabel()
+
+        let nicknameAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.ptdSemiBoldFont(ofSize: 24),
+            .foregroundColor: AppColor.purple100!
+        ]
+
+        let textAttributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.ptdSemiBoldFont(ofSize: 24),
+            .foregroundColor: AppColor.black!
+        ]
+
+        let fullText = "\(result)\n\(text)"
+        let attributedString = NSMutableAttributedString(string: fullText)
+
+        if let nicknameRange = fullText.range(of: "\(result)") {
+            let nsRange = NSRange(nicknameRange, in: fullText)
+            attributedString.addAttributes(nicknameAttributes, range: nsRange)
+        }
+
+        if let secondLineRange = fullText.range(of: "\(text)") {
+            let nsRange = NSRange(secondLineRange, in: fullText)
+            attributedString.addAttributes(textAttributes, range: nsRange)
+        }
+
+        label.attributedText = attributedString
+        label.textAlignment = .left
+        label.numberOfLines = 2 // 반드시 두 줄로 설정
+        label.lineBreakMode = .byWordWrapping // 단어 단위로 줄바꿈
+
+        return label
+    }
+    
+    public func setLabel(result: String, commonText: String) {
+        styledLabel = createStyledLabel(result: result, text: commonText)
     }
     
     private func updatePageLabel() {
@@ -58,7 +88,7 @@ class TopView: UIView {
     }
     
     private func addComponents() {
-        [page, title].forEach{ self.addSubview($0) }
+        [page, styledLabel].forEach{ self.addSubview($0) }
     }
     
     private func constraints() {
@@ -67,7 +97,7 @@ class TopView: UIView {
             $0.leading.equalToSuperview()
         }
         
-        title.snp.makeConstraints {
+        styledLabel.snp.makeConstraints {
             $0.top.equalTo(page.snp.bottom).offset(4)
             $0.leading.equalToSuperview()
             $0.bottom.equalToSuperview()
