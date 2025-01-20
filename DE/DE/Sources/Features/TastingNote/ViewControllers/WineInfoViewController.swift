@@ -39,7 +39,6 @@ public class WineInfoViewController: UIViewController {
         }
     }
     
-    
     func setupUI() {
         view.addSubview(wineInfoView)
         wineInfoView.snp.makeConstraints { make in

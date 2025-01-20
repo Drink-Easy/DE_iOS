@@ -6,104 +6,55 @@ import Network
 
 public class RatingWineViewController: UIViewController {
     
-    let ratingWineView = RatingWineView()
+    lazy var rView = RatingWineView()
     private var ratingValue: Double = 2.5
     let navigationBarManager = NavigationBarManager()
     
     let noteService = TastingNoteService()
+    let tnManger = NewTastingNoteManager.shared
+    let wineData = TNWineDataManager.shared
     
-    let wineName = UserDefaults.standard.string(forKey: "wineName")
-    let wineArea = UserDefaults.standard.string(forKey: "wineArea")
-    let wineImage = UserDefaults.standard.string(forKey: "wineImage")
-    let wineSort = UserDefaults.standard.string(forKey: "wineSort")
-    
-    let userDefaultsKeys = ["wineName", "wineId", "wineSort", "wineArea", "wineImage", "tasteDate", "color", "nose", "sliderValues", "rating", "review"]
+    let textViewPlaceHolder = "추가로 기록하고 싶은 내용을 작성해 보세요!"
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        DispatchQueue.main.async {
-            self.ratingWineView.updateUI(wineName: self.wineName ?? "", wineSort: self.wineSort ?? "", wineArea: self.wineArea ?? "", wineImage: self.wineImage ?? "")
-        }
-    }
-    
-    func callPost() {
-        
-        func getValue<T>(forKey key: String) -> T? {
-            return UserDefaults.standard.value(forKey: key) as? T
-        }
-        
-        func getString(forKey key: String) -> String? {
-            return UserDefaults.standard.string(forKey: key)
-        }
-        
-        guard
-            let wineId: Int = getValue(forKey: "wineId"),
-            let tasteDate = getString(forKey: "tasteDate"),
-            let color = getString(forKey: "color"),
-            let noseData = UserDefaults.standard.data(forKey: "nose"),
-            let sliderValue = UserDefaults.standard.dictionary(forKey: "sliderValues") as? [String: Int],
-            let rating: Double = getValue(forKey: "rating"),
-            let review = getString(forKey: "review")
-        else {
-            print("필수 값이 누락되었습니다.")
-            return
-        }
-        
-        let decoder = JSONDecoder()
-        guard let decodedNose = try? decoder.decode([String: [NoseModel]].self, from: noseData) else {
-            print("디코딩 실패")
-            return
-        }
-        
-        let noseArray: [String] = decodedNose.flatMap { $0.value.map { $0.type } }
-        
-        let postDTO = noteService.makePostNoteDTO(
-            wineId: wineId,
-            color: color,
-            tasteDate: tasteDate,
-            sugarContent: sliderValue["Sweetness"] ?? 0,
-            acidity: sliderValue["Acidity"] ?? 0,
-            tannin: sliderValue["Tannin"] ?? 0,
-            body: sliderValue["Body"] ?? 0,
-            alcohol: sliderValue["Alcohol"] ?? 0,
-            nose: noseArray,
-            rating: rating,
-            review: review
-        )
-        
-        noteService.postNote(data: postDTO, completion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case.success(let str):
-                for i in userDefaultsKeys {
-                    UserDefaults.standard.removeObject(forKey: "\(i)")
-                }
-                print("UserDefaults 값 삭제 !!!!!!")
-                DispatchQueue.main.async {
-                    let nextVC = NoteListViewController()
-                    self.navigationController?.pushViewController(nextVC, animated: true)
-                }
-            case.failure(let error):
-                print(error)
-            }
-        } )
+//        rView.header.setTitleLabel(wineData.wineName)
+//        rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
+//        rView.infoView.kindContents.text = wineData.sort
+//        rView.infoView.typeContents.text = wineData.variety
+        rView.header.setTitleLabel("디자인 테스트")
+        rView.infoView.countryContents.text = "디자인" + ", " + "테스트"
+        rView.infoView.kindContents.text = "테스트"
+        rView.infoView.typeContents.text = "테스트"
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = AppColor.bgGray
+        setConstraints()
         
-        self.view = ratingWineView
         setupActions()
         setupNavigationBar()
     }
     
+    func setConstraints() {
+        view.addSubview(rView)
+        rView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
+            make.leading.trailing.equalToSuperview().inset(24)
+            make.bottom.equalToSuperview()
+        }
+    }
+    
     func setupActions() {
-        ratingWineView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        rView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
         
-        ratingWineView.ratingButton.didFinishTouchingCosmos = { [weak self] rating in
+        rView.ratingButton.didFinishTouchingCosmos = { [weak self] rating in
             guard let self = self else { return }
             self.updateRatingLabel(with: rating)
         }
+        
+        rView.reviewBody.delegate = self
     }
     
     private func setupNavigationBar() {
@@ -117,7 +68,7 @@ public class RatingWineViewController: UIViewController {
     
     private func updateRatingLabel(with rating: Double) {
         ratingValue = rating
-        ratingWineView.ratingLabel.text = String(format: "%.1f / 5.0", rating)
+        rView.ratingLabel.text = String(format: "%.1f / 5.0", rating)
     }
     
     @objc func prevVC() {
@@ -125,16 +76,35 @@ public class RatingWineViewController: UIViewController {
     }
     
     @objc func nextVC() {
-        
-        // UserDefaults에 저장
-        let reviewText = ratingWineView.reviewTextField.text ?? ""
-        let reviewRate = Int(ratingValue)
-        
-        UserDefaults.standard.set(reviewText, forKey: "review")
-        UserDefaults.standard.set(reviewRate, forKey: "rating")
-        
-        print("저장된 데이터: \(reviewText), \(reviewRate)")
-        
-        callPost()
+        // Call post api
+    }
+}
+
+extension RatingWineViewController : UITextViewDelegate {
+    public func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == textViewPlaceHolder {
+            textView.text = nil
+            textView.textColor = AppColor.gray90!
+        }
+    }
+    
+    public func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            textView.text = textViewPlaceHolder
+            textView.textColor = AppColor.gray90!
+        }
+    }
+    
+    public func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        let inputString = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let oldString = textView.text, let newRange = Range(range, in: oldString) else { return true }
+        let newString = oldString.replacingCharacters(in: newRange, with: inputString).trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let characterCount = newString.count
+        guard characterCount <= 500 else { return false }
+        // TODO : 경고창 띄우기?
+        // alertview?
+
+        return true
     }
 }
