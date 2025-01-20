@@ -95,13 +95,7 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
             case .success(let responseData) :
                 DispatchQueue.main.async {
                     self.wineResults = responseData.map { data in
-                        SearchResultModel.init(wineId: data.wineId,
-                                               imageUrl: data.imageUrl,
-                                               wineName: data.name,
-                                               sort: data.sort,
-                                               price: data.price,
-                                               vivinoRating: data.vivinoRating
-                        )
+                        SearchResultModel(wineId: data.wineId, name: data.name, nameEng: data.nameEng, imageUrl: data.imageUrl, sort: data.sort, country: data.country, region: data.region, variety: data.variety, vivinoRating: data.vivinoRating, price: data.price)
                     }
                     self.searchHomeView.searchResultTableView.reloadData()
                 }
@@ -124,7 +118,7 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource {
         
         let wine = wineResults[indexPath.row]
         let searchText = searchHomeView.searchBar.text ?? ""
-        cell.configure(model: wine, highlightText: searchText.isEmpty ? nil : searchText)
+        cell.configureSearch(model: wine, highlightText: searchText.isEmpty ? nil : searchText)
         
         return cell
     }

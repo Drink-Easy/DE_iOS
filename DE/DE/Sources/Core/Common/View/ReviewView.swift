@@ -127,6 +127,7 @@ public class ReviewView: UIView {
             $0.top.equalTo(title.snp.bottom).offset(16)
             $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
         }
+        noReviewLabel.sizeToFit()
     }
     
     public func configure(_ model: WineAverageReviewModel) {

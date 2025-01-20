@@ -108,6 +108,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         
         addComponents()
         constraints()
+        startAutoScrolling()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -310,6 +311,26 @@ extension HomeViewController: UIScrollViewDelegate {
                 scrollView.contentOffset.x = maxOffsetX
             }
         }
+    }
+    
+    public func startAutoScrolling() {
+        Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { [weak self] timer in
+            guard let self = self else {
+                timer.invalidate()
+                return
+            }
+            self.autoScrollCollectionView()
+        }
+    }
+    
+    private func autoScrollCollectionView() {
+        guard !adImage.isEmpty else { return }
+        
+        let currentIndex = Int(adCollectionView.contentOffset.x / view.frame.width)
+        let nextIndex = (currentIndex + 1) % adImage.count // 다음 페이지 계산 (마지막 이후 첫 번째로 돌아감)
+        
+        let nextOffset = CGPoint(x: CGFloat(nextIndex) * view.frame.width, y: 0)
+        adCollectionView.setContentOffset(nextOffset, animated: true)
     }
 }
 

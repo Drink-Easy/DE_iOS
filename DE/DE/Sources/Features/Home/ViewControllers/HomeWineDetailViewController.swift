@@ -223,7 +223,7 @@ class HomeWineDetailViewController: UIViewController, UIScrollViewDelegate {
         
         let infoData = WineDetailInfoModel(image: wineResponse.imageUrl, sort: wineResponse.sort, country: wineResponse.country, region: wineResponse.region, variety: wineResponse.variety)
         let rateData = WineViVinoRatingModel(vivinoRating: wineResponse.vivinoRating)
-        let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString, avgSugarContent: wineResponse.avgSugarContent, avgAcidity: wineResponse.avgAcidity, avgTannin: wineResponse.avgTannin, avgBody: wineResponse.avgBody, avgAlcohol: wineResponse.avgAlcohol)
+        let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString, avgSugarContent: wineResponse.avgSweetness, avgAcidity: wineResponse.avgAcidity, avgTannin: wineResponse.avgTannin, avgBody: wineResponse.avgBody, avgAlcohol: wineResponse.avgAlcohol)
         let roundedAvgMemberRating = (wineResponse.avgMemberRating * 10).rounded() / 10
         let reviewData = WineAverageReviewModel(avgMemberRating: roundedAvgMemberRating)
         if let reviewResponse = responseData.recentReviews {

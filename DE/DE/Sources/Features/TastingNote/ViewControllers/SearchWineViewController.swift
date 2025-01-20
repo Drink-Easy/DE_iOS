@@ -71,13 +71,7 @@ public class SearchWineViewController : UIViewController, UISearchBarDelegate, U
             case .success(let responseData) :
                 DispatchQueue.main.async {
                     self.wineResults = responseData.map { data in
-                        SearchResultModel.init(wineId: data.wineId,
-                                               imageUrl: data.imageUrl,
-                                               wineName: data.name,
-                                               sort: data.sort,
-                                               price: data.price,
-                                               vivinoRating: data.vivinoRating
-                        )
+                        SearchResultModel.init(wineId: data.wineId, name: data.name, nameEng: data.nameEng, imageUrl: data.imageUrl, sort: data.sort, country: data.country, region: data.region, variety: data.variety, vivinoRating: data.vivinoRating, price: data.price)
                     }
                     self.searchHomeView.searchResultTableView.reloadData()
                 }
@@ -100,19 +94,14 @@ public class SearchWineViewController : UIViewController, UISearchBarDelegate, U
         }
         
         let wine = wineResults[indexPath.row]
-        cell.configure(model: wine)
+        cell.configureSearch(model: wine)
         
         return cell
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = TastedDateViewController()
-        UserDefaults.standard.set(wineResults[indexPath.row].wineName, forKey: "wineName")
-        UserDefaults.standard.set(wineResults[indexPath.row].wineId, forKey: "wineId")
-        UserDefaults.standard.set(wineResults[indexPath.row].sort, forKey: "wineSort")
-//        UserDefaults.standard.set(wineResults[indexPath.row].area, forKey: "wineArea")
-        UserDefaults.standard.set(wineResults[indexPath.row].imageUrl, forKey: "wineImage")
-        print("와인id 저장됨: \(wineResults[indexPath.row].wineId)")
+        TNWineDataManager.shared.updateWineData(wineId: wineResults[indexPath.row].wineId, wineName: wineResults[indexPath.row].name, sort: wineResults[indexPath.row].sort, country: wineResults[indexPath.row].country, region: wineResults[indexPath.row].region, imageUrl: wineResults[indexPath.row].imageUrl, variety: wineResults[indexPath.row].variety)
         navigationController?.pushViewController(vc, animated: true)
     }
 }

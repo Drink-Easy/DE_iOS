@@ -199,16 +199,17 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
             // 리뷰가 없을 때
             reviewView.moreBtn.isHidden = true
             reviewView.reviewCollectionView.isHidden = true
+            reviewView.reviewCollectionView.snp.updateConstraints {
+                $0.height.equalTo(0) // 높이를 0으로 설정
+            }
             reviewView.scoreLabel.isHidden = true
             reviewView.noReviewLabel.isHidden = false
-            scrollView.isScrollEnabled = false
         } else {
             // 리뷰가 있을 때
             reviewView.moreBtn.isHidden = false
             reviewView.reviewCollectionView.isHidden = false
             reviewView.scoreLabel.isHidden = false
             reviewView.noReviewLabel.isHidden = true
-            scrollView.isScrollEnabled = true
         }
     }
     
@@ -233,7 +234,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         
         let infoData = WineDetailInfoModel(image: wineResponse.imageUrl, sort: wineResponse.sort, country: wineResponse.country, region: wineResponse.region, variety: wineResponse.variety)
         let rateData = WineViVinoRatingModel(vivinoRating: wineResponse.vivinoRating)
-        let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString, avgSugarContent: wineResponse.avgSugarContent, avgAcidity: wineResponse.avgAcidity, avgTannin: wineResponse.avgTannin, avgBody: wineResponse.avgBody, avgAlcohol: wineResponse.avgAlcohol)
+        let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString, avgSugarContent: wineResponse.avgSweetness, avgAcidity: wineResponse.avgAcidity, avgTannin: wineResponse.avgTannin, avgBody: wineResponse.avgBody, avgAlcohol: wineResponse.avgAlcohol)
         let roundedAvgMemberRating = (wineResponse.avgMemberRating * 10).rounded() / 10
         let reviewData = WineAverageReviewModel(avgMemberRating: roundedAvgMemberRating)
         if let reviewResponse = responseData.recentReviews {
