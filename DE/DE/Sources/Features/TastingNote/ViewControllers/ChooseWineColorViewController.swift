@@ -4,7 +4,7 @@ import UIKit
 import CoreModule
 import Network
 
-// 테이스팅 노트 : 색상 선택
+// 2번 선택 뷰컨 테이스팅 노트 : 색상 선택
 
 public class ChooseWineColorViewController: UIViewController {
     var selectedColor : String?

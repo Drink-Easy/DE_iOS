@@ -5,7 +5,7 @@ import Then
 import CoreModule
 import SnapKit
 
-/// 페이지네이션 + 빅타이틀
+/// 날짜 있는 쪽에만 쓰는 페이지네이션 + 빅타이틀
 class DateTopView: UIView {
     
     var currentPage: Int?
@@ -15,7 +15,18 @@ class DateTopView: UIView {
         $0.font = UIFont.ptdMediumFont(ofSize: 16)
     }
     
-    public lazy var styledLabel =  UILabel()
+    public lazy var title = UILabel().then {
+        $0.textColor = AppColor.purple100
+        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.numberOfLines = 0
+    }
+    
+    private lazy var desp = UILabel().then {
+        $0.text = "시음 시기를 선택해주세요"
+        $0.textColor = AppColor.black
+        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.numberOfLines = 1
+    }
 
     init(currentPage: Int, entirePage: Int) {
         super.init(frame: .zero)
@@ -28,47 +39,8 @@ class DateTopView: UIView {
         updatePageLabel()
     }
     
-    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-    }
-
-    private func createStyledLabel(result: String, text: String) -> UILabel {
-        let label = UILabel()
-
-        let nicknameAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.ptdSemiBoldFont(ofSize: 24),
-            .foregroundColor: AppColor.purple100!
-        ]
-
-        let textAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.ptdSemiBoldFont(ofSize: 24),
-            .foregroundColor: AppColor.black!
-        ]
-
-        let fullText = "\(result)\n\(text)"
-        let attributedString = NSMutableAttributedString(string: fullText)
-
-        if let nicknameRange = fullText.range(of: "\(result)") {
-            let nsRange = NSRange(nicknameRange, in: fullText)
-            attributedString.addAttributes(nicknameAttributes, range: nsRange)
-        }
-
-        if let secondLineRange = fullText.range(of: "\(text)") {
-            let nsRange = NSRange(secondLineRange, in: fullText)
-            attributedString.addAttributes(textAttributes, range: nsRange)
-        }
-
-        label.attributedText = attributedString
-        label.textAlignment = .left
-        label.numberOfLines = 2 // 반드시 두 줄로 설정
-        label.lineBreakMode = .byWordWrapping // 단어 단위로 줄바꿈
-
-        return label
-    }
-    
-    public func setLabel(result: String, commonText: String) {
-        styledLabel = createStyledLabel(result: result, text: commonText)
     }
     
     private func updatePageLabel() {
@@ -88,7 +60,7 @@ class DateTopView: UIView {
     }
     
     private func addComponents() {
-        [page, styledLabel].forEach{ self.addSubview($0) }
+        [page, title, desp].forEach{ self.addSubview($0) }
     }
     
     private func constraints() {
@@ -97,11 +69,18 @@ class DateTopView: UIView {
             $0.leading.equalToSuperview()
         }
         
-        styledLabel.snp.makeConstraints {
+        title.snp.makeConstraints {
             $0.top.equalTo(page.snp.bottom).offset(4)
-            $0.leading.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
+        }
+        
+        desp.snp.makeConstraints {
+            $0.top.equalTo(title.snp.bottom).offset(2)
+            $0.leading.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
+        
+        
     }
 }
 
