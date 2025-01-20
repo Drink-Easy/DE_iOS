@@ -208,11 +208,12 @@ class AccountInfoViewController: UIViewController {
         let profileImgURL = URL(string: imageURL)
         self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
         accountView.titleLabel.text = "내 정보"
-        accountView.nickNameVal.text = username
-        accountView.emailVal.text = email
-        accountView.cityVal.text = city
-        accountView.loginTypeVal.text = authType
-        accountView.adultVal.text = adult ? "인증 완료" : "인증 전"
+        let adultText = adult ? "인증 완료" : "인증 전"
+        accountView.items = [("닉네임", username),
+        ("내 동네", city),
+        ("이메일", email),
+        ("연동상태", authType),
+        ("성인인증", adultText)]
     }
     
     /// 새로 받은 데이터 저장
