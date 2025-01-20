@@ -10,7 +10,9 @@ class SelectColorView: UIView {
     public lazy var header = TopView(currentPage: 2, entirePage: 5)
     public lazy var infoView = WineDetailView()
     public lazy var propertyHeader = PropertyTitleView(engName: "Color", korName: "색상")
-    public lazy var colorCollectionView = UICollectionView()
+    public lazy var colorCollectionView = UICollectionView().then {
+        $0.register(WineColorCollectionViewCell.self, forCellWithReuseIdentifier: "WineColorCollectionViewCell")
+    }
     public lazy var nextButton = CustomButton(title: "다음", isEnabled: false)
 
     required init? (coder: NSCoder) {
@@ -45,7 +47,20 @@ class SelectColorView: UIView {
             make.leading.trailing.equalToSuperview()
         }
         
+        propertyHeader.snp.makeConstraints { make in
+            make.top.equalTo(infoView.snp.bottom).offset(50) // TODO : 동적 기기 대응
+            make.leading.trailing.equalToSuperview()
+        }
         
+        colorCollectionView.snp.makeConstraints { make in
+            make.top.equalTo(propertyHeader.snp.bottom).offset(20) // 동적 기기 대응
+            make.leading.trailing.equalToSuperview()
+        }
+        
+        nextButton.snp.makeConstraints { make in
+            make.bottom.equalToSuperview().inset(40) // 동적 기기 대응
+            make.leading.trailing.equalToSuperview()
+        }
     }
     
 }
