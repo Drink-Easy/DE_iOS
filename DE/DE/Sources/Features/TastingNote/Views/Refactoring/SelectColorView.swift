@@ -9,7 +9,7 @@ import Then
 class SelectColorView: UIView {
     public lazy var header = TopView(currentPage: 2, entirePage: 5)
     public lazy var infoView = WineDetailView()
-    public lazy var propertyHeader = PropertyTitleView(engName: "Color", korName: "색상")
+    public lazy var propertyHeader = PropertyTitleView()
     public lazy var colorCollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: {
@@ -62,11 +62,13 @@ class SelectColorView: UIView {
         propertyHeader.snp.makeConstraints { make in
             make.top.equalTo(infoView.snp.bottom).offset(50) // TODO : 동적 기기 대응
             make.leading.trailing.equalToSuperview()
+            make.height.greaterThanOrEqualTo(30)
         }
         
         colorCollectionView.snp.makeConstraints { make in
             make.top.equalTo(propertyHeader.snp.bottom).offset(20) // 동적 기기 대응
-            make.leading.trailing.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(8)
+            make.height.greaterThanOrEqualTo(270)
         }
         
         nextButton.snp.makeConstraints { make in

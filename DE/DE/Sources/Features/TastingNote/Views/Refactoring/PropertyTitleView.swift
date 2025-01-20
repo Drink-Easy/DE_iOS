@@ -7,9 +7,6 @@ import SnapKit
 
 /// 와인 정보 속성 헤더
 class PropertyTitleView: UIView {
-    var engName: String?
-    var korName: String?
-    
     private lazy var engTitle = UILabel().then {
         $0.textColor = AppColor.black
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 22)
@@ -25,15 +22,18 @@ class PropertyTitleView: UIView {
     private lazy var line = UIView()
     
     /// 기본 컬러가 보라50임
-    init(engName: String = "Property", korName: String = "속성", barColor : UIColor = AppColor.purple50!) {
+    init(barColor : UIColor = AppColor.purple50!) {
         super.init(frame: .zero)
         backgroundColor = .clear
-        self.engName = engName
-        self.korName = korName
         self.line.backgroundColor = barColor
         
         self.addComponents()
         self.constraints()
+    }
+    
+    public func setName(eng engTitle : String, kor korTitle : String) {
+        self.engTitle.text = engTitle
+        self.korTitle.text = korTitle
     }
     
     required init?(coder: NSCoder) {
@@ -49,13 +49,11 @@ class PropertyTitleView: UIView {
             make.top.equalToSuperview()
             make.leading.equalToSuperview()
         }
-        engTitle.sizeToFit()
         
         korTitle.snp.makeConstraints { make in
             make.bottom.equalTo(engTitle.snp.bottom)
             make.leading.equalTo(engTitle.snp.trailing).offset(6) // 폰트 사이즈 변화 없어서 6 고정
         }
-        korTitle.sizeToFit()
         
         line.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()

@@ -4,10 +4,15 @@ import UIKit
 import CoreModule
 import Network
 
+// 테이스팅 노트 : 색상 선택
+
 public class ChooseWineColorViewController: UIViewController {
     var selectedColor : String?
     let navigationBarManager = NavigationBarManager()
-    let colorView = SelectColorView()
+    lazy var colorView = SelectColorView().then {
+        $0.colorCollectionView.delegate = self
+        $0.colorCollectionView.dataSource = self
+    }
     
     let tnManger = NewTastingNoteManager.shared
     let colorDatas = WineColorManager()
@@ -16,23 +21,36 @@ public class ChooseWineColorViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         colorView.header.setTitleLabel(wineData.wineName)
-        colorView.infoView.countryContents.text = wineData.country + "," + wineData.region
+        colorView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         colorView.infoView.kindContents.text = wineData.sort
         colorView.infoView.typeContents.text = wineData.variety
+//        colorView.header.setTitleLabel("디자인 테스트")
+//        colorView.infoView.countryContents.text = "디자인" + ", " + "테스트"
+//        colorView.infoView.kindContents.text = "테스트"
+//        colorView.infoView.typeContents.text = "테스트"
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setConstraints()
         setupActions()
         setupNavigationBar()
-        
-        colorView.colorCollectionView.delegate = self
-        colorView.colorCollectionView.dataSource = self
     }
     
     func setupUI() {
         view.backgroundColor = AppColor.bgGray
+        colorView.propertyHeader.setName(eng: "Color", kor: "색상")
+        colorView.colorCollectionView.register(WineColorCollectionViewCell.self, forCellWithReuseIdentifier: "WineColorCollectionViewCell")
+    }
+    
+    func setConstraints() {
+        view.addSubview(colorView)
+        colorView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
+            make.leading.trailing.equalToSuperview().inset(24)
+            make.bottom.equalToSuperview()
+        }
     }
     
     func setupActions() {
@@ -95,14 +113,14 @@ extension ChooseWineColorViewController: UICollectionViewDelegate, UICollectionV
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedColorHexCode = colorDatas.colors[indexPath.row].colorHexCode
         selectedColor = selectedColorHexCode
-        colorView.nextButton.isEnabled = true
+        colorView.nextButton.isEnabled(isEnabled: true)
         
         collectionView.reloadData()
     }
     
     public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         selectedColor = nil
-        colorView.nextButton.isEnabled = false
+        colorView.nextButton.isEnabled(isEnabled: false)
         
         collectionView.reloadData()
     }

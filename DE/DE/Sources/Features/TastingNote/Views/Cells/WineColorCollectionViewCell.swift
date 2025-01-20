@@ -14,7 +14,7 @@ class WineColorCollectionViewCell: UICollectionViewCell {
     public lazy var colorView = UIView().then {
         $0.backgroundColor = .clear
         $0.layer.borderColor = UIColor.clear.cgColor
-        $0.layer.borderWidth = 1.5
+        $0.layer.borderWidth = 3
         $0.layer.cornerRadius = DynamicPadding.dynamicValue(10.0)
         $0.layer.masksToBounds = true
     }
@@ -49,11 +49,11 @@ class WineColorCollectionViewCell: UICollectionViewCell {
         
         colorView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-            make.width.height.equalTo(DynamicPadding.dynamicValue(64.0))
+            make.width.height.greaterThanOrEqualTo(DynamicPadding.dynamicValue(64.0))
         }
         
         checkmark.snp.makeConstraints { make in
-            make.centerX.centerY.equalToSuperview()
+            make.top.leading.bottom.trailing.equalToSuperview().inset(20)
         }
     }
     
