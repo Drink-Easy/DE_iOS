@@ -55,8 +55,7 @@ public class ChangeGraphViewController: UIViewController {
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
-            action: #selector(prevVC),
-            tintColor: AppColor.gray80!
+            action: #selector(prevVC)
         )
     }
     

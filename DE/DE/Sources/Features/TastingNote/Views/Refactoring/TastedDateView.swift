@@ -41,13 +41,13 @@ class TastedDateView: UIView {
             make.height.greaterThanOrEqualTo(96)
         }
         
-        calender.snp.makeConstraints { make in
-            make.top.equalTo(topView.snp.bottom).offset(<#T##amount: any ConstraintOffsetTarget##any ConstraintOffsetTarget#>)
-        }
-        
-        nextButton.snp.makeConstraints { make in
-            <#code#>
-        }
+//        calender.snp.makeConstraints { make in
+//            make.top.equalTo(topView.snp.bottom).offset(<#T##amount: any ConstraintOffsetTarget##any ConstraintOffsetTarget#>)
+//        }
+//        
+//        nextButton.snp.makeConstraints { make in
+//            <#code#>
+//        }
     }
 
     func updateUI(wineName: String) {
