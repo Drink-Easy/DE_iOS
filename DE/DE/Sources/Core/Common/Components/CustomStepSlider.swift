@@ -41,7 +41,7 @@ public class CustomStepSlider: UISlider {
         let thumbRect = thumbRect(forBounds: bounds, trackRect: trackRect(forBounds: bounds), value: value)
         
         // 터치 범위를 Thumb 이미지 크기보다 위로 60pt 확장
-        let largerThumbRect = thumbRect.inset(by: UIEdgeInsets(top: -60, left: -50, bottom: 0, right: -50))
+        let largerThumbRect = thumbRect.inset(by: UIEdgeInsets(top: -60, left: -60, bottom: 0, right: -60))
         return largerThumbRect.contains(point)
     }
     

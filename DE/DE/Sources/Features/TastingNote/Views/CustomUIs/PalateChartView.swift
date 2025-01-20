@@ -17,22 +17,24 @@ struct PalateChartView: View {
     
     var body: some View {
         ZStack {
+            Color("background") // 원하는 색상으로 변경
+                        .edgesIgnoringSafeArea(.all)
             // 단계별 다각형과 레이블
             ForEach(1...levels, id: \.self) { level in
                 let radius = spacing * CGFloat(level) // 각 단계별 반경 계산
                 PolygonShape(sides: viewModel.stats.count, scale: radius / (spacing * CGFloat(levels)))
                     .stroke(Color.gray.opacity(0.3), lineWidth: 1)
                 
-//                // 단계별 레이블 추가
-//                if level < levels {
-//                    GeometryReader { geometry in
-//                        let center = CGPoint(x: geometry.size.width / 2, y: geometry.size.height / 2)
-//                        Text("\(level * 20)") // 20, 40, 60, 80
-//                            .font(.system(size: 12, weight: .medium))
-//                            .foregroundColor(.gray)
-//                            .position(x: center.x, y: center.y - radius - 10)
-//                    }
-//                }
+                // 단계별 레이블 추가
+                if level < levels {
+                    GeometryReader { geometry in
+                        let center = CGPoint(x: geometry.size.width / 2, y: geometry.size.height / 2)
+                        Text("\(level * 20)") // 20, 40, 60, 80
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(.gray)
+                            .position(x: center.x, y: center.y - radius - 10)
+                    }
+                }
             }
             
             let dataValues = viewModel.stats.map { $0.value / maxValue }

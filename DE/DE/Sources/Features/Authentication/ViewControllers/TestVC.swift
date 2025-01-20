@@ -8,9 +8,9 @@ import SnapKit
 import CoreModule
 import Network
 
-public class PalateViewModel: ObservableObject {
-    @Published var stats: [RadarData] = [RadarData(label: "당도", value: 0.2), RadarData(label: "알코올", value: 1.0), RadarData(label: "타닌", value: 0.2), RadarData(label: "바디", value: 0.6), RadarData(label: "산도" , value: 0.8)]
-}
+//public class PalateViewModel: ObservableObject {
+//    @Published var stats: [RadarData] = [RadarData(label: "당도", value: 0.2), RadarData(label: "알코올", value: 1.0), RadarData(label: "타닌", value: 0.2), RadarData(label: "바디", value: 0.6), RadarData(label: "산도" , value: 0.8)]
+//}
 
 public class TestVC: UIViewController {
     

@@ -30,10 +30,12 @@ open class CustomButton: UIButton {
     public func configure(title: String, titleColor: UIColor, isEnabled: Bool) {
         self.setTitle(title, for: .normal)
         self.setTitleColor(titleColor, for: .normal)
+        self.isEnabled = isEnabled ? true : false
         self.backgroundColor = isEnabled ? AppColor.purple100 : AppColor.gray30
     }
     
     public func isEnabled(isEnabled: Bool){
+        self.isEnabled = isEnabled ? true : false
         self.backgroundColor = isEnabled ? AppColor.purple100 : AppColor.gray30
     }
 }
