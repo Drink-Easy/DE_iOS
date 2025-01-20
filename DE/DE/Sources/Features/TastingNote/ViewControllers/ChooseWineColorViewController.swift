@@ -7,43 +7,34 @@ import Network
 public class ChooseWineColorViewController: UIViewController {
     
     var selectedColor: UIColor?
-    let chooseWineColor = ChooseWineColor()
-    let navigationBarManager = NavigationBarManager()
     
-    let wineName = UserDefaults.standard.string(forKey: "wineName")
-    let wineSort = UserDefaults.standard.string(forKey: "wineSort")
-    let wineArea = UserDefaults.standard.string(forKey: "wineArea")
-    let wineImage = UserDefaults.standard.string(forKey: "wineImage")
+    let navigationBarManager = NavigationBarManager()
+    let colorView = SelectColorView()
+    let wineData = TNWineDataManager.shared
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        chooseWineColor.updateUI(wineName: wineName ?? "", wineSort: wineSort ?? "", imageUrl: wineImage ?? "", wineArea: wineArea ?? "")
+        colorView.header.setTitleLabel(wineData.wineName)
+        colorView.infoView.countryContents.text = wineData.country + "," + wineData.region
+        colorView.infoView.kindContents.text = wineData.sort
+        colorView.infoView.typeContents.text = wineData.variety
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupActions()
-//        setupDelegate()
         setupNavigationBar()
     }
     
     func setupUI() {
         view.backgroundColor = AppColor.gray20
-        
-        view.addSubview(chooseWineColor)
-        chooseWineColor.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
     }
     
     func setupActions() {
         chooseWineColor.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
     }
-    
-//    func setupDelegate() {
-//        chooseWineColor.colorStackView1.delegate = self
-//    }
+
     
     private func setupNavigationBar() {
         navigationBarManager.addBackButton(
