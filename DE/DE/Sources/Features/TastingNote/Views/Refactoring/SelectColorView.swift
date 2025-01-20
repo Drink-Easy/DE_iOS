@@ -10,9 +10,21 @@ class SelectColorView: UIView {
     public lazy var header = TopView(currentPage: 2, entirePage: 5)
     public lazy var infoView = WineDetailView()
     public lazy var propertyHeader = PropertyTitleView(engName: "Color", korName: "색상")
-    public lazy var colorCollectionView = UICollectionView().then {
+    public lazy var colorCollectionView = UICollectionView(
+        frame: .zero,
+        collectionViewLayout: {
+            let layout = UICollectionViewFlowLayout()
+            layout.minimumLineSpacing = 16
+            layout.minimumInteritemSpacing = 20
+            layout.scrollDirection = .vertical
+            return layout
+        }()
+    ).then {
         $0.register(WineColorCollectionViewCell.self, forCellWithReuseIdentifier: "WineColorCollectionViewCell")
+        $0.backgroundColor = .clear
+        $0.showsVerticalScrollIndicator = false // 스크롤 인디케이터 숨김
     }
+    
     public lazy var nextButton = CustomButton(title: "다음", isEnabled: false)
 
     required init? (coder: NSCoder) {

@@ -11,8 +11,6 @@ public class TastedDateViewController: UIViewController {
     let tastedDateView = TastedDateView()
     var selectedDate: DateComponents?
     let navigationBarManager = NavigationBarManager()
-    
-    //let wineName = UserDefaults.standard.string(forKey: "wineName")
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
