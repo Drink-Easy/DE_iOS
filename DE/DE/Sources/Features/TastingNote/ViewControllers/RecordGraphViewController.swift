@@ -9,28 +9,13 @@ import Then
 import CoreModule
 import Network
 
-public class PalateViewModel: ObservableObject {
-    @Published var stats: [RadarData] = [RadarData(label: "당도", value: 0.2), RadarData(label: "알코올", value: 1.0), RadarData(label: "타닌", value: 0.2), RadarData(label: "바디", value: 0.6), RadarData(label: "산도" , value: 0.8)]
-    
-    func loadSliderValues() {
-            if let savedValues = UserDefaults.standard.dictionary(forKey: "sliderValues") as? [String: Int] {
-                stats = [
-                    RadarData(label: "당도", value: Double(savedValues["Sweetness"] ?? 0) / 100),
-                    RadarData(label: "알코올", value: Double(savedValues["Alcohol"] ?? 0) / 100),
-                    RadarData(label: "타닌", value: Double(savedValues["Tannin"] ?? 0) / 100),
-                    RadarData(label: "바디", value: Double(savedValues["Body"] ?? 0) / 100),
-                    RadarData(label: "산도", value: Double(savedValues["Acidity"] ?? 0) / 100)
-                ]
-                print("로드된 슬라이더 값: \(savedValues)")
-            } else {
-                print("저장된 슬라이더 값 없음")
-            }
-        }
-}
-
 public class RecordGraphViewController: UIViewController {
     
     let navigationBarManager = NavigationBarManager()
+    let tnManager = NewTastingNoteManager.shared
+    let wineData = TNWineDataManager.shared
+    
+    private var sliderValues: [String: Int] = [:]
     
     //MARK: UI Elements
     let scrollView = UIScrollView().then {
@@ -41,22 +26,8 @@ public class RecordGraphViewController: UIViewController {
         $0.backgroundColor = AppColor.bgGray
     }
     
-    var viewModel = PalateViewModel()
-
-    lazy var palateChart = PalateChartView(viewModel: viewModel)
-
-    lazy var hostingController: UIHostingController<PalateChartView> = {
-        let hostingController = UIHostingController(rootView: palateChart)
-        hostingController.view.backgroundColor = AppColor.bgGray
-        return hostingController
-    }()
-    
-    private var sliderValues: [String: Int] = [:] {
-        didSet {
-            updatePolygonChart()
-        }
-    }
-    
+    private lazy var header = TopView(currentPage: 4, entirePage: 5)
+    let chartView = PolygonChartView()
     let recordGraphView = RecordGraphView()
     
     private let nextButton = CustomButton(
@@ -71,28 +42,26 @@ public class RecordGraphViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //        DispatchQueue.main.async {
-        //            self.recordGraphView.updateUI(wineName: self.wineName ?? "")
-        //        }
+        header.setTitleLabel(wineData.wineName)
+        chartView.propertyHeader.setName(eng: "Palate", kor: "맛")
+        recordGraphView.propertyHeader.setName(eng: "Graph Record", kor: "그래프 상세 기록")
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        //        self.view = recordGraphView
         setupUI()
         setupActions()
         setupNavigationBar()
         saveSliderValues()
-        updatePolygonChart()
     }
     
     // MARK: - Setup Methods
     private func setupUI() {
         view.backgroundColor = AppColor.bgGray
-        addChild(hostingController)
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-        contentView.addSubview(hostingController.view)
+        contentView.addSubview(header)
+        contentView.addSubview(chartView)
         contentView.addSubview(recordGraphView)
         contentView.addSubview(nextButton)
         
@@ -103,30 +72,34 @@ public class RecordGraphViewController: UIViewController {
             make.edges.equalToSuperview()
             make.width.equalToSuperview()
         }
-        hostingController.view.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(Constants.superViewHeight * 0.1)
-            make.centerX.equalToSuperview()
+        header.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.equalToSuperview().inset(24)
+            make.height.greaterThanOrEqualTo(62)
+        }
+        chartView.snp.makeConstraints { make in
+            make.top.equalTo(header.snp.bottom).offset(16)
+            make.leading.equalToSuperview().inset(24)
+            make.trailing.equalToSuperview().inset(24)
+            make.height.equalTo(Constants.superViewHeight * 0.5)
         }
         recordGraphView.snp.makeConstraints { make in
-            make.top.equalTo(hostingController.view.snp.bottom).offset(16)
-            make.centerX.equalToSuperview()
-            
-            make.width.equalToSuperview()
+            make.top.equalTo(chartView.snp.bottom).offset(16)
+            make.leading.equalToSuperview().inset(24)
+            make.trailing.equalToSuperview().inset(24)
             make.height.equalTo(Constants.superViewHeight * 0.5)
         }
         nextButton.snp.makeConstraints { make in
             make.top.equalTo(recordGraphView.snp.bottom).offset(16)
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(28.0))
-            make.bottom.equalToSuperview().offset(-DynamicPadding.dynamicValue(40.0))
         }
         contentView.snp.makeConstraints { make in
-            make.bottom.equalTo(nextButton.snp.bottom).offset(16)
+            make.bottom.equalTo(nextButton.snp.bottom).offset(40)
         }
     }
     
     func setupActions() {
         nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
-        
         recordGraphView.sweetnessView.slider.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
         recordGraphView.acidityView.slider.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
         recordGraphView.tanninView.slider.addTarget(self, action: #selector(sliderValueChanged), for: .valueChanged)
@@ -142,44 +115,23 @@ public class RecordGraphViewController: UIViewController {
         )
     }
     
-    private func updatePolygonChart() {
-        let chartData = [
-            RadarChartData(type: .sweetness, value: sliderValues["Sweetness"] ?? 0),
-            RadarChartData(type: .acid, value: sliderValues["Acidity"] ?? 0),
-            RadarChartData(type: .tannin, value: sliderValues["Tannin"] ?? 0),
-            RadarChartData(type: .bodied, value: sliderValues["Body"] ?? 0),
-            RadarChartData(type: .alcohol, value: sliderValues["Alcohol"] ?? 0)
-        ]
-        
-        // 다각형 차트에 데이터 설정
-        //        recordGraphView.polygonChart.dataList = chartData
-    }
-    
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)
     }
     
     @objc func nextVC() {
         saveSliderValues()
-        
         let nextVC = RatingWineViewController()
-        nextVC.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(nextVC, animated: true)
     }
     
     private func saveSliderValues() {
-        // RecordGraphView의 슬라이더 값을 가져옴
-        sliderValues["Sweetness"] = Int(recordGraphView.sweetnessView.slider.value)
-        sliderValues["Acidity"] = Int(recordGraphView.acidityView.slider.value)
-        sliderValues["Tannin"] = Int(recordGraphView.tanninView.slider.value)
-        sliderValues["Body"] = Int(recordGraphView.bodyView.slider.value)
-        sliderValues["Alcohol"] = Int(recordGraphView.alcoholView.slider.value)
-        
         // UserDefaults에 저장
-        UserDefaults.standard.set(sliderValues, forKey: "sliderValues")
-        print("저장된 슬라이더 값: \(sliderValues)")
-        
-        viewModel.loadSliderValues()
+        tnManager.saveSugarContent(Int(recordGraphView.sweetnessView.slider.value))
+        tnManager.saveAcidity(Int(recordGraphView.acidityView.slider.value))
+        tnManager.saveTannin(Int(recordGraphView.tanninView.slider.value))
+        tnManager.saveBody(Int(recordGraphView.bodyView.slider.value))
+        tnManager.saveAlcohol(Int(recordGraphView.alcoholView.slider.value))
     }
     
     @objc func sliderValueChanged(_ sender: UISlider) {
@@ -197,7 +149,7 @@ public class RecordGraphViewController: UIViewController {
         default:
             break
         }
-        viewModel.loadSliderValues()
+        chartView.viewModel.loadSliderValues(from: sliderValues)
     }
     
 }

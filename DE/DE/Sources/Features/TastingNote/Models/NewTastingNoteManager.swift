@@ -80,24 +80,14 @@ public class NewTastingNoteManager {
         return tasteDate
     }
     
-    func getSugarContent() -> Int {
-        return sugarContent
-    }
-    
-    func getAcidity() -> Int {
-        return acidity
-    }
-    
-    func getTannin() -> Int {
-        return tannin
-    }
-    
-    func getBody() -> Int {
-        return body
-    }
-    
-    func getAlcohol() -> Int {
-        return alcohol
+    func getSliderValues() -> [String: Int] {
+        return [
+            "Sweetness": sugarContent,
+            "Acidity": acidity,
+            "Tannin": tannin,
+            "Body": body,
+            "Alcohol": alcohol
+        ]
     }
     
     func getNose() -> [String] {

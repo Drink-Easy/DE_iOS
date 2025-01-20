@@ -7,29 +7,7 @@ import AMPopTip
 // 와인 당도 등등 슬라이더 설정
 class RecordGraphView: UIView, UIScrollViewDelegate {
     
-    let graphRecordLabel: UILabel = {
-        let g = UILabel()
-        g.text = "Graph Record"
-        g.textColor = .black
-        g.textAlignment = .center
-        g.font = .ptdSemiBoldFont(ofSize: 20)
-        return g
-    }()
-    
-    let graphRecordLabelKorean: UILabel = {
-        let g = UILabel()
-        g.text = "그래프 상세기록"
-        g.textColor = UIColor(hex: "919191")
-        g.textAlignment = .center
-        g.font = .ptdRegularFont(ofSize: 14)
-        return g
-    }()
-    
-    let vector2: UIView = {
-        let v = UIView()
-        v.backgroundColor = AppColor.purple50
-        return v
-    }()
+    public lazy var propertyHeader = PropertyTitleView()
     
     let sweetnessView = SliderWithTooltipView()
     let acidityView = SliderWithTooltipView()
@@ -39,7 +17,7 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
     
 
     func setupUI() {
-        [graphRecordLabel, graphRecordLabelKorean, vector2, sweetnessView, acidityView, tanninView, bodyView, alcoholView].forEach {
+        [propertyHeader, sweetnessView, acidityView, tanninView, bodyView, alcoholView].forEach {
             addSubview($0)
         }
         
@@ -54,47 +32,35 @@ class RecordGraphView: UIView, UIScrollViewDelegate {
         alcoholView.titleLabel.text = "알코올"
         alcoholView.tooltipText = "알코올이 많으면 목을 넘어갈 때 따뜻하거나 약간 뜨거운 느낌이 나요. 적으면 더 부드럽고 가벼운 느낌이랍니다."
         
-        graphRecordLabel.snp.makeConstraints { make in
+        propertyHeader.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.equalToSuperview().inset(24)
-        }
-        
-        graphRecordLabelKorean.snp.makeConstraints { make in
-            make.top.equalTo(graphRecordLabel.snp.top).offset(4)
-            make.leading.equalTo(graphRecordLabel.snp.trailing).offset(6)
-        }
-        
-        vector2.snp.makeConstraints { make in
-            make.top.equalTo(graphRecordLabel.snp.bottom).offset(6)
-            make.leading.trailing.equalToSuperview().inset(24)
-            make.height.equalTo(1)
+            make.leading.trailing.equalToSuperview()
+            make.height.greaterThanOrEqualTo(30)
         }
         
         sweetnessView.snp.makeConstraints { make in
-            make.top.equalTo(vector2.snp.bottom).offset(60)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.top.equalTo(propertyHeader.snp.bottom).offset(60)
+            make.leading.trailing.equalToSuperview()
             make.height.equalTo(30)
         }
-        
-        acidityView.snp.makeConstraints { make in
+        alcoholView.snp.makeConstraints { make in
             make.top.equalTo(sweetnessView.snp.bottom).offset(40)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.leading.trailing.equalToSuperview()
             make.height.equalTo(30)
         }
-        
         tanninView.snp.makeConstraints { make in
-            make.top.equalTo(acidityView.snp.bottom).offset(40)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.top.equalTo(alcoholView.snp.bottom).offset(40)
+            make.leading.trailing.equalToSuperview()
             make.height.equalTo(30)
         }
         bodyView.snp.makeConstraints { make in
             make.top.equalTo(tanninView.snp.bottom).offset(40)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.leading.trailing.equalToSuperview()
             make.height.equalTo(30)
         }
-        alcoholView.snp.makeConstraints { make in
+        acidityView.snp.makeConstraints { make in
             make.top.equalTo(bodyView.snp.bottom).offset(40)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.leading.trailing.equalToSuperview()
             make.height.equalTo(30)
         }
     }

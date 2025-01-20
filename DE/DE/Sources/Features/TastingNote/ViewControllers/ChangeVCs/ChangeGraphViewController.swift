@@ -60,16 +60,16 @@ public class ChangeGraphViewController: UIViewController {
     }
     
     private func updatePolygonChart() {
-        let chartData = [
-            RadarChartData(type: .sweetness, value: sliderValues["Sweetness"] ?? 0),
-            RadarChartData(type: .acid, value: sliderValues["Acidity"] ?? 0),
-            RadarChartData(type: .tannin, value: sliderValues["Tannin"] ?? 0),
-            RadarChartData(type: .bodied, value: sliderValues["Body"] ?? 0),
-            RadarChartData(type: .alcohol, value: sliderValues["Alcohol"] ?? 0)
-        ]
-        
-        // 다각형 차트에 데이터 설정
-        recordGraphView.polygonChart.dataList = chartData
+//        let chartData = [
+//            RadarChartData(type: .sweetness, value: sliderValues["Sweetness"] ?? 0),
+//            RadarChartData(type: .acid, value: sliderValues["Acidity"] ?? 0),
+//            RadarChartData(type: .tannin, value: sliderValues["Tannin"] ?? 0),
+//            RadarChartData(type: .bodied, value: sliderValues["Body"] ?? 0),
+//            RadarChartData(type: .alcohol, value: sliderValues["Alcohol"] ?? 0)
+//        ]
+//        
+//        // 다각형 차트에 데이터 설정
+//        recordGraphView.polygonChart.dataList = chartData
     }
 
     @objc func prevVC() {

@@ -3,11 +3,6 @@
 import SwiftUI
 import Charts
 
-struct RadarData {
-    let label: String
-    let value: Double // 0.0 ~ 1.0
-}
-
 struct PalateChartView: View {
     @ObservedObject var viewModel: PalateViewModel
     
@@ -22,7 +17,7 @@ struct PalateChartView: View {
             // 단계별 다각형과 레이블
             ForEach(1...levels, id: \.self) { level in
                 let radius = spacing * CGFloat(level) // 각 단계별 반경 계산
-                PolygonShape(sides: viewModel.stats.count, scale: radius / (spacing * CGFloat(levels)))
+                PolygonShape(sides: $viewModel.stats.count, scale: radius / (spacing * CGFloat(levels)))
                     .stroke(Color.gray.opacity(0.3), lineWidth: 1)
                 
                 // 단계별 레이블 추가

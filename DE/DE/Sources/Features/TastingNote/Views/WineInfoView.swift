@@ -513,14 +513,14 @@ public class WineInfoView: UIView {
         reviewDescription.text = data.review
         noseDescriptionLabel.text = data.noseMapList.compactMap { $0.values.first }.joined(separator: ", ")
         
-        let chartData = [
-            RadarChartData(type: .sweetness, value: data.sugarContent),
-            RadarChartData(type: .acid, value: data.acidity),
-            RadarChartData(type: .tannin, value: data.tannin),
-            RadarChartData(type: .bodied, value: data.body),
-            RadarChartData(type: .alcohol, value: data.alcohol)
-        ]
-        polygonChart.dataList = chartData
+//        let chartData = [
+//            RadarChartData(type: .sweetness, value: data.sugarContent),
+//            RadarChartData(type: .acid, value: data.acidity),
+//            RadarChartData(type: .tannin, value: data.tannin),
+//            RadarChartData(type: .bodied, value: data.body),
+//            RadarChartData(type: .alcohol, value: data.alcohol)
+//        ]
+//        polygonChart.dataList = chartData
         
         self.layoutIfNeeded()
     }

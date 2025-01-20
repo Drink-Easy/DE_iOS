@@ -56,13 +56,13 @@ public class CustomStepSlider: UISlider {
     
     private let blind1: UIView = {
         let b = UIView()
-        b.backgroundColor = UIColor(hex: "F8F8FA")
+        b.backgroundColor = AppColor.bgGray
         return b
     }()
     
     private let blind2: UIView = {
         let b = UIView()
-        b.backgroundColor = UIColor(hex: "F8F8FA")
+        b.backgroundColor = AppColor.bgGray
         return b
     }()
     

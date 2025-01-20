@@ -69,11 +69,11 @@ class SliderWithTooltipView: UIView {
         tooltipImage.snp.makeConstraints { make in
             make.centerY.equalTo(titleLabel)
             make.leading.equalTo(titleLabel.snp.trailing)
-            make.width.height.equalTo(12)
+            make.width.height.equalTo(16)
         }
         
         slider.snp.makeConstraints { make in
-            make.top.equalTo(tooltipImage.snp.top).offset(3)
+            make.centerY.equalTo(titleLabel)
             make.leading.equalTo(tooltipImage.snp.trailing).offset(23)
             make.trailing.equalToSuperview()
             make.width.equalTo(240)
