@@ -80,7 +80,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate{
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.width.equalToSuperview() // 가로 크기 고정
-            make.bottom.equalTo(wineInfoView.snp.bottom).offset(16) // 콘텐츠 높이에 맞게 설정
+            make.bottom.equalTo(wineInfoView.snp.bottom) // 콘텐츠 높이에 맞게 설정
         }
         wineInfoView.snp.makeConstraints { make in
             make.top.equalToSuperview()
@@ -101,6 +101,8 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate{
             case .nose:
                 viewController = LoginVC()
             case .rate:
+                viewController = EditRateViewController()
+            case .review:
                 viewController = EditRateViewController()
             case .none:
                 fatalError("Unhandled PropertyType: \(type)")

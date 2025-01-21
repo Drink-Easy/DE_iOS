@@ -55,7 +55,7 @@ public class WineInfoView: UIView {
     }
     
     //TODO: 리뷰 뷰
-    let reviewHeaderView = PropertyTitleView(type: .none)
+    let reviewHeaderView = PropertyTitleView(type: .review)
     let reviewView = UIView().then {
         $0.backgroundColor = .brown
     }
@@ -71,7 +71,7 @@ public class WineInfoView: UIView {
         ratingHeaderView.setName(eng: "Rate", kor: "평점")
         ratingHeaderView.enableEditButton()
         reviewHeaderView.setName(eng: "Review", kor: "후기")
-        reviewHeaderView.setDate(reviewDate: "24-10-11")
+        reviewHeaderView.enableEditButton()
         updateDelegates()
         setupUI()
         setupConstraints()

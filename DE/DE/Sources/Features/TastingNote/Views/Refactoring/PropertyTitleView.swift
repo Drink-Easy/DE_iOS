@@ -14,6 +14,7 @@ enum PropertyType {
     case color
     case nose
     case rate
+    case review
     case none
 }
 
