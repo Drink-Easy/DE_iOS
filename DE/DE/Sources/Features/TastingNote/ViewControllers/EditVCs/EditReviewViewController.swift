@@ -7,7 +7,6 @@ import Network
 public class EditReviewViewController: UIViewController {
     
     lazy var rView = OnlyReviewView()
-    private var ratingValue: Double = 2.5
     let navigationBarManager = NavigationBarManager()
     
     let noteService = TastingNoteService()
@@ -17,8 +16,8 @@ public class EditReviewViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
-           NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
+//           NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
 //        rView.header.setTitleLabel(wineData.wineName)
 //        rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
 //        rView.infoView.kindContents.text = wineData.sort
@@ -29,11 +28,11 @@ public class EditReviewViewController: UIViewController {
         rView.infoView.typeContents.text = "테스트"
     }
     
-    public override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
+//    public override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+//        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+//    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,7 +41,7 @@ public class EditReviewViewController: UIViewController {
         setupActions()
         
         setupNavigationBar()
-        addExtendedBackgroundView()
+//        addExtendedBackgroundView()
     }
 
     private func addExtendedBackgroundView() {
@@ -100,22 +99,22 @@ public class EditReviewViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func keyboardDown() {
-        self.rView.transform = .identity
-    }
-    
-    @objc func keyboardUp(notification:NSNotification) {
-        if let keyboardFrame:NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-           let keyboardRectangle = keyboardFrame.cgRectValue
-            
-            UIView.animate(
-                withDuration: 0.3
-                , animations: {
-                    self.rView.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height)
-                }
-            )
-        }
-    }
+//    @objc func keyboardDown() {
+//        self.rView.transform = .identity
+//    }
+//    
+//    @objc func keyboardUp(notification:NSNotification) {
+//        if let keyboardFrame:NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+//           let keyboardRectangle = keyboardFrame.cgRectValue
+//            
+//            UIView.animate(
+//                withDuration: 0.3
+//                , animations: {
+//                    self.rView.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height)
+//                }
+//            )
+//        }
+//    }
 }
 
 extension EditReviewViewController : UITextViewDelegate {

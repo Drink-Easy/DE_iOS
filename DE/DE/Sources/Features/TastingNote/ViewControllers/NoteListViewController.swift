@@ -8,6 +8,8 @@ import Then
 import CoreModule
 import Network
 
+// 노트 보관함 뷰컨트롤러
+
 public class NoteListViewController: UIViewController {
     
     var wineCount: Int = 0

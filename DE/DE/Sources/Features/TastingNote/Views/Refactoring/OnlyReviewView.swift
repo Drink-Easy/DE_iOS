@@ -76,9 +76,9 @@ class OnlyReviewView: UIView {
         }
         
         saveButton.snp.makeConstraints { make in
-//            make.bottom.equalToSuperview().inset(40) // 동적 기기 대응
+            make.bottom.equalToSuperview().inset(40) // 동적 기기 대응
             make.leading.trailing.equalToSuperview()
-            make.top.equalTo(reviewBody.snp.bottom).offset(80)
+//            make.top.equalTo(reviewBody.snp.bottom).offset(40)
             make.height.equalTo(60)
         }
     }

@@ -3,6 +3,8 @@
 import UIKit
 import CoreModule
 
+// 향 선택 뷰컨
+
 public class ChooseNoseViewController: UIViewController {
     
     private var collectionView: UICollectionView!

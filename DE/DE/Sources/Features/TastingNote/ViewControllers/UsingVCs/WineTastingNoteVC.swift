@@ -44,7 +44,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate{
     
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     public override func viewDidLoad() {
@@ -103,7 +103,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate{
             case .rate:
                 viewController = EditRateViewController()
             case .review:
-                viewController = EditRateViewController()
+                viewController = EditReviewViewController()
             case .none:
                 fatalError("Unhandled PropertyType: \(type)")
             }
