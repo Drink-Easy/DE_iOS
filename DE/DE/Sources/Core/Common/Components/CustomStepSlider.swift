@@ -21,21 +21,11 @@ public class CustomStepSlider: UISlider {
         setupTrack()
         setupCustomThumb()
         setupStepLabels()
-        // setInitialValue()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - Setup Thumb Image
-    private let customThumbView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "thumbImage"))
-        imageView.contentMode = .scaleAspectFit
-        imageView.layer.zPosition = 1
-        imageView.isUserInteractionEnabled = true
-        return imageView
-    }()
     
     public override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         let thumbRect = thumbRect(forBounds: bounds, trackRect: trackRect(forBounds: bounds), value: value)
@@ -46,6 +36,22 @@ public class CustomStepSlider: UISlider {
     }
     
     // MARK: - Setup UI
+    private let customThumbView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "thumbImage"))
+        imageView.contentMode = .scaleAspectFit
+        imageView.layer.zPosition = 1
+        imageView.isUserInteractionEnabled = true
+        return imageView
+    }()
+    
+    private let thumbLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.font = UIFont.boldSystemFont(ofSize: 10)
+        label.textColor = .white
+        return label
+    }()
+    
     private lazy var stepStackView: UIStackView = {
         let s = UIStackView()
         s.axis = .horizontal
@@ -54,37 +60,12 @@ public class CustomStepSlider: UISlider {
         return s
     }()
     
-    private let blind1: UIView = {
-        let b = UIView()
-        b.backgroundColor = AppColor.bgGray
-        return b
-    }()
-    
-    private let blind2: UIView = {
-        let b = UIView()
-        b.backgroundColor = AppColor.bgGray
-        return b
-    }()
-    
     private func setupUI() {
-        addSubview(blind1)
-        blind1.snp.makeConstraints { make in
-            make.leading.equalToSuperview()
-            make.width.equalTo(8)
-            make.bottom.top.equalToSuperview()
-        }
-        
-        addSubview(blind2)
-        blind2.snp.makeConstraints { make in
-            make.trailing.equalToSuperview()
-            make.width.equalTo(8)
-            make.bottom.top.equalToSuperview()
-        }
         
         addSubview(customThumbView)
         addSubview(stepStackView)
         stepStackView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(8)
+            make.leading.trailing.equalToSuperview()
             make.centerY.equalToSuperview()
             make.height.equalTo(8)
         }
@@ -113,10 +94,22 @@ public class CustomStepSlider: UISlider {
     }
     
     private func setupCustomThumb() {
+        // 기존 Thumb 이미지 뷰 설정
         addSubview(customThumbView)
+        customThumbView.addSubview(thumbLabel)
+        
+        // Thumb의 위치와 크기 설정
         updateThumbPosition(animated: false)
         
-        // ✅ PanGestureRecognizer 추가
+        // ThumbLabel의 위치와 크기 설정
+        thumbLabel.snp.makeConstraints { make in
+            make.bottom.equalTo(customThumbView.snp.bottom).inset(20)
+            make.height.equalTo(customThumbView).inset(5) // Thumb 이미지 내부에 적절한 여백 추가
+            make.centerX.equalTo(customThumbView)
+            make.width.equalTo(20)
+        }
+        
+        // PanGestureRecognizer 추가
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handleThumbPan(_:)))
         customThumbView.addGestureRecognizer(panGesture)
     }
@@ -125,7 +118,7 @@ public class CustomStepSlider: UISlider {
     private func createCircleView() -> UIView {
         let circleView = UIView()
         circleView.layer.cornerRadius = 4
-        circleView.backgroundColor = UIColor(hex: "F8F8FA")
+        circleView.backgroundColor = AppColor.bgGray
         circleView.snp.makeConstraints { make in
             make.width.height.equalTo(8)
         }
@@ -176,7 +169,6 @@ public class CustomStepSlider: UISlider {
         sendActions(for: .valueChanged)
     }
     
-    // MARK: - Update Thumb Position
     private func updateThumbPosition(animated: Bool) {
         // ✅ 현재 value에 맞는 동그라미 뷰 가져오기
         let stepIndex = Int((value - minimumValue) / stepValues[0])
@@ -193,6 +185,7 @@ public class CustomStepSlider: UISlider {
                 make.width.equalTo(27)
                 make.height.equalTo(62)
             }
+            self.thumbLabel.text = "\(Int(self.value))" // Thumb Label의 텍스트 업데이트
             self.layoutIfNeeded()
         }
         

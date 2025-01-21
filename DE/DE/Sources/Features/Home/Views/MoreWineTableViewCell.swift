@@ -158,7 +158,7 @@ class MoreWineTableViewCell: UITableViewCell {
         name.text = model.wineName
         kind.text = "와인 > \(model.sort)"
         score.text = "★ \(String(format: "%.1f", model.vivinoRating))"
-        price.text = model.price == 0 ? "가격 없음" : "₩ \(model.price / 10000)만원 대"
+        price.text = model.price == 0 ? "가격 정보 없음" : "₩ \(model.price / 10000)만원 대"
     }
 
 }
