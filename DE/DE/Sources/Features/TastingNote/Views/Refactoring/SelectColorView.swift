@@ -9,7 +9,7 @@ import Then
 class SelectColorView: UIView {
     public lazy var header = TopView(currentPage: 2, entirePage: 5)
     public lazy var infoView = WineDetailView()
-    public lazy var propertyHeader = PropertyTitleView()
+    public lazy var propertyHeader = PropertyTitleView(type: .color)
     public lazy var colorCollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: {

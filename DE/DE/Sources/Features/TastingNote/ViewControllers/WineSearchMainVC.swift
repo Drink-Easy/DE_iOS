@@ -37,8 +37,7 @@ public class WineSearchMainVC : UIViewController, UISearchBarDelegate, UITableVi
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
-            action: #selector(prevVC),
-            tintColor: AppColor.gray80!
+            action: #selector(prevVC)
         )
     }
     

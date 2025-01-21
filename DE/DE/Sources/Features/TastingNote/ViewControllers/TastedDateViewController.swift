@@ -53,8 +53,7 @@ public class TastedDateViewController: UIViewController {
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
-            action: #selector(prevVC),
-            tintColor: AppColor.gray90!
+            action: #selector(prevVC)
         )
     }
     

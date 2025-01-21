@@ -126,8 +126,7 @@ class MoreLikelyWineViewController: UIViewController {
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
-            action: #selector(prevVC),
-            tintColor: AppColor.gray70!
+            action: #selector(prevVC)
         )
     }
     

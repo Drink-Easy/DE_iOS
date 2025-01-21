@@ -12,7 +12,7 @@ class RatingWineView: UIView {
     public lazy var infoView = WineDetailView()
     
     // 별점
-    public lazy var ratingHeader = PropertyTitleView()
+    public lazy var ratingHeader = PropertyTitleView(type: .rate)
     public lazy var ratingBody = UIView()
     public lazy var ratingLabel: UILabel = {
         let ratingValue: Double = 2.5
@@ -52,7 +52,7 @@ class RatingWineView: UIView {
     
     // 리뷰
     let textViewPlaceHolder = "추가로 기록하고 싶은 내용을 작성해 보세요!"
-    public lazy var reviewHeader = PropertyTitleView()
+    public lazy var reviewHeader = PropertyTitleView(type: .none)
     public lazy var reviewBody: UITextView = {
         let r = UITextView()
         r.layer.cornerRadius = 10

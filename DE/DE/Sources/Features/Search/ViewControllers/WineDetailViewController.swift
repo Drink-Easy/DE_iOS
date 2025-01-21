@@ -59,8 +59,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
-            action: #selector(prevVC),
-            tintColor: AppColor.gray70!
+            action: #selector(prevVC)
         )
         
         smallTitleLabel = navigationBarManager.setNReturnTitle(
