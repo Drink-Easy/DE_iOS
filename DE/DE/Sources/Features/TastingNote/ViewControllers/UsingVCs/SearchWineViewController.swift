@@ -8,7 +8,6 @@ import Then
 
 public class SearchWineViewController : UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
     let navigationBarManager = NavigationBarManager()
-    // TODO : 상단 네비게이션 바 추가하는거 하셈!!
     var wineResults: [SearchResultModel] = []
     let networkService = WineService()
     

@@ -95,13 +95,13 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate{
                 
             //TODO: 수정 뷰컨 연결
             case .palateGraph:
-                viewController = TestVC()
+                viewController = ChangePalateVC()
             case .color:
-                viewController = ProfileEditVC()
+                viewController = EditWineColorViewController()
             case .nose:
                 viewController = LoginVC()
             case .rate:
-                viewController = SignUpVC()
+                viewController = EditRateViewController()
             case .none:
                 fatalError("Unhandled PropertyType: \(type)")
             }
@@ -113,7 +113,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate{
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func deleteTapped() {
+    @objc func deleteTapped(){
         let alert = UIAlertController(
             title: "테이스팅 노트 삭제",
             message: "정말 삭제하시겠습니까?",

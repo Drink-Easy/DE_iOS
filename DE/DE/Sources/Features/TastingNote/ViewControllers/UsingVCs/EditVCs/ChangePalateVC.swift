@@ -11,6 +11,7 @@ public class ChangePalateVC: UIViewController {
     
     let navigationBarManager = NavigationBarManager()
     let tnManager = NewTastingNoteManager.shared
+    let wineData = TNWineDataManager.shared
     
     let scrollView = UIScrollView().then {
         $0.isScrollEnabled = true
@@ -97,7 +98,10 @@ public class ChangePalateVC: UIViewController {
     }
     
     @objc private func saveButtonTapped() {
-        //TODO: 수정 데이터 연결 api
+        // TODO: 수정 데이터 연결 api 호출
+        // popViewController
+        // 데이터 매니저에 변경된 데이터 저장하기
+        navigationController?.popViewController(animated: true)
     }
     
     @objc private func sliderValueChanged(_ sender: UISlider) {

@@ -4,16 +4,15 @@ import UIKit
 import CoreModule
 import Network
 
-public class RatingWineViewController: UIViewController {
+public class EditReviewViewController: UIViewController {
     
-    lazy var rView = RatingWineView()
+    lazy var rView = OnlyReviewView()
     private var ratingValue: Double = 2.5
     let navigationBarManager = NavigationBarManager()
     
     let noteService = TastingNoteService()
     let tnManger = NewTastingNoteManager.shared
     let wineData = TNWineDataManager.shared
-    
     let textViewPlaceHolder = "추가로 기록하고 싶은 내용을 작성해 보세요!"
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -28,8 +27,6 @@ public class RatingWineViewController: UIViewController {
         rView.infoView.countryContents.text = "디자인" + ", " + "테스트"
         rView.infoView.kindContents.text = "테스트"
         rView.infoView.typeContents.text = "테스트"
-        
-        
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -72,12 +69,6 @@ public class RatingWineViewController: UIViewController {
     
     func setupActions() {
         rView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
-        
-        rView.ratingButton.didFinishTouchingCosmos = { [weak self] rating in
-            guard let self = self else { return }
-            self.updateRatingLabel(with: rating)
-        }
-        
         rView.reviewBody.delegate = self
         
         // 탭 제스처 추가
@@ -96,11 +87,6 @@ public class RatingWineViewController: UIViewController {
         self.navigationController?.navigationBar.backgroundColor = AppColor.bgGray
     }
     
-    private func updateRatingLabel(with rating: Double) {
-        ratingValue = rating
-        rView.setRate(rating)
-    }
-    
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
@@ -111,6 +97,7 @@ public class RatingWineViewController: UIViewController {
     
     @objc func nextVC() {
         // Call post api
+        navigationController?.popViewController(animated: true)
     }
     
     @objc func keyboardDown() {
@@ -131,7 +118,7 @@ public class RatingWineViewController: UIViewController {
     }
 }
 
-extension RatingWineViewController : UITextViewDelegate {
+extension EditReviewViewController : UITextViewDelegate {
     public func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.text == textViewPlaceHolder {
             textView.text = nil

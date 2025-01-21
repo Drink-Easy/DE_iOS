@@ -10,9 +10,7 @@ public class ChangeColorViewController: UIViewController {
 //    let chooseWineColor = ChangeColorView()
     let navigationBarManager = NavigationBarManager()
     let dto: TastingNoteResponsesDTO
-//    
-//    let noteService = TastingNoteService()
-//    
+    
     init(dto: TastingNoteResponsesDTO) {
         self.dto = dto
         super.init(nibName: nil, bundle: nil)
