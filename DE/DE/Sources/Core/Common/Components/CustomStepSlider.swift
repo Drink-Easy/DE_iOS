@@ -19,7 +19,7 @@ public class CustomStepSlider: UISlider {
         self.stepValues = [step1, step2, step3, step4, step5]
         setupUI()
         setupTrack()
-        setupCustomThumb()
+        if text1 == "" { setupCustomLabelThumb() } else { setupCustomThumb() }
         setupStepLabels()
     }
     
@@ -93,7 +93,7 @@ public class CustomStepSlider: UISlider {
         }
     }
     
-    private func setupCustomThumb() {
+    private func setupCustomLabelThumb() {
         // 기존 Thumb 이미지 뷰 설정
         addSubview(customThumbView)
         customThumbView.addSubview(thumbLabel)
@@ -108,6 +108,18 @@ public class CustomStepSlider: UISlider {
             make.centerX.equalTo(customThumbView)
             make.width.equalTo(20)
         }
+        
+        // PanGestureRecognizer 추가
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handleThumbPan(_:)))
+        customThumbView.addGestureRecognizer(panGesture)
+    }
+    
+    private func setupCustomThumb() {
+        // 기존 Thumb 이미지 뷰 설정
+        addSubview(customThumbView)
+        
+        // Thumb의 위치와 크기 설정
+        updateThumbPosition(animated: false)
         
         // PanGestureRecognizer 추가
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handleThumbPan(_:)))
