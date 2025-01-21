@@ -7,11 +7,11 @@ public class PalateViewModel: ObservableObject {
     
     func loadSliderValues(from sliderValues: [String: Int]) {
         stats = [
-            RadarData(label: "당도", value: Double(sliderValues["Sweetness"] ?? 0) / 100),
-            RadarData(label: "알코올", value: Double(sliderValues["Alcohol"] ?? 0) / 100),
-            RadarData(label: "타닌", value: Double(sliderValues["Tannin"] ?? 0) / 100),
-            RadarData(label: "바디", value: Double(sliderValues["Body"] ?? 0) / 100),
-            RadarData(label: "산도", value: Double(sliderValues["Acidity"] ?? 0) / 100)
+            RadarData(label: "당도", value: Double(sliderValues["Sweetness"] ?? 60) / 100),
+            RadarData(label: "알코올", value: Double(sliderValues["Alcohol"] ?? 60) / 100),
+            RadarData(label: "타닌", value: Double(sliderValues["Tannin"] ?? 60) / 100),
+            RadarData(label: "바디", value: Double(sliderValues["Body"] ?? 60) / 100),
+            RadarData(label: "산도", value: Double(sliderValues["Acidity"] ?? 60) / 100)
         ]
     }
 }

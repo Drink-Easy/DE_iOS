@@ -5,8 +5,24 @@ import Then
 import CoreModule
 import SnapKit
 
+protocol PropertyHeaderDelegate: AnyObject {
+    func didTapEditButton(for type: PropertyType)
+}
+
+enum PropertyType {
+    case palateGraph
+    case color
+    case nose
+    case rate
+    case none
+}
+
 /// 와인 정보 속성 헤더
 class PropertyTitleView: UIView {
+    
+    weak var delegate: PropertyHeaderDelegate?
+    private let propertyType: PropertyType
+    
     private lazy var engTitle = UILabel().then {
         $0.textColor = AppColor.black
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 22)
@@ -34,6 +50,7 @@ class PropertyTitleView: UIView {
             for: .normal
         )
         $0.isHidden = true
+        $0.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
     }
     
     private lazy var dateLabel = UILabel().then {
@@ -42,13 +59,16 @@ class PropertyTitleView: UIView {
     }
     
     /// 기본 컬러가 보라50임
-    init(barColor : UIColor = AppColor.purple50!) {
+    init(type: PropertyType, barColor: UIColor = AppColor.purple50!) {
+        self.propertyType = type
         super.init(frame: .zero)
-        backgroundColor = .clear
-        self.line.backgroundColor = barColor
-        
+        self.backgroundColor = .clear
         self.addComponents()
         self.constraints()
+        self.line.backgroundColor = barColor // barColor 적용
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     public func setName(eng engTitle : String, kor korTitle : String) {
@@ -56,20 +76,15 @@ class PropertyTitleView: UIView {
         self.korTitle.text = korTitle
     }
     
-    public func setType(showEditButton: Bool = false, showDateLabel: Bool = false) {
-        self.editButton.isHidden = !showEditButton
-        self.dateLabel.isHidden = !showDateLabel
+    public func enableEditButton() {
+        self.editButton.isHidden = false
     }
     
     public func setDate(reviewDate: String) {
-        self.dateLabel.text = reviewDate
         self.dateLabel.isHidden = false
+        self.dateLabel.text = reviewDate
     }
     
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-
     private func addComponents() {
         [engTitle, korTitle, line, editButton, dateLabel].forEach{ self.addSubview($0) }
     }
@@ -101,6 +116,11 @@ class PropertyTitleView: UIView {
             make.trailing.equalToSuperview()
         }
         
+    }
+    
+    @objc private func editButtonTapped() {
+        print("edit button tapped")
+        delegate?.didTapEditButton(for: propertyType)
     }
 }
 

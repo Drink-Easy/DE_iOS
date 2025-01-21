@@ -87,7 +87,7 @@ public class WineInfoViewController: UIViewController {
     private func handleSelectedNoteResponse(_ data: TastingNoteResponsesDTO) {
         DispatchQueue.main.async {
             print("Fetched Note Data:", data)
-            self.wineInfoView.updateUI(data)
+//            self.wineInfoView.updateUI(data)
             
             let noseMap = data.noseMapList.reduce(into: [String: String]()) { dict, item in
                 if let key = item.keys.first, let value = item.values.first {

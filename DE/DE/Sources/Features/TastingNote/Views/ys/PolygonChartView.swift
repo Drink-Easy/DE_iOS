@@ -11,8 +11,6 @@ import Then
 class PolygonChartView: UIView {
     
     // MARK: - UI Components
-    public lazy var propertyHeader = PropertyTitleView()
-    
     var viewModel = PalateViewModel()
     
     lazy var palateChart = PalateChartView(viewModel: viewModel)
@@ -27,30 +25,20 @@ class PolygonChartView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupSubviews()
-        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupSubviews()
-        setupConstraints()
     }
     
     // MARK: - Setup Methods
-    private func setupSubviews() {
-        // 서브뷰 추가
-        addSubview(propertyHeader)          // 헤더 추가
+    private func setupSubviews() {   // 헤더 추가
         addSubview(hostingController.view)  // 차트 뷰 추가
-    }
-    
-    private func setupConstraints() {
-        propertyHeader.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.trailing.equalToSuperview()
-            make.height.greaterThanOrEqualTo(30)
-        }
+        
         hostingController.view.snp.makeConstraints { make in
-            make.top.equalTo(propertyHeader.snp.bottom).offset(30)
+            make.height.equalTo(330)
+            make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(16)
             make.bottom.equalToSuperview().offset(-16) // 아래 여백
         }
