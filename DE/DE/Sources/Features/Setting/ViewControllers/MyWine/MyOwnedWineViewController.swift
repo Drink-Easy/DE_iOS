@@ -16,6 +16,16 @@ class MyOwnedWineViewController: UIViewController {
         $0.delegate = self
     }
     
+    private lazy var noWineLabel = UILabel().then {
+        $0.numberOfLines = 0
+        $0.text = "보유 와인에 담긴 와인이 없어요.\n구매한 와인을 직접 등록하고\n관리해 보세요!"
+        $0.setLineSpacingPercentage(0.3)
+        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.textColor = AppColor.gray70
+        $0.textAlignment = .center
+        $0.isHidden = true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
@@ -38,8 +48,7 @@ class MyOwnedWineViewController: UIViewController {
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
-            action: #selector(backButtonTapped),
-            tintColor: AppColor.gray70!
+            action: #selector(backButtonTapped)
         )
         
         navigationBarManager.setTitle(
@@ -67,7 +76,7 @@ class MyOwnedWineViewController: UIViewController {
     }
     
     private func addComponents() {
-        [myWienTableView].forEach { view.addSubview($0) }
+        [myWienTableView, noWineLabel].forEach { view.addSubview($0) }
     }
 
     private func setConstraints() {
@@ -76,6 +85,10 @@ class MyOwnedWineViewController: UIViewController {
             make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(18)
             make.bottom.equalTo(view.safeAreaLayoutGuide)
             make.height.equalTo(651)
+        }
+        
+        noWineLabel.snp.makeConstraints {
+            $0.centerX.centerY.equalTo(view.safeAreaLayoutGuide)
         }
     }
 }
@@ -118,6 +131,7 @@ extension MyOwnedWineViewController: UITableViewDelegate, UITableViewDataSource 
             // 삭제 로직
             self.wineResults.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
+            self.noWineLabel.isHidden = !self.wineResults.isEmpty
             completionHandler(true) // 완료 상태 전달
         }
         

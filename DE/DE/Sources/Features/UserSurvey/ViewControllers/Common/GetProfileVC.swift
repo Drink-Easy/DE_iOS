@@ -70,8 +70,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
-            action: #selector(backButtonTapped),
-            tintColor: AppColor.gray70!
+            action: #selector(backButtonTapped)
         )
     }
     
@@ -95,8 +94,8 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     func setupConstraints() {
         headerLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
-            make.leading.equalToSuperview().inset(30)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(16.0))
+            make.leading.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
         }
         profileView.snp.makeConstraints { make in
             make.top.equalTo(headerLabel.snp.bottom)
@@ -104,8 +103,8 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
             make.height.equalTo(Constants.superViewHeight * 0.5)
         }
         nextButton.snp.makeConstraints { make in
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-40)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-DynamicPadding.dynamicValue(40.0))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
         }
     }
     
@@ -154,6 +153,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
         LocationManager.shared.requestLocationPermission { [weak self] address in
             DispatchQueue.main.async {
                 self?.profileView.myLocationTextField.textField.text = address ?? ""
+                self?.checkFormValidity()
             }
         }
     }
@@ -165,18 +165,21 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
             return
         }
         
-        ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField)
+        ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField) {
+                self.checkFormValidity() // 네트워크 응답 후 호출
+            }
     }
     
-    //MARK: - 폼 유효성 검사
+    //MARK: - 닉네임 유효성 검사
     @objc func validateNickname(){
         ValidationManager.isNicknameCanUse = false
         ValidationManager.validateNickname(profileView.nicknameTextField)
         checkFormValidity()
     }
     
+    //MARK: - 폼 유효성 검사
     @objc func checkFormValidity() {
-        let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true) && !ValidationManager.isNicknameCanUse
+        let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true) && ValidationManager.isNicknameCanUse
         let isLocationValid = !(profileView.myLocationTextField.textField.text?.isEmpty ?? true)
         let isImageSelected = profileView.profileImageView.image != nil
         let isFormValid = isNicknameValid && isLocationValid && isImageSelected

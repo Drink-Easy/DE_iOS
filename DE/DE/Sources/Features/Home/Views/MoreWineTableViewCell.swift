@@ -10,9 +10,15 @@ class MoreWineTableViewCell: UITableViewCell {
     
     private let borderLayer = CALayer()
     
+    private lazy var imageBackground = UIView().then {
+        $0.layer.cornerRadius = 5
+        $0.layer.masksToBounds = true
+        $0.backgroundColor = UIColor(hex: "#2f2f2f")
+    }
+    
     private lazy var image = UIImageView().then {
         $0.image = UIImage(named: "스파클링")
-        $0.contentMode = .scaleAspectFill
+        $0.contentMode = .scaleAspectFit
         $0.layer.cornerRadius = 6
         $0.layer.masksToBounds = true
     }
@@ -104,20 +110,27 @@ class MoreWineTableViewCell: UITableViewCell {
     }
     
     private func addComponents() {
-        [image, name, kind, score, price].forEach{ self.addSubview($0) }
+        [imageBackground, name, kind, score, price].forEach{ self.addSubview($0) }
+        imageBackground.addSubview(image)
     }
     
     private func constraints() {
-        image.snp.makeConstraints {
+        
+        imageBackground.snp.makeConstraints {
             $0.verticalEdges.equalToSuperview().inset(15)
             $0.leading.equalToSuperview().offset(6)
             $0.width.height.equalTo(88)
         }
         
+        image.snp.makeConstraints {
+            $0.verticalEdges.equalToSuperview().inset(3)
+            $0.horizontalEdges.equalToSuperview()
+        }
+        
         name.snp.makeConstraints {
-            $0.leading.equalTo(image.snp.trailing).offset(16)
+            $0.leading.equalTo(imageBackground.snp.trailing).offset(16)
             $0.trailing.equalToSuperview().inset(6)
-            $0.top.equalTo(image.snp.top)
+            $0.top.equalTo(imageBackground.snp.top)
         }
         
         kind.snp.makeConstraints {
@@ -127,7 +140,7 @@ class MoreWineTableViewCell: UITableViewCell {
         
         score.snp.makeConstraints {
             $0.leading.equalTo(kind.snp.leading)
-            $0.bottom.equalTo(image.snp.bottom)
+            $0.bottom.equalTo(imageBackground.snp.bottom)
         }
         
         price.snp.makeConstraints {
@@ -145,7 +158,7 @@ class MoreWineTableViewCell: UITableViewCell {
         name.text = model.wineName
         kind.text = "와인 > \(model.sort)"
         score.text = "★ \(String(format: "%.1f", model.vivinoRating))"
-        price.text = "₩ \(model.price / 10000)만원 대"
+        price.text = model.price == 0 ? "가격 정보 없음" : "₩ \(model.price / 10000)만원 대"
     }
 
 }

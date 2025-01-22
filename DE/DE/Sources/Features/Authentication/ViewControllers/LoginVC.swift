@@ -51,15 +51,14 @@ class LoginVC: UIViewController {
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
-            action: #selector(backButtonTapped),
-            tintColor: AppColor.gray70!
+            action: #selector(backButtonTapped)
         )
     }
     
     // MARK: - Action 설정
     private func setupActions() {
-        loginView.usernameField.textField.addTarget(self, action: #selector(usernameValidate), for: .allEditingEvents)
-        loginView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .allEditingEvents)
+        loginView.usernameField.textField.addTarget(self, action: #selector(usernameValidate), for: .editingChanged)
+        loginView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .editingChanged)
         loginView.idSaveCheckBox.addTarget(self, action: #selector(idSaveCheckBoxTapped), for: .touchUpInside)
         loginView.joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
         
@@ -128,7 +127,7 @@ class LoginVC: UIViewController {
     
     private func goToNextView(_ isFirstLogin: Bool) {
         if isFirstLogin {
-            let enterTasteTestViewController = MainTabBarController()
+            let enterTasteTestViewController = TermsOfServiceVC()
             navigationController?.pushViewController(enterTasteTestViewController, animated: true)
         } else {
             let homeViewController = MainTabBarController()

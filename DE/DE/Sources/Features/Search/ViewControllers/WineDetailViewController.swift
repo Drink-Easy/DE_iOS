@@ -17,7 +17,6 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     var reviewData: [WineReviewModel] = []
     private var expandedCells: [Bool] = []
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.prefersLargeTitles = false
@@ -34,11 +33,21 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
-        if originalIsLiked != isLiked {
-            (originalIsLiked ? calldeleteLikedAPI : callLikeAPI)(wineId)
+        Task {
+            if originalIsLiked != isLiked {
+                if originalIsLiked {
+                    await calldeleteLikedAPI(wineId: wineId)
+                } else {
+                    await callLikeAPI(wineId: wineId)
+                }
+                
+                if let previousVC = navigationController?.viewControllers.last as? WishListViewController {
+                    previousVC.shouldSkipWishlistUpdate = true
+                }
+            }
         }
     }
     
@@ -49,8 +58,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
-            action: #selector(prevVC),
-            tintColor: AppColor.gray70!
+            action: #selector(prevVC)
         )
         
         smallTitleLabel = navigationBarManager.setNReturnTitle(
@@ -189,16 +197,17 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
             // 리뷰가 없을 때
             reviewView.moreBtn.isHidden = true
             reviewView.reviewCollectionView.isHidden = true
+            reviewView.reviewCollectionView.snp.updateConstraints {
+                $0.height.equalTo(0) // 높이를 0으로 설정
+            }
             reviewView.scoreLabel.isHidden = true
             reviewView.noReviewLabel.isHidden = false
-            scrollView.isScrollEnabled = false
         } else {
             // 리뷰가 있을 때
             reviewView.moreBtn.isHidden = false
             reviewView.reviewCollectionView.isHidden = false
             reviewView.scoreLabel.isHidden = false
             reviewView.noReviewLabel.isHidden = true
-            scrollView.isScrollEnabled = true
         }
     }
     
@@ -223,7 +232,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         
         let infoData = WineDetailInfoModel(image: wineResponse.imageUrl, sort: wineResponse.sort, country: wineResponse.country, region: wineResponse.region, variety: wineResponse.variety)
         let rateData = WineViVinoRatingModel(vivinoRating: wineResponse.vivinoRating)
-        let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString, avgSugarContent: wineResponse.avgSugarContent, avgAcidity: wineResponse.avgAcidity, avgTannin: wineResponse.avgTannin, avgBody: wineResponse.avgBody, avgAlcohol: wineResponse.avgAlcohol)
+        let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString, avgSugarContent: wineResponse.avgSweetness, avgAcidity: wineResponse.avgAcidity, avgTannin: wineResponse.avgTannin, avgBody: wineResponse.avgBody, avgAlcohol: wineResponse.avgAlcohol)
         let roundedAvgMemberRating = (wineResponse.avgMemberRating * 10).rounded() / 10
         let reviewData = WineAverageReviewModel(avgMemberRating: roundedAvgMemberRating)
         if let reviewResponse = responseData.recentReviews {
@@ -264,29 +273,56 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    func callLikeAPI(wineId: Int) {
-        likedNetworkService.postWishlist(wineId: wineId) { [weak self] result in
-            guard let self = self else { return }
+    func checkCallCounter(up: Bool) async {
+        Task {
+            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+                print("❌ 유저 ID를 찾을 수 없습니다.")
+                return
+            }
             
-            switch result {
-            case .success(let responseData) :
-                print(responseData)
-            case .failure(let error) :
-                print("\(error)")
+            do {
+                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .wishlist)
+                print("✅ APICounter 생성 완료")
+            } catch APICallCounterError.controllerAlreadyExists {
+                print("✅ APICounter가 이미 존재합니다.")
+            }
+            
+            do {
+                if up {
+                    try await APICallCounterManager.shared.incrementPost(for: userId, controllerName: .wishlist)
+                    print("✅ 호출 카운트 증가 완료")
+                } else {
+                    try await APICallCounterManager.shared.incrementDelete(for: userId, controllerName: .wishlist)
+                    print("✅ 호출 카운트 증가 완료")
+                }
+                
+            } catch {
+                print("❌ 호출 카운트 증가 실패: \(error.localizedDescription)")
             }
         }
     }
     
-    func calldeleteLikedAPI(wineId: Int) {
-        likedNetworkService.deleteWishlist(wineId: wineId) { [weak self] result in
-            guard let self = self else { return }
+    func callLikeAPI(wineId: Int) async {
+        do {
+            let responseData = try await likedNetworkService.postWishlist(wineId: wineId)
+            print("✅ 좋아요 API 호출 성공: \(responseData)") // 이제 프린트가 확실히 출력됩니다.
             
-            switch result {
-            case .success(let responseData) :
-                print(responseData)
-            case .failure(let error) :
-                print("\(error)")
-            }
+            // 호출 카운터 증가
+            await checkCallCounter(up: true)
+        } catch {
+            print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")
+        }
+    }
+    
+    func calldeleteLikedAPI(wineId: Int) async {
+        do {
+            let responseData = try await likedNetworkService.deleteWishlist(wineId: wineId)
+            print("✅ 좋아요 API 호출 성공: \(responseData)") // 이제 프린트가 확실히 출력됩니다.
+            
+            // 호출 카운터 감소
+            await checkCallCounter(up: false)
+        } catch {
+            print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")
         }
     }
     

@@ -9,7 +9,7 @@ import CoreModule
 // 테이스팅 목록 표시 뷰
 class MyTastingNoteView: UIView {
     
-    private var tastingNotes: [TastingNoteModel] = []
+//    private var tastingNotes: [TastingNoteModel] = []
     
     weak var delegate: MyTastingNoteViewDelegate?
     
@@ -77,10 +77,10 @@ class MyTastingNoteView: UIView {
         }
     }
     
-    func updateData(notes: [TastingNoteModel]) {
-        self.tastingNotes = notes
-        collectionView.reloadData()
-    }
+//    func updateData(notes: [TastingNoteModel]) {
+//        self.tastingNotes = notes
+//        collectionView.reloadData()
+//    }
     
     private func setupGestureActions() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tastingNoteLabelTapped))

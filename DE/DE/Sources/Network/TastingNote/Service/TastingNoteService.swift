@@ -84,8 +84,14 @@ public final class TastingNoteService: NetworkManager {
     }
     
     /// 모든 노트 정보 조회 API
-    public func fetchAllNotes(sort: String, completion: @escaping (Result<AllTastingNoteResponseDTO?, NetworkError>) -> Void) {
-        requestOptional(target: .getAllNotes(sort: sort), decodingType: AllTastingNoteResponseDTO.self, completion: completion)
-    }
+    public func fetchAllNotes(sort: String) async throws -> AllTastingNoteResponseDTO? {
+    try await requestOptionalAsync(target: .getAllNotes(sort: sort), decodingType: AllTastingNoteResponseDTO.self)
+        
+}
+//    public func fetchAllNotes(sort: String, completion: @escaping (Result<AllTastingNoteResponseDTO?, NetworkError>) -> Void) {
+//        requestOptional(target: .getAllNotes(sort: sort), decodingType: AllTastingNoteResponseDTO.self, completion: completion)
+//    }
+    
+
     
 }

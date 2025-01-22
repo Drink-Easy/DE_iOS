@@ -15,6 +15,12 @@ public struct SearchWineResponseDTO: Decodable {
     public let price: Int
 }
 
+public struct PageSearchWineResponseDTO : Decodable {
+    public let content : [SearchWineResponseDTO]?
+    public let pageNumber : Int
+    public let totalPages : Int
+}
+
 public struct WineResponseWithThreeReviewsDTO: Decodable {
     public let wineInfoResponse: WineResponseDTO
     public let recentReviews: [WineReviewResponseDTO]?
@@ -31,7 +37,7 @@ public struct WineResponseDTO : Decodable {
     public let region: String
     public let variety: String
     public let vivinoRating: Double
-    public let avgSugarContent: Double
+    public let avgSweetness: Double
     public let avgAcidity: Double
     public let avgTannin: Double
     public let avgBody: Double

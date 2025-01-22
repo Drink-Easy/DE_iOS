@@ -13,6 +13,8 @@ import AdSupport
 import Network
 import CoreModule
 
+// SelectLoginTypeVC.keychain.getBool("isFirst")
+
 public class SplashVC : UIViewController {
     
     let networkService = AuthService()
@@ -51,7 +53,7 @@ public class SplashVC : UIViewController {
     }
     
     func setupViews() {
-        view.backgroundColor = .white
+        view.backgroundColor = AppColor.bgGray
         view.addSubview(logoImage)
     }
     
@@ -78,7 +80,8 @@ public class SplashVC : UIViewController {
                 guard let self = self else { return }
                 switch result {
                 case .success(let response):
-                    navigateToMainScreen()
+//                    navigateToMainScreen()
+                    navigateToOnBoaringScreen()
 //                    print(response)
                 case .failure(let error):
                     navigateToOnBoaringScreen()

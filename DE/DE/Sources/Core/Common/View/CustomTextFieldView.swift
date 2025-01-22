@@ -10,6 +10,8 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
     public let textField: PaddedTextField
     let validationLabel: UILabel
     
+    public var inputLimit : Int = 10
+    
     public var text: String? {
         get {
             //필요한 연산 과정
@@ -23,7 +25,8 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
     // MARK: - 초기화
     public init(descriptionLabelText: String,
                 textFieldPlaceholder: String,
-                validationText: String) {
+                validationText: String,
+                limitCount : Int = 10) {
         // 초기화
         self.textField = PaddedTextField(padding: UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16))
         self.descriptionLabel = UILabel()
@@ -33,7 +36,9 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
         
         setupUI(descriptionLabelText: descriptionLabelText,
                 textFieldPlaceholder: textFieldPlaceholder,
-                validationText: validationText)
+                validationText: validationText,
+                limitCount: limitCount
+        )
     }
     
     public required init?(coder: NSCoder) {
@@ -42,7 +47,9 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
     
     // MARK: - UI 세팅
     private func setupUI(descriptionLabelText: String,
-                         textFieldPlaceholder: String, validationText: String) {
+                         textFieldPlaceholder: String, validationText: String, limitCount : Int = 10) {
+        
+        self.inputLimit = limitCount
         
         // 설명 라벨 설정
         descriptionLabel.text = descriptionLabelText
@@ -82,7 +89,7 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
         textField.snp.makeConstraints { make in
             make.top.equalTo(descriptionLabel.snp.bottom).offset(10)
             make.leading.trailing.bottom.equalToSuperview()
-            make.height.equalTo(48)
+            make.height.equalTo(DynamicPadding.dynamicValue(48.0))
         }
         validationLabel.snp.makeConstraints { make in
             make.top.equalTo(textField.snp.bottom).offset(5)
@@ -116,8 +123,8 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
             return true
         }
         
-        //15자 이상 입력 받지 않음
-        if updatedText.count > 15 {
+        //특정 글자수(기본 10) 이상 입력 받지 않음
+        if updatedText.count > inputLimit {
             return false
         }
         return true

@@ -3,6 +3,8 @@
 import UIKit
 import CoreModule
 
+// 향 선택 뷰컨
+
 public class ChooseNoseViewController: UIViewController {
     
     private var collectionView: UICollectionView!
@@ -60,8 +62,7 @@ public class ChooseNoseViewController: UIViewController {
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
-            action: #selector(prevVC),
-            tintColor: AppColor.gray80!
+            action: #selector(prevVC)
         )
     }
     

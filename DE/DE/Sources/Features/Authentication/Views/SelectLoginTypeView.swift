@@ -12,6 +12,8 @@ class SelectLoginTypeView: UIView {
     // MARK: - UI Components
     let imageView = UIImageView().then {
         $0.image = UIImage(named: "logo")
+        $0.contentMode = .scaleAspectFit
+        $0.clipsToBounds = true
     }
     
     let kakaoButton = UIButton().then {
@@ -83,28 +85,30 @@ class SelectLoginTypeView: UIView {
     }
     
     private func setupConstraints() {
+        let topLocation: CGFloat = (Constants.superViewHeight - 250) / 2
         imageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(Constants.superViewHeight * 0.3)
-            make.width.lessThanOrEqualTo(Constants.superViewWidth * 0.6)
+            make.centerY.equalTo(topLocation)
+            make.width.lessThanOrEqualTo(Constants.superViewWidth * 0.3)
         }
         kakaoButton.snp.makeConstraints { make in
-            make.top.equalTo(Constants.superViewHeight * 0.6)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
+            make.bottom.equalTo(appleButton.snp.top).inset(-DynamicPadding.dynamicValue(10.0))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
             make.height.equalTo(60)
         }
         appleButton.snp.makeConstraints { make in
-            make.top.equalTo(kakaoButton.snp.bottom).offset(10)
+            make.bottom.equalTo(loginButton.snp.top).inset(-DynamicPadding.dynamicValue(10.0))
             make.height.equalTo(60)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
         }
         loginButton.snp.makeConstraints { make in
-            make.top.equalTo(appleButton.snp.bottom).offset(10)
-            make.leading.trailing.equalToSuperview().inset(Constants.padding)
+            make.bottom.equalTo(joinStackView.snp.top).inset(-DynamicPadding.dynamicValue(20.0))
+            make.height.equalTo(60)
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
         }
         joinStackView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-50)
+            make.bottom.equalTo(safeAreaLayoutGuide).offset(-DynamicPadding.dynamicValue(20.0))
         }
     }
 }

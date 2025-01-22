@@ -22,13 +22,17 @@ public struct TastingNoteResponsesDTO : Decodable {
 }
 
 public struct AllTastingNoteResponseDTO : Decodable {
-    public let total : Int
-    public let red : Int
-    public let white : Int
-    public let sparkling : Int
-    public let rose : Int
-    public let etc : Int
+    public let sortCount : TastingNoteSortCountResponse
     public let notePriviewList : [TastingNotePreviewResponseDTO]
+}
+
+public struct TastingNoteSortCountResponse : Decodable {
+    public let totalCount : Int
+    public let redCount : Int
+    public let whiteCount : Int
+    public let sparklingCount : Int
+    public let roseCount : Int
+    public let etcCount : Int
 }
 
 public struct TastingNotePreviewResponseDTO : Decodable {

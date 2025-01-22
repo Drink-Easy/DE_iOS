@@ -5,18 +5,21 @@ import CoreModule
 import Network
 
 public class BuyNewWineDateViewController: UIViewController {
+    
+//    var registerWine: MyOwnedWine = MyOwnedWine()
 
-    let tastedDateView = BuyNewWineDateView()
+    let tastedDateView = MyWineDateView()
     var selectedDate: DateComponents?
     let navigationBarManager = NavigationBarManager()
     
-    let wineName = UserDefaults.standard.string(forKey: "wineName")
+    let wineData = TNWineDataManager.shared
+    
+    let wineName = "와인 테스터"
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        DispatchQueue.main.async {
-            self.tastedDateView.updateUI(wineName: self.wineName ?? "")
-        }
+        self.tastedDateView.setWineName(self.wineName)
+//        self.tastedDateView.setWineName(self.wineData.wineName)
     }
     
     public override func viewDidLoad() {
@@ -27,10 +30,13 @@ public class BuyNewWineDateViewController: UIViewController {
     }
     
     func setupUI() {
-        view.backgroundColor = .white
+        view.backgroundColor = AppColor.bgGray
+        
         view.addSubview(tastedDateView)
         tastedDateView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
+            make.leading.trailing.equalToSuperview().inset(24)
+            make.bottom.equalToSuperview()
         }
     }
     
@@ -45,8 +51,7 @@ public class BuyNewWineDateViewController: UIViewController {
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
-            action: #selector(prevVC),
-            tintColor: AppColor.gray80!
+            action: #selector(prevVC)
         )
     }
     
@@ -59,22 +64,22 @@ public class BuyNewWineDateViewController: UIViewController {
             print("선택된 날짜가 없습니다.")
             return
         }
-        
+
         if let date = Calendar.current.date(from: selectedDate) {
-            // 날짜를 `String`으로 변환
             let dateFormatter = DateFormatter()
+            dateFormatter.locale = Locale(identifier: "ko_KR") // 한국 시간대 설정
             dateFormatter.dateFormat = "yyyy-MM-dd"
             let dateString = dateFormatter.string(from: date)
             
-            // UserDefaults에 저장
-            UserDefaults.standard.set(dateString, forKey: "tasteDate")
-            print("날짜 저장됨: \(dateString)")
+            
+            let nextVC = PriceNewWineViewController()
+            nextVC.selectDate = dateString
+            navigationController?.pushViewController(nextVC, animated: true)
+        } else {
+            print("선택된 날짜를 Date로 변환할 수 없습니다.")
         }
         
-        let nextVC = ChooseWineColorViewController()
-        navigationController?.pushViewController(nextVC, animated: true)
     }
-    
 }
 
 extension BuyNewWineDateViewController: UICalendarSelectionSingleDateDelegate {
@@ -82,17 +87,15 @@ extension BuyNewWineDateViewController: UICalendarSelectionSingleDateDelegate {
         guard let validDateComponents = dateComponents else {
             return
         }
-        // 선택된 날짜를 저장
         selectedDate = validDateComponents
         
-        // 선택된 날짜에 대한 장식 업데이트
         tastedDateView.calender.reloadDecorations(forDateComponents: [validDateComponents], animated: true)
+        self.tastedDateView.nextButton.isEnabled(isEnabled: true)
     }
 }
 
 extension BuyNewWineDateViewController: UICalendarViewDelegate {
     public func calendarView(_ calendarView: UICalendarView, decorationFor dateComponents: DateComponents) -> UICalendarView.Decoration? {
-        // Check if the current date matches the selected date
         if dateComponents == selectedDate {
             return .customView {
                 let backgroundView = UIView()

@@ -54,12 +54,12 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate {
         }
         pageControl.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(120)
+            make.bottom.equalTo(startButton.snp.top).inset(-DynamicPadding.dynamicValue(32.0))
             make.width.equalTo(100) // 페이지 컨트롤 너비 설정
         }
         startButton.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(Constants.padding)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(Constants.padding)
+            make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(32.0))
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(32.0) * 2)
             make.height.equalTo(60)
         }
         view.layoutIfNeeded()

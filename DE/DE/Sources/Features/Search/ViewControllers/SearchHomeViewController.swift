@@ -78,8 +78,7 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
-            action: #selector(prevVC),
-            tintColor: AppColor.gray70!
+            action: #selector(prevVC)
         )
     }
     
@@ -88,29 +87,21 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     }
     
     func callSearchAPI(query: String) {
-        networkService.fetchWines(searchName: query) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let responseData) :
-                DispatchQueue.main.async {
-                    self.wineResults = responseData.map { data in
-                        SearchResultModel(
-                            wineId: data.wineId,
-                            wineName: data.name,
-                            imageURL: data.imageUrl,
-                            sort: data.sort,
-                            satisfaction: data.vivinoRating,
-                            country: data.country,
-                            region: data.region
-                        )
-                    }
-                    self.searchHomeView.searchResultTableView.reloadData()
-                }
-            case .failure(let error) :
-                print("\(error)")
-            }
-        }
+//        networkService.fetchWines(searchName: query) { [weak self] result in
+//            guard let self = self else { return }
+//            
+//            switch result {
+//            case .success(let responseData) :
+//                DispatchQueue.main.async {
+//                    self.wineResults = responseData.map { data in
+//                        SearchResultModel(wineId: data.wineId, name: data.name, nameEng: data.nameEng, imageUrl: data.imageUrl, sort: data.sort, country: data.country, region: data.region, variety: data.variety, vivinoRating: data.vivinoRating, price: data.price)
+//                    }
+//                    self.searchHomeView.searchResultTableView.reloadData()
+//                }
+//            case .failure(let error) :
+//                print("\(error)")
+//            }
+//        }
     }
 }
 
@@ -126,7 +117,7 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource {
         
         let wine = wineResults[indexPath.row]
         let searchText = searchHomeView.searchBar.text ?? ""
-        cell.configure(model: wine, highlightText: searchText.isEmpty ? nil : searchText)
+        cell.configureSearch(model: wine, highlightText: searchText.isEmpty ? nil : searchText)
         
         return cell
     }

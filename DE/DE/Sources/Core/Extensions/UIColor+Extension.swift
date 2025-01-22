@@ -3,27 +3,47 @@
 import UIKit
 
 public struct AppColor {
-    static public let purple100 = UIColor(hex: "#7E13B1")
-    static public let purple70 = UIColor(hex: "#9741BF")
-    static public let purple50 = UIColor(hex: "#B06FCD")
-    static public let purple30 = UIColor(hex: "#D5B3E2")
-    static public let purple20 = UIColor(hex: "#E1CAE9")
-    static public let purple10 = UIColor(hex: "#EEE1F0")
     
-    static public let gray100 = UIColor(hex: "#434343")
-    static public let gray90 = UIColor(hex: "#5D5D5D")
+    //        static public let purple100 = UIColor(hex: "#7E13B1")
+    //        static public let purple70 = UIColor(hex: "#9741BF")
+    //        static public let purple50 = UIColor(hex: "#B06FCD")
+    //        static public let purple30 = UIColor(hex: "#D5B3E2")
+            static public let purple20 = UIColor(hex: "#E1CAE9")
+    static public let winebg = UIColor(named: "winebg")
+    //        static public let purple10 = UIColor(hex: "#EEE1F0")
+    //
+    static public let grayBG = UIColor(named: "background")
+    static public let DGblack = UIColor(named: "Dblack")
+    //        static public let gray100 = UIColor(hex: "#434343")
+    //        static public let gray90 = UIColor(hex: "#5D5D5D")
     static public let gray80 = UIColor(hex: "#A7A7A7")
-    static public let gray70 = UIColor(hex: "#7A7A7A")
+    //        static public let gray70 = UIColor(hex: "#7A7A7A")
     static public let gray60 = UIColor(hex: "#DADADA")
-    static public let gray50 = UIColor(hex: "#ABABAB")
+    //        static public let gray50 = UIColor(hex: "#ABABAB")
     static public let gray40 = UIColor(hex: "#E9E9E9")
-    static public let gray30 = UIColor(hex: "#D7D7D7")
+    //        static public let gray30 = UIColor(hex: "#D7D7D7")
     static public let gray20 = UIColor(hex: "#F8F8F8")
-    static public let gray10 = UIColor(hex: "#EAEAEA")
+    //        static public let gray10 = UIColor(hex: "#EAEAEA")
+    //
+    //        static public let red = UIColor(hex: "FF6F6F")
     
-    static public let black = UIColor(hex: "#121212")
-    static public let bgGray = UIColor(hex: "#F8F8FA")
-    static public let red = UIColor(hex: "FF2A2A")
+    static public let purple100 = UIColor(named: "purple100")
+    static public let purple70 = UIColor(named: "purple70")
+    static public let purple50 = UIColor(named: "purple50")
+    static public let purple30 = UIColor(named: "purple30")
+    static public let purple10 = UIColor(named: "purple10")
+    
+    static public let gray100 = UIColor(named: "gray100")
+    static public let gray90 = UIColor(named: "gray90")
+    static public let gray70 = UIColor(named: "gray70")
+    static public let gray50 = UIColor(named: "gray50")
+    static public let gray30 = UIColor(named: "gray30")
+    static public let gray10 = UIColor(named: "gray10")
+    
+    static public let black = UIColor(named: "Dblack")
+    static public let white = UIColor(named: "Dwhite")
+    static public let bgGray = UIColor(named: "background")
+    static public let red = UIColor(named: "red")
 }
 
 public extension UIColor {
@@ -31,13 +51,13 @@ public extension UIColor {
     convenience init?(hex: String) {
         var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
         hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
-
+        
         var rgb: UInt64 = 0
-
+        
         guard Scanner(string: hexSanitized).scanHexInt64(&rgb) else { return nil }
-
+        
         let length = hexSanitized.count
-
+        
         let r, g, b, a: CGFloat
         if length == 6 {
             r = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
@@ -52,11 +72,11 @@ public extension UIColor {
         } else {
             return nil
         }
-
+        
         self.init(red: r, green: g, blue: b, alpha: a)
     }
     
-    public func toHex() -> String? {
+    func toHex() -> String? {
         var r: CGFloat = 0
         var g: CGFloat = 0
         var b: CGFloat = 0

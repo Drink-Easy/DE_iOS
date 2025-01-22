@@ -12,7 +12,7 @@ class TermsAgreeView: UIView {
     // MARK: - Properties
     var onStateChange: ((Bool) -> Void)? // 상태 변경 시 호출되는 클로저
     
-    private var pdfFileName: String?
+    private var detailInfo: String?
     private weak var parentViewController: UIViewController?
     
     private var isChecked: Bool = false
@@ -31,12 +31,16 @@ class TermsAgreeView: UIView {
     private func setupUI() {
         titleLabel.font = UIFont.ptdSemiBoldFont(ofSize: 16)
         titleLabel.numberOfLines = 1
-        titleLabel.textColor = .black
+        titleLabel.textColor = AppColor.black
+        titleLabel.isUserInteractionEnabled = true
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleButtonTapped))
+                titleLabel.addGestureRecognizer(tapGesture)
         
         moreButton.setTitle("보기", for: .normal)
         moreButton.setTitleColor(AppColor.gray50, for: .normal)
         moreButton.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 12)
-        moreButton.addTarget(self, action: #selector(showPDF), for: .touchUpInside)
+        moreButton.addTarget(self, action: #selector(showDetailVC), for: .touchUpInside)
         
         toggleButton.tintColor = AppColor.gray30
         toggleButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
@@ -47,7 +51,7 @@ class TermsAgreeView: UIView {
         }
         
         toggleButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(30)
+            make.leading.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
             make.centerY.equalToSuperview()
             make.width.height.equalTo(24)
         }
@@ -58,15 +62,15 @@ class TermsAgreeView: UIView {
         }
         
         moreButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(30)
+            make.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
             make.centerY.equalTo(toggleButton)
         }
     }
     
     // MARK: - Configuration
-    func configure(title: String, moreLink: String?, isChecked: Bool, parentViewController: UIViewController) {
+    func configure(title: String, content: String?, isChecked: Bool, parentViewController: UIViewController) {
         titleLabel.text = title
-        pdfFileName = moreLink
+        detailInfo = content
         self.isChecked = isChecked
         self.parentViewController = parentViewController
         updateToggleButton()
@@ -90,19 +94,16 @@ class TermsAgreeView: UIView {
         toggleButton.tintColor = isChecked ? AppColor.purple100 : AppColor.gray30
     }
     
-    @objc private func showPDF() {
-        guard let fileName = pdfFileName, let parentVC = parentViewController else {
-            print("PDF 파일이 없거나 부모 뷰 컨트롤러가 설정되지 않았습니다.")
-            return
-        }
-        
-        if let filePath = Bundle.main.path(forResource: fileName, ofType: "pdf") {
-            let fileURL = URL(fileURLWithPath: filePath)
-            let documentController = UIDocumentInteractionController(url: fileURL)
-            documentController.delegate = parentVC as? UIDocumentInteractionControllerDelegate
-            documentController.presentPreview(animated: true)
-        } else {
-            print("PDF 파일을 찾을 수 없습니다: \(pdfFileName ?? "없음")")
-        }
+    @objc private func showDetailVC() {
+        guard let parentVC = parentViewController else {
+                print("부모 뷰 컨트롤러가 설정되지 않았습니다.")
+                return
+            }
+            
+        let detailVC = DetailInfoVC(
+                title: titleLabel.text ?? "앱 정보",
+                content: detailInfo ?? "약관의 세부 내용을 여기에 제공합니다."
+            )
+            parentVC.navigationController?.pushViewController(detailVC, animated: true)
     }
 }

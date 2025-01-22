@@ -49,8 +49,7 @@ class HomeWineDetailViewController: UIViewController, UIScrollViewDelegate {
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
-            action: #selector(prevVC),
-            tintColor: AppColor.gray70!
+            action: #selector(prevVC)
         )
         
         smallTitleLabel = navigationBarManager.setNReturnTitle(
@@ -223,7 +222,7 @@ class HomeWineDetailViewController: UIViewController, UIScrollViewDelegate {
         
         let infoData = WineDetailInfoModel(image: wineResponse.imageUrl, sort: wineResponse.sort, country: wineResponse.country, region: wineResponse.region, variety: wineResponse.variety)
         let rateData = WineViVinoRatingModel(vivinoRating: wineResponse.vivinoRating)
-        let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString, avgSugarContent: wineResponse.avgSugarContent, avgAcidity: wineResponse.avgAcidity, avgTannin: wineResponse.avgTannin, avgBody: wineResponse.avgBody, avgAlcohol: wineResponse.avgAlcohol)
+        let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString, avgSugarContent: wineResponse.avgSweetness, avgAcidity: wineResponse.avgAcidity, avgTannin: wineResponse.avgTannin, avgBody: wineResponse.avgBody, avgAlcohol: wineResponse.avgAlcohol)
         let roundedAvgMemberRating = (wineResponse.avgMemberRating * 10).rounded() / 10
         let reviewData = WineAverageReviewModel(avgMemberRating: roundedAvgMemberRating)
         if let reviewResponse = responseData.recentReviews {
@@ -265,29 +264,29 @@ class HomeWineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func callLikeAPI(wineId: Int) {
-        likedNetworkService.postWishlist(wineId: wineId) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let responseData) :
-                print(responseData)
-            case .failure(let error) :
-                print("\(error)")
-            }
-        }
+//        likedNetworkService.postWishlist(wineId: wineId) { [weak self] result in
+//            guard let self = self else { return }
+//            
+//            switch result {
+//            case .success(let responseData) :
+//                print(responseData)
+//            case .failure(let error) :
+//                print("\(error)")
+//            }
+//        }
     }
     
     func calldeleteLikedAPI(wineId: Int) {
-        likedNetworkService.deleteWishlist(wineId: wineId) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let responseData) :
-                print(responseData)
-            case .failure(let error) :
-                print("\(error)")
-            }
-        }
+//        likedNetworkService.deleteWishlist(wineId: wineId) { [weak self] result in
+//            guard let self = self else { return }
+//            
+//            switch result {
+//            case .success(let responseData) :
+//                print(responseData)
+//            case .failure(let error) :
+//                print("\(error)")
+//            }
+//        }
     }
     
     private func updateScrollViewHeight() {

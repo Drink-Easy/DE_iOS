@@ -32,8 +32,7 @@ class NewbieConsumeViewController: UIViewController {
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
-            action: #selector(backButtonTapped),
-            tintColor: AppColor.gray70!
+            action: #selector(backButtonTapped)
         )
     }
     
@@ -59,7 +58,7 @@ class NewbieConsumeViewController: UIViewController {
         guard let price = self.selectedItem else {return}
         UserSurveyManager.shared.setPrice(Int(price))
         
-        let vc = IsNewbieViewController()
+        let vc = ResultViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 }

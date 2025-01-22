@@ -49,8 +49,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
-            action: #selector(backButtonTapped),
-            tintColor: AppColor.gray70!
+            action: #selector(backButtonTapped)
         )
     }
     
@@ -65,7 +64,9 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let query = searchHomeView.searchBar.text, query.count >= 2 {
-            callSearchAPI(query: query)
+            Task {
+                await self.callSearchAPI(query: query)
+            }
         } else {
             showCharacterLimitAlert()
         }
@@ -93,29 +94,20 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
 //        }
 //    }
     
-    func callSearchAPI(query: String) {
-        networkService.fetchWines(searchName: query) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let responseData) :
-                DispatchQueue.main.async {
-                    self.wineResults = responseData.map { data in
-                        SearchResultModel(
-                            wineId: data.wineId,
-                            wineName: data.name,
-                            imageURL: data.imageUrl,
-                            sort: data.sort,
-                            satisfaction: data.vivinoRating,
-                            country: data.country,
-                            region: data.region
-                        )
-                    }
-                    self.searchHomeView.searchResultTableView.reloadData()
-                }
-            case .failure(let error) :
-                print("\(error)")
+    func callSearchAPI(query: String) async {
+        do {
+            let responseData = try await networkService.fetchWines(searchName: query, page: 0)
+            guard let totalPages = responseData?.totalPages else { return }
+            print(totalPages)
+            guard let data = responseData?.content else { return }
+            self.wineResults = data.map({ data in
+                SearchResultModel(wineId: data.wineId, name: data.name, nameEng: data.nameEng, imageUrl: data.imageUrl, sort: data.sort, country: data.country, region: data.region, variety: data.variety, vivinoRating: data.vivinoRating, price: data.price)
+            })
+            Task {
+                self.searchHomeView.searchResultTableView.reloadData()
             }
+        } catch {
+            print(error)
         }
     }
     
@@ -132,7 +124,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         }
         
         let wine = wineResults[indexPath.row]
-        cell.configure(model: wine)
+        cell.configureSearch(model: wine)
         
         return cell
     }
@@ -140,7 +132,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = TastedDateViewController()
         let selectedWine = wineResults[indexPath.row]
-        registerWine.updateWine(wineId: selectedWine.wineId, wineName: selectedWine.wineName)
+        registerWine.updateWine(wineId: selectedWine.wineId, wineName: selectedWine.name)
         vc.registerWine = self.registerWine
         navigationController?.pushViewController(vc, animated: true)
     }

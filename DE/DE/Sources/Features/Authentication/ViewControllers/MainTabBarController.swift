@@ -69,7 +69,7 @@ public class MainTabBarController: UITabBarController {
         tabBar.layer.applyShadow(color: .gray, alpha: 0.3, x: 0, y: 0, blur: 15)
         
         tabBar.tintColor = .label
-        tabBar.backgroundColor = .white
+        tabBar.backgroundColor = AppColor.white
         
         tabBar.tintColor = UIColor(named: "purple100")
         tabBar.unselectedItemTintColor = UIColor(named: "gray50")
