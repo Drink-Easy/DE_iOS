@@ -22,6 +22,21 @@ public struct MyOwnedWine {
         if let price = price { self.price = price }
         if let buyDate = buyDate { self.buyDate = buyDate }
     }
+    
+    public func getBuyDate() -> DateComponents? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.locale = Locale(identifier: "ko_KR") // 한국 시간대 설정
+        
+        guard let date = dateFormatter.date(from: buyDate) else {
+            print("변환할 수 없는 날짜 형식입니다: \(buyDate)")
+            return nil
+        }
+        
+        // Date를 DateComponents로 변환
+        let components = Calendar.current.dateComponents([.year, .month, .day], from: date)
+        return components
+    }
 }
 
 

@@ -8,7 +8,7 @@ import Network
 
 public class TastedDateViewController: UIViewController {
     
-//    var registerWine: MyOwnedWine = MyOwnedWine()
+    var registerWine: MyOwnedWine = MyOwnedWine()
 
     lazy var tastedDateView = TastedDateView()
     let tnManger = NewTastingNoteManager.shared
