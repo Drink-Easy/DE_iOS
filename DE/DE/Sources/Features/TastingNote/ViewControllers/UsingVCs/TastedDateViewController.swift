@@ -8,7 +8,7 @@ import Network
 
 public class TastedDateViewController: UIViewController {
     
-    var registerWine: MyOwnedWine = MyOwnedWine()
+//    var registerWine: MyOwnedWine = MyOwnedWine()
 
     lazy var tastedDateView = TastedDateView()
     let tnManger = NewTastingNoteManager.shared
@@ -66,17 +66,21 @@ public class TastedDateViewController: UIViewController {
             print("선택된 날짜가 없습니다.")
             return
         }
-        
+
         if let date = Calendar.current.date(from: selectedDate) {
             let dateFormatter = DateFormatter()
+            dateFormatter.locale = Locale(identifier: "ko_KR") // 한국 시간대 설정
             dateFormatter.dateFormat = "yyyy-MM-dd"
             let dateString = dateFormatter.string(from: date)
             
             tnManger.saveTasteDate(dateString)
+            
+            let nextVC = ChooseWineColorViewController()
+            navigationController?.pushViewController(nextVC, animated: true)
+        } else {
+            print("선택된 날짜를 Date로 변환할 수 없습니다.")
         }
         
-        let nextVC = ChooseWineColorViewController()
-        navigationController?.pushViewController(nextVC, animated: true)
     }
     
 }
