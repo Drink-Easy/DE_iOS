@@ -11,9 +11,11 @@ import Then
 
 class PriceNewWineViewController: UIViewController {
 
-    let priceNewWineView = PriceNewWineView()
+    let priceNewWineView = MyWinePriceView()
     let navigationBarManager = NavigationBarManager()
+    
     public var selectDate : String?
+    let wineData = TNWineDataManager.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,9 +26,12 @@ class PriceNewWineViewController: UIViewController {
     
     func setupUI() {
         priceNewWineView.setWineName("와인이름데이터넘겨주기")
+        
         view.addSubview(priceNewWineView)
         priceNewWineView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
+            make.leading.trailing.equalToSuperview().inset(24)
+            make.bottom.equalToSuperview()
         }
     }
     
@@ -44,11 +49,18 @@ class PriceNewWineViewController: UIViewController {
     }
     
     @objc func nextVC() {
+        // api 호출
+        // call count 처리도 해주기
         
-        //        let nextVC = ChooseWineColorViewController()
-        let nextVC = TestVC()
-        
-//        navigationController?.pushViewController(nextVC, animated: true)
+        // 리스트 화면으로 돌아가기
+        Task {
+            self.navigationController?.popViewController(animated: true)
+            guard let navigationController = self.navigationController else { return }
+            if let targetIndex = navigationController.viewControllers.firstIndex(where: { $0 is MyOwnedWineViewController }) {
+                 let newStack = Array(navigationController.viewControllers[...targetIndex])
+                 navigationController.setViewControllers(newStack, animated: true)
+             }
+        }
     }
     
     @objc func prevVC() {

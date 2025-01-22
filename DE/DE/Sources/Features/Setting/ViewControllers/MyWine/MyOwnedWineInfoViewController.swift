@@ -9,7 +9,7 @@ import CoreModule
 import Network
 
 //TODO: api 연결
-public class MyOwnedWineInfoVC: UIViewController {
+public class MyOwnedWineInfoViewController: UIViewController {
     
     let navigationBarManager = NavigationBarManager()
     
