@@ -38,7 +38,7 @@ class ChangeMyOwnedWineViewController: UIViewController {
         
         view.addSubview(editInfoView)
         editInfoView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(40)
             make.leading.trailing.equalToSuperview().inset(24)
             make.bottom.equalToSuperview()
         }
