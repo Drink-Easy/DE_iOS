@@ -4,10 +4,8 @@ import UIKit
 import CoreModule
 import SnapKit
 import Then
-// TODO : 도연
-// TODO : 디테일 수정
-// 버튼 활성화 기능 등 추가
-// 기능 작업 더 해야함.
+
+// 보유와인 가격 입력
 
 class PriceNewWineViewController: UIViewController {
 
@@ -26,6 +24,7 @@ class PriceNewWineViewController: UIViewController {
     
     func setupUI() {
         priceNewWineView.setWineName("와인이름데이터넘겨주기")
+        priceNewWineView.setWineName(wineData.wineName)
         
         view.addSubview(priceNewWineView)
         priceNewWineView.snp.makeConstraints { make in
@@ -46,6 +45,7 @@ class PriceNewWineViewController: UIViewController {
     
     func setupActions() {
         priceNewWineView.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        priceNewWineView.priceTextField.textField.addTarget(self, action: #selector(checkEmpty), for: .editingChanged)
     }
     
     @objc func nextVC() {
@@ -66,5 +66,15 @@ class PriceNewWineViewController: UIViewController {
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)
     }
+    
+    @objc func checkEmpty() {
+        if ((self.priceNewWineView.priceTextField.text?.isEmpty) != nil) || self.priceNewWineView.priceTextField.text == "" {
+            priceNewWineView.nextButton.isEnabled(isEnabled: false)
+        } else {
+            priceNewWineView.nextButton.isEnabled(isEnabled: true)
+        }
+    }
+    
+    
 
 }

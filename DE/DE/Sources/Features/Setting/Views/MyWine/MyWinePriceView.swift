@@ -8,7 +8,7 @@ import Network
 // 보유 와인 가격 입력 뷰
 
 class MyWinePriceView: UIView {
-    public lazy var topView = MyNoteTopView()
+    public lazy var topView = NoCountDateTopView()
     public let priceTextField = CustomTextFieldView(
         descriptionLabelText: "구매 가격",
         textFieldPlaceholder: "가격을 입력해주세요",
@@ -27,7 +27,8 @@ class MyWinePriceView: UIView {
     }
     
     func setWineName(_ name: String) {
-        self.topView.header.text = name
+        self.topView.title.text = name
+        self.topView.desp.text = "구매 가격을 입력해주세요"
     }
     
     func setupUI() {

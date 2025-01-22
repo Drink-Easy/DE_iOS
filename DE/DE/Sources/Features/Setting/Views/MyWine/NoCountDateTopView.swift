@@ -14,8 +14,7 @@ class NoCountDateTopView: UIView {
         $0.numberOfLines = 0
     }
     
-    private lazy var desp = UILabel().then {
-        $0.text = "시음 시기를 선택해주세요"
+    public lazy var desp = UILabel().then {
         $0.textColor = AppColor.black
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
         $0.numberOfLines = 1
