@@ -21,24 +21,22 @@ class NoseTopView: UIView {
         $0.font = .ptdSemiBoldFont(ofSize: 18)
         $0.textColor = AppColor.purple100
     }
-    public lazy var selectedCollectionView = UICollectionView()
     
-//    let selectedCollectionView: UICollectionView = {
-//        let layout = LeftAlignedCollectionViewFlowLayout()
-//        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-//        layout.minimumInteritemSpacing = 10
-//        layout.minimumLineSpacing = 10
-//        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-//        layout.headerReferenceSize = CGSize(width: Constants.superViewWidth - 48, height: 50) // 헤더 가로사이즈 superview에 맞게하고싶음
-//        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-//        cv.backgroundColor = .clear
-//        cv.tag = 1
-//        return cv
-//    }()
+    var layout = NewLeftAlignedCollectionViewFlowLayout().then {
+        $0.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        $0.minimumInteritemSpacing = 10
+        $0.minimumLineSpacing = 12
+    }
+    
+    public lazy var selectedCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout).then {
+        $0.backgroundColor = .clear
+        $0.tag = 1
+    }
     
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         addComponents()
         setConstraints()
     }
@@ -60,6 +58,7 @@ class NoseTopView: UIView {
         propertyHeader.snp.makeConstraints { make in
             make.top.equalTo(header.snp.bottom).offset(40) // TODO : 동적 기기 대응
             make.leading.trailing.equalToSuperview()
+            make.height.greaterThanOrEqualTo(30)
         }
         
         noseDescription.snp.makeConstraints { make in
@@ -79,4 +78,12 @@ class NoseTopView: UIView {
         }
     }
     
+    
+//    func updateSelectedCollectionViewHeight() {
+//        selectedCollectionView.layoutIfNeeded() // 레이아웃 업데이트
+//        let contentHeight = selectedCollectionView.contentSize.height
+//        selectedCollectionView.snp.updateConstraints { make in
+//            make.height.equalTo(contentHeight)
+//        }
+//    }
 }
