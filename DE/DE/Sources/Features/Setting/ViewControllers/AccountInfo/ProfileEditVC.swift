@@ -108,42 +108,33 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         navigationController?.popViewController(animated: true)
     }
     
+    private func callPatchAPI() async throws {
+        if let profileImg = self.profileImg {
+            async let imageResult = networkService.postImgAsync(image: profileImg)
+        }
+        
+        guard let newUserName = self.profileView.nicknameTextField.text,
+              let newUserCity = self.profileView.myLocationTextField.text else { return }
+        
+        let data = networkService.makeMemberInfoUpdateRequestDTO(username: newUserName, city: newUserCity)
+        
+        // 병렬 처리
+        async let dataResult = networkService.patchUserInfoAsync(body: data)
+        
+        // Call Count 업데이트
+        await self.updateCallCount()
+    }
+    
     @objc private func editCompleteTapped() {
-        guard let profileImg = self.profileImg else { return }
-        guard let newUserName = self.profileView.nicknameTextField.text else { return }
-        guard let newUserCity = self.profileView.myLocationTextField.text else { return }
-        
-        
-        networkService.postImg(image: profileImg) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(_):
-                Task {
-                    await self.updateCallCount()
-                }
-            case .failure(let error):
-                print(error)
+        Task {
+            do {
+                try await callPatchAPI()
+                self.navigationController?.popViewController(animated: true)
+            } catch {
+                print("Error: \(error)")
+                // Alert 표시 등 추가
             }
         }
-        
-        // 2. patchUserInfo 호출
-        let profileDTO = networkService.makeMemberInfoUpdateRequestDTO(
-            username: newUserName,
-            city: newUserCity
-        )
-        networkService.patchUserInfo(body: profileDTO) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(_):
-                Task {
-                    await self.updateCallCount()
-                }
-            case .failure(let error):
-                print(error)
-            }
-        }
-        
-        self.navigationController?.popViewController(animated: true)
     }
     
     func updateCallCount() async {
@@ -186,7 +177,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         }
     }
     
-    //MARK: - 닉네임 중복 검사
+    //MARK: - 닉네임 중복 검사 // TODO: 경고 떠있을 때 완료버튼 안눌리게 처리하기
     @objc func checkNicknameValidity(){
         guard let nickname = profileView.nicknameTextField.text, !nickname.isEmpty else {
             print("닉네임이 없습니다")

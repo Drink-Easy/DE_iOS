@@ -25,20 +25,20 @@ public class NoteListViewController: UIViewController {
     let noteService = TastingNoteService()
 
     func callAllNote() {
-        noteService.fetchAllNotes(sort: "all", completion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case.success(let data):
-                if let data = data {
-                    handleResponse(data)
-                } else {
-                    print("Optional Error")
-                }
-                
-            case.failure(let error):
-                print(error)
-            }
-        })
+//        noteService.fetchAllNotes(sort: "all", completion: { [weak self] result in
+//            guard let self = self else { return }
+//            switch result {
+//            case.success(let data):
+//                if let data = data {
+//                    handleResponse(data)
+//                } else {
+//                    print("Optional Error")
+//                }
+//                
+//            case.failure(let error):
+//                print(error)
+//            }
+//        })
     }
     
     public override func viewDidLoad() {
@@ -96,29 +96,29 @@ public class NoteListViewController: UIViewController {
     }
     
     private func handleResponse(_ data: AllTastingNoteResponseDTO) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            
-            // 데이터 저장
-            self.allNotesData = data
-            self.notePreviewList.removeAll() // 초기화
-            self.notePreviewList = data.notePriviewList
-            
-            // WineImageStackView 업데이트
-            self.wineImageStackView.updateCounts(
-                red: data.red,
-                white: data.white,
-                sparkling: data.sparkling,
-                rose: data.rose,
-                etc: data.etc
-            )
-            
-            // Total Wine Count 업데이트
-            self.noteListView.updateTotalWineCount(count: data.total)
-            
-            // MyTastingNoteView 컬렉션 뷰 업데이트
-            self.myTastingNote.collectionView.reloadData()
-        }
+//        DispatchQueue.main.async { [weak self] in
+//            guard let self = self else { return }
+//            
+//            // 데이터 저장
+//            self.allNotesData = data
+//            self.notePreviewList.removeAll() // 초기화
+//            self.notePreviewList = data.notePriviewList
+//            
+//            // WineImageStackView 업데이트
+//            self.wineImageStackView.updateCounts(
+//                red: data.red,
+//                white: data.white,
+//                sparkling: data.sparkling,
+//                rose: data.rose,
+//                etc: data.etc
+//            )
+//            
+//            // Total Wine Count 업데이트
+//            self.noteListView.updateTotalWineCount(count: data.total)
+//            
+//            // MyTastingNoteView 컬렉션 뷰 업데이트
+//            self.myTastingNote.collectionView.reloadData()
+//        }
     }
     
     @objc func nextVC() {
@@ -158,8 +158,8 @@ extension NoteListViewController: UICollectionViewDelegate, UICollectionViewData
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedNote = notePreviewList[indexPath.row]
         // callSelectedNote(noteId: selectedNote.noteId)
-        let infoVC = WineInfoViewController(noteId: selectedNote.noteId)
-        navigationController?.pushViewController(infoVC, animated: true)
+//        let infoVC = WineInfoViewController(noteId: selectedNote.noteId)
+//        navigationController?.pushViewController(infoVC, animated: true)
     }
     
 }
@@ -170,19 +170,19 @@ extension NoteListViewController: WineImageStackViewDelegate {
             print("Error")
             return
         }
-        noteService.fetchAllNotes(sort: wineSort.rawValue, completion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case.success(let data):
-                if let data = data {
-                    handleResponse(data)
-                } else {
-                    print("Optional Error")
-                }
-            case.failure(let error):
-                print(error)
-            }
-        })
+//        noteService.fetchAllNotes(sort: wineSort.rawValue, completion: { [weak self] result in
+//            guard let self = self else { return }
+//            switch result {
+//            case.success(let data):
+//                if let data = data {
+//                    handleResponse(data)
+//                } else {
+//                    print("Optional Error")
+//                }
+//            case.failure(let error):
+//                print(error)
+//            }
+//        })
     }
 }
 
