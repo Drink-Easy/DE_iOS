@@ -7,7 +7,7 @@ import CoreModule
 
 public class ChooseNoseViewController: UIViewController {
     
-    private var collectionView: UICollectionView!
+//    private var collectionView: UICollectionView!
     var sections: [NoseSectionModel] = NoseSectionModel.sections() // 섹션 데이터
     var selectedItems: [String:[NoseModel]] = [:]
     var allNoseModels: [NoseModel]  {

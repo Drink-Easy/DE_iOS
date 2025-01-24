@@ -74,7 +74,7 @@ class NoseTopView: UIView {
         selectedCollectionView.snp.makeConstraints { make in
             make.top.equalTo(selectedLabel.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(DynamicPadding.dynamicValue(150))
+            make.bottom.equalToSuperview()
         }
     }
     

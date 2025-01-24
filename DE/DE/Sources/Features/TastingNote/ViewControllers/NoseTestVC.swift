@@ -23,18 +23,18 @@ public class NoseTestVC: UIViewController {
     private func setupUI() {
         topView.header.setTitleLabel("아무와인이나넣어")
         topView.propertyHeader.setName(eng: "Nose", kor: "향")
-        [topView, middleView].forEach{ view.addSubview($0) }
-        
+        [middleView, topView].forEach { view.addSubview($0) }
+//        middleView.backgroundColor = .red
         topView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10.0))
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
-            make.height.greaterThanOrEqualTo(350)
+            make.height.equalTo(300)
         }
         
         middleView.snp.makeConstraints { make in
-            make.top.equalTo(topView.snp.bottom).offset(DynamicPadding.dynamicValue(45.0))
+            make.top.equalTo(topView.snp.bottom).offset(DynamicPadding.dynamicValue(24.0))
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
-            make.bottom.equalToSuperview() // 바닥까지 확장
+            make.height.greaterThanOrEqualTo(600)
         }
     }
     
@@ -158,19 +158,17 @@ extension NoseTestVC : UICollectionViewDelegate, UICollectionViewDataSource {
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if collectionView.tag == 0 { // 선택 & 선택 해제
-            var item = NoseManager.shared.scentSections[indexPath.section].scents[indexPath.row]
-            item.isSelected.toggle()
-        } else if collectionView.tag == 1 {
-            var item = NoseManager.shared.selectedScents[indexPath.row]
-            item.isSelected.toggle()
+        if collectionView.tag == 0 { // noseCollectionView
+            // 데이터 직접 수정
+            NoseManager.shared.scentSections[indexPath.section].scents[indexPath.row].isSelected.toggle()
         }
-        
+
+        // UI 업데이트
         collectionView.reloadItems(at: [indexPath])
-        
-        // 아이템 개수 변동에 따른 콜렉션뷰 길이 업데이트
-//        self.topView.updateSelectedCollectionViewHeight()
-        self.middleView.updateNoseCollectionViewHeight()
+        Task {
+            self.topView.selectedCollectionView.reloadData()
+            self.middleView.updateNoseCollectionViewHeight()
+        }
     }
     
 }

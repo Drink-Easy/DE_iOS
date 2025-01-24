@@ -54,9 +54,9 @@ class NoseBottomView: UIView {
         }
         
         contentView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.leading.trailing.equalToSuperview()
             make.width.equalTo(scrollView.snp.width)
-            make.bottom.equalTo(nextButton.snp.bottom).offset(40) // 콘텐츠 높이 설정
+            make.bottom.equalTo(nextButton.snp.bottom).offset(40) // 콘텐츠 끝까지 확장
         }
         
         noseCollectionView.snp.makeConstraints { make in
@@ -69,14 +69,21 @@ class NoseBottomView: UIView {
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(60)
         }
+
     }
     
     func updateNoseCollectionViewHeight() {
         noseCollectionView.layoutIfNeeded() // 레이아웃 업데이트
         let contentHeight = noseCollectionView.contentSize.height
+        print("Content Height: \(contentHeight)") // 디버깅 출력
+        print("button height: \(nextButton.layer.frame.height)")
         noseCollectionView.snp.updateConstraints { make in
             make.height.equalTo(contentHeight)
         }
+        contentView.snp.updateConstraints { make in
+            make.bottom.equalTo(nextButton.snp.bottom).offset(40)
+        }
+        print("ScrollView Content Size: \(scrollView.contentSize)") // 스크롤뷰 크기 디버깅
     }
     
 }
