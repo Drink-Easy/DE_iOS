@@ -6,7 +6,7 @@ import Moya
 public enum WineEndpoint {
     case getWines(searchName: String, page: Int)
     case getWineInfo(wineId: Int)
-    case getWineReview(wineId: Int, orderByLatest: Bool, page: Int)
+    case getWineReview(wineId: Int, sortType: String, page: Int)
     case getRecommendWines
     case getMostLikedWines
 }
@@ -44,8 +44,8 @@ extension WineEndpoint: TargetType {
             return .requestParameters(parameters: ["searchName": searchName, "page" : page, "size": 10], encoding: URLEncoding.queryString)
         case .getWineInfo, .getRecommendWines, .getMostLikedWines:
             return .requestPlain
-        case .getWineReview(_, let orderByLatest, let page):
-            return .requestParameters(parameters: ["orderByLatest": orderByLatest, "page" : page, "size": 10], encoding: URLEncoding.default)
+        case .getWineReview(_, let sortType, let page):
+            return .requestParameters(parameters: ["sortType": sortType, "page" : page, "size": 10], encoding: URLEncoding.default)
         }
     }
     

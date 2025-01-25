@@ -11,6 +11,9 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     let navigationBarManager = NavigationBarManager()
     var wineResults: [SearchResultModel] = []
     let networkService = WineService()
+    var isLoading = false
+    var currentPage = 0
+    var totalPage = 0
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,7 +49,14 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let query = searchHomeView.searchBar.text, query.count >= 2 {
-            callSearchAPI(query: query)
+            Task {
+                do {
+                    try await callSearchAPI(query: query, startPage: 0)
+                } catch {
+                    print(error)
+                }
+            }
+            return true
         } else {
             showCharacterLimitAlert()
         }
@@ -71,6 +81,7 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
 //            self.searchHomeView.searchResultTableView.reloadData()
 //        } else {
 //            callSearchAPI(query: query)
+//    self.searchHomeView.searchResultTableView.reloadData()
 //        }
 //    }
     
@@ -86,26 +97,33 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
         navigationController?.popViewController(animated: true)
     }
     
-    func callSearchAPI(query: String) {
-//        networkService.fetchWines(searchName: query) { [weak self] result in
-//            guard let self = self else { return }
-//            
-//            switch result {
-//            case .success(let responseData) :
-//                DispatchQueue.main.async {
-//                    self.wineResults = responseData.map { data in
-//                        SearchResultModel(wineId: data.wineId, name: data.name, nameEng: data.nameEng, imageUrl: data.imageUrl, sort: data.sort, country: data.country, region: data.region, variety: data.variety, vivinoRating: data.vivinoRating, price: data.price)
-//                    }
-//                    self.searchHomeView.searchResultTableView.reloadData()
-//                }
-//            case .failure(let error) :
-//                print("\(error)")
-//            }
-//        }
+    func callSearchAPI(query: String, startPage: Int) async throws {
+        
+        guard let response = try await networkService.fetchWines(searchName: query, page: startPage) else { return }
+        
+        guard let content = response.content else { return }
+        // reponse 와인 10개 매핑해주고
+        let nextWineDatas = content.map { data in
+            SearchResultModel(wineId: data.wineId, name: data.name, nameEng: data.nameEng, imageUrl: data.imageUrl, sort: data.sort, country: data.country, region: data.region, variety: data.variety, vivinoRating: data.vivinoRating, price: data.price)
+        }
+        
+        if response.pageNumber != 0 { // 맨 처음 요청한게 아니면, 이전 데이터가 이미 저장이 되어있는 상황이면
+            // 리스트 뒤에다가 넣어준다!
+            self.currentPage = response.pageNumber
+            self.wineResults.append(contentsOf: nextWineDatas)
+        } else {
+            // 토탈 페이지 수 갱신, 현재 페이지 수 설정
+            self.totalPage = response.totalPages
+            self.currentPage = response.pageNumber
+            self.wineResults = nextWineDatas
+        }
+        DispatchQueue.main.async {
+            self.searchHomeView.searchResultTableView.reloadData()
+        }
     }
 }
 
-extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource {
+extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return wineResults.count
     }
@@ -126,5 +144,35 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource {
         let vc = WineDetailViewController()
         vc.wineId = wineResults[indexPath.row].wineId
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y < 0 {
+            scrollView.contentOffset.y = 0 // 위쪽 바운스 막기
+        }
+        
+        guard let tableView = scrollView as? UITableView else { return }
+        
+        let contentOffsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let scrollViewHeight = scrollView.frame.size.height
+        
+        // Check if user has scrolled to the bottom
+        if contentOffsetY > contentHeight - scrollViewHeight { // Trigger when arrive the bottom
+            guard !isLoading, currentPage + 1 < totalPage else { return }
+            isLoading = true
+            
+            Task {
+                do {
+                    try await callSearchAPI(query: searchHomeView.searchBar.text ?? "", startPage: currentPage + 1)
+                } catch {
+                    print("Failed to fetch next page: \(error)")
+                }
+                DispatchQueue.main.async {
+                    self.searchHomeView.searchResultTableView.reloadData()
+                }
+                isLoading = false
+            }
+        }
     }
 }
