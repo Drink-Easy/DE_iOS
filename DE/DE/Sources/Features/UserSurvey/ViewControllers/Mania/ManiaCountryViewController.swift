@@ -143,10 +143,10 @@ extension ManiaCountryViewController: UICollectionViewDelegateFlowLayout, UIColl
         if selectedItems.contains(selectedItem) { //이미 selected된 cell
             selectedItems.removeAll { $0 == selectedItem }
         } else {
-            if selectedItems.count >= maxSelectionCount { // 이미 2개 선택
-                Toaster.shared.makeToast("선택할 수 있는 갯수를 초과했습니다.", .short)
-                return
-            }
+//            if selectedItems.count >= maxSelectionCount { // 이미 2개 선택
+//                Toaster.shared.makeToast("선택할 수 있는 갯수를 초과했습니다.", .short)
+//                return
+//            }
             // 새 아이템 선택
             selectedItems.append(selectedItem)
         }
