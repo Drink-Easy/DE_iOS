@@ -17,3 +17,15 @@ public struct NoticeResponse : Decodable {
         self.createdAt = createdAt
     }
 }
+
+public struct BannserResponse : Decodable {
+    public let bannerId : Int
+    public let imageUrl : String
+    public let postUrl : String
+    
+    public init(bannerId: Int, imageUrl: String, postUrl: String) {
+        self.bannerId = bannerId
+        self.imageUrl = imageUrl
+        self.postUrl = postUrl
+    }
+}
