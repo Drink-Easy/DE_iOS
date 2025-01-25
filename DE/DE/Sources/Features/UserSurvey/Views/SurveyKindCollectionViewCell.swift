@@ -17,7 +17,7 @@ class SurveyKindCollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.backgroundColor = AppColor.gray10
-        contentView.layer.cornerRadius = 24.5
+        contentView.layer.cornerRadius = DynamicPadding.dynamicValue(24.5)
         contentView.layer.masksToBounds = true
         addComponents()
         constraints()
