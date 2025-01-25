@@ -11,6 +11,9 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     let navigationBarManager = NavigationBarManager()
     var wineResults: [SearchResultModel] = []
     let networkService = WineService()
+    var isLoading = false
+    var currentPage = 0
+    var totalPage = 0
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,7 +51,7 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
         if let query = searchHomeView.searchBar.text, query.count >= 2 {
             Task {
                 do {
-                    try await callSearchAPI(query: query)
+                    try await callSearchAPI(query: query, startPage: 0)
                 } catch {
                     print(error)
                 }
@@ -94,8 +97,7 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
         navigationController?.popViewController(animated: true)
     }
     
-    func callSearchAPI(query: String) async throws {
-        let startPage = 0
+    func callSearchAPI(query: String, startPage: Int) async throws {
         
         guard let response = try await networkService.fetchWines(searchName: query, page: startPage) else { return }
         
@@ -107,19 +109,21 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
         
         if response.pageNumber != 0 { // 맨 처음 요청한게 아니면, 이전 데이터가 이미 저장이 되어있는 상황이면
             // 리스트 뒤에다가 넣어준다!
-            // 이 페이지에 잇는 self.currentPage = response.pageNumber
-            // totalpage도 저장 -> 안해줘도되긴함(이미 이전에 0번 페이지 요청때 이미 갱신했으니까)
+            self.currentPage = response.pageNumber
             self.wineResults.append(contentsOf: nextWineDatas)
         } else {
-            // 토탈 페이지 수 갱신
-            // 현재 페이지 수도 갱신 self.currentPage = response.pageNumber
+            // 토탈 페이지 수 갱신, 현재 페이지 수 설정
+            self.totalPage = response.totalPages
+            self.currentPage = response.pageNumber
             self.wineResults = nextWineDatas
         }
-//      self.searchHomeView.searchResultTableView.reloadData()
+        DispatchQueue.main.async {
+            self.searchHomeView.searchResultTableView.reloadData()
+        }
     }
 }
 
-extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource {
+extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return wineResults.count
     }
@@ -140,5 +144,31 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource {
         let vc = WineDetailViewController()
         vc.wineId = wineResults[indexPath.row].wineId
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard let tableView = scrollView as? UITableView else { return }
+        
+        let contentOffsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let scrollViewHeight = scrollView.frame.size.height
+        
+        // Check if user has scrolled to the bottom
+        if contentOffsetY > contentHeight - scrollViewHeight { // Trigger when arrive the bottom
+            guard !isLoading, currentPage + 1 < totalPage else { return }
+            isLoading = true
+            
+            Task {
+                do {
+                    try await callSearchAPI(query: searchHomeView.searchBar.text ?? "", startPage: currentPage + 1)
+                } catch {
+                    print("Failed to fetch next page: \(error)")
+                }
+                DispatchQueue.main.async {
+                    self.searchHomeView.searchResultTableView.reloadData()
+                }
+                isLoading = false
+            }
+        }
     }
 }

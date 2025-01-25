@@ -6,12 +6,15 @@ import Network
 import SnapKit
 import Then
 
-public class AddNewWineViewController : UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource {
+public class AddNewWineViewController : UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     
     let navigationBarManager = NavigationBarManager()
     var wineResults: [SearchResultModel] = []
     var registerWine: MyOwnedWine = MyOwnedWine()
     let networkService = WineService()
+    var isLoading = false
+    var currentPage = 0
+    var totalPage = 0
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,8 +68,13 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let query = searchHomeView.searchBar.text, query.count >= 2 {
             Task {
-                await self.callSearchAPI(query: query)
+                do {
+                    try await callSearchAPI(query: query, startPage: 0)
+                } catch {
+                    print(error)
+                }
             }
+            return true
         } else {
             showCharacterLimitAlert()
         }
@@ -94,26 +102,35 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
 //        }
 //    }
     
-    func callSearchAPI(query: String) async {
-        do {
-            let responseData = try await networkService.fetchWines(searchName: query, page: 0)
-            guard let totalPages = responseData?.totalPages else { return }
-            print(totalPages)
-            guard let data = responseData?.content else { return }
-            self.wineResults = data.map({ data in
-                SearchResultModel(wineId: data.wineId, name: data.name, nameEng: data.nameEng, imageUrl: data.imageUrl, sort: data.sort, country: data.country, region: data.region, variety: data.variety, vivinoRating: data.vivinoRating, price: data.price)
-            })
-            Task {
-                self.searchHomeView.searchResultTableView.reloadData()
-            }
-        } catch {
-            print(error)
+    func callSearchAPI(query: String, startPage: Int) async throws {
+        
+        guard let response = try await networkService.fetchWines(searchName: query, page: startPage) else { return }
+        
+        guard let content = response.content else { return }
+        // reponse 와인 10개 매핑해주고
+        let nextWineDatas = content.map { data in
+            SearchResultModel(wineId: data.wineId, name: data.name, nameEng: data.nameEng, imageUrl: data.imageUrl, sort: data.sort, country: data.country, region: data.region, variety: data.variety, vivinoRating: data.vivinoRating, price: data.price)
+        }
+        
+        if response.pageNumber != 0 { // 맨 처음 요청한게 아니면, 이전 데이터가 이미 저장이 되어있는 상황이면
+            // 리스트 뒤에다가 넣어준다!
+            self.currentPage = response.pageNumber
+            self.wineResults.append(contentsOf: nextWineDatas)
+        } else {
+            // 토탈 페이지 수 갱신, 현재 페이지 수 설정
+            self.totalPage = response.totalPages
+            self.currentPage = response.pageNumber
+            self.wineResults = nextWineDatas
+        }
+        DispatchQueue.main.async {
+            self.searchHomeView.searchResultTableView.reloadData()
         }
     }
     
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)
     }
+    
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return wineResults.count
     }
@@ -135,6 +152,32 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         registerWine.updateWine(wineId: selectedWine.wineId, wineName: selectedWine.name)
         vc.registerWine = self.registerWine
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard let tableView = scrollView as? UITableView else { return }
+        
+        let contentOffsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let scrollViewHeight = scrollView.frame.size.height
+        
+        // Check if user has scrolled to the bottom
+        if contentOffsetY > contentHeight - scrollViewHeight - 30 { // Trigger when 30px above the bottom
+            guard !isLoading, currentPage + 1 < totalPage else { return }
+            isLoading = true
+            
+            Task {
+                do {
+                    try await callSearchAPI(query: searchHomeView.searchBar.text ?? "", startPage: currentPage + 1)
+                } catch {
+                    print("Failed to fetch next page: \(error)")
+                }
+                DispatchQueue.main.async {
+                    self.searchHomeView.searchResultTableView.reloadData()
+                }
+                isLoading = false
+            }
+        }
     }
 }
 
