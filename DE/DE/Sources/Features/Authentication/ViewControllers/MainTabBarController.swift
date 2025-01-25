@@ -2,11 +2,14 @@
 
 import UIKit
 import CoreModule
+import Network
 
 public class MainTabBarController: UITabBarController {
     
     let homeVC = HomeViewController()
     let classVC = HomeViewController()
+    
+    let networkService = MemberService()
     
     public var userName: String? {
         didSet {
@@ -35,6 +38,17 @@ public class MainTabBarController: UITabBarController {
                     homeVC.userName = "노네임"
                     classVC.userName = "노네임"
                 }
+            }
+        }
+    }
+    
+    func setNickName() {
+        Task {
+            do {
+                guard let data = try await networkService.fetchUserName() else { return }
+                userName = data.username
+            } catch {
+                
             }
         }
     }

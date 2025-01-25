@@ -64,6 +64,10 @@ public final class MemberService : NetworkManager {
         requestOptional(target: .getMemberInfo, decodingType: MemberInfoResponse.self, completion: completion)
     }
     
+    public func fetchUserName() async throws -> MemberInfoResponse? {
+        return try await requestOptionalAsync(target: .getMemberInfo, decodingType: MemberInfoResponse.self)
+    }
+    
     /// 사용자 탈퇴 API
     public func deleteUser(completion: @escaping (Result<String, NetworkError>) -> Void) {
         request(target: .deleteMember, decodingType: String.self, completion: completion)
