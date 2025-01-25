@@ -255,18 +255,33 @@ class AccountInfoViewController: UIViewController {
             case .success(_):
                 if userProfile?.authType == "kakao" {
                     self.kakaoAuthVM.kakaoLogout()
-                    //정보 삭제 처리
                     Toaster.shared.makeToast("로그아웃")
-                    self.showSplashScreen()
                 } else {
-                    //정보 삭제 처리
                     Toaster.shared.makeToast("로그아웃")
+                }
+                SelectLoginTypeVC.keychain.delete("userId")
+                self.clearCookie()
+                Task {
                     self.showSplashScreen()
                 }
             case .failure(let error):
                 print(error)
             }
         }
+    }
+    
+    func clearCookie() {
+        guard let cookies = HTTPCookieStorage.shared.cookies else { return }
+        
+        let targetCookieNames = ["accessToken", "refreshToken"]
+        
+        for cookie in cookies {
+            if targetCookieNames.contains(cookie.name) {
+                HTTPCookieStorage.shared.deleteCookie(cookie)
+            }
+        }
+        
+        print("✅ 쿠키에 저장된 토큰이 삭제되었습니다.")
     }
     
     @objc private func deleteButtonTapped() {
