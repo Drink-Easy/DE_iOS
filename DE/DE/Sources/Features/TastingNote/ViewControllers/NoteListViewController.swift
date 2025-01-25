@@ -87,7 +87,7 @@ public class NoteListViewController: UIViewController {
     }
     
     func setupAction() {
-        myTastingNote.writeButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        //myTastingNote.writeButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(labelTapped))
         noteListView.seeAllLabel.addGestureRecognizer(tapGesture)
@@ -121,10 +121,10 @@ public class NoteListViewController: UIViewController {
 //        }
     }
     
-    @objc func nextVC() {
-        let nextVC = WineSearchMainVC()
-        navigationController?.pushViewController(nextVC, animated: true)
-    }
+//    @objc func nextVC() {
+//        let nextVC = WineSearchMainVC()
+//        navigationController?.pushViewController(nextVC, animated: true)
+//    }
     
     @objc func searchVC() {
         let nextVC = SearchWineViewController()

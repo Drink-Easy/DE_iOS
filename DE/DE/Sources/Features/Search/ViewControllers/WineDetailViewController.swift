@@ -172,7 +172,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         
         wineDetailView.snp.makeConstraints {
             $0.top.equalTo(largeTitleLabel.snp.bottom).offset(21)
-            $0.horizontalEdges.equalToSuperview()
+            $0.horizontalEdges.equalToSuperview().inset(24)
         }
         
         vivinoRateView.snp.makeConstraints {
@@ -218,10 +218,10 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         self.isLiked = wineResponse.liked
         self.originalIsLiked = wineResponse.liked
         let noseNotes = [
-            wineResponse.wineNoteNose?.nose1 ?? "nose1",
-            wineResponse.wineNoteNose?.nose2 ?? "nose2",
-            wineResponse.wineNoteNose?.nose3 ?? "nose3"
-        ]
+            wineResponse.nose1,
+            wineResponse.nose2,
+            wineResponse.nose3
+        ].compactMap { $0 }
 
         let tastingNoteString = noseNotes.joined(separator: ", ")
         

@@ -110,7 +110,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     private func callPatchAPI() async throws {
         if let profileImg = self.profileImg {
-            async let imageResult = networkService.postImgAsync(image: profileImg)
+            let imageResult = try await networkService.postImgAsync(image: profileImg)
         }
         
         guard let newUserName = self.profileView.nicknameTextField.text,
@@ -119,7 +119,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         let data = networkService.makeMemberInfoUpdateRequestDTO(username: newUserName, city: newUserCity)
         
         // 병렬 처리
-        async let dataResult = networkService.patchUserInfoAsync(body: data)
+        let dataResult = try await networkService.patchUserInfoAsync(body: data)
         
         // Call Count 업데이트
         await self.updateCallCount()

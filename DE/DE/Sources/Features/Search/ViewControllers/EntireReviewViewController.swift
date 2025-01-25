@@ -13,6 +13,10 @@ class EntireReviewViewController: UIViewController {
     var reviewResults: [WineReviewModel] = []
     let networkService = WineService()
     private var expandedCells: [Bool] = []
+    var isLoading = false
+    var currentPage = 0
+    var totalPage = 0
+    var currentType = "최신순"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,7 +24,13 @@ class EntireReviewViewController: UIViewController {
 
         addView()
         constraints()
-        callEntireReviewAPI(wineId: self.wineId, orderByLatest: true)
+        Task {
+            do {
+                try await callEntireReviewAPI(wineId: self.wineId, sortType: "최신순", page: 0)
+            } catch {
+                print(error)
+            }
+        }
         setupDropdownAction()
         setupNavigationBar()
     }
@@ -81,47 +91,60 @@ class EntireReviewViewController: UIViewController {
         entireReviewView.dropdownView.onOptionSelected = { [weak self] selectedOption in
             guard let self = self else { return }
             if selectedOption == "최신 순" {
-                self.reviewResults.sort { $0.createdAt > $1.createdAt }
+                currentType = "최신순"
             } else if selectedOption == "오래된 순" {
-                self.reviewResults.sort { $0.createdAt < $1.createdAt }
+                currentType = "오래된 순"
             } else if selectedOption == "별점 높은 순" {
-                self.reviewResults.sort { $0.rating > $1.rating }
+                currentType = "별점 높은 순"
             } else if selectedOption == "별점 낮은 순" {
-                self.reviewResults.sort { $0.rating < $1.rating }  
+                currentType = "별점 낮은 순"
             }
-            self.entireReviewView.reviewCollectionView.reloadData()
+            Task {
+                do {
+                    try await self.callEntireReviewAPI(wineId: self.wineId, sortType: self.currentType, page: 0)
+                } catch {
+                    print(error)
+                }
+            }
+            DispatchQueue.main.async {
+                self.entireReviewView.reviewCollectionView.reloadData()
+            }
         }
     }
     
-    func callEntireReviewAPI(wineId: Int, orderByLatest: Bool) {
-        networkService.fetchWineReviews(wineId: wineId, orderByLatest: orderByLatest) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let response):
-                DispatchQueue.main.async {
-                    self.reviewResults = response?.compactMap { data in
-                        guard let name = data.name,
-                              let review = data.review,
-                              let rating = data.rating,
-                              let createdAt = data.createdAt else {
-                            print("작성된 리뷰가 없습니다.")
-                            return nil
-                        }
-                        return WineReviewModel(name: name, contents: review, rating: rating, createdAt: createdAt)
-                    } ?? []
-                    self.entireReviewView.reviewCollectionView.reloadData()
-                    self.expandedCells = Array(repeating: false, count: self.reviewResults.count)
-                }
-            case .failure(let error):
-                print("Error fetching reviews: \(error)")
+    func callEntireReviewAPI(wineId: Int, sortType: String, page: Int) async throws {
+        guard let response = try await networkService.fetchWineReviews(wineId: wineId, sortType: sortType, page: page) else { return }
+        
+        guard let content = response.content else { return }
+        // reponse 와인 10개 매핑해주고
+        let nextReviewDatas: [WineReviewModel] = content.compactMap { data in
+            guard let name = data.name,
+                  let review = data.review,
+                  let rating = data.rating,
+                  let createdAt = data.createdAt else {
+                print("작성된 리뷰가 없습니다.")
+                return nil
             }
+            return WineReviewModel(name: name, contents: review, rating: rating, createdAt: createdAt)
+        }
+        
+        if response.pageNumber != 0 { // 맨 처음 요청한게 아니면, 이전 데이터가 이미 저장이 되어있는 상황이면
+            // 리스트 뒤에다가 넣어준다!
+            self.currentPage = response.pageNumber
+            self.reviewResults.append(contentsOf: nextReviewDatas)
+        } else {
+            // 토탈 페이지 수 갱신, 현재 페이지 수 설정
+            self.totalPage = response.totalPages
+            self.currentPage = response.pageNumber
+            self.reviewResults = nextReviewDatas
+        }
+        DispatchQueue.main.async {
+            self.entireReviewView.reviewCollectionView.reloadData()
         }
     }
-
 }
 
-extension EntireReviewViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension EntireReviewViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return reviewResults.count
     }
@@ -166,6 +189,36 @@ extension EntireReviewViewController: UICollectionViewDataSource, UICollectionVi
                 ? CGFloat(numberOfLines - 2) * lineHeight + 104
                 : 104
         return CGSize(width: width, height: cellHeight)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y < 0 {
+            scrollView.contentOffset.y = 0 // 위쪽 바운스 막기
+        }
+        
+        guard let tableView = scrollView as? UITableView else { return }
+        
+        let contentOffsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let scrollViewHeight = scrollView.frame.size.height
+        
+        // Check if user has scrolled to the bottom
+        if contentOffsetY > contentHeight - scrollViewHeight { // Trigger when arrive the bottom
+            guard !isLoading, currentPage + 1 < totalPage else { return }
+            isLoading = true
+            
+            Task {
+                do {
+                    try await callEntireReviewAPI(wineId: self.wineId, sortType: currentType, page: currentPage + 1)
+                } catch {
+                    print("Failed to fetch next page: \(error)")
+                }
+                DispatchQueue.main.async {
+                    self.entireReviewView.reviewCollectionView.reloadData()
+                }
+                isLoading = false
+            }
+        }
     }
 }
 

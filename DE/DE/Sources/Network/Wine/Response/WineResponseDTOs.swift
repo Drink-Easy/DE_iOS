@@ -42,15 +42,11 @@ public struct WineResponseDTO : Decodable {
     public let avgTannin: Double
     public let avgBody: Double
     public let avgAlcohol: Double
-    public let wineNoteNose: WineNoteNose?
-    public let avgMemberRating: Double
-    public let liked: Bool
-}
-
-public struct WineNoteNose : Decodable {
     public let nose1 : String?
     public let nose2 : String?
     public let nose3 : String?
+    public let avgMemberRating: Double
+    public let liked: Bool
 }
 
 public struct WineReviewResponseDTO: Decodable {

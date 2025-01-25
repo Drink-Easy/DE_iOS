@@ -146,7 +146,7 @@ extension MorePopularWineViewController: UITableViewDelegate, UITableViewDataSou
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = HomeWineDetailViewController()
+        let vc = WineDetailViewController()
         vc.wineId = wineList[indexPath.row].wineId
         navigationController?.pushViewController(vc, animated: true)
     }

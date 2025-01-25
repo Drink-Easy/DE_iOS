@@ -33,8 +33,8 @@ public final class WineService: NetworkManager {
     }
     
     /// 선택 와인 리뷰 조회
-    public func fetchWineReviews(wineId: Int, orderByLatest: Bool, page: Int) async throws -> PageResponseWineReviewResponse? {
-        return try await requestAsync(target: .getWineReview(wineId: wineId, orderByLatest: orderByLatest, page: page), decodingType: PageResponseWineReviewResponse.self)
+    public func fetchWineReviews(wineId: Int, sortType: String, page: Int) async throws -> PageResponseWineReviewResponse? {
+        return try await requestAsync(target: .getWineReview(wineId: wineId, sortType: sortType, page: page), decodingType: PageResponseWineReviewResponse.self)
     }
     
     /// 추천 와인 조회
