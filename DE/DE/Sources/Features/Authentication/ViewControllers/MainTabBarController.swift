@@ -54,7 +54,7 @@ public class MainTabBarController: UITabBarController {
     
     public func configureTabs() {
         let nav1 = UINavigationController(rootViewController: homeVC)
-        let nav2 = UINavigationController(rootViewController: TestVC())
+        let nav2 = UINavigationController(rootViewController: AllTastingNoteVC())
         let nav3 = UINavigationController(rootViewController: SettingMenuViewController())
         
         let home = UIImage(systemName: "house.fill")
