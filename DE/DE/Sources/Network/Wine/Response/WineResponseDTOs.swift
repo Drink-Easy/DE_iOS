@@ -68,3 +68,9 @@ public struct HomeWineDTO : Decodable {
     public let price : Int
     public let vivinoRating: Double
 }
+
+public struct PageResponseWineReviewResponse : Decodable {
+    public let content : [WineReviewResponseDTO]?
+    public let pageNumber : Int
+    public let totalPages : Int
+}
