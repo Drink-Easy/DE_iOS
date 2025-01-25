@@ -10,17 +10,16 @@ import CoreModule
 import Network
 
 // 테이스팅노트 보기 뷰
-public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate{
+public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate {
     
     let navigationBarManager = NavigationBarManager()
-    
-    let noteService = TastingNoteService()
+
+    let networkService = TastingNoteService()
     let tnManager = NewTastingNoteManager.shared
     let wineData = TNWineDataManager.shared
     
+    public var noteId: Int = 0
     var wineInfo: TastingNoteResponsesDTO?
-    
-    let wineName = UserDefaults.standard.string(forKey: "wineName")
     
     //MARK: UI Elements
     let scrollView = UIScrollView().then {
@@ -50,8 +49,16 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate{
     public override func viewDidLoad() {
         super.viewDidLoad()
         wineInfoView.delegate = self
-        wineInfoView.header.setTitleLabel(wineName ?? "와인이에용") // TODO: 와인 이름 설정!!
         //TODO: 테노 정보 로드 api
+        Task {
+            do {
+                try await CallAllTastingNote()
+                
+            } catch {
+                print("Error: \(error)")
+                // Alert 표시 등 추가
+            }
+        }
         setupUI()
         setupNavigationBar()
     }
@@ -141,5 +148,17 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate{
 //                print(error)
 //            }
 //        })
+    }
+    
+    private func CallAllTastingNote() async throws {
+        
+        let data = try await networkService.fetchNote(noteId: noteId)
+        // Call Count 업데이트
+        //        await self.updateCallCount()
+        wineInfoView.header.setTitleLabel(data.wineName ?? "와인이에용")
+//        allTastingNoteList = data.notePriviewList
+//        currentTastingNoteList = data.notePriviewList
+//        tastingNoteView.wineImageStackView.updateCounts(red: data.sortCount.redCount, white: data.sortCount.whiteCount, sparkling: data.sortCount.sparklingCount, rose: data.sortCount.roseCount, etc: data.sortCount.etcCount)
+//        tastingNoteView.TastingNoteCollectionView.reloadData()
     }
 }

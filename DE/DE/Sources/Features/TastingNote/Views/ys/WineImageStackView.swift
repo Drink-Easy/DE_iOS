@@ -94,6 +94,8 @@ class WineImageStackContainerView: UIView {
             let imageView = UIImageView(image: UIImage(named: imageName))
             imageView.contentMode = .scaleAspectFill
             imageView.layer.cornerRadius = 10
+            imageView.layer.borderWidth = 2
+            imageView.layer.borderColor = UIColor.clear.cgColor
             imageView.clipsToBounds = true
             imageView.isUserInteractionEnabled = true
             imageView.backgroundColor = AppColor.white
@@ -147,19 +149,9 @@ class WineImageStackContainerView: UIView {
         }
     }
     
-//    @objc private func handleTap(_ gesture: UITapGestureRecognizer) {
-//        guard let tappedImageView = gesture.view as? UIImageView,
-//              let category = tappedImageView.accessibilityLabel else { return }
-//        
-//        print("Selected category: \(category)")
-//        // 필요한 경우 델리게이트나 클로저로 이벤트 전달 가능
-//    }
-//
-    
     @objc private func handleTap(_ gesture: UITapGestureRecognizer) {
             guard let tappedImageView = gesture.view as? UIImageView,
                   let category = tappedImageView.accessibilityLabel else { return }
-            
             if selectedCategory == category {
                 // 이미 선택된 카테고리를 다시 클릭 -> 선택 해제
                 tappedImageView.layer.borderColor = UIColor.clear.cgColor
@@ -175,7 +167,6 @@ class WineImageStackContainerView: UIView {
                 
                 tappedImageView.layer.borderColor = AppColor.purple100?.cgColor
                 selectedCategory = category
-                
                 // 델리게이트 메서드 호출
                 let sortType = getWineSortType(from: category)
                 delegate?.didTapSortButton(for: sortType)

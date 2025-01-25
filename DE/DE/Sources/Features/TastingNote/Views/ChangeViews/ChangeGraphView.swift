@@ -246,7 +246,7 @@ class ChangeGraphView: UIView, UIScrollViewDelegate {
     
     func updateUI(dto: TastingNoteResponsesDTO) {
         wineNameLabel.text = dto.wineName
-        sweetSlider.value = Float(dto.sugarContent)
+        sweetSlider.value = Float(dto.sweetness)
         acidSlider.value = Float(dto.acidity)
         tanninSlider.value = Float(dto.tannin)
         bodySlider.value = Float(dto.body)

@@ -15,8 +15,8 @@ class AllTastingNoteView: UIView {
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 22)
         $0.textColor = AppColor.black
     }
-    let searchIcon = UIImageView().then {
-        $0.image = UIImage(systemName: "magnifyingglass")?.withTintColor(AppColor.gray80 ?? .black, renderingMode: .alwaysOriginal)
+    let searchButton = UIButton().then {
+        $0.setImage(UIImage(systemName: "magnifyingglass")?.withTintColor(AppColor.gray80 ?? .black, renderingMode: .alwaysOriginal), for: .normal)
         $0.contentMode = .scaleAspectFill
         $0.clipsToBounds = true
     }
@@ -36,9 +36,9 @@ class AllTastingNoteView: UIView {
         let itemWidth = (screenWidth - totalSpacing * 2) / 3
         
         if let layout = $0.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.itemSize = CGSize(width: itemWidth, height: itemWidth + totalSpacing * 0.1)
+            layout.itemSize = CGSize(width: itemWidth, height: itemWidth + totalSpacing * 2)
             layout.minimumInteritemSpacing = totalSpacing * 0.3
-            layout.minimumLineSpacing = totalSpacing * 2
+            layout.minimumLineSpacing = totalSpacing * 0.5
             layout.sectionInset = UIEdgeInsets(top: 0, left: totalSpacing * 0.6, bottom: 0, right: totalSpacing * 0.6)
         }
         
@@ -48,8 +48,8 @@ class AllTastingNoteView: UIView {
     let floatingButton = UIButton(type: .system).then {
         $0.setImage(UIImage(named: "pencil"), for: .normal)
         $0.tintColor = .white
-        $0.backgroundColor = AppColor.purple100
-        $0.layer.cornerRadius = 25
+        $0.backgroundColor = AppColor.purple70
+        $0.layer.cornerRadius = DynamicPadding.dynamicValue(25.0)
         
         $0.layer.shadowColor = UIColor.black.cgColor
         $0.layer.shadowOpacity = 0.1
@@ -71,23 +71,23 @@ class AllTastingNoteView: UIView {
     
     // MARK: - Setup Methods
     private func setupUI() {
-        [titleLabel, searchIcon, topDividerView, wineImageStackView, tnLabel, TastingNoteCollectionView, floatingButton].forEach {
+        [titleLabel, searchButton, topDividerView, wineImageStackView, tnLabel, TastingNoteCollectionView, floatingButton].forEach {
             addSubview($0)
         }
     }
     
     private func setupConstraints() {
         titleLabel.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide)
+            $0.top.equalToSuperview()
             $0.leading.equalTo(safeAreaLayoutGuide).inset(16)
         }
-        searchIcon.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide)
+        searchButton.snp.makeConstraints {
+            $0.top.equalToSuperview()
             $0.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             $0.size.equalTo(25)
         }
         topDividerView.snp.makeConstraints {
-            $0.top.equalTo(searchIcon.snp.bottom).offset(8)
+            $0.top.equalTo(searchButton.snp.bottom).offset(8)
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(2)
         }
@@ -102,10 +102,10 @@ class AllTastingNoteView: UIView {
         TastingNoteCollectionView.snp.makeConstraints {
             $0.top.equalTo(tnLabel.snp.bottom).offset(16)
             $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalTo(safeAreaLayoutGuide)
+            $0.bottom.equalToSuperview()
         }
         floatingButton.snp.makeConstraints {
-            $0.width.height.equalTo(50)
+            $0.width.height.equalTo(DynamicPadding.dynamicValue(50.0))
             $0.trailing.equalToSuperview().inset(16)
             $0.bottom.equalTo(safeAreaLayoutGuide).inset(16)
         }

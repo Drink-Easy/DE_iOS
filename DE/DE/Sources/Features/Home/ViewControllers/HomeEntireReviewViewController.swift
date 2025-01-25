@@ -94,29 +94,29 @@ class HomeEntireReviewViewController: UIViewController {
     }
     
     func callEntireReviewAPI(wineId: Int, orderByLatest: Bool) {
-        networkService.fetchWineReviews(wineId: wineId, orderByLatest: orderByLatest) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let response):
-                DispatchQueue.main.async {
-                    self.reviewResults = response?.compactMap { data in
-                        guard let name = data.name,
-                              let review = data.review,
-                              let rating = data.rating,
-                              let createdAt = data.createdAt else {
-                            print("작성된 리뷰가 없습니다.")
-                            return nil
-                        }
-                        return WineReviewModel(name: name, contents: review, rating: rating, createdAt: createdAt)
-                    } ?? []
-                    self.entireReviewView.reviewCollectionView.reloadData()
-                    self.expandedCells = Array(repeating: false, count: self.reviewResults.count)
-                }
-            case .failure(let error):
-                print("Error fetching reviews: \(error)")
-            }
-        }
+//        networkService.fetchWineReviews(wineId: wineId, orderByLatest: orderByLatest) { [weak self] result in
+//            guard let self = self else { return }
+//            
+//            switch result {
+//            case .success(let response):
+//                DispatchQueue.main.async {
+//                    self.reviewResults = response?.compactMap { data in
+//                        guard let name = data.name,
+//                              let review = data.review,
+//                              let rating = data.rating,
+//                              let createdAt = data.createdAt else {
+//                            print("작성된 리뷰가 없습니다.")
+//                            return nil
+//                        }
+//                        return WineReviewModel(name: name, contents: review, rating: rating, createdAt: createdAt)
+//                    } ?? []
+//                    self.entireReviewView.reviewCollectionView.reloadData()
+//                    self.expandedCells = Array(repeating: false, count: self.reviewResults.count)
+//                }
+//            case .failure(let error):
+//                print("Error fetching reviews: \(error)")
+//            }
+//        }
     }
 }
 
