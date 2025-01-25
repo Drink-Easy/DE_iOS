@@ -147,6 +147,10 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y < 0 {
+            scrollView.contentOffset.y = 0 // 위쪽 바운스 막기
+        }
+        
         guard let tableView = scrollView as? UITableView else { return }
         
         let contentOffsetY = scrollView.contentOffset.y

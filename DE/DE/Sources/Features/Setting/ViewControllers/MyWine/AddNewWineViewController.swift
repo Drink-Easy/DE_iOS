@@ -155,6 +155,10 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y < 0 {
+            scrollView.contentOffset.y = 0 // 위쪽 바운스 막기
+        }
+        
         guard let tableView = scrollView as? UITableView else { return }
         
         let contentOffsetY = scrollView.contentOffset.y
@@ -162,7 +166,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         let scrollViewHeight = scrollView.frame.size.height
         
         // Check if user has scrolled to the bottom
-        if contentOffsetY > contentHeight - scrollViewHeight - 30 { // Trigger when 30px above the bottom
+        if contentOffsetY > contentHeight - scrollViewHeight { // Trigger when arrive the bottom
             guard !isLoading, currentPage + 1 < totalPage else { return }
             isLoading = true
             
