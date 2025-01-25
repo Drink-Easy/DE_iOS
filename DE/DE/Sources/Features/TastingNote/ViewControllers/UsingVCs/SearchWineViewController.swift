@@ -54,14 +54,16 @@ public class SearchWineViewController : UIViewController, UISearchBarDelegate, U
     
     func filterSuggestions(with query: String) {
         if query.isEmpty {
-            wineResults = []
+            wineResults = [] // 배열 초기화 -> 이전에 보낸 요청의 query가 달라졌을 때만,
             self.searchHomeView.searchResultTableView.reloadData()
         } else {
-            callSearchAPI(query: query)
+//            callSearchAPI(query: query)
         }
     }
     
-    func callSearchAPI(query: String) {
+    func callSearchAPI(query: String) async throws {
+        
+        
 //        networkService.fetchWines(searchName: query) { [weak self] result in
 //            guard let self = self else { return }
 //            

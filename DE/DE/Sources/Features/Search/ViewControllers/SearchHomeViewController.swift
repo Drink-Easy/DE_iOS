@@ -46,7 +46,14 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let query = searchHomeView.searchBar.text, query.count >= 2 {
-            callSearchAPI(query: query)
+            Task {
+                do {
+                    try await callSearchAPI(query: query)
+                } catch {
+                    print(error)
+                }
+            }
+            return true
         } else {
             showCharacterLimitAlert()
         }
@@ -71,6 +78,7 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
 //            self.searchHomeView.searchResultTableView.reloadData()
 //        } else {
 //            callSearchAPI(query: query)
+//    self.searchHomeView.searchResultTableView.reloadData()
 //        }
 //    }
     
@@ -86,22 +94,28 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
         navigationController?.popViewController(animated: true)
     }
     
-    func callSearchAPI(query: String) {
-//        networkService.fetchWines(searchName: query) { [weak self] result in
-//            guard let self = self else { return }
-//            
-//            switch result {
-//            case .success(let responseData) :
-//                DispatchQueue.main.async {
-//                    self.wineResults = responseData.map { data in
-//                        SearchResultModel(wineId: data.wineId, name: data.name, nameEng: data.nameEng, imageUrl: data.imageUrl, sort: data.sort, country: data.country, region: data.region, variety: data.variety, vivinoRating: data.vivinoRating, price: data.price)
-//                    }
-//                    self.searchHomeView.searchResultTableView.reloadData()
-//                }
-//            case .failure(let error) :
-//                print("\(error)")
-//            }
-//        }
+    func callSearchAPI(query: String) async throws {
+        let startPage = 0
+        
+        guard let response = try await networkService.fetchWines(searchName: query, page: startPage) else { return }
+        
+        guard let content = response.content else { return }
+        // reponse 와인 10개 매핑해주고
+        let nextWineDatas = content.map { data in
+            SearchResultModel(wineId: data.wineId, name: data.name, nameEng: data.nameEng, imageUrl: data.imageUrl, sort: data.sort, country: data.country, region: data.region, variety: data.variety, vivinoRating: data.vivinoRating, price: data.price)
+        }
+        
+        if response.pageNumber != 0 { // 맨 처음 요청한게 아니면, 이전 데이터가 이미 저장이 되어있는 상황이면
+            // 리스트 뒤에다가 넣어준다!
+            // 이 페이지에 잇는 self.currentPage = response.pageNumber
+            // totalpage도 저장 -> 안해줘도되긴함(이미 이전에 0번 페이지 요청때 이미 갱신했으니까)
+            self.wineResults.append(contentsOf: nextWineDatas)
+        } else {
+            // 토탈 페이지 수 갱신
+            // 현재 페이지 수도 갱신 self.currentPage = response.pageNumber
+            self.wineResults = nextWineDatas
+        }
+//      self.searchHomeView.searchResultTableView.reloadData()
     }
 }
 
