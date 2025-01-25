@@ -7,7 +7,7 @@ import CoreModule
 
 public class ChooseNoseViewController: UIViewController {
     
-    private var collectionView: UICollectionView!
+//    private var collectionView: UICollectionView!
     var sections: [NoseSectionModel] = NoseSectionModel.sections() // 섹션 데이터
     var selectedItems: [String:[NoseModel]] = [:]
     var allNoseModels: [NoseModel]  {
@@ -44,7 +44,7 @@ public class ChooseNoseViewController: UIViewController {
         
         // 셀 및 헤더 등록
         noseCollectionView.register(NoseCollectionViewCell.self, forCellWithReuseIdentifier: NoseCollectionViewCell.identifier)
-        noseCollectionView.register(NoseCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
+        noseCollectionView.register(NoseCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NoseCollectionReusableView.identifier)
         
         let selectedCollectionView = chooseNoseView.selectedCollectionView
         selectedCollectionView.delegate = self
@@ -149,7 +149,7 @@ extension ChooseNoseViewController: UICollectionViewDelegate, UICollectionViewDa
         
         let header = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind,
-            withReuseIdentifier: "Header",
+            withReuseIdentifier: NoseCollectionReusableView.identifier,
             for: indexPath
         ) as! NoseCollectionReusableView
         
@@ -176,7 +176,7 @@ extension ChooseNoseViewController: NoseHeaderViewDelegate {
 extension ChooseNoseViewController: UICollectionViewDelegateFlowLayout {
     // 섹션 간 여백
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10) // 좌우 여백 10
+        return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0) // 좌우 여백 10
     }
     
     // 셀 간 가로 간격
