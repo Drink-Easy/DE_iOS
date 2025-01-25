@@ -18,7 +18,7 @@ public class EntireReviewView: UIView {
         $0.register(ReviewCollectionViewCell.self, forCellWithReuseIdentifier: ReviewCollectionViewCell.identifier)
         $0.backgroundColor = .clear
         $0.isScrollEnabled = true
-        $0.showsVerticalScrollIndicator = false
+        $0.showsVerticalScrollIndicator = true
     }
 
     public override init(frame: CGRect) {

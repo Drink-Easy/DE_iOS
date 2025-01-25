@@ -102,12 +102,13 @@ class EntireReviewViewController: UIViewController {
             Task {
                 do {
                     try await self.callEntireReviewAPI(wineId: self.wineId, sortType: self.currentType, page: 0)
+                    DispatchQueue.main.async {
+                        // 강제로 맨위로 올리기
+                        self.entireReviewView.reviewCollectionView.setContentOffset(.zero, animated: true)
+                    }
                 } catch {
                     print(error)
                 }
-            }
-            DispatchQueue.main.async {
-                self.entireReviewView.reviewCollectionView.reloadData()
             }
         }
     }
@@ -132,11 +133,13 @@ class EntireReviewViewController: UIViewController {
             // 리스트 뒤에다가 넣어준다!
             self.currentPage = response.pageNumber
             self.reviewResults.append(contentsOf: nextReviewDatas)
+            self.expandedCells.append(contentsOf: Array(repeating: false, count: nextReviewDatas.count))
         } else {
             // 토탈 페이지 수 갱신, 현재 페이지 수 설정
             self.totalPage = response.totalPages
             self.currentPage = response.pageNumber
             self.reviewResults = nextReviewDatas
+            self.expandedCells = Array(repeating: false, count: nextReviewDatas.count)
         }
         DispatchQueue.main.async {
             self.entireReviewView.reviewCollectionView.reloadData()
@@ -196,7 +199,7 @@ extension EntireReviewViewController: UICollectionViewDataSource, UICollectionVi
             scrollView.contentOffset.y = 0 // 위쪽 바운스 막기
         }
         
-        guard let tableView = scrollView as? UITableView else { return }
+        guard let collectionView = scrollView as? UICollectionView else { return }
         
         let contentOffsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
