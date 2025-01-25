@@ -31,4 +31,9 @@ public final class NoticeService: NetworkManager {
     public func fetchNotice(id : Int, completion: @escaping (Result<NoticeResponse, NetworkError>) -> Void) {
         request(target: .getNotice(id: id), decodingType: NoticeResponse.self, completion: completion)
     }
+    
+    /// 홈 배너 조회
+    public func fetchHomeBanner() async throws -> [BannserResponse] {
+        return try await requestAsync(target: .getBanner, decodingType: [BannserResponse].self)
+    }
 }
