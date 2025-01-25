@@ -7,7 +7,24 @@ import SnapKit
 
 import CoreModule
 
+protocol WineSortDelegate: AnyObject {
+    func didTapSortButton(for type: WineSortType)
+}
+
+enum WineSortType {
+    case all
+    case red
+    case white
+    case sparkling
+    case rose
+    case etc
+}
+
 class WineImageStackContainerView: UIView {
+    
+    weak var delegate: WineSortDelegate?
+    
+    private var selectedCategory: String?
     
     // 라벨 정의
     private let wineLabel = UILabel().then {
@@ -130,14 +147,50 @@ class WineImageStackContainerView: UIView {
         }
     }
     
-    @objc private func handleTap(_ gesture: UITapGestureRecognizer) {
-        guard let tappedImageView = gesture.view as? UIImageView,
-              let category = tappedImageView.accessibilityLabel else { return }
-        
-        print("Selected category: \(category)")
-        // 필요한 경우 델리게이트나 클로저로 이벤트 전달 가능
-    }
+//    @objc private func handleTap(_ gesture: UITapGestureRecognizer) {
+//        guard let tappedImageView = gesture.view as? UIImageView,
+//              let category = tappedImageView.accessibilityLabel else { return }
+//        
+//        print("Selected category: \(category)")
+//        // 필요한 경우 델리게이트나 클로저로 이벤트 전달 가능
+//    }
+//
     
+    @objc private func handleTap(_ gesture: UITapGestureRecognizer) {
+            guard let tappedImageView = gesture.view as? UIImageView,
+                  let category = tappedImageView.accessibilityLabel else { return }
+            
+            if selectedCategory == category {
+                // 이미 선택된 카테고리를 다시 클릭 -> 선택 해제
+                tappedImageView.layer.borderColor = UIColor.clear.cgColor
+                selectedCategory = nil
+                delegate?.didTapSortButton(for: .all) // 기본 상태로 전환
+            } else {
+                // 새 카테고리를 선택 -> 선택 상태로 변경
+                wineStackView.arrangedSubviews.forEach {
+                    guard let stackView = $0 as? UIStackView,
+                          let imageView = stackView.arrangedSubviews.first as? UIImageView else { return }
+                    imageView.layer.borderColor = UIColor.clear.cgColor
+                }
+                
+                tappedImageView.layer.borderColor = AppColor.purple100?.cgColor
+                selectedCategory = category
+                
+                // 델리게이트 메서드 호출
+                let sortType = getWineSortType(from: category)
+                delegate?.didTapSortButton(for: sortType)
+            }
+        }
+        
+        private func getWineSortType(from category: String) -> WineSortType {
+            switch category {
+            case "레드": return .red
+            case "화이트": return .white
+            case "스파클링": return .sparkling
+            case "로제": return .rose
+            default: return .etc
+            }
+        }
     func updateCounts(red: Int, white: Int, sparkling: Int, rose: Int, etc: Int) {
         // 데이터 업데이트
         counts = [
@@ -150,7 +203,7 @@ class WineImageStackContainerView: UIView {
         
         // 전체 병 수 계산
         let total = red + white + sparkling + rose + etc
-        wineLabel.text = "전체 \(total) 병"
+        wineLabel.text = "전체 \(total)병"
         
         // UI 업데이트
         updateUI()

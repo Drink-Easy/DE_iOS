@@ -132,14 +132,14 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate{
     }
     
     private func noteDelete(){
-        noteService.deleteNote(noteId: 0, completion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case.success(let response):
-                print(response)
-            case.failure(let error):
-                print(error)
-            }
-        })
+//        noteService.deleteNote(noteId: 0, completion: { [weak self] result in
+//            guard let self = self else { return }
+//            switch result {
+//            case.success(let response):
+//                print(response)
+//            case.failure(let error):
+//                print(error)
+//            }
+//        })
     }
 }

@@ -181,17 +181,17 @@ public class ChangeNoseViewController: UIViewController {
         
         let patchDTO = TastingNotePatchRequestDTO(noteId: dto.noteId, body: updateRequest)
         
-        noteService.patchNote(data: patchDTO, completion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let response):
-                DispatchQueue.main.async {
-                    print("PATCH 요청 성공: \(response)")
-                }
-            case .failure(let error):
-                print("PATCH 요청 실패: \(error)")
-            }
-        })
+//        noteService.patchNote(data: patchDTO, completion: { [weak self] result in
+//            guard let self = self else { return }
+//            switch result {
+//            case .success(let response):
+//                DispatchQueue.main.async {
+//                    print("PATCH 요청 성공: \(response)")
+//                }
+//            case .failure(let error):
+//                print("PATCH 요청 실패: \(error)")
+//            }
+//        })
     }
 }
 

@@ -102,7 +102,7 @@ class AllTastingNoteView: UIView {
         TastingNoteCollectionView.snp.makeConstraints {
             $0.top.equalTo(tnLabel.snp.bottom).offset(16)
             $0.leading.trailing.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalTo(safeAreaLayoutGuide)
         }
         floatingButton.snp.makeConstraints {
             $0.width.height.equalTo(50)

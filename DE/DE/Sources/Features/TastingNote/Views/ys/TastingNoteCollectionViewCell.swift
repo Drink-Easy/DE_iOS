@@ -9,21 +9,19 @@ import CoreModule
 
 class TastingNoteCollectionViewCell: UICollectionViewCell {
     
-    public lazy var image: UIImageView = {
-        let i = UIImageView()
-        i.contentMode = .scaleAspectFill
+    public lazy var image = UIImageView().then { i in
+        i.contentMode = .scaleAspectFit
         i.layer.cornerRadius = 8
         i.layer.masksToBounds = true
-        i.backgroundColor = .red
-        return i
-    }()
+        i.backgroundColor = AppColor.winebg
+    }
     
-    public lazy var name: UILabel = {
-        let l = UILabel()
+    public lazy var name = UILabel().then { l in
         l.font = UIFont.ptdMediumFont(ofSize: 14)
         l.textColor = Constants.AppColor.gray100
-        return l
-    }()
+        l.textAlignment = .center
+        l.numberOfLines = 2
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
