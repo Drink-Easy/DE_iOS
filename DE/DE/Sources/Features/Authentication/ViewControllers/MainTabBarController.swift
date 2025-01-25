@@ -18,6 +18,7 @@ public class MainTabBarController: UITabBarController {
     }
 
     private func updateUserName() {
+        setNickName()
         if let name = userName {
             print("✅ 닉네임 업데이트: \(name)")
             homeVC.userName = name
@@ -35,8 +36,6 @@ public class MainTabBarController: UITabBarController {
                     classVC.userName = name
                 } catch {
                     print(error.localizedDescription)
-                    homeVC.userName = "노네임"
-                    classVC.userName = "노네임"
                 }
             }
         }
@@ -45,11 +44,33 @@ public class MainTabBarController: UITabBarController {
     func setNickName() {
         Task {
             do {
-                guard let data = try await networkService.fetchUserName() else { return }
+                let data = try await networkService.fetchUserName()
                 userName = data.username
-            } catch {
                 
+                guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+                    print("⚠️ userId가 UserDefaults에 없습니다.")
+                    return
+                }
+                await self.saveUserInfo(userId: userId, data: MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult))
+                try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
+            } catch {
+                print(error)
+                userName = "노네임"
             }
+        }
+    }
+    
+    func saveUserInfo(userId: Int, data: MemberInfoResponse) async {
+        do {
+            try await PersonalDataManager.shared.updatePersonalData(for: userId,
+                                                                    userName: data.username,
+                                                                    userImageURL: data.imageUrl,
+                                                                    userCity: data.city,
+                                                                    authType: data.authType,
+                                                                    email: data.email,
+                                                                    adult: data.adult)
+        } catch {
+            print(error)
         }
     }
 

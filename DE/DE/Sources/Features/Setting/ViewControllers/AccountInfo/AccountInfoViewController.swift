@@ -169,25 +169,19 @@ class AccountInfoViewController: UIViewController {
                     print("⚠️ userId가 UserDefaults에 없습니다.")
                     return
                 }
-                guard let username = data?.username,
-                      let imgUrl = data?.imageUrl,
-                      let email = data?.email,
-                      let city = data?.city,
-                      let authType = data?.authType,
-                      let adult = data?.adult else {return}
                 Task {
                     // 데이터 할당
-                    self.userProfile = MemberInfoResponse(imageUrl: imgUrl, username: username, email: email, city: city, authType: authType, adult: adult)
+                    self.userProfile = MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
                     self.setUserData(
-                        imageURL: imgUrl,
-                        username: username,
-                        email: email,
-                        city: city,
-                        authType: authType,
-                        adult: adult
+                        imageURL: data.imageUrl,
+                        username: data.username,
+                        email: data.email,
+                        city: data.city,
+                        authType: data.authType,
+                        adult: data.adult
                     )
                     // 로컬 캐시 데이터에 저장(덮어쓰기)
-                    await self.saveUserInfo(data: MemberInfoResponse(imageUrl: imgUrl, username: username, email: email, city: city, authType: authType, adult: adult))
+                    await self.saveUserInfo(data: MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult))
                     do {
                         // get api -> 모든 call counter 초기화
                         try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)

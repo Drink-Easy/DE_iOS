@@ -60,12 +60,12 @@ public final class MemberService : NetworkManager {
     }
     
     /// 개인정보 불러오기 API
-    public func fetchUserInfo(completion: @escaping (Result<MemberInfoResponse?, NetworkError>) -> Void) {
-        requestOptional(target: .getMemberInfo, decodingType: MemberInfoResponse.self, completion: completion)
+    public func fetchUserInfo(completion: @escaping (Result<MemberInfoResponse, NetworkError>) -> Void) {
+        request(target: .getMemberInfo, decodingType: MemberInfoResponse.self, completion: completion)
     }
     
-    public func fetchUserName() async throws -> MemberInfoResponse? {
-        return try await requestOptionalAsync(target: .getMemberInfo, decodingType: MemberInfoResponse.self)
+    public func fetchUserName() async throws -> MemberInfoResponse {
+        return try await requestAsync(target: .getMemberInfo, decodingType: MemberInfoResponse.self)
     }
     
     /// 사용자 탈퇴 API
