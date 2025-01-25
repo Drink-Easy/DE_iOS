@@ -88,11 +88,11 @@ class ChooseNoseView: UIView {
     }()
     
     let selectedCollectionView: UICollectionView = {
-        let layout = LeftAlignedCollectionViewFlowLayout()
+        let layout = NewLeftAlignedCollectionViewFlowLayout()
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         layout.minimumInteritemSpacing = 10
         layout.minimumLineSpacing = 10
-        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 50)
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.backgroundColor = AppColor.gray20
@@ -101,11 +101,11 @@ class ChooseNoseView: UIView {
     }()
     
     let collectionView: UICollectionView = {
-        let layout = LeftAlignedCollectionViewFlowLayout()
+        let layout = NewLeftAlignedCollectionViewFlowLayout()
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
         layout.minimumInteritemSpacing = 10
         layout.minimumLineSpacing = 10
-        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: 50)
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.backgroundColor = AppColor.gray20
@@ -200,7 +200,7 @@ class ChooseNoseView: UIView {
         contentView.addSubview(collectionView)
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(selectedCollectionView.snp.bottom).offset(24)
-            make.leading.equalTo(selectedCollectionView.snp.leading).offset(6)
+            make.leading.equalTo(selectedCollectionView.snp.leading)
             make.centerX.equalTo(vector1.snp.centerX)
             make.height.equalTo(400)
         }
@@ -210,7 +210,7 @@ class ChooseNoseView: UIView {
             make.top.equalTo(collectionView.snp.bottom).offset(60)
             make.centerX.equalToSuperview()
             make.leading.equalToSuperview().offset(28)
-            make.height.equalTo(56)
+            make.height.equalTo(60)
         }
         
         contentView.snp.makeConstraints { make in
@@ -237,7 +237,7 @@ class ChooseNoseView: UIView {
     
 }
 
-class LeftAlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {
+class NewLeftAlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         guard let attributes = super.layoutAttributesForElements(in: rect) else { return nil }
         

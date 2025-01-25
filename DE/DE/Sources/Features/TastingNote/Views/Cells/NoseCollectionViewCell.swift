@@ -9,7 +9,7 @@ class NoseCollectionViewCell: UICollectionViewCell {
     
     let menuView: UIView = {
         let m = UIView()
-        m.backgroundColor = AppColor.gray40
+        m.backgroundColor = AppColor.gray10
         m.layer.cornerRadius = 20
         m.layer.borderWidth = 1
         m.layer.borderColor = UIColor.clear.cgColor
