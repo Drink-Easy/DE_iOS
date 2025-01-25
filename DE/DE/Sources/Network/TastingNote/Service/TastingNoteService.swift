@@ -64,34 +64,28 @@ public final class TastingNoteService: NetworkManager {
     //MARK: - API funcs
     
     /// 새 노트 작성 API
-    public func postNote(data: TastingNoteRequestDTO, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .postNote(data: data), decodingType: String.self, completion: completion)
+    public func postNote(data: TastingNoteRequestDTO) async throws -> String {
+        try await requestAsync(target: .postNote(data: data), decodingType: String.self)
     }
     
     /// 노트 수정 API
-    public func patchNote(data: TastingNotePatchRequestDTO, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .patchNote(data: data), decodingType: String.self, completion: completion)
+    public func patchNote(data: TastingNotePatchRequestDTO) async throws -> String {
+        try await requestAsync(target: .patchNote(data: data), decodingType: String.self)
     }
     
     /// 노트 삭제 API
-    public func deleteNote(noteId: Int, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .deleteNote(noteId: noteId), decodingType: String.self, completion: completion)
+    public func deleteNote(noteId: Int) async throws -> String {
+        try await requestAsync(target: .deleteNote(noteId: noteId), decodingType: String.self)
     }
     
     /// 특정 노트 정보 조회 API
-    public func fetchNote(noteId: Int, completion: @escaping (Result<TastingNoteResponsesDTO, NetworkError>) -> Void) {
-        request(target: .getNote(noteId: noteId), decodingType: TastingNoteResponsesDTO.self, completion: completion)
+    public func fetchNote(noteId: Int) async throws ->TastingNoteResponsesDTO {
+        try await requestAsync(target: .getNote(noteId: noteId), decodingType: TastingNoteResponsesDTO.self)
     }
     
     /// 모든 노트 정보 조회 API
     public func fetchAllNotes(sort: String) async throws -> AllTastingNoteResponseDTO? {
-    try await requestOptionalAsync(target: .getAllNotes(sort: sort), decodingType: AllTastingNoteResponseDTO.self)
-        
-}
-//    public func fetchAllNotes(sort: String, completion: @escaping (Result<AllTastingNoteResponseDTO?, NetworkError>) -> Void) {
-//        requestOptional(target: .getAllNotes(sort: sort), decodingType: AllTastingNoteResponseDTO.self, completion: completion)
-//    }
-    
-
+        try await requestOptionalAsync(target: .getAllNotes(sort: sort), decodingType: AllTastingNoteResponseDTO.self)
+    }
     
 }

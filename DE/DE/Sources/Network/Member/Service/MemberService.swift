@@ -41,9 +41,17 @@ public final class MemberService : NetworkManager {
         request(target: .postImage(image: image), decodingType: String.self, completion: completion)
     }
     
+    public func postImgAsync(image: UIImage) async throws -> String {
+        return try await requestAsync(target: .postImage(image: image), decodingType: String.self)
+    }
+    
     /// 개인정보 갱신 API(마이페이지)
     public func patchUserInfo(body: MemberUpdateRequest, completion: @escaping (Result<String, NetworkError>) -> Void) {
         request(target: .patchMemeberPersonalInfo(body: body), decodingType: String.self, completion: completion)
+    }
+    
+    public func patchUserInfoAsync(body: MemberUpdateRequest) async throws -> String {
+        return try await requestAsync(target: .patchMemeberPersonalInfo(body: body), decodingType: String.self)
     }
     
     /// 취향찾기 등록 API
@@ -60,4 +68,5 @@ public final class MemberService : NetworkManager {
     public func deleteUser(completion: @escaping (Result<String, NetworkError>) -> Void) {
         request(target: .deleteMember, decodingType: String.self, completion: completion)
     }
+    
 }
