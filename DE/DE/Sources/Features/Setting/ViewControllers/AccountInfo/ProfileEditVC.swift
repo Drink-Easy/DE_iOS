@@ -23,8 +23,8 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     lazy var profileImg: UIImage? = nil
     
     public var profileImgURL: String?
-    public var username: String?
-    public var userCity: String?
+    public var originUsername: String?
+    public var originUserCity: String?
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -79,8 +79,8 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         view.addSubview(profileView)
         
         guard let profileImg = self.profileImgURL,
-        let usernameText = self.username,
-              let usercityText = self.userCity else { return }
+              let usernameText = self.originUsername,
+              let usercityText = self.originUserCity else { return }
         let imgURL = URL(string: profileImg)
         self.profileView.profileImageView.sd_setImage(with: imgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
         self.profileView.nicknameTextField.text = usernameText
@@ -108,50 +108,33 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         navigationController?.popViewController(animated: true)
     }
     
+    private func callPatchAPI() async throws {
+        if let profileImg = self.profileImg {
+            async let imageResult = networkService.postImgAsync(image: profileImg)
+        }
+        
+        guard let newUserName = self.profileView.nicknameTextField.text,
+              let newUserCity = self.profileView.myLocationTextField.text else { return }
+        
+        let data = networkService.makeMemberInfoUpdateRequestDTO(username: newUserName, city: newUserCity)
+        
+        // 병렬 처리
+        async let dataResult = networkService.patchUserInfoAsync(body: data)
+        
+        // Call Count 업데이트
+        await self.updateCallCount()
+    }
+    
     @objc private func editCompleteTapped() {
-        let dispatchGroup = DispatchGroup()
-        
-        guard let profileImg = self.profileImg else { return }
-        
-        // 1. postImg 호출
-        dispatchGroup.enter()
-        networkService.postImg(image: profileImg) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(_):
-                Task {
-                    await self.updateCallCount()
-                }
-            case .failure(let error):
-                print(error)
+        Task {
+            do {
+                try await callPatchAPI()
+                self.navigationController?.popViewController(animated: true)
+            } catch {
+                print("Error: \(error)")
+                // Alert 표시 등 추가
             }
-            dispatchGroup.leave()
         }
-        
-        // 2. patchUserInfo 호출
-        let profileDTO = networkService.makeMemberInfoUpdateRequestDTO(
-            username: self.profileView.nicknameTextField.text,
-            city: self.profileView.myLocationTextField.text
-        )
-        dispatchGroup.enter()
-        networkService.patchUserInfo(body: profileDTO) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(_):
-                Task {
-                    await self.updateCallCount()
-                }
-            case .failure(let error):
-                print(error)
-            }
-            dispatchGroup.leave()
-        }
-        
-        // 3. 모든 요청 완료 후 pop
-        dispatchGroup.notify(queue: .main) { [weak self] in
-            self?.navigationController?.popViewController(animated: true)
-        }
-        self.navigationController?.popViewController(animated: true)
     }
     
     func updateCallCount() async {
@@ -194,7 +177,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         }
     }
     
-    //MARK: - 닉네임 중복 검사
+    //MARK: - 닉네임 중복 검사 // TODO: 경고 떠있을 때 완료버튼 안눌리게 처리하기
     @objc func checkNicknameValidity(){
         guard let nickname = profileView.nicknameTextField.text, !nickname.isEmpty else {
             print("닉네임이 없습니다")
@@ -206,7 +189,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     //MARK: - 폼 유효성 검사
     @objc func validateNickname(){
         ValidationManager.isNicknameCanUse = false
-        if username == profileView.nicknameTextField.text {
+        if originUsername == profileView.nicknameTextField.text {
             ValidationManager.noNeedToCheck(profileView.nicknameTextField)
         } else {
             ValidationManager.validateNickname(profileView.nicknameTextField)
