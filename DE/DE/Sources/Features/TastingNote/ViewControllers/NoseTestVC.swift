@@ -6,6 +6,16 @@ import CoreModule
 // 향 선택 뷰컨
 
 public class NoseTestVC: UIViewController {
+    
+    let scrollView = UIScrollView().then {
+        $0.backgroundColor = .clear
+        $0.showsVerticalScrollIndicator = false
+    }
+    
+    lazy var contentView = UIView().then {
+        $0.backgroundColor = .clear
+    }
+    
     let topView = NoseTopView() // 기본 상단 뷰
     let middleView = NoseBottomView() // 중간 뷰
 //    let middleView = OnlyScrollView()
@@ -23,18 +33,30 @@ public class NoseTestVC: UIViewController {
     private func setupUI() {
         topView.header.setTitleLabel("아무와인이나넣어")
         topView.propertyHeader.setName(eng: "Nose", kor: "향")
-        [middleView, topView].forEach { view.addSubview($0) }
-//        middleView.backgroundColor = .red
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        [middleView, topView].forEach { contentView.addSubview($0) }
+        
+        scrollView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
+        
+        contentView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+            make.width.equalTo(scrollView.snp.width)
+            make.bottom.equalTo(middleView.snp.bottom).offset(30) // 콘텐츠 끝까지 확장
+        }
+        
         topView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10.0))
+            make.top.equalToSuperview().offset(DynamicPadding.dynamicValue(10.0))
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
-            make.height.equalTo(300)
         }
         
         middleView.snp.makeConstraints { make in
             make.top.equalTo(topView.snp.bottom).offset(DynamicPadding.dynamicValue(24.0))
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
             make.height.greaterThanOrEqualTo(600)
+            make.bottom.equalToSuperview()
         }
     }
     
@@ -167,7 +189,12 @@ extension NoseTestVC : UICollectionViewDelegate, UICollectionViewDataSource {
         collectionView.reloadItems(at: [indexPath])
         Task {
             self.topView.selectedCollectionView.reloadData()
-            self.middleView.updateNoseCollectionViewHeight()
+            self.topView.updateSelectedCollectionViewHeight()
+            self.contentView.snp.updateConstraints { make in
+                make.bottom.equalTo(self.middleView.snp.bottom).offset(30)
+            }
+            
+            self.view.layoutIfNeeded() // 레이아웃 강제 업데이트
         }
     }
     

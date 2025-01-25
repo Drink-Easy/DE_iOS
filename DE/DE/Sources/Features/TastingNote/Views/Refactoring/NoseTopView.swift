@@ -31,6 +31,7 @@ class NoseTopView: UIView {
     public lazy var selectedCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout).then {
         $0.backgroundColor = .clear
         $0.tag = 1
+        $0.isScrollEnabled = false
     }
     
 
@@ -74,16 +75,28 @@ class NoseTopView: UIView {
         selectedCollectionView.snp.makeConstraints { make in
             make.top.equalTo(selectedLabel.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview()
+            make.height.equalTo(0)
             make.bottom.equalToSuperview()
         }
     }
     
+    public func updateTopViewHeight() {
+        self.layoutIfNeeded() // 레이아웃 강제 업데이트
+        let newHeight = self.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        
+        // NoseTopView의 높이 제약 조건 업데이트
+        self.snp.updateConstraints { make in
+            make.height.equalTo(newHeight)
+        }
+        
+        self.updateTopViewHeight()
+    }
     
-//    func updateSelectedCollectionViewHeight() {
-//        selectedCollectionView.layoutIfNeeded() // 레이아웃 업데이트
-//        let contentHeight = selectedCollectionView.contentSize.height
-//        selectedCollectionView.snp.updateConstraints { make in
-//            make.height.equalTo(contentHeight)
-//        }
-//    }
+    func updateSelectedCollectionViewHeight() {
+        selectedCollectionView.layoutIfNeeded() // 레이아웃 업데이트
+        let contentHeight = selectedCollectionView.contentSize.height
+        selectedCollectionView.snp.updateConstraints { make in
+            make.height.equalTo(contentHeight)
+        }
+    }
 }
