@@ -147,10 +147,11 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = TastedDateViewController()
+        let vc = BuyNewWineDateViewController()
         let selectedWine = wineResults[indexPath.row]
-        registerWine.updateWine(wineId: selectedWine.wineId, wineName: selectedWine.name)
-        vc.registerWine = self.registerWine
+        MyOwnedWineManager.shared.setWineId(selectedWine.wineId)
+        MyOwnedWineManager.shared.setWineName(selectedWine.name)
+        vc.hidesBottomBarWhenPushed = true // 탭바 숨겨주기
         navigationController?.pushViewController(vc, animated: true)
     }
     

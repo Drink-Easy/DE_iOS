@@ -40,3 +40,71 @@ public struct MyOwnedWine {
 }
 
 
+public class MyOwnedWineManager {
+    
+    // 싱글톤 인스턴스
+    public static let shared = MyOwnedWineManager()
+    
+    // 관리할 와인 데이터
+    private var wine: MyOwnedWine = MyOwnedWine()
+    
+    // MARK: - 초기화 방지
+    private init() {}
+    
+    // MARK: - 와인 데이터 관리 메서드
+    
+    /// 현재 와인 데이터를 반환
+    public func getWine() -> MyOwnedWine {
+        return wine
+    }
+    
+    /// 와인 ID 설정
+    public func setWineId(_ wineId: Int) {
+        wine.wineId = wineId
+    }
+    
+    /// 와인 이름 설정
+    public func setWineName(_ wineName: String) {
+        wine.wineName = wineName
+    }
+    
+    /// 와인 가격 설정
+    public func setPrice(_ price: String) {
+        wine.price = price
+    }
+    
+    /// 구매 날짜 설정
+    public func setBuyDate(_ buyDate: String) {
+        wine.buyDate = buyDate
+    }
+    
+    /// 와인 ID 가져오기
+    public func getWineId() -> Int {
+        return wine.wineId
+    }
+    
+    /// 와인 이름 가져오기
+    public func getWineName() -> String {
+        return wine.wineName
+    }
+    
+    /// 와인 가격 가져오기
+    public func getPrice() -> Int {
+        return Int(wine.price) ?? 0
+    }
+    
+    /// 구매 날짜 가져오기
+    public func getBuyDate() -> String {
+        return wine.buyDate
+    }
+    
+    /// 구매 날짜를 `DateComponents`로 반환
+    public func getBuyDateComponents() -> DateComponents? {
+        return wine.getBuyDate()
+    }
+    
+    /// 와인 데이터를 초기화
+    public func resetWine() {
+        wine = MyOwnedWine()
+    }
+}
