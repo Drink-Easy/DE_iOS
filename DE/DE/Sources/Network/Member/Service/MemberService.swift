@@ -31,6 +31,11 @@ public final class MemberService : NetworkManager {
         return MemberUpdateRequest(username: username, city: city)
     }
     
+    /// 애플 로그인한 유저 탈퇴 데이터 생성 함수
+    public func makeDeleteAppleUserRequest(AuthCode: String) -> AppleDeleteRequest {
+        return AppleDeleteRequest(authorizationCode: AuthCode)
+    }
+    
     /// 닉네임 체크 API
     public func checkNickname(name: String, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
         request(target: .checkNickname(nickname: name), decodingType: Bool.self, completion: completion)
@@ -41,9 +46,17 @@ public final class MemberService : NetworkManager {
         request(target: .postImage(image: image), decodingType: String.self, completion: completion)
     }
     
+    public func postImgAsync(image: UIImage) async throws -> String {
+        return try await requestAsync(target: .postImage(image: image), decodingType: String.self)
+    }
+    
     /// 개인정보 갱신 API(마이페이지)
     public func patchUserInfo(body: MemberUpdateRequest, completion: @escaping (Result<String, NetworkError>) -> Void) {
         request(target: .patchMemeberPersonalInfo(body: body), decodingType: String.self, completion: completion)
+    }
+    
+    public func patchUserInfoAsync(body: MemberUpdateRequest) async throws -> String {
+        return try await requestAsync(target: .patchMemeberPersonalInfo(body: body), decodingType: String.self)
     }
     
     /// 취향찾기 등록 API
@@ -60,4 +73,9 @@ public final class MemberService : NetworkManager {
     public func deleteUser(completion: @escaping (Result<String, NetworkError>) -> Void) {
         request(target: .deleteMember, decodingType: String.self, completion: completion)
     }
+    
+    public func deleteAppleUser(body: AppleDeleteRequest) async throws -> String {
+        try await requestAsync(target: .deleteAppleUser(body: body))
+    }
+    
 }

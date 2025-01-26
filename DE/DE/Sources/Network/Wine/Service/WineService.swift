@@ -33,14 +33,13 @@ public final class WineService: NetworkManager {
     }
     
     /// 선택 와인 리뷰 조회
-    public func fetchWineReviews(wineId: Int, orderByLatest: Bool, completion: @escaping (Result<[WineReviewResponseDTO]?, NetworkError>) -> Void) {
-        requestOptional(target: .getWineReview(wineId: wineId, orderByLatest: orderByLatest), decodingType: [WineReviewResponseDTO].self, completion: completion)
+    public func fetchWineReviews(wineId: Int, sortType: String, page: Int) async throws -> PageResponseWineReviewResponse? {
+        return try await requestAsync(target: .getWineReview(wineId: wineId, sortType: sortType, page: page), decodingType: PageResponseWineReviewResponse.self)
     }
     
     /// 추천 와인 조회
     public func fetchRecommendWines(completion: @escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) {
         requestWithTime(target: .getRecommendWines, decodingType: [HomeWineDTO].self, completion: completion)
-//        request(target: .getRecommendWines, decodingType: [HomeWineDTO].self, completion: completion)
     }
     
     /// 인기 와인 조회

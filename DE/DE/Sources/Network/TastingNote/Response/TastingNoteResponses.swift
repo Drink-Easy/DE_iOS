@@ -11,7 +11,7 @@ public struct TastingNoteResponsesDTO : Decodable {
     public let imageUrl : String
     public let color : String
     public let tasteDate : String
-    public let sugarContent : Int
+    public let sweetness : Int
     public let acidity : Int
     public let tannin : Int
     public let body : Int

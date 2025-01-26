@@ -6,14 +6,24 @@ import Moya
 public enum NoticeEndpoint {
     case getAllNotices
     case getNotice(id : Int)
+    
+    case getBanner
 }
 
 extension NoticeEndpoint: TargetType {
     public var baseURL: URL {
-        guard let url = URL(string: API.noticeURL) else {
-            fatalError("잘못된 URL")
+        switch self {
+        case .getBanner:
+            guard let url = URL(string: API.baseURL) else {
+                fatalError("잘못된 URL")
+            }
+            return url
+        default :
+            guard let url = URL(string: API.noticeURL) else {
+                fatalError("잘못된 URL")
+            }
+            return url
         }
-        return url
     }
     
     public var path: String {
@@ -22,6 +32,8 @@ extension NoticeEndpoint: TargetType {
             return ""
         case .getNotice(let id):
             return "/\(id)"
+        case .getBanner:
+            return "/banner"
         }
     }
     
@@ -33,7 +45,9 @@ extension NoticeEndpoint: TargetType {
         switch self {
         case .getAllNotices:
             return .requestPlain
-        case .getNotice(let id):
+        case .getNotice:
+            return .requestPlain
+        case .getBanner:
             return .requestPlain
         }
     }
