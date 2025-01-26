@@ -103,7 +103,6 @@ extension NoseModel {
     static func chems() -> [NoseModel] {
         return [
             NoseModel(type: "아세톤"),
-            NoseModel(type: "바나나"),
             NoseModel(type: "효모"),
             NoseModel(type: "황"),
             NoseModel(type: "매니큐어"),

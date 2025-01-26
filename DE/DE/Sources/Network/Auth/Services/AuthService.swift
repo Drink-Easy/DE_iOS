@@ -98,8 +98,8 @@ public final class AuthService : NetworkManager {
     }
     
     /// 토큰 재발급 API
-    public func reissueToken(completion: @escaping (Result<Void, NetworkError>) -> Void) {
-        requestStatusCode(target: .postReIssueToken, completion: completion)
+    public func reissueToken(completion: @escaping (Result<String, NetworkError>) -> Void) {
+        request(target: .postReIssueToken, decodingType: String.self, completion: completion)
     }
     
     /// 멤버 정보 전송 API

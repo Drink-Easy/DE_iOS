@@ -40,32 +40,7 @@ extension NetworkManager {
         }
     }
     
-    // ✅ 3. 상태 코드만 확인
-    func requestStatusCode(
-        target: Endpoint,
-        completion: @escaping (Result<Void, NetworkError>) -> Void
-    ) {
-        provider.request(target) { result in
-            switch result {
-            case .success(let response):
-                let result: Result<ApiResponse<String?>?, NetworkError> = self.handleResponseOptional(
-                    response,
-                    decodingType: ApiResponse<String?>.self
-                )
-                switch result {
-                case .success:
-                    completion(.success(()))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            case .failure(let error):
-                let networkError = self.handleNetworkError(error)
-                completion(.failure(networkError))
-            }
-        }
-    }
-    
-    // ✅ 4. 유효기간 파싱 + 데이터 파싱
+    // ✅ 3. 유효기간 파싱 + 데이터 파싱
     func requestWithTime<T: Decodable>(
         target: Endpoint,
         decodingType: T.Type,

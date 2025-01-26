@@ -79,9 +79,9 @@ public class SplashVC : UIViewController {
             networkService.reissueToken { [weak self] result in
                 guard let self = self else { return }
                 switch result {
-                case .success(let response):
-//                    navigateToMainScreen()
-                    navigateToOnBoaringScreen()
+                case .success(_):
+                    navigateToMainScreen()
+//                    navigateToOnBoaringScreen()
 //                    print(response)
                 case .failure(let error):
                     navigateToOnBoaringScreen()
