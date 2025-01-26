@@ -27,6 +27,12 @@ extension SelectLoginTypeVC: ASAuthorizationControllerDelegate {
             let userIdentifier = appleIDCredential.user
 
             // 1. identityToken 존재 여부 확인
+            if let authCode = appleIDCredential.authorizationCode,
+               let authCodeString = String(data: authCode, encoding: .utf8) {
+                print("authCode : \(authCodeString)")
+            }
+        
+            
             if let identityToken = appleIDCredential.identityToken,
                let identityTokenString = String(data: identityToken, encoding: .utf8) {
                 
