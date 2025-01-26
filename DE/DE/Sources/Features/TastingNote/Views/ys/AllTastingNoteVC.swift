@@ -117,7 +117,7 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate {
     
     //MARK: Setup Actions
     @objc func newNoteTapped(){
-        let newVC = SearchWineViewController()
+        let newVC = WineTastingNoteVC()
         navigationController?.pushViewController(newVC, animated: true)
     }
     

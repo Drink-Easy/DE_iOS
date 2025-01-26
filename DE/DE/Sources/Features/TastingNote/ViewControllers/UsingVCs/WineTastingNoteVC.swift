@@ -61,6 +61,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate {
         }
         setupUI()
         setupNavigationBar()
+        setNavBarAppearance(navigationController: self.navigationController)
     }
     
     // MARK: - Setup Methods
@@ -155,10 +156,27 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate {
         let data = try await networkService.fetchNote(noteId: noteId)
         // Call Count 업데이트
         //        await self.updateCallCount()
+        //와인 상세 정보 데이터
         wineInfoView.header.setTitleLabel(data.wineName ?? "와인이에용")
-//        allTastingNoteList = data.notePriviewList
-//        currentTastingNoteList = data.notePriviewList
-//        tastingNoteView.wineImageStackView.updateCounts(red: data.sortCount.redCount, white: data.sortCount.whiteCount, sparkling: data.sortCount.sparklingCount, rose: data.sortCount.roseCount, etc: data.sortCount.etcCount)
-//        tastingNoteView.TastingNoteCollectionView.reloadData()
+        wineInfoView.header.infoView.image.sd_setImage(with: URL(string: data.imageUrl))
+        wineInfoView.header.infoView.kindContents.text = "\(data.sort)"
+        wineInfoView.header.infoView.typeContents.text = "\(data.variety)"
+        wineInfoView.header.infoView.countryContents.text = "\(data.country), \(data.region)"
+        //차트 뷰 데이터 로드
+        wineInfoView.chartView.viewModel.loadSavedValues(sweetness: Double(data.sweetness), alcohol: Double(data.alcohol), tannin: Double(data.tannin), body: Double(data.body), acidity: Double(data.acidity))
+        
+        
+        func formatNoseList(_ list: [String]) -> String {
+            return list.joined(separator: ", ")
+        }
+        wineInfoView.noseView.text = formatNoseList(data.noseList)
+        
+        wineInfoView.colorView = WineColorManager.getColorView(String(data.color))
+        wineInfoView.colorLabel.text = WineColorManager.getColorName(String(data.color))
+        
+        wineInfoView.ratingValue = data.rating
+        wineInfoView.ratingButton.rating = data.rating
+        
+        wineInfoView.reviewView.text = data.review
     }
 }
