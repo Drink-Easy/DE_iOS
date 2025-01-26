@@ -31,3 +31,11 @@ public struct MemberRequestDTO : Codable {
         self.region = region
     }
 }
+
+public struct AppleDeleteRequest : Codable {
+    public let authorizationCode : String
+    
+    public init(authorizationCode: String) {
+        self.authorizationCode = authorizationCode
+    }
+}

@@ -40,7 +40,7 @@ public final class UserDataManager {
     
     /// 유저 데이터 삭제 -> 탈퇴에서 사용
     @MainActor
-    func deleteUser(userId: Int) {
+    public func deleteUser(userId: Int) async {
         let context = container.mainContext
         
         do {
