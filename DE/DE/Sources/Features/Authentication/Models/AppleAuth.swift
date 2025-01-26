@@ -35,7 +35,7 @@ extension SelectLoginTypeVC: ASAuthorizationControllerDelegate {
             
             if let identityToken = appleIDCredential.identityToken,
                let identityTokenString = String(data: identityToken, encoding: .utf8) {
-                
+                print("id Token: \(identityTokenString)")
                 // 2. 새로운 토큰 저장 및 DTO 생성
                 SelectLoginTypeVC.keychain.set(identityTokenString, forKey: "AppleIDToken")
                 self.appleLoginDto = networkService.makeAppleDTO(idToken: identityTokenString)
