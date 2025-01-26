@@ -11,10 +11,10 @@ import Network
 
 public class WineInfoView: UIView {
     weak var delegate: PropertyHeaderDelegate? {
-            didSet {
-                updateDelegates() // Delegate가 설정될 때 업데이트
-            }
+        didSet {
+            updateDelegates() // Delegate가 설정될 때 업데이트
         }
+    }
     
     private let wineColorManager = WineColorManager()
     
@@ -39,10 +39,14 @@ public class WineInfoView: UIView {
     let chartView = PolygonChartView()
     
     //TODO: 컬러 뷰
+
     let colorHeaderView = PropertyTitleView(type: .color)
-    lazy var colorView = UIView()
+    lazy var colorBodyView = UIView()
+    
+    lazy var colorView = UIView().then {
+        $0.layer.cornerRadius = 6
+    }
     lazy var colorLabel = UILabel().then {
-        $0.text = ""
         $0.font = .ptdMediumFont(ofSize: 14)
         $0.textColor = AppColor.gray90
     }
@@ -58,65 +62,37 @@ public class WineInfoView: UIView {
     
     //TODO: 별점 뷰
     let ratingHeaderView = PropertyTitleView(type: .rate)
-//    let ratingView = UIView().then {
-//        $0.backgroundColor = .green
-//    }
     public lazy var ratingView = UIView()
-//    public lazy var ratingLabel: UILabel = {
-//            let r = UILabel()
-//            updateRatingLabel()
-//            return r
-//        }()
     public var ratingValue: Double = 2.5 {
-            didSet {
-                updateRatingLabel()
-            }
+        didSet {
+            updateRatingLabel()
         }
+    }
+    
     public func setRatingValue(_ value: Double) {
-            self.ratingValue = value
-        }
+        self.ratingValue = value
+    }
+    
     private func updateRatingLabel() {
-            let fullText = "\(ratingValue) / 5.0"
-            let attributedString = NSMutableAttributedString(string: fullText)
-            
-            let ratingRange = (fullText as NSString).range(of: "\(ratingValue)")
-            attributedString.addAttributes([
-                .font: UIFont.ptdSemiBoldFont(ofSize: 18),
-                .foregroundColor: AppColor.purple100!
-            ], range: ratingRange)
-            
-            let defaultRange = (fullText as NSString).range(of: "/ 5.0")
-            attributedString.addAttributes([
-                .font: UIFont.ptdRegularFont(ofSize: 12),
-                .foregroundColor: AppColor.gray90!
-            ], range: defaultRange)
-            
-            ratingLabel.attributedText = attributedString
-        }
-//    public func setRate(_ rate: Double) {
-//        // 새 텍스트 설정
-//        let fullText = "\(rate) / 5.0"
-//        let attributedString = NSMutableAttributedString(string: fullText)
-//        
-//        // rate 스타일 설정
-//        let ratingRange = (fullText as NSString).range(of: "\(rate)")
-//        attributedString.addAttributes([
-//            .font: UIFont.ptdSemiBoldFont(ofSize: 18),
-//            .foregroundColor: AppColor.purple100!
-//        ], range: ratingRange)
-//        
-//        // 나머지 텍스트 스타일 설정
-//        let defaultRange = (fullText as NSString).range(of: "/ 5.0")
-//        attributedString.addAttributes([
-//            .font: UIFont.ptdRegularFont(ofSize: 12),
-//            .foregroundColor: AppColor.gray90!
-//        ], range: defaultRange)
-//        
-//        ratingLabel.attributedText = attributedString
-//        ratingButton.rating = rate
-//    }
+        let fullText = "\(ratingValue) / 5.0"
+        let attributedString = NSMutableAttributedString(string: fullText)
+        
+        let ratingRange = (fullText as NSString).range(of: "\(ratingValue)")
+        attributedString.addAttributes([
+            .font: UIFont.ptdSemiBoldFont(ofSize: 18),
+            .foregroundColor: AppColor.purple100!
+        ], range: ratingRange)
+        
+        let defaultRange = (fullText as NSString).range(of: "/ 5.0")
+        attributedString.addAttributes([
+            .font: UIFont.ptdRegularFont(ofSize: 12),
+            .foregroundColor: AppColor.gray90!
+        ], range: defaultRange)
+        
+        ratingLabel.attributedText = attributedString
+    }
+
     public lazy var ratingLabel: UILabel = {
-//        var ratingValue: Double = 2.5
         let r = UILabel()
         
         let fullText = "\(ratingValue) / 5.0"
@@ -144,23 +120,21 @@ public class WineInfoView: UIView {
         r.settings.fillMode = .half
         r.settings.emptyBorderColor = .clear
         r.settings.filledBorderColor = .clear
-        r.settings.starSize = 20
-        r.settings.starMargin = 5
+        r.settings.starSize = 24
+        r.settings.starMargin = 6
         r.settings.filledColor = AppColor.purple100!
         r.settings.emptyColor = AppColor.gray30!
+
         return r
     }()
     
     //TODO: 리뷰 뷰
     let reviewHeaderView = PropertyTitleView(type: .review)
-//    let reviewView = UIView().then {
-//        $0.backgroundColor = .brown
-//    }
     let reviewView = UILabel().then {
-        $0.text = ""
         $0.font = .ptdMediumFont(ofSize: 14)
         $0.textColor = AppColor.gray90
         $0.numberOfLines = 0
+        $0.lineBreakStrategy = .standard // 줄바꿈 전략 선택(한글모드 안함)
     }
     
     public override init(frame: CGRect) {
@@ -192,7 +166,8 @@ public class WineInfoView: UIView {
     
     private func setupUI() {
         [ratingLabel, ratingButton].forEach{ ratingView.addSubview($0) }
-        [chartHeaderView, chartView, colorHeaderView, colorView, colorLabel, noseHeaderView, noseView, ratingHeaderView, ratingView, reviewHeaderView, reviewView].forEach {
+        [colorView, colorLabel].forEach{ colorBodyView.addSubview($0) }
+        [chartHeaderView, chartView, colorHeaderView, colorBodyView, noseHeaderView, noseView, ratingHeaderView, ratingView, reviewHeaderView, reviewView].forEach {
             detailContentView.addArrangedSubview($0) // addArrangedSubview로 추가
         }
         
@@ -227,16 +202,22 @@ public class WineInfoView: UIView {
             make.height.greaterThanOrEqualTo(200) // 고정 높이
         }
         colorView.snp.makeConstraints { make in
-            make.height.greaterThanOrEqualTo(30)
+            make.height.width.equalTo(30)
             make.leading.equalToSuperview()
         }
         colorLabel.snp.makeConstraints { make in
-            make.height.greaterThanOrEqualTo(30)
-            make.leading.equalTo(colorView.snp.trailing).inset(8)
+            make.height.equalTo(30)
+            make.leading.equalTo(colorView.snp.trailing).offset(8)
         }
+        
+        colorBodyView.snp.makeConstraints { make in
+            make.height.greaterThanOrEqualTo(30)
+            make.leading.trailing.equalToSuperview().offset(6)
+        }
+        
         noseView.snp.makeConstraints { make in
             make.height.greaterThanOrEqualTo(30)
-            make.leading.trailing.equalToSuperview()
+            make.leading.trailing.equalToSuperview().offset(6)
         }
         ratingView.snp.makeConstraints { make in
             make.height.greaterThanOrEqualTo(30)
@@ -244,17 +225,18 @@ public class WineInfoView: UIView {
         }
         ratingLabel.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
-            make.leading.equalToSuperview()
+            make.leading.equalToSuperview().offset(6)
             make.width.equalTo(80)
         }
         
         ratingButton.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview()
-            make.leading.equalTo(ratingLabel.snp.trailing).offset(25)
+            make.centerY.equalTo(ratingLabel.snp.centerY)
+            make.leading.equalTo(ratingLabel.snp.trailing)
         }
+        
         reviewView.snp.makeConstraints { make in
             make.height.greaterThanOrEqualTo(30)
-            make.leading.trailing.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(6)
         }
     }
 }

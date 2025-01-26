@@ -49,7 +49,6 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate {
     public override func viewDidLoad() {
         super.viewDidLoad()
         wineInfoView.delegate = self
-        //TODO: 테노 정보 로드 api
         Task {
             do {
                 try await CallAllTastingNote()
@@ -157,7 +156,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate {
         // Call Count 업데이트
         //        await self.updateCallCount()
         //와인 상세 정보 데이터
-        wineInfoView.header.setTitleLabel(data.wineName ?? "와인이에용")
+        wineInfoView.header.setTitleLabel(data.wineName)
         wineInfoView.header.infoView.image.sd_setImage(with: URL(string: data.imageUrl))
         wineInfoView.header.infoView.kindContents.text = "\(data.sort)"
         wineInfoView.header.infoView.typeContents.text = "\(data.variety)"
@@ -165,18 +164,18 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate {
         //차트 뷰 데이터 로드
         wineInfoView.chartView.viewModel.loadSavedValues(sweetness: Double(data.sweetness), alcohol: Double(data.alcohol), tannin: Double(data.tannin), body: Double(data.body), acidity: Double(data.acidity))
         
-        
-        func formatNoseList(_ list: [String]) -> String {
-            return list.joined(separator: ", ")
-        }
         wineInfoView.noseView.text = formatNoseList(data.noseList)
         
-        wineInfoView.colorView = WineColorManager.getColorView(String(data.color))
-        wineInfoView.colorLabel.text = WineColorManager.getColorName(String(data.color))
+        wineInfoView.colorView.backgroundColor = UIColor(hex: data.color)
+        wineInfoView.colorLabel.text = WineColorManager().getColorName(for: data.color) ?? "색상 이름 없음"
         
         wineInfoView.ratingValue = data.rating
         wineInfoView.ratingButton.rating = data.rating
         
         wineInfoView.reviewView.text = data.review
+    }
+    
+    private func formatNoseList(_ list: [String]) -> String {
+        return list.joined(separator: ", ")
     }
 }
