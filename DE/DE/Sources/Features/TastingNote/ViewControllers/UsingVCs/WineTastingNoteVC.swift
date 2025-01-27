@@ -26,7 +26,6 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         $0.isScrollEnabled = true
         $0.bounces = false
         $0.alwaysBounceVertical = false
-        $0.delegate = self
     }
     
     let contentView = UIView().then {
@@ -37,7 +36,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     
     private var smallTitleLabel = UILabel()
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         let largeTitleBottom = wineInfoView.header.header.frame.maxY + 10
         
@@ -97,6 +96,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     private func setupUI() {
         view.backgroundColor = AppColor.bgGray
         view.addSubview(scrollView)
+        scrollView.delegate = self
         scrollView.addSubview(contentView)
         contentView.addSubview(wineInfoView)
         
