@@ -105,7 +105,7 @@ class MyWineTableViewCell: UITableViewCell {
         }
     }
     
-    public func configure(model: String) {
+    public func configure(model: MyOwnedWine) {
 //        if let url = URL(string: model.imageURL) {
 //            image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
 //        } else {
@@ -119,6 +119,6 @@ class MyWineTableViewCell: UITableViewCell {
 //            name.text = model.wineName
 //        }
         
-        self.name.text = model
+        self.name.text = model.wineName
     }
 }

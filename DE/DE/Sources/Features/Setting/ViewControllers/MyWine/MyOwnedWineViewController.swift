@@ -84,8 +84,8 @@ class MyOwnedWineViewController: UIViewController {
 
     private func setConstraints() {
         myWienTableView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(11)
-            make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(18)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(11.0))
+            make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(18.0))
             make.bottom.equalTo(view.safeAreaLayoutGuide)
             make.height.equalTo(651)
         }

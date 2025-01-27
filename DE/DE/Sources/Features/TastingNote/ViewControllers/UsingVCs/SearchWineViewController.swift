@@ -124,7 +124,8 @@ public class SearchWineViewController : UIViewController, UISearchBarDelegate, U
         }
         
         let wine = wineResults[indexPath.row]
-        cell.configureSearch(model: wine)
+        let searchText = searchHomeView.searchBar.text ?? ""
+        cell.configureSearch(model: wine, highlightText: searchText.isEmpty ? nil : searchText)
         
         return cell
     }
