@@ -12,6 +12,8 @@ public class RecordGraphViewController: UIViewController {
     let navigationBarManager = NavigationBarManager()
     let tnManager = NewTastingNoteManager.shared
     
+    private var sliderValues: [String: Int] = [:]
+    
     let scrollView = UIScrollView().then {
         $0.isScrollEnabled = true
     }
@@ -24,7 +26,11 @@ public class RecordGraphViewController: UIViewController {
     
     private let recordGraphView = RecordGraphView()
     
-    private var sliderValues: [String: Int] = [:]
+    let nextButton = CustomButton(
+        title: "다음",
+        titleColor: .white,
+        isEnabled: true
+    )
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -52,6 +58,7 @@ public class RecordGraphViewController: UIViewController {
         
         contentView.addSubview(header)
         contentView.addSubview(recordGraphView)
+        contentView.addSubview(nextButton)
         scrollView.addSubview(contentView)
         
         scrollView.snp.makeConstraints { make in
@@ -75,13 +82,18 @@ public class RecordGraphViewController: UIViewController {
             make.height.equalTo(Constants.superViewHeight)
         }
         
+        nextButton.snp.makeConstraints { make in
+            make.top.equalTo(recordGraphView.snp.bottom).offset(50)
+            make.leading.trailing.equalToSuperview().inset(24)
+        }
+        
         contentView.snp.makeConstraints { make in
-            make.bottom.equalTo(recordGraphView.snp.bottom).offset(100)
+            make.bottom.equalTo(nextButton.snp.bottom).offset(40)
         }
     }
     
     private func setupActions() {
-        recordGraphView.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
         recordGraphView.setupSliders(target: self, action: #selector(sliderValueChanged))
     }
     
@@ -98,6 +110,7 @@ public class RecordGraphViewController: UIViewController {
     }
     
     @objc private func nextVC() {
+        print("nextVC Tapped")
         saveSliderValues()
         let nextVC = RatingWineViewController()
         navigationController?.pushViewController(nextVC, animated: true)
@@ -105,11 +118,7 @@ public class RecordGraphViewController: UIViewController {
     
     private func saveSliderValues() {
         //테노 매니저에 설정 값 저장
-        tnManager.saveSugarContent(Int(recordGraphView.recordSliderView.sweetnessView.slider.value))
-        tnManager.saveAcidity(Int(recordGraphView.recordSliderView.acidityView.slider.value))
-        tnManager.saveTannin(Int(recordGraphView.recordSliderView.tanninView.slider.value))
-        tnManager.saveBody(Int(recordGraphView.recordSliderView.bodyView.slider.value))
-        tnManager.saveAlcohol(Int(recordGraphView.recordSliderView.alcoholView.slider.value))
+        tnManager.savePalate(sugarContent: Int(recordGraphView.recordSliderView.sweetnessView.slider.value), acidity: Int(recordGraphView.recordSliderView.acidityView.slider.value), tannin: Int(recordGraphView.recordSliderView.tanninView.slider.value), body: Int(recordGraphView.recordSliderView.bodyView.slider.value), alcohol: Int(recordGraphView.recordSliderView.alcoholView.slider.value))
     }
     
     @objc private func sliderValueChanged(_ sender: UISlider) {

@@ -120,7 +120,6 @@ class PropertyTitleView: UIView {
     }
     
     @objc private func editButtonTapped() {
-        print("edit button tapped")
         delegate?.didTapEditButton(for: propertyType)
     }
 }

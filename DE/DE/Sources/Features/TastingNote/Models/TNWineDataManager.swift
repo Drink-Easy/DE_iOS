@@ -17,7 +17,7 @@ class TNWineDataManager {
     
     
     // MARK: - Initializer
-    private init(
+    public init(
         wineId: Int = 0,
         wineName: String = "",
         sort: String = "",

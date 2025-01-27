@@ -51,7 +51,7 @@ public class WineInfoView: UIView {
         $0.textColor = AppColor.gray90
     }
     
-    //TODO: 노즈 뷰
+    //노즈 뷰
     let noseHeaderView = PropertyTitleView(type: .nose)
     let noseView = UILabel().then {
         $0.text = ""
@@ -60,7 +60,7 @@ public class WineInfoView: UIView {
         $0.numberOfLines = 0
     }
     
-    //TODO: 별점 뷰
+    //별점 뷰
     let ratingHeaderView = PropertyTitleView(type: .rate)
     public lazy var ratingView = UIView()
     public var ratingValue: Double = 2.5 {
@@ -116,6 +116,7 @@ public class WineInfoView: UIView {
     
     public lazy var ratingButton: CosmosView = {
         let r = CosmosView()
+        r.isUserInteractionEnabled = false
         r.rating = 2.5
         r.settings.fillMode = .half
         r.settings.emptyBorderColor = .clear
@@ -128,8 +129,14 @@ public class WineInfoView: UIView {
         return r
     }()
     
-    //TODO: 리뷰 뷰
+    //리뷰 뷰
     let reviewHeaderView = PropertyTitleView(type: .review)
+    let dateView = UILabel().then {
+        $0.font = .ptdMediumFont(ofSize: 14)
+        $0.textColor = AppColor.gray90
+        $0.numberOfLines = 0
+        $0.lineBreakStrategy = .standard // 줄바꿈 전략 선택(한글모드 안함)
+    }
     let reviewView = UILabel().then {
         $0.font = .ptdMediumFont(ofSize: 14)
         $0.textColor = AppColor.gray90
@@ -167,7 +174,7 @@ public class WineInfoView: UIView {
     private func setupUI() {
         [ratingLabel, ratingButton].forEach{ ratingView.addSubview($0) }
         [colorView, colorLabel].forEach{ colorBodyView.addSubview($0) }
-        [chartHeaderView, chartView, colorHeaderView, colorBodyView, noseHeaderView, noseView, ratingHeaderView, ratingView, reviewHeaderView, reviewView].forEach {
+        [chartHeaderView, chartView, colorHeaderView, colorBodyView, noseHeaderView, noseView, ratingHeaderView, ratingView, reviewHeaderView, dateView, reviewView].forEach {
             detailContentView.addArrangedSubview($0) // addArrangedSubview로 추가
         }
         
@@ -233,7 +240,10 @@ public class WineInfoView: UIView {
             make.centerY.equalTo(ratingLabel.snp.centerY)
             make.leading.equalTo(ratingLabel.snp.trailing)
         }
-        
+        dateView.snp.makeConstraints { make in
+            make.height.greaterThanOrEqualTo(15)
+            make.leading.trailing.equalToSuperview().inset(6)
+        }
         reviewView.snp.makeConstraints { make in
             make.height.greaterThanOrEqualTo(30)
             make.leading.trailing.equalToSuperview().inset(6)

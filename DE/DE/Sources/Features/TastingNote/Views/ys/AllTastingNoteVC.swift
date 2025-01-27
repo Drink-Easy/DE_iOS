@@ -18,6 +18,15 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+        Task {
+            do {
+                try await CallAllTastingNote()
+                
+            } catch {
+                print("Error: \(error)")
+                // Alert 표시 등 추가
+            }
+        }
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -31,15 +40,6 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate {
         setupCollectionView()
         tastingNoteView.searchButton.addTarget(self, action: #selector(noteSearchTapped), for: .touchUpInside)
         tastingNoteView.floatingButton.addTarget(self, action: #selector(newNoteTapped), for: .touchUpInside)
-        Task {
-            do {
-                try await CallAllTastingNote()
-                
-            } catch {
-                print("Error: \(error)")
-                // Alert 표시 등 추가
-            }
-        }
         
     }
     
@@ -132,6 +132,7 @@ extension AllTastingNoteVC: UICollectionViewDataSource, UICollectionViewDelegate
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = WineTastingNoteVC()
         vc.noteId = currentTastingNoteList[indexPath.row].noteId
+        vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: true)
     }
     
