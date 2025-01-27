@@ -75,7 +75,6 @@ class LeftAlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {
                 currentItemCount += 1
             }
         }
-
         return attributes
     }
 }

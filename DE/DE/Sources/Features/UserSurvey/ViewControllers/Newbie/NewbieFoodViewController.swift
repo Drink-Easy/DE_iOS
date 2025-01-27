@@ -97,7 +97,7 @@ extension NewbieFoodViewController: UICollectionViewDelegateFlowLayout, UICollec
     
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        return CGSize(width: collectionView.frame.width, height: 81)
+        return CGSize(width: collectionView.frame.width, height: DynamicPadding.dynamicValue(81.0))
     }
 }
 

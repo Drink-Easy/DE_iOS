@@ -46,7 +46,7 @@ class ManiaCountryViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    private lazy var surveyKindView = SurveyKindView(titleText: "선호하는 와인 생산국을\n골라주세요(2개 선택)", currentPage: 4, entirePage: 4, buttonTitle: "내 취향 저장하기").then {
+    private lazy var surveyKindView = SurveyKindView(titleText: "선호하는 와인 생산국을\n골라주세요", currentPage: 4, entirePage: 4, buttonTitle: "내 취향 저장하기").then {
         $0.surveyKindCollectionView.delegate = self
         $0.surveyKindCollectionView.dataSource = self
         
@@ -143,10 +143,10 @@ extension ManiaCountryViewController: UICollectionViewDelegateFlowLayout, UIColl
         if selectedItems.contains(selectedItem) { //이미 selected된 cell
             selectedItems.removeAll { $0 == selectedItem }
         } else {
-            if selectedItems.count >= maxSelectionCount { // 이미 2개 선택
-                Toaster.shared.makeToast("선택할 수 있는 갯수를 초과했습니다.", .short)
-                return
-            }
+//            if selectedItems.count >= maxSelectionCount { // 이미 2개 선택
+//                Toaster.shared.makeToast("선택할 수 있는 갯수를 초과했습니다.", .short)
+//                return
+//            }
             // 새 아이템 선택
             selectedItems.append(selectedItem)
         }
@@ -163,9 +163,9 @@ extension ManiaCountryViewController: UICollectionViewDelegateFlowLayout, UIColl
         let font = UIFont.ptdMediumFont(ofSize: 16)
         let size = title.size(withAttributes: [.font: font])
         
-        let padding: CGFloat = 44
+        let padding: CGFloat = DynamicPadding.dynamicValue(44.0)
         let cellWidth = size.width + padding
         
-        return CGSize(width: cellWidth, height: 49)
+        return CGSize(width: cellWidth, height: DynamicPadding.dynamicValue(49.0))
     }
 }

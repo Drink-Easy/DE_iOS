@@ -43,20 +43,20 @@ class HomeTopView: UIView {
     
     private func constraints() {
         icon.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).offset(10)
-            $0.leading.equalTo(safeAreaLayoutGuide).offset(26)
-            $0.width.height.equalTo(39)
-            $0.bottom.equalToSuperview().inset(8)
+            $0.top.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10.0))
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(26.0))
+            $0.width.height.equalTo(DynamicPadding.dynamicValue(39.0))
+            $0.bottom.equalToSuperview().inset(DynamicPadding.dynamicValue(8.0))
         }
         
         logo.snp.makeConstraints {
             $0.centerY.equalTo(icon)
-            $0.leading.equalTo(icon.snp.trailing).offset(10)
+            $0.leading.equalTo(icon.snp.trailing).offset(DynamicPadding.dynamicValue(10.0))
         }
         
         searchBtn.snp.makeConstraints {
             $0.centerY.equalTo(logo)
-            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-24)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-DynamicPadding.dynamicValue(24.0))
         }
     }
     

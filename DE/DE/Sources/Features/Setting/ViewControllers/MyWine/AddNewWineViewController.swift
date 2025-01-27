@@ -33,7 +33,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         setupNavigationBar()
     }
     
-    private lazy var searchHomeView = AddNewWineView(
+    private lazy var searchHomeView = SearchHomeView(
         titleText: "추가할 와인을 선택해주세요",
         placeholder: "와인 이름을 적어 검색"
     )
