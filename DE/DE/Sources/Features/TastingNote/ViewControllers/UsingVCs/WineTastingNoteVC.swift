@@ -34,6 +34,18 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate {
     
     let wineInfoView = WineInfoView()
     
+    private var smallTitleLabel = UILabel()
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let largeTitleBottom = wineInfoView.header.header.frame.maxY + 10
+        
+        UIView.animate(withDuration: 0.1) {
+            self.wineInfoView.header.header.alpha = offsetY > largeTitleBottom ? 0 : 1
+            self.smallTitleLabel.isHidden = !(offsetY > largeTitleBottom)
+        }
+    }
+    
     
     //MARK: Initializers
     public override func viewWillAppear(_ animated: Bool) {
@@ -72,6 +84,13 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate {
             rightAction: #selector(deleteTapped),
             target: self,
             tintColor: AppColor.gray70 ?? .gray)
+        
+        smallTitleLabel = navigationBarManager.setNReturnTitle(
+            to: navigationItem,
+            title: wineData.wineName,
+            textColor: AppColor.black ?? .black
+        )
+        smallTitleLabel.isHidden = true
     }
     
     private func setupUI() {
