@@ -51,19 +51,19 @@ public class SearchHomeView: UIView {
 
     private func setConstraints() {
         title.snp.makeConstraints { make in
-            make.top.equalTo(safeAreaLayoutGuide).offset(10)
-            make.leading.equalTo(safeAreaLayoutGuide).offset(25)
+            make.top.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10.0))
+            make.leading.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(25.0))
         }
         
         searchBar.snp.makeConstraints { make in
-            make.top.equalTo(title.snp.bottom).offset(16)
-            make.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(24)
-            make.height.equalTo(48)
+            make.top.equalTo(title.snp.bottom).offset(DynamicPadding.dynamicValue(16.0))
+            make.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(24.0))
+            make.height.equalTo(DynamicPadding.dynamicValue(48.0))
         }
         
         searchResultTableView.snp.makeConstraints { make in
-            make.top.equalTo(searchBar.snp.bottom).offset(18)
-            make.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(18)
+            make.top.equalTo(searchBar.snp.bottom).offset(DynamicPadding.dynamicValue(18.0))
+            make.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(18.0))
             make.bottom.equalTo(safeAreaLayoutGuide)
         }
     }

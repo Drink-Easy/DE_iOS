@@ -31,6 +31,11 @@ public final class MemberService : NetworkManager {
         return MemberUpdateRequest(username: username, city: city)
     }
     
+    /// 애플 로그인한 유저 탈퇴 데이터 생성 함수
+    public func makeDeleteAppleUserRequest(AuthCode: String) -> AppleDeleteRequest {
+        return AppleDeleteRequest(authorizationCode: AuthCode)
+    }
+    
     /// 닉네임 체크 API
     public func checkNickname(name: String, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
         request(target: .checkNickname(nickname: name), decodingType: Bool.self, completion: completion)
@@ -71,6 +76,10 @@ public final class MemberService : NetworkManager {
     /// 사용자 탈퇴 API
     public func deleteUser(completion: @escaping (Result<String, NetworkError>) -> Void) {
         request(target: .deleteMember, decodingType: String.self, completion: completion)
+    }
+    
+    public func deleteAppleUser(body: AppleDeleteRequest) async throws -> String {
+        try await requestAsync(target: .deleteAppleUser(body: body))
     }
     
 }
