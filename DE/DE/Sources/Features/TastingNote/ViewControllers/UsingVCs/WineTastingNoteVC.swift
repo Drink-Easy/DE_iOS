@@ -10,7 +10,7 @@ import CoreModule
 import Network
 
 // 테이스팅노트 보기 뷰
-public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate {
+public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScrollViewDelegate {
     
     let navigationBarManager = NavigationBarManager()
     
@@ -26,6 +26,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate {
         $0.isScrollEnabled = true
         $0.bounces = false
         $0.alwaysBounceVertical = false
+        $0.delegate = self
     }
     
     let contentView = UIView().then {
