@@ -7,7 +7,7 @@ import Network
 
 public class HomeViewController: UIViewController, HomeTopViewDelegate {
     
-    private var adImage: [String] = ["ad4", "ad3", "ad2", "ad1"]
+    private var adImage: [HomeBannerModel] = []
     var recommendWineDataList: [HomeWineModel] = []
     var popularWineDataList: [HomeWineModel] = []
     
@@ -22,6 +22,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     
     private var homeTopView = HomeTopView()
     let networkService = WineService()
+    let bannerNetworkService = NoticeService()
     
     // View 세팅
     private lazy var scrollView: UIScrollView = {
@@ -51,10 +52,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         $0.tag = 0
     }
     
-    private lazy var pageControl = CustomPageControl(indicatorColor: UIColor(hex: "#D9D9D9") ?? .lightGray, currentIndicatorColor: AppColor.purple50 ?? .purple).then {
-        $0.numberOfPages = adImage.count
-        $0.currentPage = 0
-    }
+    private lazy var pageControlNumberView = PageControlNumberView()
     
     private lazy var likeWineListView = RecomView().then {
         $0.title.text = "For \(userName),"
@@ -109,6 +107,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         addComponents()
         constraints()
         startAutoScrolling()
+        pageControlNumberView.totalPages = adImage.count
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -118,13 +117,19 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         fetchWines(type: .recommended)
         fetchWines(type: .popular)
         fetchName()
-        
+        Task {
+            do {
+                try await fetchHomeBanner()
+            } catch {
+                print(error)
+            }
+        }
     }
     
     private func addComponents() {
         [homeTopView, scrollView].forEach{ view.addSubview($0) }
         scrollView.addSubview(contentView)
-        [adCollectionView, pageControl, likeWineListView, popularWineListView].forEach{ contentView.addSubview($0) }
+        [adCollectionView, pageControlNumberView, likeWineListView, popularWineListView].forEach{ contentView.addSubview($0) }
         homeTopView.delegate = self
     }
     
@@ -150,15 +155,12 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
             $0.height.equalTo(view.snp.width).multipliedBy(282.0 / 393.0)
         }
         
-        pageControl.snp.makeConstraints {
-            $0.centerX.equalTo(view.safeAreaLayoutGuide)
-            $0.bottom.equalTo(adCollectionView.snp.bottom).inset(20)
-            //$0.width.equalTo(200)
+        pageControlNumberView.snp.makeConstraints {
+            $0.bottom.equalTo(adCollectionView.snp.bottom).offset(-DynamicPadding.dynamicValue(15))
+            $0.trailing.equalTo(adCollectionView.snp.trailing).offset(-DynamicPadding.dynamicValue(15))
+            $0.width.equalTo(DynamicPadding.dynamicValue(66))
+            $0.height.equalTo(DynamicPadding.dynamicValue(30))
         }
-        
-        view.layoutIfNeeded()
-        pageControl.setNeedsLayout()
-        pageControl.layoutIfNeeded()
         
         likeWineListView.snp.makeConstraints {
             $0.top.equalTo(adCollectionView.snp.bottom).offset(32)
@@ -228,6 +230,19 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     }
 
     // MARK: - 네트워크 요청 처리
+    private func fetchHomeBanner() async throws {
+        
+        let response = try await bannerNetworkService.fetchHomeBanner()
+        
+        self.adImage = response.map {
+            HomeBannerModel(imageUrl: $0.imageUrl)
+        }
+        
+        DispatchQueue.main.async {
+            self.adCollectionView.reloadData()
+        }
+    }
+    
     private func fetchWinesFromNetwork(type: WineListType) async {
         let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
 
@@ -300,7 +315,7 @@ extension HomeViewController: UIScrollViewDelegate {
         guard scrollView == adCollectionView else { return }
         
         let pageIndex = Int(scrollView.contentOffset.x / view.frame.width)
-        pageControl.currentPage = pageIndex
+        pageControlNumberView.currentPage = pageIndex + 1
         
         if pageIndex == 0 && scrollView.contentOffset.x < 0 {
             scrollView.contentOffset.x = 0
@@ -338,7 +353,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     public func collectionView(_ collectionView: UICollectionView, didEndDecelerating scrollView: UIScrollView) {
         if collectionView.tag == 0 { // ✅ 광고 컬렉션 뷰만 반응
             let pageIndex = Int(scrollView.contentOffset.x / scrollView.frame.width)
-            pageControl.currentPage = pageIndex
+            pageControlNumberView.currentPage = pageIndex + 1
         }
     }
     
@@ -359,7 +374,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         if collectionView.tag == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AdCollectionViewCell.identifier, for: indexPath) as! AdCollectionViewCell
             
-            cell.configure(image: adImage[indexPath.item])
+            cell.configure(model: adImage[indexPath.item])
             
             return cell
             
