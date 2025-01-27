@@ -7,7 +7,6 @@ import Network
 // 색상 변경
 
 public class EditWineColorViewController: UIViewController {
-    var selectedColor : String?
     let navigationBarManager = NavigationBarManager()
     
     lazy var colorView = EditColorView().then {
@@ -20,12 +19,15 @@ public class EditWineColorViewController: UIViewController {
     let tnManager = NewTastingNoteManager.shared
     let wineData = TNWineDataManager.shared
     
+    var selectedColor : String?
+    
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         colorView.header.setTitleLabel(wineData.wineName)
         colorView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         colorView.infoView.kindContents.text = wineData.sort
         colorView.infoView.typeContents.text = wineData.variety
+        selectedColor = tnManager.color
     }
     
     public override func viewDidLoad() {
@@ -121,14 +123,6 @@ extension EditWineColorViewController: UICollectionViewDelegate, UICollectionVie
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedColorHexCode = colorDatas.colors[indexPath.row].colorHexCode
         selectedColor = selectedColorHexCode
-        colorView.nextButton.isEnabled(isEnabled: true)
-        
-        collectionView.reloadData()
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        selectedColor = nil
-        colorView.nextButton.isEnabled(isEnabled: false)
         
         collectionView.reloadData()
     }
