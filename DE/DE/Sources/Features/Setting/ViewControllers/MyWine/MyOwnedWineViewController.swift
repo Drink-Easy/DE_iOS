@@ -6,7 +6,9 @@ import CoreModule
 class MyOwnedWineViewController: UIViewController {
     
     private let navigationBarManager = NavigationBarManager()
-    var wineResults: [String] = ["루이 로드레 빈티지 로제 브뤼", "루이 로드레 컬렉션 244", "루이 로드레 크리스탈 2015"]
+    var wineResults: [MyOwnedWine] = []
+    
+    
     
     private lazy var myWienTableView = UITableView().then {
         $0.register(MyWineTableViewCell.self, forCellReuseIdentifier: MyWineTableViewCell.identifier)
@@ -30,6 +32,7 @@ class MyOwnedWineViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         setupNavigationBar()
+        // call api
         addComponents()
         setConstraints()
     }

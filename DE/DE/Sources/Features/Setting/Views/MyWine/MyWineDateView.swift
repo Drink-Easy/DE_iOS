@@ -4,7 +4,7 @@ import UIKit
 import CoreModule
 import Then
 import Network
-
+// 기기대응 완료
 // 와인 날짜 선택 뷰
 
 class MyWineDateView: UIView {
@@ -65,18 +65,17 @@ class MyWineDateView: UIView {
         
         calender.snp.makeConstraints {
             $0.verticalEdges.equalToSuperview()
-            $0.horizontalEdges.equalToSuperview().inset(16)
+            $0.horizontalEdges.equalToSuperview().inset(DynamicPadding.dynamicValue(16))
         }
         
         calendarContainer.snp.makeConstraints { make in
-            make.top.equalTo(topView.snp.bottom).offset(30) // 동적 기기 대응
+            make.top.equalTo(topView.snp.bottom).offset(DynamicPadding.dynamicValue(30)) // 동적 기기 대응
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(calendarContainer.snp.width).multipliedBy(1.15)
-//            make.height.equalTo(calender.snp.width).multipliedBy(342/380)
         }
         
         nextButton.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().inset(40) // 동적 기기 대응
+            make.bottom.equalToSuperview().inset(DynamicPadding.dynamicValue(40)) // 동적 기기 대응
             make.leading.trailing.equalToSuperview()
         }
     }

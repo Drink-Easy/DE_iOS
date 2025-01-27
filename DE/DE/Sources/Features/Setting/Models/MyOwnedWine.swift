@@ -7,6 +7,7 @@ public struct MyOwnedWine {
     public var wineName: String
     public var price: String
     public var buyDate: String
+    public var Dday : Int = 0
     
     public init(wineId: Int = 0, wineName: String = "", price: String = "", buyDate: String = "") {
         self.wineId = wineId

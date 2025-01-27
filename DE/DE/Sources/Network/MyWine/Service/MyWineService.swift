@@ -48,7 +48,7 @@ public final class MyWineService : NetworkManager {
     }
     
     /// 보유와인 삭제하기 API
-    public func deleteMyWine(myWineId: Int, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .deleteMyWine(myWineId: myWineId), decodingType: String.self, completion: completion)
+    public func deleteMyWine(myWineId: Int) async throws -> String {
+        return try await requestAsync(target: .deleteMyWine(myWineId: myWineId))
     }
 }

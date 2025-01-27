@@ -16,11 +16,13 @@ public class MyOwnedWineInfoViewController: UIViewController {
     //MARK: UI Elements
     private lazy var header = MyNoteTopView()
     private lazy var wineDetailView = SimpleListView()
+//    public lazy var nextButton = CustomButton(title: "다 마셨어요!", isEnabled: false)
     
-    let wineName = UserDefaults.standard.string(forKey: "wineName")
+    var registerWine: MyOwnedWine = MyOwnedWine()
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -33,11 +35,10 @@ public class MyOwnedWineInfoViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupNavigationBar()
-        header.setTitleLabel(wineName ?? "와인이에용")
+        header.setTitleLabel(registerWine.wineName)
         wineDetailView.setEditButton(showEditButton: true)
         wineDetailView.editButton.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
-        
-        setWineDetailInfo() //TODO: api 연결 후 지우기
+        setWineDetailInfo()
     }
     
     // MARK: - Setup Methods
@@ -67,9 +68,15 @@ public class MyOwnedWineInfoViewController: UIViewController {
     
     private func setWineDetailInfo() {
         wineDetailView.titleLabel.text = "구매 정보"
-        wineDetailView.items = [("구매 가격", "100원"),
-                                ("구매일 D+1", "1998-12-29")]
+        wineDetailView.items = [("구매 가격", "\(registerWine.price)원"),
+                                ("구매일 D+\(registerWine.Dday)", "\(registerWine.buyDate)")]
         
+    
+        DispatchQueue.main.async {
+            let wineService = WineService()
+            // 와인 정보 가져오기 TODO
+            // 이미지 세팅. 종류 품종 생산지 세팅
+        }
     }
     
     @objc func prevVC() {
@@ -77,8 +84,8 @@ public class MyOwnedWineInfoViewController: UIViewController {
     }
     
     @objc func editButtonTapped() {
-        let nextVC = RatingWineViewController()
+        let nextVC = ChangeMyOwnedWineViewController()
+        nextVC.registerWine = self.registerWine
         navigationController?.pushViewController(nextVC, animated: true)
     }
-    
 }

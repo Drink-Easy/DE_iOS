@@ -5,7 +5,7 @@ import CoreModule
 import SnapKit
 import Then
 import Network
-
+// 기기대응 완료
 // 보유와인 가격 입력
 
 class PriceNewWineViewController: UIViewController {
@@ -26,8 +26,8 @@ class PriceNewWineViewController: UIViewController {
         
         view.addSubview(priceNewWineView)
         priceNewWineView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
             make.bottom.equalToSuperview()
         }
     }
@@ -47,7 +47,7 @@ class PriceNewWineViewController: UIViewController {
     }
     
     @objc func nextVC() {
-        guard let price = self.priceNewWineView.priceTextField.text else {return}
+        guard let price = self.priceNewWineView.priceTextField.text else { return }
         MyOwnedWineManager.shared.setPrice(price)
         
         callPostAPI()
@@ -95,7 +95,5 @@ class PriceNewWineViewController: UIViewController {
             priceNewWineView.nextButton.isEnabled(isEnabled: true)
         }
     }
-    
-    
 
 }

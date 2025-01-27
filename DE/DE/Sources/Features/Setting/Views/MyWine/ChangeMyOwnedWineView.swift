@@ -5,6 +5,7 @@ import SnapKit
 import Then
 
 import CoreModule
+// 기기대응 완료
 
 class ChangeMyOwnedWineView: UIView {
     
@@ -73,24 +74,23 @@ class ChangeMyOwnedWineView: UIView {
         }
         
         dateTitle.snp.makeConstraints { make in
-            make.top.equalTo(priceTextField.snp.bottom).offset(45)
+            make.top.equalTo(priceTextField.snp.bottom).offset(DynamicPadding.dynamicValue(45))
             make.leading.trailing.equalToSuperview()
         }
         
         calender.snp.makeConstraints {
             $0.verticalEdges.equalToSuperview()
-            $0.horizontalEdges.equalToSuperview().inset(16)
+            $0.horizontalEdges.equalToSuperview().inset(DynamicPadding.dynamicValue(16))
         }
         
         calendarContainer.snp.makeConstraints { make in
-            make.top.equalTo(dateTitle.snp.bottom).offset(10) // 동적 기기 대응
+            make.top.equalTo(dateTitle.snp.bottom).offset(DynamicPadding.dynamicValue(10))
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(calendarContainer.snp.width).multipliedBy(1.15)
-//            make.height.equalTo(calender.snp.width).multipliedBy(342/380)
         }
         
         nextButton.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().inset(40) // 동적 기기 대응
+            make.bottom.equalToSuperview().inset(DynamicPadding.dynamicValue(40)) // 동적 기기 대응
             make.leading.trailing.equalToSuperview()
         }
     }

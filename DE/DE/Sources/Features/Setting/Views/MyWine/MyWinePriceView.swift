@@ -4,7 +4,7 @@ import UIKit
 import CoreModule
 import Then
 import Network
-
+// 기기대응 완료
 // 보유 와인 가격 입력 뷰
 
 class MyWinePriceView: UIView {
@@ -44,12 +44,12 @@ class MyWinePriceView: UIView {
         }
         
         priceTextField.snp.makeConstraints { make in
-            make.top.equalTo(topView.snp.bottom).offset(30)
+            make.top.equalTo(topView.snp.bottom).offset(DynamicPadding.dynamicValue(30))
             make.leading.trailing.equalToSuperview()
         }
         
         nextButton.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().inset(40) // 동적 기기 대응
+            make.bottom.equalToSuperview().inset(DynamicPadding.dynamicValue(40)) // 동적 기기 대응
             make.leading.trailing.equalToSuperview()
         }
     }

@@ -3,8 +3,8 @@
 import UIKit
 import CoreModule
 import Network
-
-// 날짜 선택
+// 기기대응 완료
+// 보유와인 날짜 선택
 
 public class BuyNewWineDateViewController: UIViewController {
     
@@ -32,7 +32,7 @@ public class BuyNewWineDateViewController: UIViewController {
         view.addSubview(tastedDateView)
         tastedDateView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10.0))
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
             make.bottom.equalToSuperview()
         }
     }
