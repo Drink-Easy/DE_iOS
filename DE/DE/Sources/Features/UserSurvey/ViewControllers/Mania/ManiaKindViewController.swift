@@ -10,7 +10,7 @@ class ManiaKindViewController: UIViewController {
 
     private let navigationBarManager = NavigationBarManager()
     
-    let cellData = ["레드", "화이트", "스파클링", "로제", "주정강화", "내추럴"]
+    let cellData = [DrinkSort.레드.rawValue, DrinkSort.화이트.rawValue, DrinkSort.스파클링.rawValue, DrinkSort.로제.rawValue, DrinkSort.주정강화.rawValue, DrinkSort.내추럴.rawValue]
     
     private var selectedItems: [String] = []
     private let maxSelectionCount = 2

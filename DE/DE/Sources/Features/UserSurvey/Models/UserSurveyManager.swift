@@ -107,22 +107,22 @@ public class UserSurveyManager {
                 drinkVarietyResult += [.소비뇽블랑, .말벡, .피노그리지오, .카베르네소비뇽]
                 drinkSortResult += [.레드, .화이트]
             } else if drink.contains(DrinkType.맥주.rawValue) {
-                drinkVarietyResult += [.모스카토, .까바, .소비뇽블랑, .로제스파클링]
+                drinkVarietyResult += [.모스카토, .소비뇽블랑,]
                 drinkSortResult += [.화이트, .로제, .스파클링]
             } else if drink.contains(DrinkType.위스키.rawValue) {
-                drinkVarietyResult += [.피노누아, .쉬라즈, .산지오배제, .샤도네이, .샴페인]
+                drinkVarietyResult += [.피노누아, .쉬라즈, .산지오베제, .샤도네이]
                 drinkSortResult += [.레드, .화이트]
             } else if drink.contains(DrinkType.칵테일.rawValue) {
-                drinkVarietyResult += [.모스카토, .까바, .샤도네이, .리슬링, .로제스파클링]
+                drinkVarietyResult += [.모스카토, .샤도네이, .리슬링,]
                 drinkSortResult += [.화이트, .로제, .스파클링]
             } else if drink.contains(DrinkType.막걸리.rawValue) {
-                drinkVarietyResult += [.모스카토, .까바, .소비뇽블랑, .로제스파클링]
+                drinkVarietyResult += [.모스카토, .소비뇽블랑,]
                 drinkSortResult += [.화이트, .로제, .스파클링]
             } else if drink.contains(DrinkType.사케.rawValue) {
-                drinkVarietyResult += [.모스카토, .소비뇽블랑, .피노그리지오, .샴페인]
+                drinkVarietyResult += [.모스카토, .소비뇽블랑, .피노그리지오,]
                 drinkSortResult += [.화이트, .로제, .스파클링]
             } else if drink.contains(DrinkType.브랜디.rawValue) {
-                drinkVarietyResult += [.피노누아, .쉬라즈, .산지오배제, .메를로]
+                drinkVarietyResult += [.피노누아, .쉬라즈, .산지오베제, .메를로]
                 drinkSortResult += [.레드]
             } else {
                 drinkVarietyResult += [.말벡, .카베르네소비뇽]
@@ -140,16 +140,16 @@ public class UserSurveyManager {
                 foodVarietyResult += [.소비뇽블랑, .피노그리지오, .샤도네이, .리슬링]
                 foodSortResult += [.화이트]
             } else if food.contains(FoodType.치즈.rawValue) {
-                foodVarietyResult += [.까바, .소비뇽블랑, .카베르네소비뇽, .피노누아, .쉬라즈, .샤도네이, .리슬링, .보르도]
+                foodVarietyResult += [.소비뇽블랑, .카베르네소비뇽, .피노누아, .쉬라즈, .샤도네이, .리슬링, .보르도]
                 foodSortResult += [.레드, .화이트, .스파클링]
             } else if food.contains(FoodType.스낵.rawValue) {
                 foodVarietyResult += [.소비뇽블랑, .말벡, .피노그리지오, .쉬라즈, .샤도네이]
                 foodSortResult += [.레드, .화이트, .로제]
             } else if food.contains(FoodType.피자.rawValue) {
-                foodVarietyResult += [.말벡, .피노그리지오, .카베르네소비뇽, .쉬라즈, .산지오배제,  .샤도네이, .리슬링]
+                foodVarietyResult += [.말벡, .피노그리지오, .카베르네소비뇽, .쉬라즈, .산지오베제,  .샤도네이, .리슬링]
                 foodSortResult += [.레드, .화이트]
             } else if food.contains(FoodType.디저트.rawValue) {
-                foodVarietyResult += [.모스카토, .까바, ]
+                foodVarietyResult += [.모스카토]
                 foodSortResult += [.스파클링]
             }
         }
@@ -169,18 +169,23 @@ public enum DrinkVariety: String {
     case 소비뇽블랑 = "소비뇽 블랑"
     case 말벡 = "말벡"
     case 피노그리지오 = "피노 그리지오"
-    case 카베르네소비뇽 = "까베르네 소비뇽"
+    case 카베르네소비뇽 = "카베르네 소비뇽"
     case 모스카토 = "모스카토"
-    case 까바 = "까바"
-    case 로제스파클링 = "로제 스파클링"
     case 피노누아 = "피노 누아"
-    case 쉬라즈 = "쉬라즈"
-    case 산지오배제 = "산지오배제"
+    case 쉬라즈 = "시라/쉬라즈"
+    case 산지오베제 = "산지오베제"
     case 샤도네이 = "샤도네이"
-    case 샴페인 = "샴페인"
     case 메를로 = "메를로"
     case 리슬링 = "리슬링"
     case 보르도 = "보르도"
+    case 카베르네프랑 = "카베르네 프랑"
+    case 쁘띠베르도 = "쁘띠 베르도"
+    case 그르나슈 = "그르나슈"
+    case 블렌드 = "블렌드"
+    case 네비올로 = "네비올로"
+    case 카르메네르 = "카르메네르"
+    case 무르베드르 = "무르베드르"
+    case 템프라니요 = "템프라니요"
 }
 
 public enum DrinkSort: String {
@@ -188,4 +193,7 @@ public enum DrinkSort: String {
     case 화이트 = "화이트"
     case 로제 = "로제"
     case 스파클링 = "스파클링"
+    case 주정강화 = "주정강화"
+    case 내추럴 = "내추럴"
 }
+
