@@ -18,7 +18,7 @@ public class MainTabBarController: UITabBarController {
     }
 
     private func updateUserName() {
-        setNickName()
+//        setNickName()
         if let name = userName {
             print("✅ 닉네임 업데이트: \(name)")
             homeVC.userName = name
@@ -44,15 +44,15 @@ public class MainTabBarController: UITabBarController {
     func setNickName() {
         Task {
             do {
-                let data = try await networkService.fetchUserName()
-                userName = data.username
+//                let data = try await networkService.fetchUserName()
+//                userName = data.username
                 
-                guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                    print("⚠️ userId가 UserDefaults에 없습니다.")
-                    return
-                }
-                await self.saveUserInfo(userId: userId, data: MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult))
-                try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
+//                guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+//                    print("⚠️ userId가 UserDefaults에 없습니다.")
+//                    return
+//                }
+//                await self.saveUserInfo(userId: userId, data: MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult))
+//                try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
             } catch {
                 print(error)
                 userName = "노네임"

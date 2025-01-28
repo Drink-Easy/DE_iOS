@@ -157,7 +157,7 @@ class AccountInfoViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { [weak self] _ in
-            if self?.userProfile?.authType?.lowercased() == "apple" { // 애플인 경우에
+            if self?.userProfile?.authType.lowercased() == "apple" { // 애플인 경우에
                 self?.reAuthenticateWithApple()
             } else {
                 self?.performUserDeletion()
@@ -175,7 +175,7 @@ class AccountInfoViewController: UIViewController {
             switch result {
             case .success(_):
                 print("회원탈퇴 완료")
-                switch userProfile?.authType?.lowercased() { // 무조건 소문자 처리
+                switch userProfile?.authType.lowercased() { // 무조건 소문자 처리
                     case "kakao" :
                         self.kakaoAuthVM.unlinkKakaoAccount { isSuccess in
                             if isSuccess {

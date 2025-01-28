@@ -53,6 +53,7 @@ class NewbieFoodViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
+        UserSurveyManager.shared.calculateFoodType(selectedItems)
         let vc = NewbieConsumeViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
