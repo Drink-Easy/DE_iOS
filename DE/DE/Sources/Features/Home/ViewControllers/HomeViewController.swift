@@ -234,9 +234,11 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         
         let response = try await bannerNetworkService.fetchHomeBanner()
         
-        self.adImage = response.map {
+        self.adImage = response.bannerResponseList.map {
             HomeBannerModel(imageUrl: $0.imageUrl)
         }
+        
+        pageControlNumberView.totalPages = adImage.count
         
         DispatchQueue.main.async {
             self.adCollectionView.reloadData()

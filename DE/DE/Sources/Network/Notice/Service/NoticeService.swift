@@ -33,7 +33,7 @@ public final class NoticeService: NetworkManager {
     }
     
     /// 홈 배너 조회
-    public func fetchHomeBanner() async throws -> [BannserResponse] {
-        return try await requestAsync(target: .getBanner, decodingType: [BannserResponse].self)
+    public func fetchHomeBanner() async throws -> BannerResponseList {
+        return try await requestAsync(target: .getBanner, decodingType: BannerResponseList.self)
     }
 }
