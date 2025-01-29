@@ -10,17 +10,16 @@ import CoreModule
 import Network
 
 // 테이스팅노트 보기 뷰
-public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate{
+public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScrollViewDelegate {
     
     let navigationBarManager = NavigationBarManager()
     
-    let noteService = TastingNoteService()
+    let networkService = TastingNoteService()
     let tnManager = NewTastingNoteManager.shared
     let wineData = TNWineDataManager.shared
     
+    public var noteId: Int = 0
     var wineInfo: TastingNoteResponsesDTO?
-    
-    let wineName = UserDefaults.standard.string(forKey: "wineName")
     
     //MARK: UI Elements
     let scrollView = UIScrollView().then {
@@ -35,11 +34,31 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate{
     
     let wineInfoView = WineInfoView()
     
+    private var smallTitleLabel = UILabel()
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let largeTitleBottom = wineInfoView.header.header.frame.maxY - DynamicPadding.dynamicValue(90)
+        
+        UIView.animate(withDuration: 0.1) {
+            self.wineInfoView.header.header.alpha = offsetY > largeTitleBottom ? 0 : 1
+            self.smallTitleLabel.isHidden = !(offsetY > largeTitleBottom)
+        }
+    }
+    
     
     //MARK: Initializers
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        Task {
+            do {
+                try await CallAllTastingNote()
+            } catch {
+                print("Error: \(error)")
+                // Alert 표시 등 추가
+            }
+        }
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -49,11 +68,11 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate{
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.prefersLargeTitles = false
         wineInfoView.delegate = self
-        wineInfoView.header.setTitleLabel(wineName ?? "와인이에용") // TODO: 와인 이름 설정!!
-        //TODO: 테노 정보 로드 api
         setupUI()
         setupNavigationBar()
+        setNavBarAppearance(navigationController: self.navigationController)
     }
     
     // MARK: - Setup Methods
@@ -66,11 +85,19 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate{
             rightAction: #selector(deleteTapped),
             target: self,
             tintColor: AppColor.gray70 ?? .gray)
+        
+        smallTitleLabel = navigationBarManager.setNReturnTitle(
+            to: navigationItem,
+            title: wineData.wineName,
+            textColor: AppColor.black ?? .black
+        )
+        smallTitleLabel.isHidden = true
     }
     
     private func setupUI() {
         view.backgroundColor = AppColor.bgGray
         view.addSubview(scrollView)
+        scrollView.delegate = self
         scrollView.addSubview(contentView)
         contentView.addSubview(wineInfoView)
         
@@ -90,7 +117,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate{
     }
     
     func didTapEditButton(for type: PropertyType) {
-            let viewController: UIViewController
+            var viewController: UIViewController
             switch type {
                 
             //TODO: 수정 뷰컨 연결
@@ -131,15 +158,70 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate{
         present(alert, animated: true, completion: nil)
     }
     
-    private func noteDelete() {
-//        noteService.deleteNote(noteId: 0, completion: { [weak self] result in
-//            guard let self = self else { return }
-//            switch result {
-//            case.success(let response):
-//                print(response)
-//            case.failure(let error):
-//                print(error)
-//            }
-//        })
+    private func noteDelete(){
+        Task {
+            do {
+                _ = try await networkService.deleteNote(noteId: noteId)
+//                await self.updateCallCount()
+                navigationController?.popViewController(animated: true)
+            } catch {
+                print(error)
+            }
+        }
+        
+    }
+    
+    func updateCallCount() async {
+        //        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+        //            print("⚠️ userId가 UserDefaults에 없습니다.")
+        //            return
+        //        }
+        //        Task {
+        //            // patch count + 1
+        //            do {
+        //                try await APICallCounterManager.shared.incrementPatch(for: userId, controllerName: .tastingNote)
+        //            } catch {
+        //                print(error)
+        //            }
+        //
+        //        }
+    }
+    
+    private func CallAllTastingNote() async throws {
+        
+        let data = try await networkService.fetchNote(noteId: noteId)
+        // Call Count 업데이트
+        //        await self.updateCallCount()
+        //데이터 매니저에 와인 정보 + 테노 정보 저장
+        wineData.updateWineData(wineId: data.wineId, wineName: data.wineName, sort: data.sort, country: data.country, region: data.region, imageUrl: data.imageUrl, variety: data.variety)
+        
+        tnManager.saveAllData(noteId: noteId,wineId: data.wineId, color: data.color, tasteDate: data.tasteDate, sugarContent: data.sweetness, acidity: data.acidity, tannin: data.tannin, body: data.body, alcohol: data.alcohol, nose: data.noseList, rating: data.rating, review: data.review)
+        
+        smallTitleLabel.text = data.wineName
+        
+        DispatchQueue.main.async {
+            self.setupNavigationBar() // 제목 설정
+        }
+        
+        //와인 상세 정보 데이터
+        wineInfoView.header.setTitleLabel(data.wineName)
+        wineInfoView.header.infoView.image.sd_setImage(with: URL(string: data.imageUrl))
+        wineInfoView.header.infoView.kindContents.text = "\(data.sort)"
+        wineInfoView.header.infoView.typeContents.text = "\(data.variety)"
+        wineInfoView.header.infoView.countryContents.text = "\(data.country), \(data.region)"
+        
+        //차트 뷰 데이터 로드
+        wineInfoView.chartView.viewModel.loadSavedValues(sweetness: Double(data.sweetness), alcohol: Double(data.alcohol), tannin: Double(data.tannin), body: Double(data.body), acidity: Double(data.acidity))
+        
+        wineInfoView.noseView.text = formatNoseList(data.noseList)
+        
+        wineInfoView.colorView.backgroundColor = UIColor(hex: data.color)
+        wineInfoView.colorLabel.text = WineColorManager().getColorName(for: data.color) ?? "색상 이름 없음"
+        
+        wineInfoView.ratingValue = data.rating
+        wineInfoView.ratingButton.rating = data.rating
+        
+        wineInfoView.dateView.text = "\(data.tasteDate)에 작성되었어요."
+        wineInfoView.reviewView.text = data.review
     }
 }

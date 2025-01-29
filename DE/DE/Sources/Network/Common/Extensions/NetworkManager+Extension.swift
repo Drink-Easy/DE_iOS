@@ -131,6 +131,30 @@ extension NetworkManager {
         }
     }
     
+    func requestStatusCode(
+        target: Endpoint,
+        completion: @escaping (Result<Void, NetworkError>) -> Void
+    ) {
+        provider.request(target) { result in
+            switch result {
+            case .success(let response):
+                let result: Result<ApiResponse<String?>?, NetworkError> = self.handleResponseOptional(
+                    response,
+                    decodingType: ApiResponse<String?>.self
+                )
+                switch result {
+                case .success:
+                    completion(.success(()))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                let networkError = self.handleNetworkError(error)
+                completion(.failure(networkError))
+            }
+        }
+    }
+    
     // MARK: - 상태 코드 처리 처리 함수
     private func handleResponse<T: Decodable>(
         _ response: Response,

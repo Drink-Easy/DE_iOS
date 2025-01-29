@@ -25,7 +25,7 @@ class EditColorView: UIView {
         $0.showsVerticalScrollIndicator = false // 스크롤 인디케이터 숨김
     }
     
-    public lazy var nextButton = CustomButton(title: "저장하기", isEnabled: false)
+    public lazy var nextButton = CustomButton(title: "저장하기", isEnabled: true)
 
     required init? (coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

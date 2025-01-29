@@ -7,16 +7,19 @@ import Network
 // 색상 변경
 
 public class EditWineColorViewController: UIViewController {
-    var selectedColor : String?
     let navigationBarManager = NavigationBarManager()
+    
     lazy var colorView = EditColorView().then {
         $0.colorCollectionView.delegate = self
         $0.colorCollectionView.dataSource = self
     }
     
-    let tnManger = NewTastingNoteManager.shared
+    let networkService = TastingNoteService()
     let colorDatas = WineColorManager()
+    let tnManager = NewTastingNoteManager.shared
     let wineData = TNWineDataManager.shared
+    
+    var selectedColor : String?
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -24,10 +27,7 @@ public class EditWineColorViewController: UIViewController {
         colorView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         colorView.infoView.kindContents.text = wineData.sort
         colorView.infoView.typeContents.text = wineData.variety
-//        colorView.header.setTitleLabel("디자인 테스트")
-//        colorView.infoView.countryContents.text = "디자인" + ", " + "테스트"
-//        colorView.infoView.kindContents.text = "테스트"
-//        colorView.infoView.typeContents.text = "테스트"
+        selectedColor = tnManager.color
     }
     
     public override func viewDidLoad() {
@@ -75,10 +75,20 @@ public class EditWineColorViewController: UIViewController {
             return
         }
         
-        tnManger.saveColor(selectedColor)
-        navigationController?.popViewController(animated: true)
+        tnManager.saveColor(selectedColor)
+        callUpdateAPI()
+    }
+    
+    private func callUpdateAPI() {
+        let updateData = networkService.makeUpdateNoteBodyDTO(color: selectedColor)
         
-        // patch API 연결
+        let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
+        Task {
+            do {
+                try await networkService.patchNote(data: tnData)
+                navigationController?.popViewController(animated: true)
+            }
+        }
     }
     
 }
@@ -113,14 +123,6 @@ extension EditWineColorViewController: UICollectionViewDelegate, UICollectionVie
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedColorHexCode = colorDatas.colors[indexPath.row].colorHexCode
         selectedColor = selectedColorHexCode
-        colorView.nextButton.isEnabled(isEnabled: true)
-        
-        collectionView.reloadData()
-    }
-    
-    public func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        selectedColor = nil
-        colorView.nextButton.isEnabled(isEnabled: false)
         
         collectionView.reloadData()
     }

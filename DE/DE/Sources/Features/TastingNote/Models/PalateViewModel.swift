@@ -14,6 +14,16 @@ public class PalateViewModel: ObservableObject {
             RadarData(label: "산도", value: Double(sliderValues["Acidity"] ?? 60) / 100)
         ]
     }
+    
+    func loadSavedValues(sweetness: Double, alcohol: Double, tannin: Double, body: Double, acidity: Double) {
+        stats = [
+            RadarData(label: "당도", value: sweetness / 100),
+            RadarData(label: "알코올", value: alcohol / 100),
+            RadarData(label: "타닌", value: tannin / 100),
+            RadarData(label: "바디", value: body / 100),
+            RadarData(label: "산도", value: acidity / 100)
+        ]
+    }
 }
 
 struct RadarData {

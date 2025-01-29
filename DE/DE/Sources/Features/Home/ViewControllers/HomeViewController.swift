@@ -62,7 +62,6 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         $0.recomCollectionView.delegate = self
         $0.recomCollectionView.dataSource = self
         $0.recomCollectionView.tag = 1
-        
         $0.moreBtn.addTarget(self, action: #selector(goToMoreLikely), for: .touchUpInside)
     }
     
@@ -92,12 +91,10 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         $0.recomCollectionView.delegate = self
         $0.recomCollectionView.dataSource = self
         $0.recomCollectionView.tag = 2
-        
         $0.moreBtn.addTarget(self, action: #selector(goToMorePopular), for: .touchUpInside)
     }
     
-    @objc
-    private func goToMorePopular() {
+    @objc private func goToMorePopular() {
         let vc = MorePopularWineViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -142,7 +139,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         contentView.snp.makeConstraints {
             $0.edges.equalTo(scrollView) // 스크롤뷰의 모든 가장자리에 맞춰 배치
             $0.width.equalTo(scrollView.snp.width) // 가로 스크롤을 방지, 스크롤뷰와 같은 너비로 설정
-            $0.bottom.equalTo(popularWineListView.snp.bottom).offset(46)
+            $0.bottom.equalTo(popularWineListView.snp.bottom).offset(24)
         }
         
         adCollectionView.snp.makeConstraints {
@@ -161,14 +158,14 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         pageControl.layoutIfNeeded()
         
         likeWineListView.snp.makeConstraints {
-            $0.top.equalTo(adCollectionView.snp.bottom).offset(32)
+            $0.top.equalTo(adCollectionView.snp.bottom).offset(24)
             $0.horizontalEdges.equalToSuperview()
         }
         
         popularWineListView.snp.makeConstraints {
-            $0.top.equalTo(likeWineListView.snp.bottom).offset(35)
+            $0.top.equalTo(likeWineListView.snp.bottom).offset(24)
             $0.horizontalEdges.equalToSuperview()
-            $0.bottom.equalToSuperview().offset(-46)
+            $0.bottom.equalToSuperview()
         }
     }
     

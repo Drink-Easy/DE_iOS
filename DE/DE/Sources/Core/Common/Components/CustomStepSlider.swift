@@ -19,6 +19,7 @@ public class CustomStepSlider: UISlider {
         self.stepValues = [step1, step2, step3, step4, step5]
         setupUI()
         setupTrack()
+        self.value = stepValues[2] // 기본값: 60
         if text1 == "" { setupCustomLabelThumb() } else { setupCustomThumb() }
         setupStepLabels()
     }
@@ -148,6 +149,22 @@ public class CustomStepSlider: UISlider {
     }
     
     // MARK: - Setup Track
+    public func setSavedValue(_ input: Double = 60) {
+        switch input {
+        case 20:
+            value = stepValues[0]
+        case 40:
+            value = stepValues[1]
+        case 60:
+            value = stepValues[2]
+        case 80:
+            value = stepValues[3]
+        default:
+            value = stepValues[4]
+        }
+        updateThumbPosition(animated: false)
+    }
+    
     private func setupTrack() {
         self.minimumTrackTintColor = AppColor.purple30
         self.maximumTrackTintColor = AppColor.purple30
@@ -159,7 +176,7 @@ public class CustomStepSlider: UISlider {
         
         minimumValue = stepValues.first ?? 20
         maximumValue = stepValues.last ?? 100
-        value = stepValues[2]
+//        value = stepValues[2]
         
         setThumbImage(UIImage(), for: .normal)
         
