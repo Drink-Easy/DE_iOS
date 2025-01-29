@@ -38,7 +38,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-        let largeTitleBottom = wineInfoView.header.header.frame.maxY + 10
+        let largeTitleBottom = wineInfoView.header.header.frame.maxY - DynamicPadding.dynamicValue(90)
         
         UIView.animate(withDuration: 0.1) {
             self.wineInfoView.header.header.alpha = offsetY > largeTitleBottom ? 0 : 1
@@ -68,6 +68,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.prefersLargeTitles = false
         wineInfoView.delegate = self
         setupUI()
         setupNavigationBar()
@@ -195,6 +196,12 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         wineData.updateWineData(wineId: data.wineId, wineName: data.wineName, sort: data.sort, country: data.country, region: data.region, imageUrl: data.imageUrl, variety: data.variety)
         
         tnManager.saveAllData(noteId: noteId,wineId: data.wineId, color: data.color, tasteDate: data.tasteDate, sugarContent: data.sweetness, acidity: data.acidity, tannin: data.tannin, body: data.body, alcohol: data.alcohol, nose: data.noseList, rating: data.rating, review: data.review)
+        
+        smallTitleLabel.text = data.wineName
+        
+        DispatchQueue.main.async {
+            self.setupNavigationBar() // 제목 설정
+        }
         
         //와인 상세 정보 데이터
         wineInfoView.header.setTitleLabel(data.wineName)
