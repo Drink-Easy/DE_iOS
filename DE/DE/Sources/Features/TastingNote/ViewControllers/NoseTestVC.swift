@@ -44,7 +44,7 @@ public class NoseTestVC: UIViewController {
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.width.equalTo(scrollView.snp.width)
-            make.bottom.equalTo(middleView.snp.bottom).offset(30) // 콘텐츠 끝까지 확장
+            make.bottom.equalTo(middleView.snp.bottom).offset(DynamicPadding.dynamicValue(30.0)) // 콘텐츠 끝까지 확장
         }
         
         topView.snp.makeConstraints { make in
@@ -52,10 +52,12 @@ public class NoseTestVC: UIViewController {
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
         }
         
+        let collectionViewContentHeight = self.middleView.noseCollectionView.collectionViewLayout.collectionViewContentSize.height
+        
         middleView.snp.makeConstraints { make in
             make.top.equalTo(topView.snp.bottom).offset(DynamicPadding.dynamicValue(24.0))
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
-            make.height.greaterThanOrEqualTo(600)
+            make.height.greaterThanOrEqualTo(collectionViewContentHeight + DynamicPadding.dynamicValue(140.0)) // *110.0
             make.bottom.equalToSuperview()
         }
     }
@@ -209,7 +211,29 @@ extension NoseTestVC: NoseHeaderViewDelegate {
         let indexSet = IndexSet(integer: section)
         middleView.noseCollectionView.performBatchUpdates({
             middleView.noseCollectionView.reloadSections(indexSet)
-        }, completion: nil)
+        }, completion: { [self] _ in
+            // 레이아웃 강제 업데이트
+            self.middleView.noseCollectionView.layoutIfNeeded()
+            
+            // 컬렉션 뷰의 높이 계산
+            let collectionViewContentHeight = self.middleView.noseCollectionView.collectionViewLayout.collectionViewContentSize.height
+            
+            // middleView의 높이 업데이트
+            self.middleView.snp.remakeConstraints { make in
+                make.top.equalTo(self.topView.snp.bottom).offset(DynamicPadding.dynamicValue(24.0))
+                make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
+                make.height.greaterThanOrEqualTo(collectionViewContentHeight + DynamicPadding.dynamicValue(140.0))
+                make.bottom.equalToSuperview()
+            }
+            
+            // contentView의 제약 조건도 업데이트
+            self.contentView.snp.updateConstraints { make in
+                make.bottom.equalTo(self.middleView.snp.bottom).offset(30)
+            }
+            
+            // 전체 레이아웃 강제 업데이트
+            self.view.layoutIfNeeded()
+        })
     }
 }
 
