@@ -57,18 +57,18 @@ class NoseTopView: UIView {
         }
         
         propertyHeader.snp.makeConstraints { make in
-            make.top.equalTo(header.snp.bottom).offset(40) // TODO : 동적 기기 대응
+            make.top.equalTo(header.snp.bottom).offset(DynamicPadding.dynamicValue(40))
             make.leading.trailing.equalToSuperview()
             make.height.greaterThanOrEqualTo(30)
         }
         
         noseDescription.snp.makeConstraints { make in
-            make.top.equalTo(propertyHeader.snp.bottom).offset(12)
+            make.top.equalTo(propertyHeader.snp.bottom).offset(DynamicPadding.dynamicValue(12))
             make.leading.trailing.equalToSuperview()
         }
         
         selectedLabel.snp.makeConstraints { make in
-            make.top.equalTo(noseDescription.snp.bottom).offset(30)
+            make.top.equalTo(noseDescription.snp.bottom).offset(DynamicPadding.dynamicValue(30))
             make.leading.trailing.equalToSuperview()
         }
         

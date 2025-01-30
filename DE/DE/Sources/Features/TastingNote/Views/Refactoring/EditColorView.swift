@@ -25,7 +25,7 @@ class EditColorView: UIView {
         $0.showsVerticalScrollIndicator = false // 스크롤 인디케이터 숨김
     }
     
-    public lazy var nextButton = CustomButton(title: "저장하기", isEnabled: false)
+    public lazy var nextButton = CustomButton(title: "저장하기", isEnabled: true)
 
     required init? (coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -55,24 +55,24 @@ class EditColorView: UIView {
         }
         
         infoView.snp.makeConstraints { make in
-            make.top.equalTo(header.snp.bottom).offset(20) // TODO : 동적 기기 대응
+            make.top.equalTo(header.snp.bottom).offset(DynamicPadding.dynamicValue(20))
             make.leading.trailing.equalToSuperview()
         }
         
         propertyHeader.snp.makeConstraints { make in
-            make.top.equalTo(infoView.snp.bottom).offset(50) // TODO : 동적 기기 대응
+            make.top.equalTo(infoView.snp.bottom).offset(DynamicPadding.dynamicValue(50))
             make.leading.trailing.equalToSuperview()
             make.height.greaterThanOrEqualTo(30)
         }
         
         colorCollectionView.snp.makeConstraints { make in
-            make.top.equalTo(propertyHeader.snp.bottom).offset(20) // 동적 기기 대응
+            make.top.equalTo(propertyHeader.snp.bottom).offset(DynamicPadding.dynamicValue(20))
             make.leading.trailing.equalToSuperview().inset(8)
             make.height.greaterThanOrEqualTo(270)
         }
         
         nextButton.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().inset(40) // 동적 기기 대응
+            make.bottom.equalToSuperview().inset(DynamicPadding.dynamicValue(40))
             make.leading.trailing.equalToSuperview()
         }
     }

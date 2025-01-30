@@ -10,15 +10,9 @@ class RecordGraphView: UIView {
     
     // MARK: - UI Elements
     let chartHeaderView = PropertyTitleView(type: .palateGraph)
-    let chartView = PolygonChartView()
+    public lazy var chartView = PolygonChartView()
     let recordSliderView = RecordSliderView()
-    
-    let nextButton = CustomButton(
-        title: "다음",
-        titleColor: .white,
-        isEnabled: true
-    )
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -33,7 +27,7 @@ class RecordGraphView: UIView {
         backgroundColor = AppColor.bgGray
         
         
-        [chartHeaderView, chartView, recordSliderView, nextButton].forEach {
+        [chartHeaderView, chartView, recordSliderView].forEach {
             addSubview($0)
         }
         
@@ -46,17 +40,13 @@ class RecordGraphView: UIView {
         chartView.snp.makeConstraints { make in
             make.top.equalTo(chartHeaderView.snp.bottom).offset(16)
             make.leading.trailing.equalToSuperview()
+            make.height.greaterThanOrEqualTo(Constants.superViewHeight * 0.5)
         }
         
         recordSliderView.snp.makeConstraints { make in
-            make.top.equalTo(chartView.snp.bottom).offset(16)
+            make.top.equalTo(chartView.snp.bottom)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(Constants.superViewHeight * 0.5)
-        }
-        
-        nextButton.snp.makeConstraints { make in
-            make.top.equalTo(recordSliderView.snp.bottom).offset(50)
-            make.leading.trailing.equalToSuperview()
+            make.height.greaterThanOrEqualTo(Constants.superViewHeight * 0.6)
         }
     }
     

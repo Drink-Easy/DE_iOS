@@ -9,30 +9,28 @@ public class EditReviewViewController: UIViewController {
     lazy var rView = OnlyReviewView()
     let navigationBarManager = NavigationBarManager()
     
-    let noteService = TastingNoteService()
-    let tnManger = NewTastingNoteManager.shared
+    let networkService = TastingNoteService()
+    let tnManager = NewTastingNoteManager.shared
     let wineData = TNWineDataManager.shared
     let textViewPlaceHolder = "추가로 기록하고 싶은 내용을 작성해 보세요!"
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
-//           NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
-//        rView.header.setTitleLabel(wineData.wineName)
-//        rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
-//        rView.infoView.kindContents.text = wineData.sort
-//        rView.infoView.typeContents.text = wineData.variety
-        rView.header.setTitleLabel("디자인 테스트")
-        rView.infoView.countryContents.text = "디자인" + ", " + "테스트"
-        rView.infoView.kindContents.text = "테스트"
-        rView.infoView.typeContents.text = "테스트"
+        //        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
+        //           NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
+        rView.header.setTitleLabel(wineData.wineName)
+        rView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
+        rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
+        rView.infoView.kindContents.text = wineData.sort
+        rView.infoView.typeContents.text = wineData.variety
+        rView.reviewBody.text = tnManager.review
     }
     
-//    public override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
-//        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-//    }
+    //    public override func viewWillDisappear(_ animated: Bool) {
+    //        super.viewWillDisappear(animated)
+    //        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+    //        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    //    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,9 +39,9 @@ public class EditReviewViewController: UIViewController {
         setupActions()
         
         setupNavigationBar()
-//        addExtendedBackgroundView()
+        //        addExtendedBackgroundView()
     }
-
+    
     private func addExtendedBackgroundView() {
         // 네비게이션 바와 Safe Area를 포함한 배경 뷰 추가
         let backgroundView = UIView()
@@ -96,25 +94,39 @@ public class EditReviewViewController: UIViewController {
     
     @objc func nextVC() {
         // Call post api
-        navigationController?.popViewController(animated: true)
+        callUpdateAPI()
     }
     
-//    @objc func keyboardDown() {
-//        self.rView.transform = .identity
-//    }
-//    
-//    @objc func keyboardUp(notification:NSNotification) {
-//        if let keyboardFrame:NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-//           let keyboardRectangle = keyboardFrame.cgRectValue
-//            
-//            UIView.animate(
-//                withDuration: 0.3
-//                , animations: {
-//                    self.rView.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height)
-//                }
-//            )
-//        }
-//    }
+    private func callUpdateAPI() {
+        let updateData = networkService.makeUpdateNoteBodyDTO(review: rView.reviewBody.text)
+        
+        let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
+        Task {
+            do {
+                try await networkService.patchNote(data: tnData)
+                navigationController?.popViewController(animated: true)
+            }
+        }
+    }
+    
+    
+    
+    //    @objc func keyboardDown() {
+    //        self.rView.transform = .identity
+    //    }
+    //
+    //    @objc func keyboardUp(notification:NSNotification) {
+    //        if let keyboardFrame:NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+    //           let keyboardRectangle = keyboardFrame.cgRectValue
+    //
+    //            UIView.animate(
+    //                withDuration: 0.3
+    //                , animations: {
+    //                    self.rView.transform = CGAffineTransform(translationX: 0, y: -keyboardRectangle.height)
+    //                }
+    //            )
+    //        }
+    //    }
 }
 
 extension EditReviewViewController : UITextViewDelegate {
@@ -136,12 +148,12 @@ extension EditReviewViewController : UITextViewDelegate {
         let inputString = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard let oldString = textView.text, let newRange = Range(range, in: oldString) else { return true }
         let newString = oldString.replacingCharacters(in: newRange, with: inputString).trimmingCharacters(in: .whitespacesAndNewlines)
-
+        
         let characterCount = newString.count
         guard characterCount <= 500 else { return false }
         // TODO : 경고창 띄우기?
         // alertview?
-
+        
         return true
     }
 }

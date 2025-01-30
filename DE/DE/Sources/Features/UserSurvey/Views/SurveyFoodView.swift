@@ -45,19 +45,19 @@ class SurveyFoodView: UIView {
     
     private func constraints() {
         surveyTopView.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).offset(10)
+            $0.top.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10.0))
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
         }
         
         surveyFoodCollectionView.snp.makeConstraints {
-            $0.top.equalTo(surveyTopView.snp.bottom).offset(40)
-            $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(24)
+            $0.top.equalTo(surveyTopView.snp.bottom).offset(DynamicPadding.dynamicValue(40.0))
+            $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(24.0))
             $0.bottom.equalTo(nextButton.snp.top)
         }
         
         nextButton.snp.makeConstraints {
-            $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(28)
-            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-42)
+            $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(28.0))
+            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-DynamicPadding.dynamicValue(42.0))
         }
     }
 }

@@ -37,6 +37,7 @@ class DetailInfoVC: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         setupNavigationBar(itemTitleString: itemTitle ?? "앱 정보")
+        setNavBarAppearance(navigationController: self.navigationController)
         setupUI()
         configureData()
     }
@@ -44,7 +45,6 @@ class DetailInfoVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        fixNavigationBarAppearance()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -57,19 +57,6 @@ class DetailInfoVC: UIViewController {
         // itemTitle을 네비게이션 바 제목으로 설정
         navigationBarManager.setTitle(to: navigationItem, title: itemTitleString, textColor: AppColor.black!)
         navigationBarManager.addBackButton(to: navigationItem, target: self, action: #selector(backButtonTapped))
-    }
-    
-    private func fixNavigationBarAppearance() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = AppColor.bgGray
-        appearance.titleTextAttributes = [.foregroundColor: AppColor.black!]
-        
-        appearance.shadowColor = nil
-        
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-        navigationController?.navigationBar.compactAppearance = appearance
     }
     
     // MARK: - Setup UI

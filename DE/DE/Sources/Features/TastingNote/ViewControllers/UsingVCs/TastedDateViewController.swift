@@ -7,7 +7,6 @@ import Network
 // 와인 시음 날짜 선택 1번
 
 public class TastedDateViewController: UIViewController {
-    
     lazy var tastedDateView = TastedDateView()
     let tnManger = NewTastingNoteManager.shared
     let wineData = TNWineDataManager.shared
@@ -16,10 +15,7 @@ public class TastedDateViewController: UIViewController {
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tastedDateView.topView.title.text = "만약에 와인 이름이 졸라 길다면 2025 02 12 띄어쓰기는 잘함"
-//        tastedDateView.topView.title.text = self.wineData.wineName
-//        self.tastedDateView.updateUI(wineName: self.registerWine.wineName)
-//        self.tastedDateView.updateUI(wineName: self.wineData.wineName)
+        tastedDateView.topView.title.text = self.wineData.wineName
     }
     
     public override func viewDidLoad() {
@@ -34,8 +30,8 @@ public class TastedDateViewController: UIViewController {
         
         view.addSubview(tastedDateView)
         tastedDateView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
             make.bottom.equalToSuperview()
         }
     }
