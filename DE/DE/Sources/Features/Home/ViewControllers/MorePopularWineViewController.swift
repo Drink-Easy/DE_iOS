@@ -9,7 +9,7 @@ import Then
 class MorePopularWineViewController: UIViewController {
 
     let navigationBarManager = NavigationBarManager()
-    let wineDataManger = WineDataManager.shared
+    let wineDataManger = PopularWineManager.shared
     let networkService = WineService()
     
     private var wineList: [WineData] = []
@@ -60,7 +60,7 @@ class MorePopularWineViewController: UIViewController {
             }
             do {
                 // 1. 캐시 데이터 우선 사용
-                wineList = try WineDataManager.shared.fetchWineDataList(userId: userId, wineListType: .popular)
+                wineList = try wineDataManger.fetchWineDataList()
                 if !wineList.isEmpty {
                     print("✅ 캐시된 데이터 사용: \(wineList.count)개")
                     self.morePopularWineView.moreWineTableView.reloadData()
@@ -72,22 +72,17 @@ class MorePopularWineViewController: UIViewController {
             
             // 2. 캐시 데이터가 없으면 네트워크 요청
             print("🌐 네트워크 요청 시작")
-            await fetchWinesFromNetwork(type: .popular)
+            await fetchWinesFromNetwork()
             self.morePopularWineView.moreWineTableView.reloadData()
         }
         
     }
     
     // MARK: - 네트워크 요청 처리
-    private func fetchWinesFromNetwork(type: WineListType) async {
+    private func fetchWinesFromNetwork() async {
         let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
-
-        switch type {
-        case .recommended:
-            fetchFunction = networkService.fetchRecommendWines
-        case .popular:
-            fetchFunction = networkService.fetchPopularWines
-        }
+        
+        fetchFunction = networkService.fetchPopularWines
 
         await withCheckedContinuation { continuation in
             fetchFunction { [weak self] result in
@@ -96,7 +91,7 @@ class MorePopularWineViewController: UIViewController {
                 switch result {
                 case .success(let responseData):
                     Task {
-                        await self.processWineData(type: type, responseData: responseData.0, time: responseData.1 ?? 3600)
+                        await self.processPopularWineData(responseData: responseData.0, time: responseData.1 ?? 3600)
                         continuation.resume()
                     }
                 case .failure(let error):
@@ -107,7 +102,7 @@ class MorePopularWineViewController: UIViewController {
         }
     }
     
-    private func processWineData(type: WineListType, responseData: [HomeWineDTO], time: TimeInterval) async {
+    private func processPopularWineData(responseData: [HomeWineDTO], time: TimeInterval) async {
         let wines = responseData.map {
             WineData(wineId: $0.wineId,
                      imageUrl: $0.imageUrl,
@@ -122,7 +117,7 @@ class MorePopularWineViewController: UIViewController {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
-            try await WineDataManager.shared.saveWineData(userId: userId, wineListType: type, wineData: wines, expirationInterval: time)
+            try wineDataManger.saveWineData(wineData: wines, expirationInterval: time)
         } catch {
             print("❌ 데이터 저장 중 오류 발생: \(error)")
         }
