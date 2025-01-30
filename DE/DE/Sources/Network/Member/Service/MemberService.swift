@@ -73,8 +73,8 @@ public final class MemberService : NetworkManager {
         request(target: .getMemberInfo, decodingType: MemberInfoResponse.self, completion: completion)
     }
     
-    public func fetchUserName() async throws -> MemberInfoResponse {
-        return try await requestAsync(target: .getMemberInfo, decodingType: MemberInfoResponse.self)
+    public func getUserName() async throws -> String {
+        return try await requestAsync(target: .getNickname)
     }
     
     /// 사용자 탈퇴 API

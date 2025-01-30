@@ -10,7 +10,7 @@ public final class MyWineListDataManager {
         do {
             let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
             let container = try ModelContainer(
-                for: UserData.self, MyWineList.self, SavedWineDataModel.self,
+                for: MyWineList.self, SavedWineDataModel.self,
                 configurations: configuration
             )
             print("✅ 보유와인 SwiftData 초기화 성공!")

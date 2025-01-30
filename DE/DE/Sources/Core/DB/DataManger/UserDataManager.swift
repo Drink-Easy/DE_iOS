@@ -10,11 +10,18 @@ public final class UserDataManager {
     
     private init() {
         do {
-            container = try ModelContainer(for: UserData.self)
+            let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
+            container = try ModelContainer(
+                for: UserData.self, PersonalData.self, Wishlist.self,
+                TastingNoteList.self, TastingNote.self, MyWineList.self,
+                SavedWineDataModel.self, APIControllerCounter.self, APICounter.self, WineList.self
+            )
+            print("✅ UserData SwiftData 초기화 성공!")
         } catch {
-            fatalError("SwiftData 초기화 실패: \(error.localizedDescription)")
+            fatalError("❌ SwiftData 초기화 실패: \(error.localizedDescription)")
         }
     }
+}
     
     /// 유저 ID 생성  -> 로그인
     @MainActor public func createUser(userId: Int) async {

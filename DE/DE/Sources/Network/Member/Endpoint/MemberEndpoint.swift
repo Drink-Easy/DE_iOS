@@ -9,6 +9,8 @@ public enum MemberEndpoint {
     case patchMemeberPersonalInfo(body : MemberUpdateRequest)
     case checkNickname(nickname: String)
     
+    case getNickname
+    
     case deleteMember
     case deleteAppleUser(body: AppleDeleteRequest)
     
@@ -38,6 +40,8 @@ extension MemberEndpoint: TargetType {
             return "/profileImage"
         case .deleteAppleUser:
             return "/delete/apple" // TODO : path 바뀌면 추가 적용
+        case .getNickname:
+            return "/name"
         default :
             return "/info"
         }
@@ -47,7 +51,7 @@ extension MemberEndpoint: TargetType {
         switch self {
         case .checkNickname, .postImage :
             return .post
-        case .getMemberInfo :
+        case .getMemberInfo, .getNickname:
             return .get
         case .patchMemberInfo, .patchMemeberPersonalInfo :
             return .patch
@@ -83,6 +87,8 @@ extension MemberEndpoint: TargetType {
             return .requestJSONEncodable(body)
         case .deleteAppleUser(let body):
             return .requestJSONEncodable(body)
+        case .getNickname:
+            return .requestPlain
         }
     }
     

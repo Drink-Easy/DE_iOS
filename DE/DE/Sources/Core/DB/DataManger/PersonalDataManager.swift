@@ -10,7 +10,7 @@ public final class PersonalDataManager {
         do {
             let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
             let container = try ModelContainer(
-                for: UserData.self, PersonalData.self,
+                for: PersonalData.self,
                 configurations: configuration
             )
             print("✅ SwiftData 초기화 성공!")

@@ -10,7 +10,7 @@ public final class APICallCounterManager {
         do {
             let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
             let container = try ModelContainer(
-                for: UserData.self, APIControllerCounter.self, APICounter.self
+                for: APIControllerCounter.self, APICounter.self
             )
             print("✅ APICallCounterManager SwiftData 초기화 성공!")
             return container

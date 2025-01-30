@@ -10,7 +10,7 @@ public final class TastingNoteDataManager {
         do {
             let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
             let container = try ModelContainer(
-                for: UserData.self, TastingNoteList.self, TastingNote.self,
+                for: TastingNoteList.self, TastingNote.self,
                 configurations: configuration
             )
             print("✅ SwiftData 초기화 성공!")

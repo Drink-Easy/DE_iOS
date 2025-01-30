@@ -7,7 +7,6 @@ import Network
 public class MainTabBarController: UITabBarController {
     
     let homeVC = HomeViewController()
-    let classVC = HomeViewController()
     
     let networkService = MemberService()
     
@@ -18,11 +17,9 @@ public class MainTabBarController: UITabBarController {
     }
 
     private func updateUserName() {
-//        setNickName()
         if let name = userName {
             print("✅ 닉네임 업데이트: \(name)")
             homeVC.userName = name
-            classVC.userName = name
         } else {
             guard let userId = UserDefaults.standard.object(forKey: "userId") as? Int else {
                 print("⚠️ userId가 UserDefaults에 저장되어 있지 않습니다.")
@@ -33,29 +30,11 @@ public class MainTabBarController: UITabBarController {
                 do {
                     let name = try await PersonalDataManager.shared.fetchUserName(for: userId)
                     homeVC.userName = name
-                    classVC.userName = name
                 } catch {
+                    let name = try await networkService.getUserName()
+                    homeVC.userName = name
                     print(error.localizedDescription)
                 }
-            }
-        }
-    }
-    
-    func setNickName() {
-        Task {
-            do {
-//                let data = try await networkService.fetchUserName()
-//                userName = data.username
-                
-//                guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-//                    print("⚠️ userId가 UserDefaults에 없습니다.")
-//                    return
-//                }
-//                await self.saveUserInfo(userId: userId, data: MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult))
-//                try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
-            } catch {
-                print(error)
-                userName = "노네임"
             }
         }
     }

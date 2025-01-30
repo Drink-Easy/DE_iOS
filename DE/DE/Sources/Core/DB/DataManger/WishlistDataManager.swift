@@ -10,7 +10,7 @@ public final class WishlistDataManager {
         do {
             let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
             let container = try ModelContainer(
-                for: UserData.self, Wishlist.self, WineData.self,
+                for: Wishlist.self, WineData.self,
                 configurations: configuration
             )
             print("✅ SwiftData 초기화 성공!")
