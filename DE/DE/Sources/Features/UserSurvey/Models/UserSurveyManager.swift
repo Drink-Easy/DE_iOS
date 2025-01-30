@@ -28,6 +28,11 @@ public class UserSurveyManager {
     
     private init() {}
     
+    public func setNewbieResult() {
+        self.wineSort = self.getIntersectionSortData()
+        self.wineVariety = self.getIntersectionVarietyData()
+    }
+    
     public func setPersonalInfo(name : String, addr region: String, profileImg image : UIImage) {
         self.name = name
         self.region = region

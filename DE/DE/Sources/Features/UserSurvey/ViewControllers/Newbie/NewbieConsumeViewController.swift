@@ -69,7 +69,7 @@ class NewbieConsumeViewController: UIViewController {
         guard let price = self.selectedItem else {return}
         UserSurveyManager.shared.setPrice(Int(price))
         
-        let vc = ResultViewController()
+        let vc = NormalTextViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 }
