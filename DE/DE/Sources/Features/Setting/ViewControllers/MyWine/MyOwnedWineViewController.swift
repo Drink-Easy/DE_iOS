@@ -2,13 +2,14 @@
 
 import UIKit
 import CoreModule
+import Network
 
 class MyOwnedWineViewController: UIViewController {
     
     private let navigationBarManager = NavigationBarManager()
+    
+    private let networkService = MyWineService()
     var wineResults: [MyOwnedWine] = []
-    
-    
     
     private lazy var myWienTableView = UITableView().then {
         $0.register(MyWineTableViewCell.self, forCellReuseIdentifier: MyWineTableViewCell.identifier)
