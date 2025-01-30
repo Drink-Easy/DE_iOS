@@ -46,7 +46,7 @@ public class WineData {
 public class WineList {
     @Attribute public var type: String
     @Relationship var wines: [WineData] = []
-    var timestamp: Date // 캐시 유효기간 관리
+    @Attribute var timestamp: Date // 캐시 유효기간 관리
     @Relationship var user: UserData? // 사용자 관계 (부모 관계)
 
     init(type: WineListType, wines: [WineData], timestamp: Date, user: UserData) {
@@ -64,7 +64,7 @@ public class PopularWineList {
     /// 저장된 와인 목록
     @Relationship var wines: [WineData] = []
     /// 데이터 유효기간 관리 (만료 시 데이터 삭제)
-    var timestamp: Date
+    @Attribute var timestamp: Date
 
     /// 인기 와인 목록 초기화
     /// - Parameters:

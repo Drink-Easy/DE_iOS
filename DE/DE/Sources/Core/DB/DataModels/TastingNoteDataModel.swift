@@ -5,8 +5,7 @@ import SwiftData
 
 @Model
 public class TastingNoteList {
-    @Attribute public var noteList : [TastingNote]?
-    
+    @Relationship public var noteList : [TastingNote]?
     @Relationship var user: UserData?
     
     public init(noteList: [TastingNote]? = [], user: UserData? = nil) {

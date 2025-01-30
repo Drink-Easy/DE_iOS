@@ -58,7 +58,7 @@ public final class PopularWineManager {
         // ✅ 데이터가 만료되었는지 확인 후 삭제
         if try isWineDataExpired(in: context) {
             try deleteExpiredWineData()
-            return []
+            throw PopularWineManagerError.wineListNotFound
         }
         
         return try fetchOrCreateWineList(in: context).wines
