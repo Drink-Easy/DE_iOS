@@ -63,7 +63,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         $0.moreBtn.addTarget(self, action: #selector(goToMoreLikely), for: .touchUpInside)
     }
     
-    public func fetchName() {
+    public func fetchName() { // TODO : 이름 호출 로직 수정하기
         Task {
             guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
@@ -111,16 +111,10 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         super.viewWillAppear(animated)
         self.navigationController?.isNavigationBarHidden = true
         
+        setAdBanner()
         fetchWines(type: .recommended)
         fetchWines(type: .popular) // 인기 와인
         fetchName()
-        Task {
-            do {
-                try await fetchHomeBanner()
-            } catch {
-                print(error)
-            }
-        }
     }
     
     private func addComponents() {
@@ -236,19 +230,47 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     }
 
     // MARK: - 네트워크 요청 처리
-    private func fetchHomeBanner() async throws {
-        
-        let response = try await bannerNetworkService.fetchHomeBanner()
-        
-        self.adImage = response.bannerResponseList.map {
-            HomeBannerModel(imageUrl: $0.imageUrl)
+    func setAdBanner() {
+        Task {
+            do {
+                let cacheData = try AdBannerListManager.shared.fetchAdBannerList() // 내부에서 만료 체크함
+                print("✅ 캐시 데이터 사용!")
+                
+                let bannerModels = cacheData.map { HomeBannerModel(imageUrl: $0.imageUrl, postUrl: $0.postUrl) }
+                
+                DispatchQueue.main.async {
+                    self.adImage = bannerModels
+                    self.adCollectionView.reloadData()
+                }
+
+            } catch {
+                print("⚠️ 캐시 데이터 없음 → 네트워크 요청 수행")
+                do {
+                    let newData = try await fetchHomeBanner()
+                    try AdBannerListManager.shared.saveAdBannerList(
+                        bannerData: newData.map { AdBannerDataModel(bannerId: $0.bannerId, imageUrl: $0.imageUrl, postUrl: $0.postUrl) },
+                        expirationDate: Date()
+                    )
+                } catch {
+                    print("❌ 네트워크 요청 실패: \(error)")
+                }
+            }
         }
-        
-        pageControlNumberView.totalPages = adImage.count
-        
+    }
+    
+    private func fetchHomeBanner() async throws -> [BannerResponse] {
+        let response = try await bannerNetworkService.fetchHomeBanner()
+
+        //UI 업데이트는 메인 스레드에서 수행
         DispatchQueue.main.async {
+            self.adImage = response.bannerResponseList.map {
+                HomeBannerModel(imageUrl: $0.imageUrl, postUrl: $0.postUrl)
+            }
+            self.pageControlNumberView.totalPages = self.adImage.count
             self.adCollectionView.reloadData()
         }
+
+        return response.bannerResponseList
     }
     
     private func fetchWinesFromNetwork(type: WineListType) async {
@@ -373,10 +395,8 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         if collectionView.tag == 0 {
             return adImage.count
         } else if collectionView.tag == 1 {
-            // ✅ Out of range 에러 핸들링
             return min(maxShowWineCount, recommendWineDataList.count)
         } else if collectionView.tag == 2 {
-            // ✅ Out of range 에러 핸들링
             return min(maxShowWineCount, popularWineDataList.count)
         }
         return 0
@@ -423,6 +443,9 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             let vc = WineDetailViewController()
             vc.wineId = (collectionView.tag == 1) ? recommendWineDataList[indexPath.row].wineId : popularWineDataList[indexPath.row].wineId
             navigationController?.pushViewController(vc, animated: true)
+        } else if collectionView.tag == 0 {
+            // TODO : 웹페이지 뷰 띄우기
+            print("\(adImage[indexPath.row].postUrl) : 이 주소로 이동하세요")
         }
     }
     

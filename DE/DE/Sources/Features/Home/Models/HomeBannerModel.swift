@@ -1,9 +1,11 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 struct HomeBannerModel {
-    let imageUrl: String
-    
-    init(imageUrl: String) {
+    public let imageUrl: String
+    public let postUrl: String
+
+    public init(imageUrl: String, postUrl: String) {
         self.imageUrl = imageUrl
+        self.postUrl = postUrl
     }
 }
