@@ -10,11 +10,13 @@ class NewbieConsumeViewController: UIViewController {
     private let navigationBarManager = NavigationBarManager()
     
     private var selectedItem: Float?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         self.view = surveySliderView
+        surveySliderView.nextButton.isEnabled = true
+        surveySliderView.nextButton.isEnabled(isEnabled: true)
         setupNavigationBar()
         
         UserSurveyManager.shared.union()
@@ -60,8 +62,9 @@ class NewbieConsumeViewController: UIViewController {
     @objc private func sliderValueChanged(_ sender: UISlider) {
         selectedItem = sender.value
         
-        surveySliderView.nextButton.isEnabled = true
-        surveySliderView.nextButton.isEnabled(isEnabled: true)
+        // 버튼 원래부터 enable로
+//        surveySliderView.nextButton.isEnabled = true
+//        surveySliderView.nextButton.isEnabled(isEnabled: true)
     }
     
     @objc func nextButtonTapped() {
