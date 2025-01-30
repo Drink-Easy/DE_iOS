@@ -33,9 +33,11 @@ class AdCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func configure(image: String) {
-        if let image = UIImage(named: image) {
-            self.image.image = image
+    func configure(model: HomeBannerModel) {
+        if let url = URL(string: model.imageUrl) {
+            image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+        } else {
+            image.image = UIImage(named: "placeholder")
         }
     }
 }

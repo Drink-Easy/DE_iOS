@@ -18,7 +18,7 @@ public struct NoticeResponse : Decodable {
     }
 }
 
-public struct BannserResponse : Decodable {
+public struct BannerResponse : Decodable {
     public let bannerId : Int
     public let imageUrl : String
     public let postUrl : String
@@ -28,4 +28,8 @@ public struct BannserResponse : Decodable {
         self.imageUrl = imageUrl
         self.postUrl = postUrl
     }
+}
+
+public struct BannerResponseList : Decodable {
+    public let bannerResponseList: [BannerResponse]
 }
