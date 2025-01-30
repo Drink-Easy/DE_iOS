@@ -13,8 +13,6 @@ class MyNoteTopView: UIView {
     }
     public lazy var infoView = WineDetailView()
 
-    // 버튼
-//    public lazy var button = CustomButton(title: "저장하기", isEnabled: true)
     
     override init(frame: CGRect) {
         super.init(frame: frame)

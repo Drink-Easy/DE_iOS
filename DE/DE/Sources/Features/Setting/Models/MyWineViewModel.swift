@@ -2,7 +2,7 @@
 
 import Foundation
 
-public struct MyWineResponse : Decodable {
+public struct MyWineViewModel {
     public let myWineId : Int
     public let wineId : Int
     public let wineName : String

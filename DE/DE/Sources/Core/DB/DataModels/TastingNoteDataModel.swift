@@ -34,5 +34,3 @@ public class TastingNote {
         self.sort = sort
     }
 }
-
-

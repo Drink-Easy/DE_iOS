@@ -4,16 +4,15 @@ import UIKit
 import CoreModule
 import SnapKit
 import Then
-
+import Network
+// 기기대응 완료
 // 보유와인 가격 입력
 
 class PriceNewWineViewController: UIViewController {
 
     let priceNewWineView = MyWinePriceView()
     let navigationBarManager = NavigationBarManager()
-    
-    public var selectDate : String?
-    let wineData = TNWineDataManager.shared
+    let networkService = MyWineService()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,13 +22,12 @@ class PriceNewWineViewController: UIViewController {
     }
     
     func setupUI() {
-        priceNewWineView.setWineName("와인이름데이터넘겨주기")
-        priceNewWineView.setWineName(wineData.wineName)
+        priceNewWineView.setWineName(MyOwnedWineManager.shared.getWineName())
         
         view.addSubview(priceNewWineView)
         priceNewWineView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
             make.bottom.equalToSuperview()
         }
     }
@@ -49,17 +47,40 @@ class PriceNewWineViewController: UIViewController {
     }
     
     @objc func nextVC() {
-        // api 호출
-        // call count 처리도 해주기
+        guard let price = self.priceNewWineView.priceTextField.text else { return }
+        MyOwnedWineManager.shared.setPrice(price)
         
-        // 리스트 화면으로 돌아가기
-        Task {
+        callPostAPI()
+        
+        DispatchQueue.main.async {
             self.navigationController?.popViewController(animated: true)
             guard let navigationController = self.navigationController else { return }
             if let targetIndex = navigationController.viewControllers.firstIndex(where: { $0 is MyOwnedWineViewController }) {
-                 let newStack = Array(navigationController.viewControllers[...targetIndex])
-                 navigationController.setViewControllers(newStack, animated: true)
-             }
+                let newStack = Array(navigationController.viewControllers[...targetIndex])
+                navigationController.setViewControllers(newStack, animated: true)
+            }
+        }
+    }
+    
+    private func callPostAPI() {
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+            print("⚠️ userId가 UserDefaults에 없습니다.")
+            return
+        }
+        
+        let wm = MyOwnedWineManager.shared
+        let data = networkService.makePostDTO(wineId: wm.getWineId(), buyDate: wm.getBuyDate(), buyPrice: wm.getPrice())
+        Task {
+            do {
+                // 데이터 전송
+                _ = try await networkService.postMyWine(data: data)
+                
+                // 데이터 전송 성공 시, 보유와인 콜카운터 생성 및 post +1
+                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
+                try await APICallCounterManager.shared.incrementPost(for: userId, controllerName: .myWine)
+            } catch {
+                print("\(error)\n 잠시후 다시 시도해주세요.")
+            }
         }
     }
     
@@ -74,7 +95,5 @@ class PriceNewWineViewController: UIViewController {
             priceNewWineView.nextButton.isEnabled(isEnabled: true)
         }
     }
-    
-    
 
 }

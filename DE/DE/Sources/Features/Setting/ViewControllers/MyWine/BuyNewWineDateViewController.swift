@@ -3,23 +3,20 @@
 import UIKit
 import CoreModule
 import Network
+// 기기대응 완료
+// 보유와인 날짜 선택
 
 public class BuyNewWineDateViewController: UIViewController {
     
-//    var registerWine: MyOwnedWine = MyOwnedWine()
-
     let tastedDateView = MyWineDateView()
     var selectedDate: DateComponents?
     let navigationBarManager = NavigationBarManager()
     
     let wineData = TNWineDataManager.shared
-    
-    let wineName = "와인 테스터"
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.tastedDateView.setWineName(self.wineName)
-//        self.tastedDateView.setWineName(self.wineData.wineName)
+        self.tastedDateView.setWineName(MyOwnedWineManager.shared.getWineName())
     }
     
     public override func viewDidLoad() {
@@ -34,8 +31,8 @@ public class BuyNewWineDateViewController: UIViewController {
         
         view.addSubview(tastedDateView)
         tastedDateView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10.0))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
             make.bottom.equalToSuperview()
         }
     }
@@ -64,16 +61,15 @@ public class BuyNewWineDateViewController: UIViewController {
             print("선택된 날짜가 없습니다.")
             return
         }
-
         if let date = Calendar.current.date(from: selectedDate) {
             let dateFormatter = DateFormatter()
             dateFormatter.locale = Locale(identifier: "ko_KR") // 한국 시간대 설정
             dateFormatter.dateFormat = "yyyy-MM-dd"
             let dateString = dateFormatter.string(from: date)
-            
+            MyOwnedWineManager.shared.setBuyDate(dateString)
             
             let nextVC = PriceNewWineViewController()
-            nextVC.selectDate = dateString
+            nextVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(nextVC, animated: true)
         } else {
             print("선택된 날짜를 Date로 변환할 수 없습니다.")
