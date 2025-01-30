@@ -9,9 +9,8 @@ import SwiftyToaster
 class ManiaTypeViewController: UIViewController {
 
     private let navigationBarManager = NavigationBarManager()
-    // TODO : 도연
-    // 품종이름 Enum으로 통일하기
-    let cellData = ["까베르네쇼비뇽", "샤도네이", "메를로", "까베르네프랑", "피노누아", "시라/쉬라즈", "쁘띠베르도", "쇼비뇽블랑", "그르나슈", "말벡", "산지오베제", "리슬링", "모스카토", "블렌드", "네비올로", "카르메너르", "무르베드르", "템프라니요"]
+
+    let cellData = [DrinkVariety.카베르네소비뇽.rawValue, DrinkVariety.샤도네이.rawValue, DrinkVariety.메를로.rawValue, DrinkVariety.카베르네프랑.rawValue, DrinkVariety.피노누아.rawValue, DrinkVariety.쉬라즈.rawValue, DrinkVariety.쁘띠베르도.rawValue, DrinkVariety.소비뇽블랑.rawValue, DrinkVariety.그르나슈.rawValue, DrinkVariety.말벡.rawValue, DrinkVariety.산지오베제.rawValue, DrinkVariety.리슬링.rawValue, DrinkVariety.모스카토.rawValue, DrinkVariety.블렌드.rawValue, DrinkVariety.네비올로.rawValue, DrinkVariety.카르메네르.rawValue, DrinkVariety.무르베드르.rawValue, DrinkVariety.템프라니요.rawValue]
     
     private var selectedItems: [String] = []
     private let maxSelectionCount = 2

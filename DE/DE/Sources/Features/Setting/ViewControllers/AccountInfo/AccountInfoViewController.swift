@@ -157,7 +157,7 @@ class AccountInfoViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { [weak self] _ in
-            if self?.userProfile?.authType?.lowercased() == "apple" { // 애플인 경우에
+            if self?.userProfile?.authType.lowercased() == "apple" { // 애플인 경우에
                 self?.reAuthenticateWithApple()
             } else {
                 self?.performUserDeletion()
@@ -175,7 +175,7 @@ class AccountInfoViewController: UIViewController {
             switch result {
             case .success(_):
                 print("회원탈퇴 완료")
-                switch userProfile?.authType?.lowercased() { // 무조건 소문자 처리
+                switch userProfile?.authType.lowercased() { // 무조건 소문자 처리
                     case "kakao" :
                         self.kakaoAuthVM.unlinkKakaoAccount { isSuccess in
                             if isSuccess {
@@ -314,25 +314,19 @@ class AccountInfoViewController: UIViewController {
                     print("⚠️ userId가 UserDefaults에 없습니다.")
                     return
                 }
-                guard let username = data?.username,
-                      let imgUrl = data?.imageUrl,
-                      let email = data?.email,
-                      let city = data?.city,
-                      let authType = data?.authType,
-                      let adult = data?.adult else {return}
                 Task {
                     // 데이터 할당
-                    self.userProfile = MemberInfoResponse(imageUrl: imgUrl, username: username, email: email, city: city, authType: authType, adult: adult)
+                    self.userProfile = MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
                     self.setUserData(
-                        imageURL: imgUrl,
-                        username: username,
-                        email: email,
-                        city: city,
-                        authType: authType,
-                        adult: adult
+                        imageURL: data.imageUrl,
+                        username: data.username,
+                        email: data.email,
+                        city: data.city,
+                        authType: data.authType,
+                        adult: data.adult
                     )
                     // 로컬 캐시 데이터에 저장(덮어쓰기)
-                    await self.saveUserInfo(data: MemberInfoResponse(imageUrl: imgUrl, username: username, email: email, city: city, authType: authType, adult: adult))
+                    await self.saveUserInfo(data: MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult))
                     do {
                         // get api -> 모든 call counter 초기화
                         try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)

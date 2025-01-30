@@ -45,7 +45,7 @@ class SurveyResultTextView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.gray40
+        backgroundColor = .clear
         setLayout()
     }
     
