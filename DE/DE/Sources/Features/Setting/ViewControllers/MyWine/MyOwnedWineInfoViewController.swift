@@ -8,7 +8,6 @@ import Then
 import CoreModule
 import Network
 
-//TODO: api 연결
 public class MyOwnedWineInfoViewController: UIViewController {
     
     let navigationBarManager = NavigationBarManager()
@@ -16,9 +15,8 @@ public class MyOwnedWineInfoViewController: UIViewController {
     //MARK: UI Elements
     private lazy var header = MyNoteTopView()
     private lazy var wineDetailView = SimpleListView()
-//    public lazy var nextButton = CustomButton(title: "다 마셨어요!", isEnabled: false)
     
-    var registerWine: MyOwnedWine = MyOwnedWine()
+    var registerWine: MyWineViewModel?
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -35,10 +33,20 @@ public class MyOwnedWineInfoViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupNavigationBar()
-        header.setTitleLabel(registerWine.wineName)
+        setWineData()
         wineDetailView.setEditButton(showEditButton: true)
         wineDetailView.editButton.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
-        setWineDetailInfo()
+    }
+    
+    private func setWineData() {
+        guard let currentWine = self.registerWine else { return }
+        header.setTitleLabel(currentWine.wineName)
+        header.infoView.image.sd_setImage(with: URL(string: currentWine.wineImageUrl))
+        header.infoView.typeContents.text = "\(currentWine.wineCountry), \(currentWine.wineRegion)"
+        header.infoView.countryContents.text = currentWine.wineVariety
+        header.infoView.kindContents.text = currentWine.wineSort
+        
+        self.setWineDetailInfo(currentWine)
     }
     
     // MARK: - Setup Methods
@@ -49,12 +57,12 @@ public class MyOwnedWineInfoViewController: UIViewController {
         }
         header.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
-            make.leading.equalToSuperview().inset(24)
+            make.leading.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
             make.height.greaterThanOrEqualTo(180)
         }
         wineDetailView.snp.makeConstraints { make in
-            make.top.equalTo(header.snp.bottom).offset(36)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.top.equalTo(header.snp.bottom).offset(DynamicPadding.dynamicValue(36))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
         }
     }
     
@@ -66,17 +74,11 @@ public class MyOwnedWineInfoViewController: UIViewController {
         )
     }
     
-    private func setWineDetailInfo() {
+    private func setWineDetailInfo(_ registerWine: MyWineViewModel) {
+        let priceString = formatPrice(registerWine.purchasePrice)
         wineDetailView.titleLabel.text = "구매 정보"
-        wineDetailView.items = [("구매 가격", "\(registerWine.price)원"),
-                                ("구매일 D+\(registerWine.Dday)", "\(registerWine.buyDate)")]
-        
-    
-        DispatchQueue.main.async {
-            let wineService = WineService()
-            // 와인 정보 가져오기 TODO
-            // 이미지 세팅. 종류 품종 생산지 세팅
-        }
+        wineDetailView.items = [("구매 가격", "\(priceString)원"),
+                                ("구매일 D+\(registerWine.period)", "\(registerWine.purchaseDate)")]
     }
     
     @objc func prevVC() {
@@ -84,8 +86,10 @@ public class MyOwnedWineInfoViewController: UIViewController {
     }
     
     @objc func editButtonTapped() {
+        guard let currentWine = self.registerWine else { return }
+        
         let nextVC = ChangeMyOwnedWineViewController()
-        nextVC.registerWine = self.registerWine
+        nextVC.registerWine = MyOwnedWine(wineId: currentWine.wineId, wineName: currentWine.wineName, price: String(currentWine.purchasePrice), buyDate: currentWine.purchaseDate)
         navigationController?.pushViewController(nextVC, animated: true)
     }
 }

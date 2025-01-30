@@ -38,6 +38,13 @@ public final class MyWineListDataManager {
 
         if user.savedWineList != nil {
             print("✅ \(userId) 유저의 보유와인리스트가 이미 존재합니다.")
+            print("✅ \(userId) 유저의 보유와인리스트를 업데이트합니다.")
+            
+            do {
+                try await self.updateSavedWinelist(for: userId, with: newWines, date: date)
+            } catch {
+                print("⚠️ 보유와인리스트 업데이트 중 오류 발생: \(error)")
+            }
             return
         }
 

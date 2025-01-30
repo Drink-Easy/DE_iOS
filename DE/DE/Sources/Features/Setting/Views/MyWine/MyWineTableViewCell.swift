@@ -105,20 +105,23 @@ class MyWineTableViewCell: UITableViewCell {
         }
     }
     
-    public func configure(model: MyOwnedWine) {
-//        if let url = URL(string: model.imageURL) {
-//            image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
-//        } else {
-//            image.image = UIImage(named: "placeholder")
-//        }
-//        
-//        //하이라이트 적용
-//        if let highlightText = highlightText, !highlightText.isEmpty {
-//            name.attributedText = highlightTextInLabel(text: model.wineName, highlight: highlightText)
-//        } else {
-//            name.text = model.wineName
-//        }
-        
+    public func configure(model: MyWineViewModel) {
+        if let url = URL(string: model.wineImageUrl) {
+            image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+        } else {
+            image.image = UIImage(named: "placeholder")
+        }
         self.name.text = model.wineName
+        let priceString = formatPrice(model.purchasePrice)
+        self.price.text = "구매가 \(priceString)원"
+        self.buyDate.text = "D+\(model.period)"
     }
+}
+
+public func formatPrice(_ price: Int) -> String {
+    let numberFormatter = NumberFormatter()
+    numberFormatter.numberStyle = .decimal
+    numberFormatter.locale = Locale(identifier: "ko_KR")
+    
+    return numberFormatter.string(from: NSNumber(value: price)) ?? "\(price)"
 }
