@@ -64,8 +64,8 @@ public class NormalTextViewController: UIViewController {
         
         // ✨ NSAttributedString 스타일 적용
         firstTextLabel.attributedText = setStyledText(
-            mainText: "승주 ",
-//            mainText: "\(UserSurveyManager.shared.name) ",
+//            mainText: "승주 ",
+            mainText: "\(UserSurveyManager.shared.name) ",
             highlightText: "님께\n어울리는 와인은",
             mainFontSize: 34,
             highlightFontSize: 26
@@ -95,18 +95,18 @@ public class NormalTextViewController: UIViewController {
     }
 
     private func startAlphaAnimationSequence() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             self.animateAlphaChange(view: self.firblurView)
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 self.animateAlphaChange(view: self.secblurView)
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     self.animateAlphaChange(view: self.thirdblurView)
                     
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                         self.nextButton.isHidden = false
-                        UIView.animate(withDuration: 1.5, delay: 0, options: .curveEaseInOut) {
+                        UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseInOut) {
                             self.nextButton.alpha = 1
                         }
                     }
@@ -174,9 +174,6 @@ public class NormalTextViewController: UIViewController {
         
         firblurView.snp.makeConstraints { make in
             make.edges.equalTo(firstTextLabel)
-//            make.top.equalTo(varietyTextLabel).inset(-DynamicPadding.dynamicValue(15))
-//            make.bottom.equalTo(varietyTextLabel).offset(DynamicPadding.dynamicValue(15))
-//            make.leading.trailing.equalToSuperview()
         }
 
         varietyTextLabel.snp.makeConstraints { make in
@@ -186,9 +183,6 @@ public class NormalTextViewController: UIViewController {
         
         secblurView.snp.makeConstraints { make in
             make.edges.equalTo(varietyTextLabel)
-//            make.top.equalTo(varietyTextLabel).inset(-DynamicPadding.dynamicValue(15))
-//            make.bottom.equalTo(varietyTextLabel).offset(DynamicPadding.dynamicValue(15))
-//            make.leading.trailing.equalToSuperview()
         }
         
         sortTextLabel.snp.makeConstraints { make in
@@ -198,9 +192,6 @@ public class NormalTextViewController: UIViewController {
         
         thirdblurView.snp.makeConstraints { make in
             make.edges.equalTo(sortTextLabel)
-//            make.top.equalTo(sortTextLabel).inset(-DynamicPadding.dynamicValue(15))
-//            make.bottom.equalTo(sortTextLabel).offset(DynamicPadding.dynamicValue(15))
-//            make.leading.trailing.equalToSuperview()
         }
         
         nextButton.snp.makeConstraints { make in
