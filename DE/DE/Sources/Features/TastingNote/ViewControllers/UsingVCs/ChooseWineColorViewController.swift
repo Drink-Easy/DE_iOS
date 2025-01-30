@@ -24,10 +24,6 @@ public class ChooseWineColorViewController: UIViewController {
         colorView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         colorView.infoView.kindContents.text = wineData.sort
         colorView.infoView.typeContents.text = wineData.variety
-//        colorView.header.setTitleLabel("디자인 테스트")
-//        colorView.infoView.countryContents.text = "디자인" + ", " + "테스트"
-//        colorView.infoView.kindContents.text = "테스트"
-//        colorView.infoView.typeContents.text = "테스트"
     }
     
     public override func viewDidLoad() {
@@ -47,8 +43,8 @@ public class ChooseWineColorViewController: UIViewController {
     func setConstraints() {
         view.addSubview(colorView)
         colorView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
             make.bottom.equalToSuperview()
         }
     }

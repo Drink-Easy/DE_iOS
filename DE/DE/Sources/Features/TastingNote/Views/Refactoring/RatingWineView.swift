@@ -122,12 +122,12 @@ class RatingWineView: UIView {
         }
         
         infoView.snp.makeConstraints { make in
-            make.top.equalTo(header.snp.bottom).offset(20) // TODO : 동적 기기 대응
+            make.top.equalTo(header.snp.bottom).offset(DynamicPadding.dynamicValue(20))
             make.leading.trailing.equalToSuperview()
         }
         
         ratingHeader.snp.makeConstraints { make in
-            make.top.equalTo(infoView.snp.bottom).offset(50) // TODO : 동적 기기 대응
+            make.top.equalTo(infoView.snp.bottom).offset(DynamicPadding.dynamicValue(50)) // TODO : 동적 기기 대응
             make.leading.trailing.equalToSuperview()
             make.height.greaterThanOrEqualTo(30)
         }
@@ -144,19 +144,19 @@ class RatingWineView: UIView {
         }
         
         ratingBody.snp.makeConstraints { make in
-            make.top.equalTo(ratingHeader.snp.bottom).offset(24) // TODO : 동적 기기 대응
+            make.top.equalTo(ratingHeader.snp.bottom).offset(DynamicPadding.dynamicValue(24))
             make.leading.equalTo(ratingHeader.snp.leading)
             make.trailing.equalTo(ratingHeader.snp.trailing)
         }
         
         reviewHeader.snp.makeConstraints { make in
-            make.top.equalTo(ratingBody.snp.bottom).offset(60) // TODO : 동적 기기 대응
+            make.top.equalTo(ratingBody.snp.bottom).offset(DynamicPadding.dynamicValue(60))
             make.leading.trailing.equalToSuperview()
             make.height.greaterThanOrEqualTo(30)
         }
         
         reviewBody.snp.makeConstraints { make in
-            make.top.equalTo(reviewHeader.snp.bottom).offset(24)
+            make.top.equalTo(reviewHeader.snp.bottom).offset(DynamicPadding.dynamicValue(24))
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(180) // 웬만하면 고정. 버튼 영역 침범 안되도록
         }

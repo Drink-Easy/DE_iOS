@@ -44,7 +44,7 @@ class MyNoteTopView: UIView {
         }
         
         infoView.snp.makeConstraints { make in
-            make.top.equalTo(header.snp.bottom).offset(20) // TODO : 동적 기기 대응
+            make.top.equalTo(header.snp.bottom).offset(DynamicPadding.dynamicValue(20))
             make.leading.trailing.equalToSuperview()
         }
     }

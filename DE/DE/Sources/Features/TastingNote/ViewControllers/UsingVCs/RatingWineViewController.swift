@@ -20,14 +20,10 @@ public class RatingWineViewController: UIViewController {
         super.viewWillAppear(animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
            NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
-//        rView.header.setTitleLabel(wineData.wineName)
-//        rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
-//        rView.infoView.kindContents.text = wineData.sort
-//        rView.infoView.typeContents.text = wineData.variety
-        rView.header.setTitleLabel("디자인 테스트")
-        rView.infoView.countryContents.text = "디자인" + ", " + "테스트"
-        rView.infoView.kindContents.text = "테스트"
-        rView.infoView.typeContents.text = "테스트"
+        rView.header.setTitleLabel(wineData.wineName)
+        rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
+        rView.infoView.kindContents.text = wineData.sort
+        rView.infoView.typeContents.text = wineData.variety
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -62,8 +58,8 @@ public class RatingWineViewController: UIViewController {
     func setConstraints() {
         view.addSubview(rView)
         rView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(10)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
             make.bottom.equalToSuperview()
         }
     }
