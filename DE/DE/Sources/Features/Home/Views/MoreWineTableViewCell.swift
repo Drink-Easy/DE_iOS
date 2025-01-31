@@ -13,14 +13,16 @@ class MoreWineTableViewCell: UITableViewCell {
     private lazy var imageBackground = UIView().then {
         $0.layer.cornerRadius = 5
         $0.layer.masksToBounds = true
-        $0.backgroundColor = UIColor(hex: "#2f2f2f")
+        $0.backgroundColor = AppColor.winebg
+        $0.layer.borderColor = UIColor.clear.cgColor
     }
     
     private lazy var image = UIImageView().then {
         $0.image = UIImage(named: "스파클링")
         $0.contentMode = .scaleAspectFit
-        $0.layer.cornerRadius = 6
+        $0.layer.cornerRadius = 5
         $0.layer.masksToBounds = true
+        $0.layer.borderColor = UIColor.clear.cgColor
     }
     
     private lazy var name = UILabel().then {

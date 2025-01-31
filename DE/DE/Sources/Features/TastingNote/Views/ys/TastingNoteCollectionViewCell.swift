@@ -8,11 +8,12 @@ import Then
 import CoreModule
 
 class TastingNoteCollectionViewCell: UICollectionViewCell {
-    
+
     public lazy var image = UIImageView().then { i in
         i.contentMode = .scaleAspectFit
         i.layer.cornerRadius = 8
         i.layer.masksToBounds = true
+        i.layer.frame.inset(by: UIEdgeInsets(top: 50.0, left: 0, bottom: 50.0, right: 0))
         i.backgroundColor = AppColor.winebg
     }
     

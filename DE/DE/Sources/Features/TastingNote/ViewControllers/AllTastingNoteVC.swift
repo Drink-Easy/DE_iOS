@@ -5,6 +5,7 @@ import UIKit
 import CoreModule
 import Network
 
+//테이스팅노트 메인 노트 보관함 뷰
 public class AllTastingNoteVC: UIViewController, WineSortDelegate {
     
     private let networkService = TastingNoteService()
@@ -13,6 +14,19 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate {
     private var currentTastingNoteList: [TastingNotePreviewResponseDTO] = [] // 필터링된 데이터
     
     private let tastingNoteView = AllTastingNoteView()
+    
+    let floatingButton = UIButton(type: .system).then {
+        $0.setImage(UIImage(named: "pencil"), for: .normal)
+        $0.tintColor = .white
+        $0.backgroundColor = AppColor.purple70
+        $0.layer.cornerRadius = DynamicPadding.dynamicValue(25.0)
+        
+        $0.layer.shadowColor = UIColor.black.cgColor
+        $0.layer.shadowOpacity = 0.1
+        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
+        $0.layer.shadowRadius = 8
+        $0.layer.masksToBounds = false
+    }
     
     // MARK: - Life Cycle
     public override func viewWillAppear(_ animated: Bool) {
@@ -39,7 +53,7 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate {
         self.setupUI()
         setupCollectionView()
         tastingNoteView.searchButton.addTarget(self, action: #selector(noteSearchTapped), for: .touchUpInside)
-        tastingNoteView.floatingButton.addTarget(self, action: #selector(newNoteTapped), for: .touchUpInside)
+        floatingButton.addTarget(self, action: #selector(newNoteTapped), for: .touchUpInside)
         
     }
     
@@ -47,9 +61,15 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate {
     private func setupUI() {
         tastingNoteView.wineImageStackView.delegate = self
         view.addSubview(tastingNoteView)
+        view.addSubview(floatingButton)
         tastingNoteView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(12)
             make.leading.trailing.bottom.equalToSuperview()
+        }
+        floatingButton.snp.makeConstraints {
+            $0.width.height.equalTo(DynamicPadding.dynamicValue(50.0))
+            $0.trailing.equalToSuperview().inset(16)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(16)
         }
     }
     private func setupCollectionView() {
@@ -117,7 +137,7 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate {
     
     //MARK: Setup Actions
     @objc func newNoteTapped(){
-        let newVC = WineTastingNoteVC()
+        let newVC = SearchWineViewController()
         navigationController?.pushViewController(newVC, animated: true)
     }
     

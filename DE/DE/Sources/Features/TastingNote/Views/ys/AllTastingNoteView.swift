@@ -15,6 +15,7 @@ class AllTastingNoteView: UIView {
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 22)
         $0.textColor = AppColor.black
     }
+    //TODO: 내 노트 검색
     let searchButton = UIButton().then {
         $0.setImage(UIImage(systemName: "magnifyingglass")?.withTintColor(AppColor.gray80 ?? .black, renderingMode: .alwaysOriginal), for: .normal)
         $0.contentMode = .scaleAspectFill
@@ -45,18 +46,6 @@ class AllTastingNoteView: UIView {
         $0.backgroundColor = .clear
         $0.register(TastingNoteCollectionViewCell.self, forCellWithReuseIdentifier: "TastingNoteCollectionViewCell")
     }
-    let floatingButton = UIButton(type: .system).then {
-        $0.setImage(UIImage(named: "pencil"), for: .normal)
-        $0.tintColor = .white
-        $0.backgroundColor = AppColor.purple70
-        $0.layer.cornerRadius = DynamicPadding.dynamicValue(25.0)
-        
-        $0.layer.shadowColor = UIColor.black.cgColor
-        $0.layer.shadowOpacity = 0.1
-        $0.layer.shadowOffset = CGSize(width: 0, height: 4)
-        $0.layer.shadowRadius = 8
-        $0.layer.masksToBounds = false
-    }
     
     // MARK: - Initializer
     override init(frame: CGRect) {
@@ -71,7 +60,7 @@ class AllTastingNoteView: UIView {
     
     // MARK: - Setup Methods
     private func setupUI() {
-        [titleLabel, searchButton, topDividerView, wineImageStackView, tnLabel, TastingNoteCollectionView, floatingButton].forEach {
+        [titleLabel, /*searchButton,*/ topDividerView, wineImageStackView, tnLabel, TastingNoteCollectionView].forEach {
             addSubview($0)
         }
     }
@@ -81,13 +70,13 @@ class AllTastingNoteView: UIView {
             $0.top.equalToSuperview()
             $0.leading.equalTo(safeAreaLayoutGuide).inset(16)
         }
-        searchButton.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.trailing.equalTo(safeAreaLayoutGuide).inset(16)
-            $0.size.equalTo(25)
-        }
+//        searchButton.snp.makeConstraints {
+//            $0.top.equalToSuperview()
+//            $0.trailing.equalTo(safeAreaLayoutGuide).inset(16)
+//            $0.size.equalTo(25)
+//        }
         topDividerView.snp.makeConstraints {
-            $0.top.equalTo(searchButton.snp.bottom).offset(8)
+            $0.top.equalTo(titleLabel.snp.bottom).offset(8)
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.height.equalTo(2)
         }
@@ -103,11 +92,6 @@ class AllTastingNoteView: UIView {
             $0.top.equalTo(tnLabel.snp.bottom).offset(16)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
-        }
-        floatingButton.snp.makeConstraints {
-            $0.width.height.equalTo(DynamicPadding.dynamicValue(50.0))
-            $0.trailing.equalToSuperview().inset(16)
-            $0.bottom.equalTo(safeAreaLayoutGuide).inset(16)
         }
     }
 }

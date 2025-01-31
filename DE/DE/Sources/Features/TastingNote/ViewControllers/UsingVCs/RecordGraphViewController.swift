@@ -6,7 +6,8 @@ import Then
 
 import CoreModule
 
-//// 테이스팅 노트 만들기 4/5
+// 4번 선택 뷰컨 테이스팅 노트 : 팔레트 선택
+
 public class RecordGraphViewController: UIViewController {
     
     let navigationBarManager = NavigationBarManager()

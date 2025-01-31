@@ -9,7 +9,7 @@ import Then
 import CoreModule
 import Network
 
-// 테이스팅노트 보기 뷰
+// 테이스팅노트 상세 보기 뷰
 public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScrollViewDelegate {
     
     let navigationBarManager = NavigationBarManager()
