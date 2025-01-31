@@ -37,11 +37,9 @@ class PolygonChartView: UIView {
         addSubview(hostingController.view)  // 차트 뷰 추가
         
         hostingController.view.snp.makeConstraints { make in
-            make.height.equalTo(330)
             make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(16)
             make.bottom.equalToSuperview().offset(-16) // 아래 여백
         }
     }
-    
 }
