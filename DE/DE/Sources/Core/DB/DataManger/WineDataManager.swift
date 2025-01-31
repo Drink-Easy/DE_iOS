@@ -155,16 +155,12 @@ extension WineDataManagerError: LocalizedError {
         switch self {
         case .userNotFound(let userId):
             return "🚨 [오류] ID가 \(userId)인 사용자를 찾을 수 없습니다."
-            
         case .recommendListNotFound:
             return "🚨 [오류] 추천 와인 리스트를 찾을 수 없습니다."
-            
         case .recommendListExpired:
             return "🚨 [오류] 추천 와인 리스트가 만료되었습니다. 새 데이터를 요청하세요."
-            
         case .saveFailed(let reason):
             return "🚨 [오류] 데이터를 저장하는데 실패하였습니다. 원인: \(reason)"
-            
         case .deleteFailed(let reason):
             return "🚨 [오류] 데이터를 삭제하는데 실패하였습니다. 원인: \(reason)"
         }

@@ -112,8 +112,8 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         self.navigationController?.isNavigationBarHidden = true
         
         setAdBanner()
-        fetchWines(type: .recommended)
-        fetchWines(type: .popular) // 인기 와인
+        fetchWines(isRecommend: true) // 추천 와인
+        fetchWines(isRecommend: false) // 인기 와인
         fetchName()
     }
     
@@ -154,23 +154,23 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         }
         
         likeWineListView.snp.makeConstraints {
-            $0.top.equalTo(adCollectionView.snp.bottom).offset(24)
+            $0.top.equalTo(adCollectionView.snp.bottom).offset(DynamicPadding.dynamicValue(24))
             $0.horizontalEdges.equalToSuperview()
         }
         
         popularWineListView.snp.makeConstraints {
-            $0.top.equalTo(likeWineListView.snp.bottom).offset(24)
+            $0.top.equalTo(likeWineListView.snp.bottom).offset(DynamicPadding.dynamicValue(24))
             $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
     }
     
     // MARK: - 컬렉션뷰 업데이트 함수
-    func updateCollectionView(type: WineListType, with wines: [WineData]) {
+    func updateCollectionView(isRecommend : Bool, with wines: [WineData]) {
         let maxDisplayCount = 5
         let homeWineModels = toHomeWineModels(Array(wines.prefix(maxDisplayCount)))
         
-        if type == .recommended {
+        if isRecommend {
             recommendWineDataList = homeWineModels
             likeWineListView.recomCollectionView.reloadData()
         } else { // 인기 와인인 경우
@@ -195,29 +195,30 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         return wines.map { toHomeWineModel($0) }
     }
     
-    func fetchWines(type: WineListType) {
+    func fetchWines(isRecommend : Bool) {
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+            print("⚠️ userId가 UserDefaults에 없습니다.")
+            return
+        }
+        self.userId = userId
         Task {
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("⚠️ userId가 UserDefaults에 없습니다.")
-                return
-            }
-            self.userId = userId
             do {
-                if type == .recommended {
+                if isRecommend {
                     // 1. 캐시 데이터 우선 사용
-                    let cachedWines = try await WineDataManager.shared.fetchWineDataList(userId: userId, wineListType: type)
+                    let cachedWines = try WineDataManager.shared.fetchWineDataList(userId: userId)
+                    
                     if !cachedWines.isEmpty {
-                        print("✅ 캐시된 \(type.rawValue) 데이터 사용: \(cachedWines.count)개")
-                        updateCollectionView(type: type, with: cachedWines) // 👉 바로 업데이트
+                        print("✅ 캐시된 추천와인 데이터 사용: \(cachedWines.count)개")
                         return
                     }
+                    self.updateCollectionView(isRecommend: isRecommend, with: cachedWines)
                 } else { // 인기 와인은 따로 처리
                     let cachedWines = try PopularWineManager.shared.fetchWineDataList()
                     if !cachedWines.isEmpty {
-                        print("✅ 캐시된 \(type.rawValue) 데이터 사용: \(cachedWines.count)개")
-                        updateCollectionView(type: type, with: cachedWines) // 👉 바로 업데이트
+                        print("✅ 캐시된 인기와인 데이터 사용: \(cachedWines.count)개")
                         return
                     }
+                    self.updateCollectionView(isRecommend: isRecommend, with: cachedWines)
                 }
             } catch {
                 print("⚠️ 캐시된 데이터 없음")
@@ -225,7 +226,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
             
             // 2. 캐시 데이터가 없으면 네트워크 요청
             print("🌐 네트워크 요청 시작")
-            await fetchWinesFromNetwork(type: type)
+            await fetchWinesFromNetwork(isRecommend)
         }
     }
 
@@ -273,10 +274,10 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         return response.bannerResponseList
     }
     
-    private func fetchWinesFromNetwork(type: WineListType) async {
+    private func fetchWinesFromNetwork(_ isRecommend: Bool) async {
         let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
         
-        if type == .recommended {
+        if isRecommend {
             fetchFunction = networkService.fetchRecommendWines
         } else { // 인기 와인인 경우
             fetchFunction = networkService.fetchPopularWines
@@ -289,7 +290,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                 switch result {
                 case .success(let responseData):
                     Task {
-                        await self.processWineData(type: type, responseData: responseData.0, time: responseData.1 ?? 3600)
+                        await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
                         continuation.resume()
                     }
                 case .failure(let error):
@@ -300,7 +301,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         }
     }
     
-    private func processWineData(type: WineListType, responseData: [HomeWineDTO], time: TimeInterval) async {
+    private func processWineData(_ isRecommend: Bool, responseData: [HomeWineDTO], time: TimeInterval) async {
         let wines = responseData.map {
             WineData(wineId: $0.wineId,
                      imageUrl: $0.imageUrl,
@@ -315,14 +316,15 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
-            if type == .recommended {
-                try WineDataManager.shared.saveWineData(userId: userId, wineListType: type, wineData: wines, expirationInterval: time)
-                print("✅ \(type.rawValue) 저장 완료: \(wines.count)개")
+            if isRecommend {
+                try WineDataManager.shared.saveWineData(userId: userId, wineData: wines, expirationInterval: time)
+                print("✅ 추천 와인 저장 완료: \(wines.count)개")
+                
             } else { // 인기 와인은 다른 데이터 매니저 사용
                 try PopularWineManager.shared.saveWineData(wineData: wines, expirationInterval: time)
                 print("인기 와인 저장 완료: \(wines.count)개")
             }
-            updateCollectionView(type: type, with: wines)
+            updateCollectionView(isRecommend: isRecommend, with: wines)
         } catch {
             print("❌ 데이터 저장 중 오류 발생: \(error)")
         }
