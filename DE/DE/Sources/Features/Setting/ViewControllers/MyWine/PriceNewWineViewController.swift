@@ -19,6 +19,7 @@ class PriceNewWineViewController: UIViewController {
 
         setupUI()
         setupNavigationBar()
+        setupActions()
     }
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -31,6 +32,7 @@ class PriceNewWineViewController: UIViewController {
     }
     
     func setupUI() {
+        view.backgroundColor = AppColor.bgGray
         priceNewWineView.setWineName(MyOwnedWineManager.shared.getWineName())
         
         view.addSubview(priceNewWineView)
@@ -52,7 +54,7 @@ class PriceNewWineViewController: UIViewController {
     
     func setupActions() {
         priceNewWineView.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
-        priceNewWineView.priceTextField.textField.addTarget(self, action: #selector(checkEmpty), for: .editingChanged)
+        priceNewWineView.priceTextField.textField.addTarget(self, action: #selector(checkEmpty), for: .allEditingEvents)
     }
     
     @objc func nextVC() {
@@ -98,11 +100,15 @@ class PriceNewWineViewController: UIViewController {
     }
     
     @objc func checkEmpty() {
-        if ((self.priceNewWineView.priceTextField.text?.isEmpty) != nil) || self.priceNewWineView.priceTextField.text == "" {
+        guard let text = self.priceNewWineView.priceTextField.text else {
+            priceNewWineView.nextButton.isEnabled(isEnabled: false)
+            return
+        }
+
+        if text.isEmpty || text == "" {
             priceNewWineView.nextButton.isEnabled(isEnabled: false)
         } else {
             priceNewWineView.nextButton.isEnabled(isEnabled: true)
         }
     }
-
 }

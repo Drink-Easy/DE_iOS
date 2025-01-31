@@ -35,12 +35,11 @@ class MyOwnedWineViewController: UIViewController {
         setupNavigationBar()
         addComponents()
         setConstraints()
-        
-        CheckCacheData()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        CheckCacheData()
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -141,6 +140,7 @@ class MyOwnedWineViewController: UIViewController {
             // 🔥 캐시 저장 & 콜카운트 초기화
             do {
                 try await MyWineListDataManager.shared.createSavedWineListIfNeeded(for: userId, with: savedList, date: Date())
+                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
                 try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .myWine)
             } catch {
                 print("⚠️ 캐시 데이터 저장 실패: \(error)")

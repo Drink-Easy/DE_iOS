@@ -8,111 +8,161 @@ public final class WineDataManager {
     
     private init() {} // 싱글톤
     
-    /// 와인 데이터를 저장하는 메서드
+    // MARK: - Public Methods
+    
+    /// ✅ 추천 와인 데이터를 저장하는 메서드 (없으면 생성, 있으면 업데이트)
+    /// - Parameters:
+    ///   - userId: 와인을 저장할 사용자 ID
+    ///   - wineData: 저장할 와인 데이터 리스트
+    ///   - expirationInterval: 데이터 유효 기간 (초 단위)
+    /// - Throws: 데이터 저장 실패 시 예외 발생
     @MainActor
-    public func saveWineData(userId: Int, wineListType: WineListType, wineData: [WineData], expirationInterval: TimeInterval) throws {
+    public func saveWineData(userId: Int, wineData: [WineData], expirationInterval: TimeInterval) throws {
         let context = UserDataManager.shared.container.mainContext
-
-        // 1. 사용자 확인
+        
+        // ✅ 1. 사용자 확인
         let user = try UserDataManager.shared.fetchUser(userId: userId)
         
-        do {
-            let wineList = try fetchWineList(for: userId, type: wineListType, in: context)
-            wineList.wines.removeAll()
-            wineList.wines.append(contentsOf: wineData)
-            wineList.timestamp = Date().addingTimeInterval(expirationInterval)
-        } catch WineDataManagerError.wineListNotFound {
-            let newWineList = WineList(
-                type: wineListType,
-                wines: wineData,
-                timestamp: Date().addingTimeInterval(expirationInterval),
-                user: user
-            )
-            context.insert(newWineList)
-        }
+        // ✅ 2. 추천 와인 리스트 가져오거나 새로 생성
+        let wineList = try fetchOrCreateWineList(for: userId, in: context)
         
-        try context.save()
-        print("✅ 와인 데이터 저장 완료!")
+        // ✅ 3. 데이터 업데이트
+        wineList.wines = wineData
+        wineList.timestamp = Date().addingTimeInterval(expirationInterval)
+        
+        // ✅ 4. 저장
+        do {
+            try context.save()
+            print("✅ 추천 와인 데이터 저장 완료! (유저: \(userId), 와인 개수: \(wineData.count))")
+        } catch {
+            throw WineDataManagerError.saveFailed(reason: error.localizedDescription)
+        }
     }
-    
-    /// 와인 데이터 불러오기
+
+    /// ✅ 추천 와인 데이터를 가져오는 메서드 (만료된 데이터는 자동 삭제)
+    /// - Parameter userId: 데이터를 가져올 사용자 ID
+    /// - Returns: 저장된 와인 데이터 리스트
+    /// - Throws: 데이터 불러오기 실패 시 예외 발생
     @MainActor
-    public func fetchWineDataList(userId: Int, wineListType: WineListType) throws -> [WineData] {
+    public func fetchWineDataList(userId: Int) throws -> [WineData] {
         let context = UserDataManager.shared.container.mainContext
         
-        // ✅ 1. 유효 기간이 지난 데이터 삭제 (userId 추가)
-        deleteExpiredWineData(userId: userId)
+        // ✅ 1. 데이터가 만료되었는지 확인 후 삭제
+        let user = try UserDataManager.shared.fetchUser(userId: userId)
+        if try isWineDataExpired(by: user, in: context) {
+            try deleteExpiredWineData(userId: userId)
+            throw WineDataManagerError.recommendListExpired
+        }
         
-        // ✅ 2. 해당 userId와 wineListType에 맞는 WineList 검색
-        let wineList = try fetchWineList(for: userId, type: wineListType, in: context)
+        // ✅ 2. 추천 와인 리스트 가져오기
+        guard let wineList = user.recommendWineList else {
+            throw WineDataManagerError.recommendListNotFound
+        }
         
-        // ✅ 3. 와인 데이터를 반환
         return wineList.wines
     }
     
-    /// 만료된 와인 데이터 삭제하기
+    /// ✅ 만료된 추천 와인 데이터 삭제
+    /// - Parameter userId: 삭제할 사용자 ID
+    /// - Throws: 삭제 실패 시 예외 발생
     @MainActor
-    public func deleteExpiredWineData(userId: Int) {
+    public func deleteExpiredWineData(userId: Int) throws {
         let context = UserDataManager.shared.container.mainContext
-        let currentDate = Date()
-
-        do {
-            let user = try UserDataManager.shared.fetchUser(userId: userId)
-
-            // ✅ 해당 user의 만료된 WineList 필터링
-            let expiredWineLists = user.wines.filter { $0.timestamp < currentDate }
-
-            // ✅ 만료된 WineList 삭제
-            for wineList in expiredWineLists {
-                context.delete(wineList)
-            }
-
-            // ✅ 변경사항 저장
-            if !expiredWineLists.isEmpty {
+        let user = try UserDataManager.shared.fetchUser(userId: userId)
+        
+        guard let wineList = user.recommendWineList else {
+            print("⚠️ 삭제할 추천 와인 리스트가 없음 (유저: \(userId))")
+            return
+        }
+        
+        // ✅ 1. 만료된 데이터 확인 후 삭제 진행
+        if wineList.timestamp < Date() {
+            context.delete(wineList)
+            user.recommendWineList = nil
+            
+            // ✅ 2. 변경 사항 저장 (안전하게 처리)
+            do {
                 try context.save()
-                print("✅ 만료된 와인 데이터가 삭제되었습니다: \(expiredWineLists.count)개")
-            } else {
-                print("⚠️ 삭제할 만료된 와인 데이터가 없습니다.")
+                print("✅ 만료된 추천 와인 리스트 삭제 완료 (유저: \(userId))")
+            } catch {
+                print("❌ 추천 와인 리스트 삭제 중 오류 발생: \(error.localizedDescription)")
+                throw WineDataManagerError.deleteFailed(reason: error.localizedDescription)
             }
-        } catch let error as UserDataManagerError {
-            print("❌ 유저 데이터 로드 실패: \(error.localizedDescription)")
-        } catch {
-            print("❌ 알 수 없는 오류 발생: \(error.localizedDescription)")
+        } else {
+            print("⚠️ 삭제할 만료된 데이터가 없음 (유저: \(userId))")
         }
     }
     
     // MARK: - 내부 함수
-    
-    /// 사용자 검색
-    private func fetchUser(by userId: Int, in context: ModelContext) throws -> UserData {
-        let descriptor = FetchDescriptor<UserData>(predicate: #Predicate { $0.userId == userId })
-        let users = try context.fetch(descriptor)
-        
-        guard let user = users.first else {
-            throw WineDataManagerError.userNotFound
+    /// ✅ 추천 와인 리스트가 만료되었는지 확인
+    /// - Parameters:
+    ///   - userData: 확인할 사용자 데이터
+    ///   - context: SwiftData 컨텍스트
+    /// - Returns: 만료 여부 (`true`: 만료됨, `false`: 유효함)
+    /// - Throws: 데이터 오류 발생 시 예외 처리
+    private func isWineDataExpired(by userData: UserData, in context: ModelContext) throws -> Bool {
+        guard let wineList = userData.recommendWineList else {
+            return true // 데이터가 없으면 만료된 것으로 간주
         }
         
-        return user
+        return wineList.timestamp < Date()
     }
     
-    /// WineList의 와인 목록 가져오기
+    /// ✅ 추천 와인 리스트 가져오기 (없으면 생성)
+    /// - Parameters:
+    ///   - userId: 사용자 ID
+    ///   - context: SwiftData 컨텍스트
+    /// - Returns: 추천 와인 리스트 (`RecommendWineList`)
+    /// - Throws: 데이터 오류 발생 시 예외 처리
     @MainActor
-    private func fetchWineList(for userId: Int, type: WineListType, in context: ModelContext) throws -> WineList {
-        // ✅ 1. user 가져오기
+    private func fetchOrCreateWineList(for userId: Int, in context: ModelContext) throws -> RecommendWineList {
         let user = try UserDataManager.shared.fetchUser(userId: userId)
-
-        // ✅ 2. user.wines에서 type이 일치하는 WineList 찾기
-        guard let wineList = user.wines.first(where: { $0.type == type.rawValue }) else {
-            throw WineDataManagerError.wineListNotFound
+        
+        // ✅ 추천 와인 리스트가 존재하는 경우 반환
+        if let existingList = user.recommendWineList {
+            return existingList
         }
-
-        return wineList
+        
+        // ✅ 없으면 새로 생성
+        let newWineList = RecommendWineList(wines: [], timestamp: Date(), user: user)
+        context.insert(newWineList)
+        user.recommendWineList = newWineList
+        
+        return newWineList
     }
     
 }
 
 // MARK: - 에러 정의
+
+/// WineDataManager 관련 오류 정의
 public enum WineDataManagerError: Error {
-    case userNotFound
-    case wineListNotFound
+    /// 사용자를 찾을 수 없음
+    case userNotFound(userId: Int)
+    /// 추천 와인 리스트를 찾을 수 없음
+    case recommendListNotFound
+    /// 추천 와인 리스트가 만료됨
+    case recommendListExpired
+    /// 데이터 저장 실패
+    case saveFailed(reason: String)
+    case deleteFailed(reason: String)
+}
+
+// MARK: - 에러 메시지 추가
+
+extension WineDataManagerError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .userNotFound(let userId):
+            return "🚨 [오류] ID가 \(userId)인 사용자를 찾을 수 없습니다."
+        case .recommendListNotFound:
+            return "🚨 [오류] 추천 와인 리스트를 찾을 수 없습니다."
+        case .recommendListExpired:
+            return "🚨 [오류] 추천 와인 리스트가 만료되었습니다. 새 데이터를 요청하세요."
+        case .saveFailed(let reason):
+            return "🚨 [오류] 데이터를 저장하는데 실패하였습니다. 원인: \(reason)"
+        case .deleteFailed(let reason):
+            return "🚨 [오류] 데이터를 삭제하는데 실패하였습니다. 원인: \(reason)"
+        }
+    }
 }

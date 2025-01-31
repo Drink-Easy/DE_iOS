@@ -3,11 +3,6 @@
 import Foundation
 import SwiftData
 
-public enum WineListType: String, Codable {
-    case recommended = "recommended"
-    case popular = "popular"
-}
-
 /// 와인 데이터 모델
 @Model
 public class WineData {
@@ -43,14 +38,12 @@ public class WineData {
 }
 
 @Model
-public class WineList {
-    @Attribute public var type: String
+public class RecommendWineList {
     @Relationship var wines: [WineData] = []
     @Attribute var timestamp: Date
-    @Relationship var user: UserData
+    @Relationship var user: UserData?
 
-    init(type: WineListType, wines: [WineData], timestamp: Date, user: UserData) {
-        self.type = type.rawValue
+    init(wines: [WineData], timestamp: Date, user: UserData? = nil) {
         self.wines = wines
         self.timestamp = timestamp
         self.user = user
