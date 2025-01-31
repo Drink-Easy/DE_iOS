@@ -1,8 +1,18 @@
 {
   "images" : [
     {
-      "filename" : "whiteImage.pdf",
-      "idiom" : "universal"
+      "filename" : "whiteImage.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "whiteImage 2.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {

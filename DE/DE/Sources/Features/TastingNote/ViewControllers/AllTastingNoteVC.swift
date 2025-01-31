@@ -138,6 +138,7 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate {
     //MARK: Setup Actions
     @objc func newNoteTapped(){
         let newVC = SearchWineViewController()
+        newVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(newVC, animated: true)
     }
     

@@ -21,6 +21,7 @@ public class ChooseWineColorViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         colorView.header.setTitleLabel(wineData.wineName)
+        colorView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         colorView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         colorView.infoView.kindContents.text = wineData.sort
         colorView.infoView.typeContents.text = wineData.variety
@@ -72,7 +73,7 @@ public class ChooseWineColorViewController: UIViewController {
         }
         
         tnManger.saveColor(selectedColor)
-        let nextVC = ChooseNoseViewController()
+        let nextVC = NoseTestVC()
         navigationController?.pushViewController(nextVC, animated: true)
     }
     

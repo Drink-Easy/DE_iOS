@@ -11,6 +11,7 @@ import CoreModule
 public class RecordGraphViewController: UIViewController {
     
     let navigationBarManager = NavigationBarManager()
+    let wineData = TNWineDataManager.shared
     let tnManager = NewTastingNoteManager.shared
     
     private var sliderValues: [String: Int] = [:]
@@ -37,6 +38,7 @@ public class RecordGraphViewController: UIViewController {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         recordGraphView.updateLabels()
+        header.setTitleLabel(wineData.wineName)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -49,6 +51,7 @@ public class RecordGraphViewController: UIViewController {
         setupUI()
         setupActions()
         setupNavigationBar()
+        setNavBarAppearance(navigationController: self.navigationController)
         saveSliderValues()
     }
     
@@ -73,12 +76,12 @@ public class RecordGraphViewController: UIViewController {
         
         header.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.equalToSuperview().inset(24)
+            make.leading.trailing.equalToSuperview().inset(24)
             make.height.greaterThanOrEqualTo(62)
         }
         
         recordGraphView.snp.makeConstraints { make in
-            make.top.equalTo(header.snp.bottom)
+            make.top.equalTo(header.snp.bottom).offset(24)
             make.leading.trailing.equalToSuperview().inset(24)
             make.height.equalTo(Constants.superViewHeight)
         }

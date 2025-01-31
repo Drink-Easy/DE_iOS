@@ -12,17 +12,19 @@ public class RatingWineViewController: UIViewController {
     private var ratingValue: Double = 2.5
     let navigationBarManager = NavigationBarManager()
     
-    let noteService = TastingNoteService()
-    let tnManger = NewTastingNoteManager.shared
+    let networkService = TastingNoteService()
+    let tnManager = NewTastingNoteManager.shared
     let wineData = TNWineDataManager.shared
     
     let textViewPlaceHolder = "추가로 기록하고 싶은 내용을 작성해 보세요!"
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
            NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
         rView.header.setTitleLabel(wineData.wineName)
+        rView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         rView.infoView.kindContents.text = wineData.sort
         rView.infoView.typeContents.text = wineData.variety
@@ -30,6 +32,7 @@ public class RatingWineViewController: UIViewController {
     
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
@@ -106,7 +109,27 @@ public class RatingWineViewController: UIViewController {
     }
     
     @objc func nextVC() {
-        // Call post api
+        guard let reviewString = rView.reviewBody.text else {
+            print("작성된 리뷰가 없습니다.")
+            return
+        }
+        tnManager.saveRating(ratingValue)
+        tnManager.saveReview(reviewString)
+        Task {
+            do {
+                try await postCreateTastingNote()
+                
+            } catch {
+                print("Error: \(error)")
+                // Alert 표시 등 추가
+            }
+        }
+    }
+    
+    private func postCreateTastingNote() async throws {
+        let createNoteDTO = networkService.makePostNoteDTO(wineId: wineData.wineId, color: tnManager.color, tasteDate: tnManager.tasteDate, sugarContent: tnManager.sugarContent, acidity: tnManager.acidity, tannin: tnManager.tannin, body: tnManager.body, alcohol: tnManager.alcohol, nose: tnManager.nose, rating: tnManager.rating, review: tnManager.review)
+        
+        let data = try await networkService.postNote(data: createNoteDTO)
     }
     
     @objc func keyboardDown() {

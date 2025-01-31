@@ -7,6 +7,9 @@ import CoreModule
 
 public class NoseTestVC: UIViewController {
     
+    let wineData = TNWineDataManager.shared
+    let tnManager = NewTastingNoteManager.shared
+    
     let scrollView = UIScrollView().then {
         $0.backgroundColor = .clear
         $0.showsVerticalScrollIndicator = false
@@ -21,6 +24,11 @@ public class NoseTestVC: UIViewController {
 //    let middleView = OnlyScrollView()
     let navigationBarManager = NavigationBarManager()
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        topView.header.setTitleLabel(wineData.wineName)
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
@@ -31,7 +39,6 @@ public class NoseTestVC: UIViewController {
     }
     
     private func setupUI() {
-        topView.header.setTitleLabel("아무와인이나넣어")
         topView.propertyHeader.setName(eng: "Nose", kor: "향")
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
@@ -55,7 +62,7 @@ public class NoseTestVC: UIViewController {
         let collectionViewContentHeight = self.middleView.noseCollectionView.collectionViewLayout.collectionViewContentSize.height
         
         middleView.snp.makeConstraints { make in
-            make.top.equalTo(topView.snp.bottom).offset(DynamicPadding.dynamicValue(24.0))
+            make.top.equalTo(topView.snp.bottom)
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
             make.height.greaterThanOrEqualTo(collectionViewContentHeight + DynamicPadding.dynamicValue(140.0)) // *110.0
             make.bottom.equalToSuperview()
@@ -97,8 +104,10 @@ public class NoseTestVC: UIViewController {
     }
     
     @objc func nextVC() {
-        print(NoseManager.shared.selectedScents)
-        
+        let scents = NoseManager.shared.selectedScents
+
+        let scentNames = scents.map { $0.name }
+        tnManager.saveNose(scentNames)
         let nextVC = RecordGraphViewController()
         navigationController?.pushViewController(nextVC, animated: true)
     }

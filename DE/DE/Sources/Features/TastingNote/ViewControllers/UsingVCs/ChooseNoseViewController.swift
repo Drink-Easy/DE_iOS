@@ -19,6 +19,11 @@ public class ChooseNoseViewController: UIViewController {
 
     let wineName = UserDefaults.standard.string(forKey: "wineName")
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.gray20
@@ -26,6 +31,7 @@ public class ChooseNoseViewController: UIViewController {
         setupCollectionView() // CollectionView 설정
         setupActions()
         setupNavigationBar()
+        setNavBarAppearance(navigationController: self.navigationController)
         chooseNoseView.updateUI(wineName: wineName ?? "")
     }
     
@@ -81,7 +87,6 @@ public class ChooseNoseViewController: UIViewController {
         }
         
         let nextVC = RecordGraphViewController()
-        nextVC.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(nextVC, animated: true)
     }
 }

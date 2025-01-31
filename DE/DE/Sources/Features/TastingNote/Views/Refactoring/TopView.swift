@@ -69,7 +69,7 @@ class TopView: UIView {
         
         title.snp.makeConstraints {
             $0.top.equalTo(page.snp.bottom).offset(4)
-            $0.leading.equalToSuperview()
+            $0.leading.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
     }
