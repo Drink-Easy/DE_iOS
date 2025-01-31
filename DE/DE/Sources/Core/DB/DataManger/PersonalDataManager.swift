@@ -99,8 +99,10 @@ public final class PersonalDataManager {
         let context = UserDataManager.shared.container.mainContext
 
         let user = try UserDataManager.shared.fetchUser(userId: userId)
+        
         guard let personalData = user.userInfo else {
-            throw PersonalDataError.personalDataNotFound
+            try await createPersonalData(for: userId, userName: userName, userImageURL: userImageURL, userCity: userCity, authType: authType, email: email, adult: adult)
+            return
         }
 
         if let userName = userName { personalData.userName = userName }

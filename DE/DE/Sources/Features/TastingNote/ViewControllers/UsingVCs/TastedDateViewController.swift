@@ -51,6 +51,11 @@ public class TastedDateViewController: UIViewController {
         )
     }
     
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tastedDateView.calender.layoutIfNeeded()
+    }
+    
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)
     }
@@ -98,13 +103,34 @@ extension TastedDateViewController: UICalendarViewDelegate {
             return .customView {
                 let backgroundView = UIView()
                 backgroundView.backgroundColor = AppColor.purple100
-                backgroundView.layer.cornerRadius = 18
+                backgroundView.layer.cornerRadius = 15 // ✅ 너무 크면 선택 시 레이아웃 변할 가능성 있음
                 backgroundView.layer.masksToBounds = true
-                
+
+                // ✅ SnapKit으로 크기 고정
+                backgroundView.snp.makeConstraints { make in
+                    make.width.height.equalTo(36) // ✅ 선택된 날짜의 배경 크기 고정
+                }
+
                 return backgroundView
             }
         }
         return nil
     }
 }
+
+//extension TastedDateViewController: UICalendarViewDelegate {
+//    public func calendarView(_ calendarView: UICalendarView, decorationFor dateComponents: DateComponents) -> UICalendarView.Decoration? {
+//        if dateComponents == selectedDate {
+//            return .customView {
+//                let backgroundView = UIView()
+//                backgroundView.backgroundColor = AppColor.purple100
+//                backgroundView.layer.cornerRadius = 18
+//                backgroundView.layer.masksToBounds = true
+//                
+//                return backgroundView
+//            }
+//        }
+//        return nil
+//    }
+//}
 
