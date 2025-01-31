@@ -3,6 +3,7 @@
 import UIKit
 import CoreModule
 import Network
+import SDWebImage
 
 // 색상 변경
 
@@ -24,6 +25,7 @@ public class EditWineColorViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         colorView.header.setTitleLabel(wineData.wineName)
+        colorView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         colorView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         colorView.infoView.kindContents.text = wineData.sort
         colorView.infoView.typeContents.text = wineData.variety
@@ -126,5 +128,4 @@ extension EditWineColorViewController: UICollectionViewDelegate, UICollectionVie
         
         collectionView.reloadData()
     }
-    
 }

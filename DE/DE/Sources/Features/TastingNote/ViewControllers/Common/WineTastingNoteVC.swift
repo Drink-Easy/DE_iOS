@@ -126,7 +126,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
             case .color:
                 viewController = EditWineColorViewController()
             case .nose:
-                viewController = LoginVC()
+                viewController = EditNoseViewController()
             case .rate:
                 viewController = EditRateViewController()
             case .review:

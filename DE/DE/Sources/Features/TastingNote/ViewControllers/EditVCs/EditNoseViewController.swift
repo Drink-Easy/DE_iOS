@@ -2,11 +2,10 @@
 
 import UIKit
 import CoreModule
+import Network
 
-// 향 선택 뷰컨
+class EditNoseViewController: UIViewController {
 
-public class NoseTestVC: UIViewController {
-    
     let wineData = TNWineDataManager.shared
     let tnManager = NewTastingNoteManager.shared
     
@@ -20,13 +19,18 @@ public class NoseTestVC: UIViewController {
     }
     
     let topView = NoseTopView() // 기본 상단 뷰
-    let middleView = NoseBottomView(title: "다음", isEnabled: true) // 중간 뷰
+    let middleView = NoseBottomView(title: "저장하기", isEnabled: true) // 중간 뷰
 //    let middleView = OnlyScrollView()
     let navigationBarManager = NavigationBarManager()
+    let networkService = TastingNoteService()
+    var scentNames: [String] = []
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         topView.header.setTitleLabel(wineData.wineName)
+        
+        scentNames = tnManager.nose
+        print(scentNames)
     }
     
     public override func viewDidLoad() {
@@ -88,7 +92,7 @@ public class NoseTestVC: UIViewController {
     }
     
     private func setupActions() {
-        middleView.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        middleView.nextButton.addTarget(self, action: #selector(saveVC), for: .touchUpInside)
     }
     
     private func setupNavigationBar() {
@@ -103,17 +107,28 @@ public class NoseTestVC: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func nextVC() {
+    @objc func saveVC() {
         let scents = NoseManager.shared.selectedScents
 
-        let scentNames = scents.map { $0.name }
+        scentNames = scents.map { $0.name }
         tnManager.saveNose(scentNames)
-        let nextVC = RecordGraphViewController()
-        navigationController?.pushViewController(nextVC, animated: true)
+        callUpdateAPI()
+    }
+    
+    private func callUpdateAPI() {
+        let updateData = networkService.makeUpdateNoteBodyDTO(addNoseList: scentNames)
+        
+        let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
+        Task {
+            do {
+                try await networkService.patchNote(data: tnData)
+                navigationController?.popViewController(animated: true)
+            }
+        }
     }
 }
 
-extension NoseTestVC : UICollectionViewDelegate, UICollectionViewDataSource {
+extension EditNoseViewController : UICollectionViewDelegate, UICollectionViewDataSource {
     /// 섹션 수
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
         if collectionView.tag == 0 { // noseCollectionView
@@ -211,7 +226,7 @@ extension NoseTestVC : UICollectionViewDelegate, UICollectionViewDataSource {
     
 }
 
-extension NoseTestVC: NoseHeaderViewDelegate {
+extension EditNoseViewController: NoseHeaderViewDelegate {
     // 토글 애니메이션 추가
     func toggleSection(_ section: Int) {
         NoseManager.shared.scentSections[section].isExpand.toggle()
@@ -246,7 +261,7 @@ extension NoseTestVC: NoseHeaderViewDelegate {
     }
 }
 
-extension NoseTestVC: UICollectionViewDelegateFlowLayout {
+extension EditNoseViewController: UICollectionViewDelegateFlowLayout {
     /// 섹션 간 여백
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0) // 좌우 여백 10

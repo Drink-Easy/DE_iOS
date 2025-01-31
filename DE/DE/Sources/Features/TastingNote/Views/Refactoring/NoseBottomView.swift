@@ -20,10 +20,11 @@ class NoseBottomView: UIView {
         $0.tag = 0
     }
     
-    lazy var nextButton = CustomButton(title: "다음", isEnabled: true) // TODO: 설정해야함
+    lazy var nextButton = CustomButton()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(title: String, isEnabled: Bool) {
+        super.init(frame: .zero)
+        nextButton = CustomButton(title: title, isEnabled: isEnabled)
         addComponents()
         setConstraints()
     }
