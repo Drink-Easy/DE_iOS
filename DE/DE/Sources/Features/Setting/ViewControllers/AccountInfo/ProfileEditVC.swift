@@ -179,7 +179,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     //MARK: - 닉네임 중복 검사 // TODO: 경고 떠있을 때 완료버튼 안눌리게 처리하기
     @objc func checkNicknameValidity(){
-        guard let nickname = profileView.nicknameTextField.text, !nickname.isEmpty else {
+        guard let nickname = profileView.nicknameTextField.text, !nickname.isEmpty, ValidationManager.isLengthValid else {
             print("닉네임이 없습니다")
             return
         }
@@ -198,9 +198,10 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     }
     
     @objc func checkFormValidity() {
-        let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true) && !ValidationManager.isNicknameCanUse
+        let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true) && !ValidationManager.isNicknameCanUse && ValidationManager.isLengthValid
         let isLocationValid = !(profileView.myLocationTextField.textField.text?.isEmpty ?? true)
         let isImageSelected = profileView.profileImageView.image != nil
         let isFormValid = isNicknameValid && isLocationValid && isImageSelected
+        navigationItem.rightBarButtonItem?.isEnabled = isFormValid
     }
 }
