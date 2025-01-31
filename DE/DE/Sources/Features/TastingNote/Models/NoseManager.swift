@@ -102,3 +102,14 @@ extension ScentSection {
         ]
     }
 }
+
+extension NoseManager {
+    /// ✅ 모든 선택된 향 초기화 (선택 해제)
+    func resetSelectedScents() {
+        for sectionIndex in 0..<scentSections.count {
+            for scentIndex in 0..<scentSections[sectionIndex].scents.count {
+                scentSections[sectionIndex].scents[scentIndex].isSelected = false
+            }
+        }
+    }
+}
