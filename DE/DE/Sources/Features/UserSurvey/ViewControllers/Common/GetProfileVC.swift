@@ -179,7 +179,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     //MARK: - 폼 유효성 검사
     @objc func checkFormValidity() {
-        let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true) && ValidationManager.isNicknameCanUse
+        let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true) && ValidationManager.isNicknameCanUse && ValidationManager.isLengthValid
         let isLocationValid = !(profileView.myLocationTextField.textField.text?.isEmpty ?? true)
         let isImageSelected = profileView.profileImageView.image != nil
         let isFormValid = isNicknameValid && isLocationValid && isImageSelected

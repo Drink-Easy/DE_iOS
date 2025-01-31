@@ -92,6 +92,7 @@ class SignUpVC: UIViewController {
         }
         
         validationManager.checkEmailDuplicate(email: email, view: signUpView.usernameField)
+        validateInputs()
     }
     
     @objc func passwordValidate() {
