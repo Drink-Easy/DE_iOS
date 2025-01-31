@@ -316,7 +316,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                 return
             }
             if type == .recommended {
-                try await WineDataManager.shared.saveWineData(userId: userId, wineListType: type, wineData: wines, expirationInterval: time)
+                try WineDataManager.shared.saveWineData(userId: userId, wineListType: type, wineData: wines, expirationInterval: time)
                 print("✅ \(type.rawValue) 저장 완료: \(wines.count)개")
             } else { // 인기 와인은 다른 데이터 매니저 사용
                 try PopularWineManager.shared.saveWineData(wineData: wines, expirationInterval: time)

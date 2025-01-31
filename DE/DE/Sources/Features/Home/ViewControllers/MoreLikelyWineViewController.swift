@@ -73,8 +73,8 @@ class MoreLikelyWineViewController: UIViewController {
         switch type {
         case .recommended:
             fetchFunction = networkService.fetchRecommendWines
-        case .popular:
-            fetchFunction = networkService.fetchPopularWines
+        default :
+            fetchFunction = networkService.fetchRecommendWines
         }
 
         await withCheckedContinuation { continuation in
@@ -104,13 +104,13 @@ class MoreLikelyWineViewController: UIViewController {
                      price: $0.price,
                      vivinoRating: $0.vivinoRating)
         }
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+            print("⚠️ userId가 UserDefaults에 없습니다.")
+            return
+        }
         
         do {
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("⚠️ userId가 UserDefaults에 없습니다.")
-                return
-            }
-            try await WineDataManager.shared.saveWineData(userId: userId, wineListType: type, wineData: wines, expirationInterval: time)
+            try WineDataManager.shared.saveWineData(userId: userId, wineListType: .recommended, wineData: wines, expirationInterval: time)
         } catch {
             print("❌ 데이터 저장 중 오류 발생: \(error)")
         }

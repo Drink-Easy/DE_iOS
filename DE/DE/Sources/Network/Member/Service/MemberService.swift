@@ -73,6 +73,10 @@ public final class MemberService : NetworkManager {
         request(target: .getMemberInfo, decodingType: MemberInfoResponse.self, completion: completion)
     }
     
+    public func fetchUserInfoAsync() async throws -> MemberInfoResponse {
+        return try await requestAsync(target: .getMemberInfo, decodingType: MemberInfoResponse.self)
+    }
+    
     public func getUserName() async throws -> String {
         return try await requestAsync(target: .getNickname)
     }

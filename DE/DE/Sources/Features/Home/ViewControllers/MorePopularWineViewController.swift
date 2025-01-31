@@ -113,10 +113,6 @@ class MorePopularWineViewController: UIViewController {
         }
         
         do {
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("⚠️ userId가 UserDefaults에 없습니다.")
-                return
-            }
             try wineDataManger.saveWineData(wineData: wines, expirationInterval: time)
         } catch {
             print("❌ 데이터 저장 중 오류 발생: \(error)")

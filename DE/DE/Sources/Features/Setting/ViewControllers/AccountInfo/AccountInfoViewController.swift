@@ -251,6 +251,7 @@ class AccountInfoViewController: UIViewController {
     //MARK: - SwiftDate Funcs
     
     /// UI에 사용할 데이터 불러오기(캐시 or 서버)
+    /// UI에 사용할 데이터 불러오기 (캐시 or 서버)
     private func CheckCacheData() {
         guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
             print("⚠️ userId가 UserDefaults에 없습니다.")
@@ -263,11 +264,12 @@ class AccountInfoViewController: UIViewController {
                     print("✅ 캐시 데이터 사용 가능")
                     await useCacheData(for: userId)
                 } else {
-                    fetchMemberInfo()
+                    print("⚠️ 캐시 데이터 유효하지 않음, 서버에서 불러오기")
+                    await fetchMemberInfo()
                 }
             } catch {
-                print("⚠️ 캐시 데이터 검증 실패: \(error)")
-                fetchMemberInfo()
+                print("⚠️ 캐시 데이터 검증 중 오류 발생: \(error.localizedDescription)")
+                await fetchMemberInfo() // ❗️ 에러 발생 시에도 서버 데이터 호출
             }
         }
     }
@@ -286,59 +288,43 @@ class AccountInfoViewController: UIViewController {
         do {
             let data = try await PersonalDataManager.shared.fetchPersonalData(for: userId)
             
-            if let username = data.userName, let imageURL = data.userImageURL, let email = data.email, let city = data.userCity, let authType = data.authType, let adult = data.adult {
-                self.userProfile = MemberInfoResponse(imageUrl: imageURL, username: username, email: email, city: city, authType: authType, adult: adult)
-                self.setUserData(
-                    imageURL: imageURL,
-                    username: username,
-                    email: email,
-                    city: city,
-                    authType: authType,
-                    adult: adult
-                )
-            } else {
-                print("⚠️ 캐시 데이터에 필요한 정보가 없습니다.")
+            guard let username = data.userName,
+                  let imageURL = data.userImageURL,
+                  let email = data.email,
+                  let city = data.userCity,
+                  let authType = data.authType,
+                  let adult = data.adult else {
+                print("⚠️ 캐시 데이터에 필요한 정보가 없습니다. -> 서버에서 불러오기")
+                await fetchMemberInfo()
+                return
             }
+            
+            self.userProfile = MemberInfoResponse(imageUrl: imageURL, username: username, email: email, city: city, authType: authType, adult: adult)
+            self.setUserData(imageURL: imageURL, username: username, email: email, city: city, authType: authType, adult: adult)
         } catch {
-            print("⚠️ 캐시 데이터 가져오기 실패: \(error)")
+            print("⚠️ 캐시 데이터 가져오기 실패: \(error.localizedDescription)")
+            await fetchMemberInfo()
         }
     }
     
     /// 서버에서 데이터 가져오기
-    private func fetchMemberInfo() {
-        memberService.fetchUserInfo(completion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let data):
-                guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                    print("⚠️ userId가 UserDefaults에 없습니다.")
-                    return
-                }
-                Task {
-                    // 데이터 할당
-                    self.userProfile = MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
-                    self.setUserData(
-                        imageURL: data.imageUrl,
-                        username: data.username,
-                        email: data.email,
-                        city: data.city,
-                        authType: data.authType,
-                        adult: data.adult
-                    )
-                    // 로컬 캐시 데이터에 저장(덮어쓰기)
-                    await self.saveUserInfo(data: MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult))
-                    do {
-                        // get api -> 모든 call counter 초기화
-                        try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
-                        return
-                    } catch {
-                        print("⚠️ API 호출 카운트 초기화 실패: \(error)")
-                    }
-                }
-            case .failure(let error ):
-                print("Error: \(error)")
-            }
-        })
+    private func fetchMemberInfo() async {
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+            print("⚠️ userId가 UserDefaults에 없습니다.")
+            return
+        }
+
+        do {
+            let data = try await memberService.fetchUserInfoAsync()
+            
+            self.userProfile = MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
+            self.setUserData(imageURL: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
+
+            print("✅ 서버 데이터 성공적으로 가져옴: \(data.username)")
+            await saveUserInfo(data: self.userProfile!)
+        } catch {
+            print("❌ 서버에서 사용자 정보를 가져오지 못함: \(error.localizedDescription)")
+        }
     }
     
     /// UI update
@@ -362,15 +348,22 @@ class AccountInfoViewController: UIViewController {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
+            
             try await PersonalDataManager.shared.updatePersonalData(for: userId,
-                                                                    userName: data.username,
-                                                                    userImageURL: data.imageUrl,
-                                                                    userCity: data.city,
-                                                                    authType: data.authType,
-                                                                    email: data.email,
-                                                                    adult: data.adult)
+                userName: data.username,
+                userImageURL: data.imageUrl,
+                userCity: data.city,
+                authType: data.authType,
+                email: data.email,
+                adult: data.adult
+            )
+
+            try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
+            try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
+
+            print("✅ 사용자 정보가 성공적으로 캐시에 저장되었습니다.")
         } catch {
-            print(error)
+            print("❌ 사용자 정보 저장 실패: \(error.localizedDescription)")
         }
     }
 }

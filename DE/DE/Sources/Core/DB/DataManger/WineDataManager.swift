@@ -36,13 +36,12 @@ public final class WineDataManager {
     }
     
     /// 와인 데이터 불러오기
-    /// 와인 데이터 불러오기
     @MainActor
     public func fetchWineDataList(userId: Int, wineListType: WineListType) throws -> [WineData] {
         let context = UserDataManager.shared.container.mainContext
         
         // ✅ 1. 유효 기간이 지난 데이터 삭제 (userId 추가)
-        try deleteExpiredWineData(userId: userId)
+        deleteExpiredWineData(userId: userId)
         
         // ✅ 2. 해당 userId와 wineListType에 맞는 WineList 검색
         let wineList = try fetchWineList(for: userId, type: wineListType, in: context)
