@@ -6,7 +6,7 @@ import Network
 import SnapKit
 import Then
 
-public class SearchWineViewController : UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
+public class SearchWineViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     let navigationBarManager = NavigationBarManager()
     var wineResults: [SearchResultModel] = []
     let networkService = WineService()
@@ -33,7 +33,9 @@ public class SearchWineViewController : UIViewController, UISearchBarDelegate, U
     private lazy var searchHomeView = SearchHomeView(
         titleText: "검색하고 싶은\n와인을 입력해주세요",
         placeholder: "검색어 입력"
-    )
+    ).then {
+        $0.searchBar.delegate = self
+    }
     
     private func setupNavigationBar() {
         navigationBarManager.setTitle(to: navigationItem, title: "", textColor: AppColor.black!)
