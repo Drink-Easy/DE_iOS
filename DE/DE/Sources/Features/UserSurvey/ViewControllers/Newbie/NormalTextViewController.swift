@@ -19,13 +19,13 @@ public class NormalTextViewController: UIViewController {
 
     
     private let firblurView = UIView().then {
-        $0.backgroundColor = AppColor.bgGray?.withAlphaComponent(0.9)
+        $0.backgroundColor = AppColor.bgGray?.withAlphaComponent(1)
     }
     private let secblurView = UIView().then {
-        $0.backgroundColor = AppColor.bgGray?.withAlphaComponent(0.9)
+        $0.backgroundColor = AppColor.bgGray?.withAlphaComponent(1)
     }
     private let thirdblurView = UIView().then {
-        $0.backgroundColor = AppColor.bgGray?.withAlphaComponent(0.9)
+        $0.backgroundColor = AppColor.bgGray?.withAlphaComponent(1)
     }
     
     lazy var nextButton = CustomButton(title: "추천 와인 확인하러 가기", isEnabled: true)
@@ -44,27 +44,11 @@ public class NormalTextViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         
-        var varietyString = ""
-        if UserSurveyManager.shared.getIntersectionVarietyData().count > 2 {
-            let varietyData = UserSurveyManager.shared.getIntersectionVarietyData()
-            varietyString = formatText(from: varietyData)
-        } else {
-            let varietyData = UserSurveyManager.shared.getUnionVarietyData()
-            varietyString = formatText(from: varietyData)
-        }
-        
-        var sortString = ""
-        if UserSurveyManager.shared.getIntersectionSortData().count > 2 {
-            let sortData = UserSurveyManager.shared.getIntersectionSortData()
-            sortString = formatText(from: sortData)
-        } else {
-            let sortData = UserSurveyManager.shared.getUnionSortData()
-            sortString = formatText(from: sortData)
-        }
+        let (varietyString, sortString) = calculateResult()
+
         
         // ✨ NSAttributedString 스타일 적용
         firstTextLabel.attributedText = setStyledText(
-//            mainText: "승주 ",
             mainText: "\(UserSurveyManager.shared.name) ",
             highlightText: "님께\n어울리는 와인은",
             mainFontSize: 34,
@@ -93,6 +77,27 @@ public class NormalTextViewController: UIViewController {
         
         startAlphaAnimationSequence()
     }
+    
+    func calculateResult() -> (String, String ){
+        var varietyString = ""
+        if UserSurveyManager.shared.getIntersectionVarietyData().count > 2 {
+            let varietyData = UserSurveyManager.shared.getIntersectionVarietyData()
+            varietyString = formatText(from: varietyData)
+        } else {
+            let varietyData = UserSurveyManager.shared.getUnionVarietyData()
+            varietyString = formatText(from: varietyData)
+        }
+        
+        var sortString = ""
+        if UserSurveyManager.shared.getIntersectionSortData().count > 2 {
+            let sortData = UserSurveyManager.shared.getIntersectionSortData()
+            sortString = formatText(from: sortData)
+        } else {
+            let sortData = UserSurveyManager.shared.getUnionSortData()
+            sortString = formatText(from: sortData)
+        }
+        return (varietyString, sortString)
+    }
 
     private func startAlphaAnimationSequence() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
@@ -114,8 +119,6 @@ public class NormalTextViewController: UIViewController {
             }
         }
     }
-    
-
     
     private func animateAlphaChange(view: UIView) {
         UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseInOut) {
@@ -154,7 +157,6 @@ public class NormalTextViewController: UIViewController {
             action: #selector(backButtonTapped)
         )
     }
-    
     /// ✨ 공통된 라벨 스타일 생성
     private func createLabel() -> UILabel {
         return UILabel().then {
@@ -165,6 +167,7 @@ public class NormalTextViewController: UIViewController {
     }
     
     func setUI() {
+        nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
         [firstTextLabel, varietyTextLabel, sortTextLabel, firblurView, secblurView, thirdblurView, nextButton].forEach { view.addSubview($0) }
         
         firstTextLabel.snp.makeConstraints { make in

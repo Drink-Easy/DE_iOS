@@ -51,10 +51,13 @@ public class TastedDateViewController: UIViewController {
         )
     }
     
-//    public override func viewDidLayoutSubviews() {
-//        super.viewDidLayoutSubviews()
-//        tastedDateView.calender.layoutIfNeeded()
-//    }
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        // ✅ UICalendarView가 리로드될 때 불필요한 크기 변경을 방지
+//        tastedDateView.calendarContainer.layoutIfNeeded()
+        tastedDateView.calender.invalidateIntrinsicContentSize()
+    }
     
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)
@@ -91,6 +94,11 @@ extension TastedDateViewController: UICalendarSelectionSingleDateDelegate {
         }
         selectedDate = validDateComponents
         tastedDateView.calender.reloadDecorations(forDateComponents: [validDateComponents], animated: true)
+        
+        UIView.animate(withDuration: 0.2) {
+            self.tastedDateView.calendarContainer.layoutIfNeeded()
+        }
+        
         self.tastedDateView.nextButton.isEnabled(isEnabled: true)
     }
     
@@ -103,14 +111,9 @@ extension TastedDateViewController: UICalendarViewDelegate {
             return .customView {
                 let backgroundView = UIView()
                 backgroundView.backgroundColor = AppColor.purple100
-                backgroundView.layer.cornerRadius = 15 // ✅ 너무 크면 선택 시 레이아웃 변할 가능성 있음
+                backgroundView.layer.cornerRadius = 16 // 원형으로 만들기 위해 cornerRadius를 반지름으로 설정
                 backgroundView.layer.masksToBounds = true
-
-                // ✅ SnapKit으로 크기 고정
-                backgroundView.snp.makeConstraints { make in
-                    make.width.height.equalTo(30) // ✅ 선택된 날짜의 배경 크기 고정
-                }
-
+                
                 return backgroundView
             }
         }

@@ -51,6 +51,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        
         Task {
             do {
                 try await CallAllTastingNote()
