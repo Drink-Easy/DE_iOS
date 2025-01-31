@@ -46,24 +46,21 @@ class MoreLikelyWineViewController: UIViewController {
                 return
             }
             do {
-                // 1. 캐시 데이터 우선 사용
-                wineList = try await WineDataManager.shared.fetchWineDataList(userId: userId, wineListType: .recommended)
+                wineList = try WineDataManager.shared.fetchWineDataList(userId: userId, wineListType: .recommended)
+                self.moreLikelyWineView.moreWineTableView.reloadData()
                 if !wineList.isEmpty {
                     print("✅ 캐시된 데이터 사용: \(wineList.count)개")
-                    print(wineList[0].wineName)
+                } else {
+                    print("⚠️ 캐시 데이터가 비어있음, 네트워크 요청 시작")
+                    await fetchWinesFromNetwork(type: .recommended)
                     self.moreLikelyWineView.moreWineTableView.reloadData()
-                    return
                 }
             } catch {
-                print("⚠️ 캐시된 데이터 없음")
+                print("⚠️ 캐시 데이터 없음, 네트워크 요청 시작")
+                await fetchWinesFromNetwork(type: .recommended)
+                self.moreLikelyWineView.moreWineTableView.reloadData()
             }
-            
-            // 2. 캐시 데이터가 없으면 네트워크 요청
-            print("🌐 네트워크 요청 시작")
-            await fetchWinesFromNetwork(type: .recommended)
-            self.moreLikelyWineView.moreWineTableView.reloadData()
         }
-        
     }
     
     // MARK: - 네트워크 요청 처리
@@ -104,6 +101,7 @@ class MoreLikelyWineViewController: UIViewController {
                      price: $0.price,
                      vivinoRating: $0.vivinoRating)
         }
+        self.wineList = wines
         guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
             print("⚠️ userId가 UserDefaults에 없습니다.")
             return
