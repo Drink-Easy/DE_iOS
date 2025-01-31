@@ -51,10 +51,10 @@ public class TastedDateViewController: UIViewController {
         )
     }
     
-    public override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        tastedDateView.calender.layoutIfNeeded()
-    }
+//    public override func viewDidLayoutSubviews() {
+//        super.viewDidLayoutSubviews()
+//        tastedDateView.calender.layoutIfNeeded()
+//    }
     
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)
@@ -108,7 +108,7 @@ extension TastedDateViewController: UICalendarViewDelegate {
 
                 // ✅ SnapKit으로 크기 고정
                 backgroundView.snp.makeConstraints { make in
-                    make.width.height.equalTo(36) // ✅ 선택된 날짜의 배경 크기 고정
+                    make.width.height.equalTo(30) // ✅ 선택된 날짜의 배경 크기 고정
                 }
 
                 return backgroundView

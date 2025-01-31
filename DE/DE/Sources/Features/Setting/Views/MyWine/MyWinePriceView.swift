@@ -32,7 +32,7 @@ class MyWinePriceView: UIView {
     }
     
     func setupUI() {
-        backgroundColor = .clear
+        backgroundColor = AppColor.bgGray
         [topView, priceTextField, nextButton].forEach{ addSubview($0) }
     }
     
