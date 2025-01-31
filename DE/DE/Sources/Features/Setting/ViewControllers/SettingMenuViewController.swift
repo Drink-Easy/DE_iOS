@@ -231,11 +231,14 @@ extension SettingMenuViewController: UITableViewDataSource {
         cell.textLabel?.textColor = AppColor.black
         cell.selectionStyle = .none
 
-        // Chevron 추가
+        // ✅ Chevron 추가 (정렬 조정)
         let chevronImage = UIImageView(image: UIImage(systemName: "chevron.right"))
         chevronImage.tintColor = AppColor.gray70
+        chevronImage.frame = CGRect(x: 0, y: 0, width: 12, height: 20) // 원하는 크기로 조정
+        chevronImage.contentMode = .scaleAspectFit
+        
         cell.accessoryView = chevronImage
-
+        cell.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 20)
         return cell
     }
 }

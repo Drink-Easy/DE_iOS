@@ -34,7 +34,7 @@ class AllTastingNoteView: UIView {
         let screenWidth = UIScreen.main.bounds.width
         let itemsPerRow: CGFloat = 3
         let totalSpacing = (screenWidth / (itemsPerRow * 2 - 1)) * 0.3
-        let itemWidth = (screenWidth - totalSpacing * 2) / 3
+        let itemWidth = (screenWidth - totalSpacing * 3) / 3
         
         if let layout = $0.collectionViewLayout as? UICollectionViewFlowLayout {
             layout.itemSize = CGSize(width: itemWidth, height: itemWidth + totalSpacing * 2)
@@ -68,7 +68,7 @@ class AllTastingNoteView: UIView {
     private func setupConstraints() {
         titleLabel.snp.makeConstraints {
             $0.top.equalToSuperview()
-            $0.leading.equalTo(safeAreaLayoutGuide).inset(16)
+            $0.leading.equalTo(safeAreaLayoutGuide).inset(24)
         }
 //        searchButton.snp.makeConstraints {
 //            $0.top.equalToSuperview()
@@ -77,7 +77,7 @@ class AllTastingNoteView: UIView {
 //        }
         topDividerView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(8)
-            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.leading.trailing.equalToSuperview().inset(24)
             $0.height.equalTo(2)
         }
         wineImageStackView.snp.makeConstraints {
@@ -86,11 +86,11 @@ class AllTastingNoteView: UIView {
         }
         tnLabel.snp.makeConstraints {
             $0.top.equalTo(wineImageStackView.snp.bottom).offset(16)
-            $0.leading.equalTo(safeAreaLayoutGuide).inset(16)
+            $0.leading.equalToSuperview().inset(24)
         }
         TastingNoteCollectionView.snp.makeConstraints {
             $0.top.equalTo(tnLabel.snp.bottom).offset(16)
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(8)
             $0.bottom.equalToSuperview()
         }
     }
