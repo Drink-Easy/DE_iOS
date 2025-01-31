@@ -4,22 +4,22 @@ import Foundation
 
 public struct MyWineRequest: Codable {
     public var wineId: Int
-    public var purchaseData : String
+    public var purchaseDate : String
     public var purchasePrice : Int
     
-    init(wineId: Int, purchaseData: String, purchasePrice: Int) {
+    init(wineId: Int, purchaseDate: String, purchasePrice: Int) {
         self.wineId = wineId
-        self.purchaseData = purchaseData
+        self.purchaseDate = purchaseDate
         self.purchasePrice = purchasePrice
     }
 }
 
 public struct MyWineUpdateRequest: Codable {
-    public var purchaseData : String?
+    public var purchaseDate : String?
     public var purchasePrice : Int?
     
-    init(purchaseData: String? = nil, purchasePrice: Int? = nil) {
-        self.purchaseData = purchaseData
+    init(purchaseDate: String? = nil, purchasePrice: Int? = nil) {
+        self.purchaseDate = purchaseDate
         self.purchasePrice = purchasePrice
     }
 }

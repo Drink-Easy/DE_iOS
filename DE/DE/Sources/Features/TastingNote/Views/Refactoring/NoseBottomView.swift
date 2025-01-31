@@ -16,13 +16,15 @@ class NoseBottomView: UIView {
     public lazy var noseCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout).then {
         $0.setCollectionViewLayout(layout, animated: true)
         $0.backgroundColor = .clear
+        $0.isScrollEnabled = false
         $0.tag = 0
     }
     
-    lazy var nextButton = CustomButton(title: "다음", isEnabled: false)
+    lazy var nextButton = CustomButton()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(title: String, isEnabled: Bool) {
+        super.init(frame: .zero)
+        nextButton = CustomButton(title: title, isEnabled: isEnabled)
         addComponents()
         setConstraints()
     }
@@ -41,7 +43,7 @@ class NoseBottomView: UIView {
         
         noseCollectionView.snp.makeConstraints { make in
             make.leading.trailing.top.equalToSuperview()
-            make.height.equalTo(320) // 초기 높이
+            make.height.equalTo(530) // 초기 높이
         }
         
         nextButton.snp.makeConstraints { make in

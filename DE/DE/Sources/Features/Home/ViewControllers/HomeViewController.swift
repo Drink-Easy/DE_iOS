@@ -7,7 +7,7 @@ import Network
 
 public class HomeViewController: UIViewController, HomeTopViewDelegate {
     
-    private var adImage: [String] = ["ad4", "ad3", "ad2", "ad1"]
+    private var adImage: [HomeBannerModel] = []
     var recommendWineDataList: [HomeWineModel] = []
     var popularWineDataList: [HomeWineModel] = []
     
@@ -22,6 +22,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     
     private var homeTopView = HomeTopView()
     let networkService = WineService()
+    let bannerNetworkService = NoticeService()
     
     // View 세팅
     private lazy var scrollView: UIScrollView = {
@@ -51,10 +52,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         $0.tag = 0
     }
     
-    private lazy var pageControl = CustomPageControl(indicatorColor: UIColor(hex: "#D9D9D9") ?? .lightGray, currentIndicatorColor: AppColor.purple50 ?? .purple).then {
-        $0.numberOfPages = adImage.count
-        $0.currentPage = 0
-    }
+    private lazy var pageControlNumberView = PageControlNumberView()
     
     private lazy var likeWineListView = RecomView().then {
         $0.title.text = "For \(userName),"
@@ -62,11 +60,10 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         $0.recomCollectionView.delegate = self
         $0.recomCollectionView.dataSource = self
         $0.recomCollectionView.tag = 1
-        
         $0.moreBtn.addTarget(self, action: #selector(goToMoreLikely), for: .touchUpInside)
     }
     
-    public func fetchName() {
+    public func fetchName() { // TODO : 이름 호출 로직 수정하기
         Task {
             guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
@@ -92,12 +89,10 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         $0.recomCollectionView.delegate = self
         $0.recomCollectionView.dataSource = self
         $0.recomCollectionView.tag = 2
-        
         $0.moreBtn.addTarget(self, action: #selector(goToMorePopular), for: .touchUpInside)
     }
     
-    @objc
-    private func goToMorePopular() {
+    @objc private func goToMorePopular() {
         let vc = MorePopularWineViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -109,22 +104,23 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         addComponents()
         constraints()
         startAutoScrolling()
+        pageControlNumberView.totalPages = adImage.count
     }
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.isNavigationBarHidden = true
         
-        fetchWines(type: .recommended)
-        fetchWines(type: .popular)
+        setAdBanner()
+        fetchWines(isRecommend: true) // 추천 와인
+        fetchWines(isRecommend: false) // 인기 와인
         fetchName()
-        
     }
     
     private func addComponents() {
         [homeTopView, scrollView].forEach{ view.addSubview($0) }
         scrollView.addSubview(contentView)
-        [adCollectionView, pageControl, likeWineListView, popularWineListView].forEach{ contentView.addSubview($0) }
+        [adCollectionView, pageControlNumberView, likeWineListView, popularWineListView].forEach{ contentView.addSubview($0) }
         homeTopView.delegate = self
     }
     
@@ -142,7 +138,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         contentView.snp.makeConstraints {
             $0.edges.equalTo(scrollView) // 스크롤뷰의 모든 가장자리에 맞춰 배치
             $0.width.equalTo(scrollView.snp.width) // 가로 스크롤을 방지, 스크롤뷰와 같은 너비로 설정
-            $0.bottom.equalTo(popularWineListView.snp.bottom).offset(46)
+            $0.bottom.equalTo(popularWineListView.snp.bottom).offset(24)
         }
         
         adCollectionView.snp.makeConstraints {
@@ -150,37 +146,34 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
             $0.height.equalTo(view.snp.width).multipliedBy(282.0 / 393.0)
         }
         
-        pageControl.snp.makeConstraints {
-            $0.centerX.equalTo(view.safeAreaLayoutGuide)
-            $0.bottom.equalTo(adCollectionView.snp.bottom).inset(20)
-            //$0.width.equalTo(200)
+        pageControlNumberView.snp.makeConstraints {
+            $0.bottom.equalTo(adCollectionView.snp.bottom).offset(-DynamicPadding.dynamicValue(15))
+            $0.trailing.equalTo(adCollectionView.snp.trailing).offset(-DynamicPadding.dynamicValue(15))
+            $0.width.equalTo(DynamicPadding.dynamicValue(66))
+            $0.height.equalTo(DynamicPadding.dynamicValue(30))
         }
         
-        view.layoutIfNeeded()
-        pageControl.setNeedsLayout()
-        pageControl.layoutIfNeeded()
-        
         likeWineListView.snp.makeConstraints {
-            $0.top.equalTo(adCollectionView.snp.bottom).offset(32)
+            $0.top.equalTo(adCollectionView.snp.bottom).offset(DynamicPadding.dynamicValue(24))
             $0.horizontalEdges.equalToSuperview()
         }
         
         popularWineListView.snp.makeConstraints {
-            $0.top.equalTo(likeWineListView.snp.bottom).offset(35)
+            $0.top.equalTo(likeWineListView.snp.bottom).offset(DynamicPadding.dynamicValue(24))
             $0.horizontalEdges.equalToSuperview()
-            $0.bottom.equalToSuperview().offset(-46)
+            $0.bottom.equalToSuperview()
         }
     }
     
     // MARK: - 컬렉션뷰 업데이트 함수
-    func updateCollectionView(type: WineListType, with wines: [WineData]) {
+    func updateCollectionView(isRecommend : Bool, with wines: [WineData]) {
         let maxDisplayCount = 5
         let homeWineModels = toHomeWineModels(Array(wines.prefix(maxDisplayCount)))
         
-        if type == .recommended {
+        if isRecommend {
             recommendWineDataList = homeWineModels
             likeWineListView.recomCollectionView.reloadData()
-        } else if type == .popular {
+        } else { // 인기 와인인 경우
             popularWineDataList = homeWineModels
             popularWineListView.recomCollectionView.reloadData()
         }
@@ -202,20 +195,30 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         return wines.map { toHomeWineModel($0) }
     }
     
-    func fetchWines(type: WineListType) {
+    func fetchWines(isRecommend : Bool) {
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+            print("⚠️ userId가 UserDefaults에 없습니다.")
+            return
+        }
+        self.userId = userId
         Task {
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("⚠️ userId가 UserDefaults에 없습니다.")
-                return
-            }
-            self.userId = userId
             do {
-                // 1. 캐시 데이터 우선 사용
-                let cachedWines = try WineDataManager.shared.fetchWineDataList(userId: userId, wineListType: type)
-                if !cachedWines.isEmpty {
-                    print("✅ 캐시된 \(type.rawValue) 데이터 사용: \(cachedWines.count)개")
-                    updateCollectionView(type: type, with: cachedWines) // 👉 바로 업데이트
-                    return
+                if isRecommend {
+                    // 1. 캐시 데이터 우선 사용
+                    let cachedWines = try WineDataManager.shared.fetchWineDataList(userId: userId)
+                    
+                    if !cachedWines.isEmpty {
+                        print("✅ 캐시된 추천와인 데이터 사용: \(cachedWines.count)개")
+                        return
+                    }
+                    self.updateCollectionView(isRecommend: isRecommend, with: cachedWines)
+                } else { // 인기 와인은 따로 처리
+                    let cachedWines = try PopularWineManager.shared.fetchWineDataList()
+                    if !cachedWines.isEmpty {
+                        print("✅ 캐시된 인기와인 데이터 사용: \(cachedWines.count)개")
+                        return
+                    }
+                    self.updateCollectionView(isRecommend: isRecommend, with: cachedWines)
                 }
             } catch {
                 print("⚠️ 캐시된 데이터 없음")
@@ -223,18 +226,60 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
             
             // 2. 캐시 데이터가 없으면 네트워크 요청
             print("🌐 네트워크 요청 시작")
-            await fetchWinesFromNetwork(type: type)
+            await fetchWinesFromNetwork(isRecommend)
         }
     }
 
     // MARK: - 네트워크 요청 처리
-    private func fetchWinesFromNetwork(type: WineListType) async {
-        let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
+    func setAdBanner() {
+        Task {
+            do {
+                let cacheData = try AdBannerListManager.shared.fetchAdBannerList() // 내부에서 만료 체크함
+                print("✅ 캐시 데이터 사용!")
+                
+                let bannerModels = cacheData.map { HomeBannerModel(imageUrl: $0.imageUrl, postUrl: $0.postUrl) }
+                
+                DispatchQueue.main.async {
+                    self.adImage = bannerModels
+                    self.adCollectionView.reloadData()
+                }
 
-        switch type {
-        case .recommended:
+            } catch {
+                print("⚠️ 캐시 데이터 없음 → 네트워크 요청 수행")
+                do {
+                    let newData = try await fetchHomeBanner()
+                    try AdBannerListManager.shared.saveAdBannerList(
+                        bannerData: newData.map { AdBannerDataModel(bannerId: $0.bannerId, imageUrl: $0.imageUrl, postUrl: $0.postUrl) },
+                        expirationDate: Date()
+                    )
+                } catch {
+                    print("❌ 네트워크 요청 실패: \(error)")
+                }
+            }
+        }
+    }
+    
+    private func fetchHomeBanner() async throws -> [BannerResponse] {
+        let response = try await bannerNetworkService.fetchHomeBanner()
+
+        //UI 업데이트는 메인 스레드에서 수행
+        DispatchQueue.main.async {
+            self.adImage = response.bannerResponseList.map {
+                HomeBannerModel(imageUrl: $0.imageUrl, postUrl: $0.postUrl)
+            }
+            self.pageControlNumberView.totalPages = self.adImage.count
+            self.adCollectionView.reloadData()
+        }
+
+        return response.bannerResponseList
+    }
+    
+    private func fetchWinesFromNetwork(_ isRecommend: Bool) async {
+        let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
+        
+        if isRecommend {
             fetchFunction = networkService.fetchRecommendWines
-        case .popular:
+        } else { // 인기 와인인 경우
             fetchFunction = networkService.fetchPopularWines
         }
 
@@ -245,7 +290,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                 switch result {
                 case .success(let responseData):
                     Task {
-                        await self.processWineData(type: type, responseData: responseData.0, time: responseData.1 ?? 3600)
+                        await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
                         continuation.resume()
                     }
                 case .failure(let error):
@@ -256,7 +301,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         }
     }
     
-    private func processWineData(type: WineListType, responseData: [HomeWineDTO], time: TimeInterval) async {
+    private func processWineData(_ isRecommend: Bool, responseData: [HomeWineDTO], time: TimeInterval) async {
         let wines = responseData.map {
             WineData(wineId: $0.wineId,
                      imageUrl: $0.imageUrl,
@@ -271,9 +316,15 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
-            try WineDataManager.shared.saveWineData(userId: userId, wineListType: type, wineData: wines, expirationInterval: time)
-            print("✅ \(type.rawValue) 저장 완료: \(wines.count)개")
-            updateCollectionView(type: type, with: wines)
+            if isRecommend {
+                try WineDataManager.shared.saveWineData(userId: userId, wineData: wines, expirationInterval: time)
+                print("✅ 추천 와인 저장 완료: \(wines.count)개")
+                
+            } else { // 인기 와인은 다른 데이터 매니저 사용
+                try PopularWineManager.shared.saveWineData(wineData: wines, expirationInterval: time)
+                print("인기 와인 저장 완료: \(wines.count)개")
+            }
+            updateCollectionView(isRecommend: isRecommend, with: wines)
         } catch {
             print("❌ 데이터 저장 중 오류 발생: \(error)")
         }
@@ -300,7 +351,7 @@ extension HomeViewController: UIScrollViewDelegate {
         guard scrollView == adCollectionView else { return }
         
         let pageIndex = Int(scrollView.contentOffset.x / view.frame.width)
-        pageControl.currentPage = pageIndex
+        pageControlNumberView.currentPage = pageIndex + 1
         
         if pageIndex == 0 && scrollView.contentOffset.x < 0 {
             scrollView.contentOffset.x = 0
@@ -338,7 +389,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     public func collectionView(_ collectionView: UICollectionView, didEndDecelerating scrollView: UIScrollView) {
         if collectionView.tag == 0 { // ✅ 광고 컬렉션 뷰만 반응
             let pageIndex = Int(scrollView.contentOffset.x / scrollView.frame.width)
-            pageControl.currentPage = pageIndex
+            pageControlNumberView.currentPage = pageIndex + 1
         }
     }
     
@@ -346,10 +397,8 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         if collectionView.tag == 0 {
             return adImage.count
         } else if collectionView.tag == 1 {
-            // ✅ Out of range 에러 핸들링
             return min(maxShowWineCount, recommendWineDataList.count)
         } else if collectionView.tag == 2 {
-            // ✅ Out of range 에러 핸들링
             return min(maxShowWineCount, popularWineDataList.count)
         }
         return 0
@@ -359,7 +408,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         if collectionView.tag == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AdCollectionViewCell.identifier, for: indexPath) as! AdCollectionViewCell
             
-            cell.configure(image: adImage[indexPath.item])
+            cell.configure(model: adImage[indexPath.item])
             
             return cell
             
@@ -396,6 +445,9 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             let vc = WineDetailViewController()
             vc.wineId = (collectionView.tag == 1) ? recommendWineDataList[indexPath.row].wineId : popularWineDataList[indexPath.row].wineId
             navigationController?.pushViewController(vc, animated: true)
+        } else if collectionView.tag == 0 {
+            // TODO : 웹페이지 뷰 띄우기
+            print("\(adImage[indexPath.row].postUrl) : 이 주소로 이동하세요")
         }
     }
     

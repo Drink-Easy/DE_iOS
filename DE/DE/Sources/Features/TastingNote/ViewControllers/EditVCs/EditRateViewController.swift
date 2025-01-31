@@ -7,23 +7,23 @@ import Network
 public class EditRateViewController: UIViewController {
     
     lazy var rView = OnlyRateView()
-    private var ratingValue: Double = 2.5
+    public var ratingValue: Double = 2.5
     let navigationBarManager = NavigationBarManager()
     
-    let noteService = TastingNoteService()
-    let tnManger = NewTastingNoteManager.shared
+    let networkService = TastingNoteService()
+    let tnManager = NewTastingNoteManager.shared
     let wineData = TNWineDataManager.shared
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        rView.header.setTitleLabel(wineData.wineName)
-//        rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
-//        rView.infoView.kindContents.text = wineData.sort
-//        rView.infoView.typeContents.text = wineData.variety
-        rView.header.setTitleLabel("디자인 테스트")
-        rView.infoView.countryContents.text = "디자인" + ", " + "테스트"
-        rView.infoView.kindContents.text = "테스트"
-        rView.infoView.typeContents.text = "테스트"
+        self.updateRatingLabel(with: tnManager.rating)
+        
+        rView.header.setTitleLabel(wineData.wineName)
+        rView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
+        rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
+        rView.infoView.kindContents.text = wineData.sort
+        rView.infoView.typeContents.text = wineData.variety
+        rView.ratingButton.rating = tnManager.rating
     }
     
     
@@ -32,7 +32,6 @@ public class EditRateViewController: UIViewController {
         view.backgroundColor = AppColor.bgGray
         setConstraints()
         setupActions()
-        
         setupNavigationBar()
     }
     
@@ -78,8 +77,19 @@ public class EditRateViewController: UIViewController {
     }
     
     @objc func nextVC() {
-        // Call patch api
-        navigationController?.popViewController(animated: true)
+        // Call post api
+        callUpdateAPI()
     }
     
+    private func callUpdateAPI() {
+        let updateData = networkService.makeUpdateNoteBodyDTO(satisfaction: ratingValue)
+        
+        let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
+        Task {
+            do {
+                try await networkService.patchNote(data: tnData)
+                navigationController?.popViewController(animated: true)
+            }
+        }
+    }
 }

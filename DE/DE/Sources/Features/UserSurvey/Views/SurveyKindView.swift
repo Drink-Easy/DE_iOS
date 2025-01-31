@@ -44,20 +44,20 @@ class SurveyKindView: UIView {
     
     private func constraints() {
         surveyTopView.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).offset(10)
+            $0.top.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10.0))
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
         }
         
         surveyKindCollectionView.snp.makeConstraints {
-            $0.top.equalTo(surveyTopView.snp.bottom).offset(50)
-            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
+            $0.top.equalTo(surveyTopView.snp.bottom).offset(DynamicPadding.dynamicValue(50.0))
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(24.0))
             $0.trailing.equalTo(safeAreaLayoutGuide)
             $0.height.equalTo(400)
         }
         
         nextButton.snp.makeConstraints {
-            $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(28)
-            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-42)
+            $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(28.0))
+            $0.bottom.equalTo(safeAreaLayoutGuide).offset(-DynamicPadding.dynamicValue(42.0))
         }
     }
 }

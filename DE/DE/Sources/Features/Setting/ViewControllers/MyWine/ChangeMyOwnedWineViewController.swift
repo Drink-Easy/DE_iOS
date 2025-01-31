@@ -5,12 +5,14 @@ import CoreModule
 import Network
 import SnapKit
 import Then
-
+// 기기대응 완료
 // 보유와인 정보 수정
 
 class ChangeMyOwnedWineViewController: UIViewController {
     let navigationBarManager = NavigationBarManager()
     lazy var editInfoView = ChangeMyOwnedWineView()
+    
+    let networkService = MyWineService()
     
     var registerWine: MyOwnedWine = MyOwnedWine()
     lazy var selectedDate: DateComponents = {
@@ -19,6 +21,17 @@ class ChangeMyOwnedWineViewController: UIViewController {
         }
         return date
     }()
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,8 +51,8 @@ class ChangeMyOwnedWineViewController: UIViewController {
         
         view.addSubview(editInfoView)
         editInfoView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(40)
-            make.leading.trailing.equalToSuperview().inset(24)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(40))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
             make.bottom.equalToSuperview()
         }
     }
@@ -80,16 +93,72 @@ class ChangeMyOwnedWineViewController: UIViewController {
     
     @objc
     private func deleteNewWine() {
-        // 삭제 api 호출
-        navigationController?.popViewController(animated: true)
+        callDeleteAPI()
+        DispatchQueue.main.async {
+            self.navigationController?.popViewController(animated: true)
+        }
     }
     
     @objc
     private func completeEdit() {
-        // patch api 호출
-        navigationController?.popViewController(animated: true)
+        callUpdateAPI(wineId: self.registerWine.wineId, price: checkPrice(), buyDate: checkDate())
+        DispatchQueue.main.async {
+            self.navigationController?.popViewController(animated: true)
+        }
     }
     
+    private func checkPrice() -> Int? {
+        guard let price = self.editInfoView.priceTextField.text else { return nil}
+        guard let priceInt = Int(price) else {return nil}
+        
+        return priceInt
+    }
+    
+    private func checkDate() -> String? {
+        guard let date = Calendar.current.date(from: selectedDate) else { return nil }
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ko_KR") // 한국 시간대 설정
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let dateString = dateFormatter.string(from: date)
+        
+        return dateString
+    }
+    
+    private func callDeleteAPI() {
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+            print("⚠️ userId가 UserDefaults에 없습니다.")
+            return
+        }
+        
+        Task {
+            do {
+                _ = try await networkService.deleteMyWine(myWineId: registerWine.wineId)
+                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
+                try await APICallCounterManager.shared.incrementDelete(for: userId, controllerName: .myWine)
+            } catch {
+                print("\(error)\n 잠시후 다시 시도해주세요.")
+            }
+        }
+    }
+    
+    private func callUpdateAPI(wineId: Int, price: Int?, buyDate: String?) {
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+            print("⚠️ userId가 UserDefaults에 없습니다.")
+            return
+        }
+        
+        let data = networkService.makeUpdateDTO(buyDate: buyDate, buyPrice: price)
+        
+        Task {
+            do {
+                _ = try await networkService.updateMyWine(myWineId: wineId, data: data)
+                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
+                try await APICallCounterManager.shared.incrementPatch(for: userId, controllerName: .myWine)
+            } catch {
+                print("\(error)\n 잠시후 다시 시도해주세요.")
+            }
+        }
+    }
 }
 
 extension ChangeMyOwnedWineViewController: UICalendarSelectionSingleDateDelegate {

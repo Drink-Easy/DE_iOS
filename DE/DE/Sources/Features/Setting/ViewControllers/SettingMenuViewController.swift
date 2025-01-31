@@ -63,8 +63,8 @@ public final class SettingMenuViewController : UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        Task {
-            CheckCacheData()
+        DispatchQueue.main.async {
+            self.CheckCacheData()
         }
     }
     
@@ -90,7 +90,8 @@ public final class SettingMenuViewController : UIViewController {
     }
     
     /// UI에 사용할 데이터 불러오기(캐시 or 서버)
-    func CheckCacheData() {
+    private func CheckCacheData() {
+//        print("캐시데이터 체크하려고 들어옴")
         guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
             print("⚠️ userId가 UserDefaults에 없습니다.")
             return
@@ -99,25 +100,31 @@ public final class SettingMenuViewController : UIViewController {
         Task {
             do {
                 if try await isCacheDataValid(for: userId) {
-                    print("✅ 캐시 데이터 사용 가능")
+//                    print("✅ 캐시 데이터 사용 가능")
                     await useCacheData(for: userId)
                 } else {
-                    fetchMemberInfo()
+//                    print("⚠️ 캐시 데이터 유효하지 않음, 서버에서 불러오기")
+                    await fetchMemberInfo()
                 }
             } catch {
-                print("⚠️ 캐시 데이터 검증 실패: \(error)")
-                fetchMemberInfo()
+                print("⚠️ 캐시 데이터 검증 중 오류 발생: \(error.localizedDescription)")
+                await fetchMemberInfo() // ❗️ 에러 발생 시에도 서버 데이터 호출
             }
         }
     }
-
-    /// 캐시 데이터 검증
+    
     private func isCacheDataValid(for userId: Int) async throws -> Bool {
-        let isCallCountZero = try await APICallCounterManager.shared.isCallCountZero(for: userId, controllerName: .member)
-        
-        // 이름, 이미지만 검증
-        let hasNoNilFields = try await PersonalDataManager.shared.checkPersonalDataTwoPropertyHasNil(for: userId)
-        return isCallCountZero && hasNoNilFields
+        do {
+            let isCallCountZero = try await APICallCounterManager.shared.isCallCountZero(for: userId, controllerName: .member)
+            
+            // 이름, 이미지만 검증
+            let hasNilFields = try await PersonalDataManager.shared.checkPersonalDataTwoPropertyHasNil(for: userId)
+            return isCallCountZero && !hasNilFields
+        } catch {
+            print(error)
+            try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
+        }
+        return false
     }
 
     /// 캐시 데이터 사용
@@ -135,39 +142,27 @@ public final class SettingMenuViewController : UIViewController {
         }
     }
 
-    /// 서버에서 데이터 가져오기
-    public func fetchMemberInfo() {
-        networkService.fetchUserInfo(completion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let data):
-                guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                    print("⚠️ userId가 UserDefaults에 없습니다.")
-                    return
-                }
-                guard let username = data?.username,
-                      let imgUrl = data?.imageUrl else {return}
-                Task {
-                    // 데이터 할당
-                    self.profileData = SimpleProfileInfoData(name: username, imageURL: imgUrl, uniqueUserId: userId)
-                    self.setUserData(userName: username, imageURL: imgUrl)
-                    // 로컬 캐시 데이터에 저장(덮어쓰기)
-                    await self.saveUserInfo(data: SimpleProfileInfoData(name: username, imageURL: imgUrl, uniqueUserId: userId))
-                    do {
-                        // get api -> 모든 call counter 초기화
-                        try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
-                        return
-                    } catch {
-                        print("⚠️ API 호출 카운트 초기화 실패: \(error)")
-                    }
-                }
-            case .failure(let error ):
-                print("Error: \(error)")
-            }
-        })
+    private func fetchMemberInfo() async {
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+            print("⚠️ userId가 UserDefaults에 없습니다.")
+            return
+        }
+        
+        do {
+            let data = try await networkService.fetchUserInfoAsync()
+            
+            self.profileData = SimpleProfileInfoData(name: data.username, imageURL: data.imageUrl, uniqueUserId: userId)
+            
+            let userData = MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
+            
+            self.setUserData(userName: data.username, imageURL: data.imageUrl)
+//            print("✅ 서버 데이터 성공적으로 가져옴: \(data.username)")
+            await saveUserInfo(data: userData)
+        } catch {
+            print("❌ 서버에서 사용자 정보를 가져오지 못함: \(error.localizedDescription)")
+        }
     }
-    
-    
+        
     /// UI update
     func setUserData(userName: String, imageURL: String) {
         let profileImgURL = URL(string: imageURL)
@@ -175,14 +170,28 @@ public final class SettingMenuViewController : UIViewController {
         self.nameLabel.text = "\(userName) 님"
     }
     
-    /// 새로 받은 데이터 저장
-    func saveUserInfo(data: SimpleProfileInfoData) async {
+    private func saveUserInfo(data: MemberInfoResponse) async {
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+            print("⚠️ userId가 UserDefaults에 없습니다.")
+            return
+        }
+        
         do {
-            try await PersonalDataManager.shared.updatePersonalData(for: data.uniqueUserId,
-                                                                    userName: data.name,
-                                                                    userImageURL: data.imageURL)
+            try await PersonalDataManager.shared.updatePersonalData(for: userId,
+                userName: data.username,
+                userImageURL: data.imageUrl,
+                userCity: data.city,
+                authType: data.authType,
+                email: data.email,
+                adult: data.adult
+            )
+
+            try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
+            try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
+
+//            print("✅ 사용자 정보가 성공적으로 캐시에 저장되었습니다.")
         } catch {
-            print(error)
+            print("❌ 사용자 정보 저장 실패: \(error.localizedDescription)")
         }
     }
     
@@ -222,11 +231,14 @@ extension SettingMenuViewController: UITableViewDataSource {
         cell.textLabel?.textColor = AppColor.black
         cell.selectionStyle = .none
 
-        // Chevron 추가
+        // ✅ Chevron 추가 (정렬 조정)
         let chevronImage = UIImageView(image: UIImage(systemName: "chevron.right"))
         chevronImage.tintColor = AppColor.gray70
+        chevronImage.frame = CGRect(x: 0, y: 0, width: 12, height: 20) // 원하는 크기로 조정
+        chevronImage.contentMode = .scaleAspectFit
+        
         cell.accessoryView = chevronImage
-
+        cell.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 20)
         return cell
     }
 }

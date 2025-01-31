@@ -2,11 +2,13 @@
 
 import UIKit
 import CoreModule
+import Network
 
 public class MainTabBarController: UITabBarController {
     
     let homeVC = HomeViewController()
-    let classVC = HomeViewController()
+    
+    let networkService = MemberService()
     
     public var userName: String? {
         didSet {
@@ -18,7 +20,6 @@ public class MainTabBarController: UITabBarController {
         if let name = userName {
             print("✅ 닉네임 업데이트: \(name)")
             homeVC.userName = name
-            classVC.userName = name
         } else {
             guard let userId = UserDefaults.standard.object(forKey: "userId") as? Int else {
                 print("⚠️ userId가 UserDefaults에 저장되어 있지 않습니다.")
@@ -29,13 +30,26 @@ public class MainTabBarController: UITabBarController {
                 do {
                     let name = try await PersonalDataManager.shared.fetchUserName(for: userId)
                     homeVC.userName = name
-                    classVC.userName = name
                 } catch {
+                    let name = try await networkService.getUserName()
+                    homeVC.userName = name
                     print(error.localizedDescription)
-                    homeVC.userName = "노네임"
-                    classVC.userName = "노네임"
                 }
             }
+        }
+    }
+    
+    func saveUserInfo(userId: Int, data: MemberInfoResponse) async {
+        do {
+            try await PersonalDataManager.shared.updatePersonalData(for: userId,
+                                                                    userName: data.username,
+                                                                    userImageURL: data.imageUrl,
+                                                                    userCity: data.city,
+                                                                    authType: data.authType,
+                                                                    email: data.email,
+                                                                    adult: data.adult)
+        } catch {
+            print(error)
         }
     }
 
@@ -54,7 +68,7 @@ public class MainTabBarController: UITabBarController {
     
     public func configureTabs() {
         let nav1 = UINavigationController(rootViewController: homeVC)
-        let nav2 = UINavigationController(rootViewController: TestVC())
+        let nav2 = UINavigationController(rootViewController: AllTastingNoteVC())
         let nav3 = UINavigationController(rootViewController: SettingMenuViewController())
         
         let home = UIImage(systemName: "house.fill")

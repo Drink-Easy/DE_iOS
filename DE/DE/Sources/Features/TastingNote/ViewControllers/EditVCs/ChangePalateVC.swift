@@ -5,13 +5,19 @@ import SnapKit
 import Then
 
 import CoreModule
+import Network
 
 //// 테이스팅 노트 palate 수정
 public class ChangePalateVC: UIViewController {
     
     let navigationBarManager = NavigationBarManager()
+    let networkService = TastingNoteService()
+    
     let tnManager = NewTastingNoteManager.shared
     let wineData = TNWineDataManager.shared
+    
+    public var palateInfo: [Double] = []
+    private var sliderValues: [String: Int] = [:]
     
     let scrollView = UIScrollView().then {
         $0.isScrollEnabled = true
@@ -22,16 +28,23 @@ public class ChangePalateVC: UIViewController {
     }
     private let wineNameTitle = WineNameView()
     private let recordGraphView = RecordGraphView()
-    
-    private var sliderValues: [String: Int] = [:]
-    
+    let nextButton = CustomButton(
+        title: "저장하기",
+        titleColor: .white,
+        isEnabled: true
+    )
+
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        wineNameTitle.setTitleLabel("와인이에용") //TODO: 와인이름 세팅
-        recordGraphView.chartView.viewModel.loadSliderValues(from: sliderValues) //TODO: 원래 palate int 값 설정
+        wineNameTitle.setTitleLabel(wineData.wineName)
+        
+        recordGraphView.recordSliderView.sweetnessView.slider.setSavedValue(palateInfo[0])
+        recordGraphView.recordSliderView.alcoholView.slider.setSavedValue(palateInfo[1])
+        recordGraphView.recordSliderView.tanninView.slider.setSavedValue(palateInfo[2])
+        recordGraphView.recordSliderView.bodyView.slider.setSavedValue(palateInfo[3])
+        recordGraphView.recordSliderView.acidityView.slider.setSavedValue(palateInfo[4])
         recordGraphView.updateLabels()
-        recordGraphView.nextButton.setTitle("저장하기", for: .normal)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -41,9 +54,11 @@ public class ChangePalateVC: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        palateInfo = tnManager.getSliderValues()
         setupUI()
         setupActions()
         setupNavigationBar()
+        initializeSliderValues()
     }
     
     private func setupUI() {
@@ -52,6 +67,7 @@ public class ChangePalateVC: UIViewController {
         
         contentView.addSubview(wineNameTitle)
         contentView.addSubview(recordGraphView)
+        contentView.addSubview(nextButton)
         scrollView.addSubview(contentView)
         
         scrollView.snp.makeConstraints { make in
@@ -61,6 +77,7 @@ public class ChangePalateVC: UIViewController {
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.width.equalToSuperview()
+            make.bottom.equalTo(nextButton.snp.bottom).offset(40)
         }
         
         wineNameTitle.snp.makeConstraints { make in
@@ -70,18 +87,18 @@ public class ChangePalateVC: UIViewController {
         }
         
         recordGraphView.snp.makeConstraints { make in
-            make.top.equalTo(wineNameTitle.snp.bottom)
+            make.top.equalTo(wineNameTitle.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(24)
             make.height.equalTo(Constants.superViewHeight)
         }
-        
-        contentView.snp.makeConstraints { make in
-            make.bottom.equalTo(recordGraphView.snp.bottom).offset(100)
+        nextButton.snp.makeConstraints { make in
+            make.top.equalTo(recordGraphView.snp.bottom).offset(50)
+            make.leading.trailing.equalToSuperview().inset(24)
         }
     }
     
     private func setupActions() {
-        recordGraphView.nextButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
+        nextButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         recordGraphView.setupSliders(target: self, action: #selector(sliderValueChanged))
     }
     
@@ -98,10 +115,22 @@ public class ChangePalateVC: UIViewController {
     }
     
     @objc private func saveButtonTapped() {
-        // TODO: 수정 데이터 연결 api 호출
+        callUpdateAPI()
+        
         // popViewController
         // 데이터 매니저에 변경된 데이터 저장하기
-        navigationController?.popViewController(animated: true)
+    }
+    
+    private func callUpdateAPI() {
+        let updateData = networkService.makeUpdateNoteBodyDTO(sugarContent: Int(recordGraphView.recordSliderView.sweetnessView.slider.value), acidity: Int(recordGraphView.recordSliderView.acidityView.slider.value), tannin: Int(recordGraphView.recordSliderView.tanninView.slider.value), body: Int(recordGraphView.recordSliderView.bodyView.slider.value), alcohol: Int(recordGraphView.recordSliderView.alcoholView.slider.value))
+        
+        let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
+        Task {
+            do {
+                try await networkService.patchNote(data: tnData)
+                navigationController?.popViewController(animated: true)
+            }
+        }
     }
     
     @objc private func sliderValueChanged(_ sender: UISlider) {
@@ -119,6 +148,16 @@ public class ChangePalateVC: UIViewController {
         default:
             break
         }
+        recordGraphView.chartView.viewModel.loadSliderValues(from: sliderValues)
+    }
+    
+    private func initializeSliderValues() {
+        sliderValues["Sweetness"] = Int(palateInfo[0])
+        sliderValues["Alcohol"] = Int(palateInfo[1])
+        sliderValues["Tannin"] = Int(palateInfo[2])
+        sliderValues["Body"] = Int(palateInfo[3])
+        sliderValues["Acidity"] = Int(palateInfo[4])
+        
         recordGraphView.chartView.viewModel.loadSliderValues(from: sliderValues)
     }
 }

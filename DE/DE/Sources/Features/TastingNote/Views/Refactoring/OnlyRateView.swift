@@ -106,12 +106,12 @@ class OnlyRateView: UIView {
         }
         
         infoView.snp.makeConstraints { make in
-            make.top.equalTo(header.snp.bottom).offset(20) // TODO : 동적 기기 대응
+            make.top.equalTo(header.snp.bottom).offset(DynamicPadding.dynamicValue(20))
             make.leading.trailing.equalToSuperview()
         }
         
         ratingHeader.snp.makeConstraints { make in
-            make.top.equalTo(infoView.snp.bottom).offset(50) // TODO : 동적 기기 대응
+            make.top.equalTo(infoView.snp.bottom).offset(DynamicPadding.dynamicValue(50))
             make.leading.trailing.equalToSuperview()
             make.height.greaterThanOrEqualTo(30)
         }
@@ -128,15 +128,14 @@ class OnlyRateView: UIView {
         }
         
         ratingBody.snp.makeConstraints { make in
-            make.top.equalTo(ratingHeader.snp.bottom).offset(24) // TODO : 동적 기기 대응
+            make.top.equalTo(ratingHeader.snp.bottom).offset(DynamicPadding.dynamicValue(24))
             make.leading.equalTo(ratingHeader.snp.leading)
             make.trailing.equalTo(ratingHeader.snp.trailing)
         }
         
         saveButton.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().inset(40) // 동적 기기 대응
+            make.bottom.equalToSuperview().inset(DynamicPadding.dynamicValue(40))
             make.leading.trailing.equalToSuperview()
-//            make.top.equalTo(ratingBody.snp.bottom).offset(300)
             make.height.equalTo(60)
         }
     }

@@ -2,6 +2,7 @@
 
 import UIKit
 import SnapKit
+import Then
 
 public class CustomStepSlider: UISlider {
     
@@ -19,6 +20,7 @@ public class CustomStepSlider: UISlider {
         self.stepValues = [step1, step2, step3, step4, step5]
         setupUI()
         setupTrack()
+        self.value = stepValues[2] // 기본값: 60
         if text1 == "" { setupCustomLabelThumb() } else { setupCustomThumb() }
         setupStepLabels()
     }
@@ -44,21 +46,17 @@ public class CustomStepSlider: UISlider {
         return imageView
     }()
     
-    private let thumbLabel: UILabel = {
-        let label = UILabel()
+    private let thumbLabel = UILabel().then { label in
         label.textAlignment = .center
         label.font = UIFont.boldSystemFont(ofSize: 10)
         label.textColor = .white
-        return label
-    }()
+    }
     
-    private lazy var stepStackView: UIStackView = {
-        let s = UIStackView()
+    private lazy var stepStackView = UIStackView().then { s in
         s.axis = .horizontal
         s.alignment = .center
         s.distribution = .equalSpacing
-        return s
-    }()
+    }
     
     private func setupUI() {
         
@@ -67,11 +65,13 @@ public class CustomStepSlider: UISlider {
         stepStackView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.centerY.equalToSuperview()
-            make.height.equalTo(8)
         }
         
         for _ in 0..<stepCounts {
             let steps = createCircleView()
+            steps.snp.makeConstraints { make in
+                make.width.height.equalTo(8)
+            }
             stepStackView.addArrangedSubview(steps)
         }
     }
@@ -105,8 +105,7 @@ public class CustomStepSlider: UISlider {
         thumbLabel.snp.makeConstraints { make in
             make.bottom.equalTo(customThumbView.snp.bottom).inset(20)
             make.height.equalTo(customThumbView).inset(5) // Thumb 이미지 내부에 적절한 여백 추가
-            make.centerX.equalTo(customThumbView)
-            make.width.equalTo(20)
+            make.leading.trailing.equalTo(customThumbView)
         }
         
         // PanGestureRecognizer 추가
@@ -127,27 +126,33 @@ public class CustomStepSlider: UISlider {
     }
     
     // MARK: - Create Circle View
+    // 각 구간별 동그라미 생성
     private func createCircleView() -> UIView {
         let circleView = UIView()
         circleView.layer.cornerRadius = 4
-        circleView.backgroundColor = AppColor.bgGray
-        circleView.snp.makeConstraints { make in
-            make.width.height.equalTo(8)
-        }
-        
-        let innerCircle = UIView()
-        innerCircle.layer.cornerRadius = 3
-        innerCircle.backgroundColor = AppColor.purple50
-        circleView.addSubview(innerCircle)
-        innerCircle.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(1)
-            make.width.height.equalTo(6)
-        }
-        
+        circleView.layer.borderWidth = 1
+        circleView.layer.borderColor = AppColor.bgGray?.cgColor
+        circleView.backgroundColor = AppColor.purple50
         return circleView
     }
     
     // MARK: - Setup Track
+    public func setSavedValue(_ input: Double = 60) {
+        switch input {
+        case 20:
+            value = stepValues[0]
+        case 40:
+            value = stepValues[1]
+        case 60:
+            value = stepValues[2]
+        case 80:
+            value = stepValues[3]
+        default:
+            value = stepValues[4]
+        }
+        updateThumbPosition(animated: false)
+    }
+    
     private func setupTrack() {
         self.minimumTrackTintColor = AppColor.purple30
         self.maximumTrackTintColor = AppColor.purple30
@@ -159,7 +164,6 @@ public class CustomStepSlider: UISlider {
         
         minimumValue = stepValues.first ?? 20
         maximumValue = stepValues.last ?? 100
-        value = stepValues[2]
         
         setThumbImage(UIImage(), for: .normal)
         

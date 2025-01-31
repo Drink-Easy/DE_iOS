@@ -6,7 +6,7 @@ import Then
 import CoreModule
 import SwiftyToaster
 
-class NewbieEnjoyDrinkingViewController: UIViewController {
+public class NewbieEnjoyDrinkingViewController: UIViewController {
     
     private let navigationBarManager = NavigationBarManager()
     
@@ -15,7 +15,7 @@ class NewbieEnjoyDrinkingViewController: UIViewController {
     private var selectedItems: [String] = []
     private let maxSelectionCount = 2
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         self.view = surveyKindView
@@ -52,6 +52,7 @@ class NewbieEnjoyDrinkingViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
+        UserSurveyManager.shared.calculateDrinkType(selectedItems)
         let vc = NewbieFoodViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -100,9 +101,9 @@ extension NewbieEnjoyDrinkingViewController: UICollectionViewDelegateFlowLayout,
         let font = UIFont.ptdMediumFont(ofSize: 16)
         let size = title.size(withAttributes: [.font: font])
         
-        let padding: CGFloat = 44
+        let padding: CGFloat = DynamicPadding.dynamicValue(44.0)
         let cellWidth = size.width + padding
         
-        return CGSize(width: cellWidth, height: 49)
+        return CGSize(width: cellWidth, height: DynamicPadding.dynamicValue(49.0))
     }
 }

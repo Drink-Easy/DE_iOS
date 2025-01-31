@@ -64,9 +64,21 @@ public final class MemberService : NetworkManager {
         request(target: .patchMemberInfo(body: body), decodingType: String.self, completion: completion)
     }
     
+    public func postUserInfoAsync(body: MemberRequestDTO) async throws -> String {
+        return try await requestAsync(target: .patchMemberInfo(body: body))
+    }
+    
     /// 개인정보 불러오기 API
-    public func fetchUserInfo(completion: @escaping (Result<MemberInfoResponse?, NetworkError>) -> Void) {
-        requestOptional(target: .getMemberInfo, decodingType: MemberInfoResponse.self, completion: completion)
+    public func fetchUserInfo(completion: @escaping (Result<MemberInfoResponse, NetworkError>) -> Void) {
+        request(target: .getMemberInfo, decodingType: MemberInfoResponse.self, completion: completion)
+    }
+    
+    public func fetchUserInfoAsync() async throws -> MemberInfoResponse {
+        return try await requestAsync(target: .getMemberInfo, decodingType: MemberInfoResponse.self)
+    }
+    
+    public func getUserName() async throws -> String {
+        return try await requestAsync(target: .getNickname)
     }
     
     /// 사용자 탈퇴 API

@@ -24,31 +24,31 @@ public final class MyWineService : NetworkManager {
     
     /// 보유와인 추가 데이터 구조 생성
     public func makePostDTO(wineId: Int, buyDate: String, buyPrice: Int) -> MyWineRequest {
-        return MyWineRequest(wineId: wineId, purchaseData: buyDate, purchasePrice: buyPrice)
+        return MyWineRequest(wineId: wineId, purchaseDate: buyDate, purchasePrice: buyPrice)
     }
     
     /// 보유와인 업데이트 데이터 구조 생성
     public func makeUpdateDTO(buyDate: String?, buyPrice: Int?) -> MyWineUpdateRequest {
-        return MyWineUpdateRequest(purchaseData: buyDate, purchasePrice: buyPrice)
+        return MyWineUpdateRequest(purchaseDate: buyDate, purchasePrice: buyPrice)
     }
     
     /// 보유와인 가져오기 API
-    public func fetchAllMyWines(completion: @escaping (Result<[MyWineResponse]?, NetworkError>) -> Void) {
-        requestOptional(target: .getMyWines, decodingType: [MyWineResponse].self, completion: completion)
+    public func fetchAllMyWines() async throws -> [MyWineResponse]? {
+        return try await requestOptionalAsync(target: .getMyWines, decodingType: [MyWineResponse].self)
     }
     
     /// 새 보유와인 등록하기 API
-    public func postMyWine(data: MyWineRequest, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .postMyWine(data: data), decodingType: String.self, completion: completion)
+    public func postMyWine(data: MyWineRequest) async throws -> String {
+        return try await requestAsync(target: .postMyWine(data: data))
     }
     
     /// 보유와인 정보 업데이트 API
-    public func updateMyWine(myWineId: Int, data: MyWineUpdateRequest, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .patchMyWine(myWineId: myWineId, data: data), decodingType: String.self, completion: completion)
+    public func updateMyWine(myWineId: Int, data: MyWineUpdateRequest) async throws -> String {
+        return try await requestAsync(target: .patchMyWine(myWineId: myWineId, data: data))
     }
     
     /// 보유와인 삭제하기 API
-    public func deleteMyWine(myWineId: Int, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .deleteMyWine(myWineId: myWineId), decodingType: String.self, completion: completion)
+    public func deleteMyWine(myWineId: Int) async throws -> String {
+        return try await requestAsync(target: .deleteMyWine(myWineId: myWineId))
     }
 }

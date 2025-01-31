@@ -41,3 +41,4 @@ protocol NetworkManager {
     ) async throws -> T?
     
 }
+

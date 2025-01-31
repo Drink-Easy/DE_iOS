@@ -7,6 +7,7 @@ public class NewTastingNoteManager {
     public static let shared = NewTastingNoteManager()
     
     // MARK: - Properties
+    var noteId: Int = 0
     var wineId: Int = 0
     var color: String = ""
     var tasteDate: String = ""
@@ -35,24 +36,12 @@ public class NewTastingNoteManager {
         self.tasteDate = date
     }
     
-    func saveSugarContent(_ value: Int) {
-        self.sugarContent = value
-    }
-    
-    func saveAcidity(_ value: Int) {
-        self.acidity = value
-    }
-    
-    func saveTannin(_ value: Int) {
-        self.tannin = value
-    }
-    
-    func saveBody(_ value: Int) {
-        self.body = value
-    }
-    
-    func saveAlcohol(_ value: Int) {
-        self.alcohol = value
+    func savePalate(sugarContent: Int, acidity: Int, tannin: Int, body: Int, alcohol: Int) {
+        self.sugarContent = sugarContent
+        self.acidity = acidity
+        self.tannin = tannin
+        self.body = body
+        self.alcohol = alcohol
     }
     
     func saveNose(_ values: [String]) {
@@ -65,6 +54,35 @@ public class NewTastingNoteManager {
     
     func saveReview(_ text: String) {
         self.review = text
+    }
+    
+    // MARK: - Save All Data
+    func saveAllData(
+        noteId: Int,
+        wineId: Int,
+        color: String,
+        tasteDate: String,
+        sugarContent: Int,
+        acidity: Int,
+        tannin: Int,
+        body: Int,
+        alcohol: Int,
+        nose: [String],
+        rating: Double,
+        review: String
+    ) {
+        self.noteId = noteId
+        self.wineId = wineId
+        self.color = color
+        self.tasteDate = tasteDate
+        self.sugarContent = sugarContent
+        self.acidity = acidity
+        self.tannin = tannin
+        self.body = body
+        self.alcohol = alcohol
+        self.nose = nose
+        self.rating = rating
+        self.review = review
     }
     
     // MARK: - Fetch Functions
@@ -80,14 +98,8 @@ public class NewTastingNoteManager {
         return tasteDate
     }
     
-    func getSliderValues() -> [String: Int] {
-        return [
-            "Sweetness": sugarContent,
-            "Acidity": acidity,
-            "Tannin": tannin,
-            "Body": body,
-            "Alcohol": alcohol
-        ]
+    func getSliderValues() -> [Double] {
+        return [Double(sugarContent), Double(alcohol), Double(tannin), Double(body), Double(acidity)]
     }
     
     func getNose() -> [String] {

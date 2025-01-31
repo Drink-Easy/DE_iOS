@@ -3,26 +3,26 @@
 import UIKit
 import SwiftData
 
+/// 🔥 PersonalData(개인 정보) 저장 및 관리하는 싱글톤 매니저
 public final class PersonalDataManager {
+    
+    /// 싱글톤 인스턴스
     public static let shared = PersonalDataManager()
     
-    lazy var container: ModelContainer = {
-        do {
-            let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
-            let container = try ModelContainer(
-                for: UserData.self, PersonalData.self,
-                configurations: configuration
-            )
-            print("✅ SwiftData 초기화 성공!")
-            return container
-        } catch {
-            print("❌ SwiftData 초기화 실패: \(error.localizedDescription)")
-            fatalError("SwiftData 초기화 실패: \(error.localizedDescription)")
-        }
-    }()
+    private init() {} // 외부 인스턴스 생성 방지
+
+    // MARK: - Public Methods
     
-    //MARK: - Methods
-    /// personal data 생성
+    /// 🔹 PersonalData 생성 (초기 생성)
+    /// - Parameters:
+    ///   - userId: 유저 ID
+    ///   - userName: 유저 이름 (Optional)
+    ///   - userImageURL: 유저 프로필 이미지 URL (Optional)
+    ///   - userCity: 유저가 선택한 지역 (Optional)
+    ///   - authType: 로그인 방식 (Optional)
+    ///   - email: 이메일 (Optional)
+    ///   - adult: 성인 여부 (Default: false)
+    /// - Throws: `PersonalDataError.saveFailed`
     @MainActor
     public func createPersonalData(
         for userId: Int,
@@ -33,18 +33,15 @@ public final class PersonalDataManager {
         email: String? = nil,
         adult: Bool? = false
     ) async throws {
-        let context = container.mainContext
+        let context = UserDataManager.shared.container.mainContext
+        
+        let user = try UserDataManager.shared.fetchUser(userId: userId)
 
-        // 1. 사용자 확인
-        let user = try fetchUser(by: userId, in: context)
-
-        // 2. 기존 PersonalData 존재 여부 확인
         if user.userInfo != nil {
             print("✅ PersonalData가 이미 존재합니다.")
             return
         }
 
-        // 3. PersonalData 생성
         let newPersonalData = PersonalData(
             userName: userName,
             userImageURL: userImageURL,
@@ -56,35 +53,39 @@ public final class PersonalDataManager {
         )
         user.userInfo = newPersonalData
 
-        // 4. 저장
         do {
             try context.save()
-            print("✅ 새로운 PersonalData가 생성되었습니다.")
+            print("✅ 새로운 PersonalData 생성 완료!")
         } catch {
             throw PersonalDataError.saveFailed(reason: error.localizedDescription)
         }
     }
     
-    /// personal data 불러오기
-    /// - 마이페이지 1번화면
-    /// - 마이페이지 2번화면
+    /// 🔹 PersonalData 불러오기
+    /// - Parameter userId: 유저 ID
+    /// - Returns: 해당 유저의 `PersonalData` 객체
+    /// - Throws: `PersonalDataError.personalDataNotFound`
     @MainActor
     public func fetchPersonalData(for userId: Int) async throws -> PersonalData {
-        let context = container.mainContext
-
-        // 1. 사용자 확인
-        let user = try fetchUser(by: userId, in: context)
-
-        // 2. PersonalData 확인 및 반환
+        let user = try UserDataManager.shared.fetchUser(userId: userId)
+        
         guard let personalData = user.userInfo else {
-            throw PersonalDataError.userNotFound
+            throw PersonalDataError.personalDataNotFound
         }
 
         return personalData
     }
     
-    /// personal data 업데이트
-    /// 마이페이지 수정 후
+    /// 🔹 PersonalData 업데이트
+    /// - Parameters:
+    ///   - userId: 유저 ID
+    ///   - userName: 유저 이름 (Optional)
+    ///   - userImageURL: 프로필 이미지 URL (Optional)
+    ///   - userCity: 선택한 지역 (Optional)
+    ///   - authType: 로그인 방식 (Optional)
+    ///   - email: 이메일 (Optional)
+    ///   - adult: 성인 여부 (Optional)
+    /// - Throws: `PersonalDataError.personalDataNotFound`, `PersonalDataError.saveFailed`
     @MainActor
     public func updatePersonalData(
         for userId: Int,
@@ -95,37 +96,22 @@ public final class PersonalDataManager {
         email: String? = nil,
         adult: Bool? = nil
     ) async throws {
-        let context = container.mainContext
+        let context = UserDataManager.shared.container.mainContext
 
-        // 1. 사용자 확인
-        let user = try fetchUser(by: userId, in: context)
-
-        // 2. PersonalData 확인
+        let user = try UserDataManager.shared.fetchUser(userId: userId)
+        
         guard let personalData = user.userInfo else {
-            throw PersonalDataError.userNotFound
+            try await createPersonalData(for: userId, userName: userName, userImageURL: userImageURL, userCity: userCity, authType: authType, email: email, adult: adult)
+            return
         }
 
-        // 3. 필드별 업데이트
-        if let userName = userName {
-            personalData.userName = userName
-        }
-        if let userImageURL = userImageURL {
-            personalData.userImageURL = userImageURL
-        }
-        if let userCity = userCity {
-            personalData.userCity = userCity
-        }
-        if let authType = authType {
-            personalData.authType = authType
-        }
-        if let email = email {
-            personalData.email = email
-        }
-        if let adult = adult {
-            personalData.adult = adult
-        }
+        if let userName = userName { personalData.userName = userName }
+        if let userImageURL = userImageURL { personalData.userImageURL = userImageURL }
+        if let userCity = userCity { personalData.userCity = userCity }
+        if let authType = authType { personalData.authType = authType }
+        if let email = email { personalData.email = email }
+        if let adult = adult { personalData.adult = adult }
 
-        // 4. 저장
         do {
             try context.save()
             print("✅ PersonalData 업데이트 성공!")
@@ -134,115 +120,88 @@ public final class PersonalDataManager {
         }
     }
     
+    /// 🔹 PersonalData의 모든 값이 nil인지 확인
+    /// - Parameter userId: 유저 ID
+    /// - Returns: 모든 값이 nil이면 `true`, 그렇지 않으면 `false`
+    /// - Throws: `PersonalDataError.personalDataNotFound`
     @MainActor
     public func checkPersonalDataHasNil(for userId: Int) async throws -> Bool {
-        let context = container.mainContext
-
-        // 1. 사용자 확인
-        let user = try fetchUser(by: userId, in: context)
-
-        // 2. PersonalData 확인
+        let user = try UserDataManager.shared.fetchUser(userId: userId)
         guard let personalData = user.userInfo else {
-            throw PersonalDataError.userNotFound
+            throw PersonalDataError.personalDataNotFound
         }
 
-        // 3. nil 값 검증
         return personalData.hasNilProperty()
     }
 
-    // TODO : 프로퍼티 2개만 nil 검사 - name, image
-    
+    /// 🔹 특정 두 개의 필드(`userName`, `userImageURL`)만 nil인지 확인
+    /// - Parameter userId: 유저 ID
+    /// - Returns: 두 개의 필드가 nil이면 `true`, 그렇지 않으면 `false`
+    /// - Throws: `PersonalDataError.personalDataNotFound`
     @MainActor
     public func checkPersonalDataTwoPropertyHasNil(for userId: Int) async throws -> Bool {
-        let context = container.mainContext
-
-        // 1. 사용자 확인
-        let user = try fetchUser(by: userId, in: context)
-
-        // 2. PersonalData 확인
+        let user = try UserDataManager.shared.fetchUser(userId: userId)
         guard let personalData = user.userInfo else {
-            throw PersonalDataError.userNotFound
+            throw PersonalDataError.personalDataNotFound
         }
 
-        // 3. nil 값 검증
         return personalData.checkTwoProperty()
     }
     
-    
-    
-    /// personal data  삭제
+    /// 🔹 PersonalData 삭제
+    /// - Parameter userId: 유저 ID
+    /// - Throws: `PersonalDataError.personalDataNotFound`, `PersonalDataError.saveFailed`
     @MainActor
     public func deletePersonalData(for userId: Int) async throws {
-        let context = container.mainContext
+        let context = UserDataManager.shared.container.mainContext
 
-        // 1. 사용자 확인
-        let user = try fetchUser(by: userId, in: context)
-
-        // 2. PersonalData 확인
+        let user = try UserDataManager.shared.fetchUser(userId: userId)
         guard let personalData = user.userInfo else {
-            throw PersonalDataError.userNotFound
+            throw PersonalDataError.personalDataNotFound
         }
 
-        // 3. PersonalData 삭제
         context.delete(personalData)
-        user.userInfo = nil // 관계 해제
+        user.userInfo = nil
 
-        // 4. 저장
         do {
             try context.save()
-            print("✅ PersonalData가 삭제되었습니다.")
+            print("✅ PersonalData 삭제 완료!")
         } catch {
             throw PersonalDataError.saveFailed(reason: error.localizedDescription)
         }
     }
     
-    //MARK: - user nickname 관련 함수
+    /// 🔹 유저 닉네임 가져오기
+    /// - Parameter userId: 유저 ID
+    /// - Returns: 유저 닉네임
+    /// - Throws: `PersonalDataError.personalDataNotFound`
     @MainActor
     public func fetchUserName(for userId: Int) async throws -> String {
-        let context = container.mainContext
+        let user = try UserDataManager.shared.fetchUser(userId: userId)
 
-        // 1. 사용자 확인
-        let user = try fetchUser(by: userId, in: context)
-
-        // 2. 유저 이름 반환
         guard let userName = user.userInfo?.userName, !userName.isEmpty else {
             throw PersonalDataError.saveFailed(reason: "유저 이름이 설정되지 않았습니다.")
         }
 
         return userName
     }
-    
-    // MARK: - 내부 함수
-    
-    /// 유저 검증
-    @MainActor
-    private func fetchUser(by userId: Int, in context: ModelContext) throws -> UserData {
-        let descriptor = FetchDescriptor<UserData>(predicate: #Predicate { $0.userId == userId })
-        let users = try context.fetch(descriptor)
-        
-        guard let user = users.first else {
-            throw WishlistError.userNotFound
-        }
-        
-        return user
-    }
 }
 
+// MARK: - 에러 정의
 public enum PersonalDataError: Error {
-    case userNotFound
+    /// PersonalData가 존재하지 않음
+    case personalDataNotFound
+    /// 데이터 저장 실패
     case saveFailed(reason: String)
-    case unknown
 }
 
 extension PersonalDataError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .userNotFound:
-            return "사용자를 찾을 수 없습니다."
+        case .personalDataNotFound:
+            return "🚨 [오류] PersonalData를 찾을 수 없습니다."
         case .saveFailed(let reason):
-            return "데이터를 저장하는데 실패하였습니다. 원인: \(reason)"
-        case .unknown:
-            return "알 수 없는 에러가 발생했습니다."
+            return "🚨 [오류] PersonalData 저장 실패. 원인: \(reason)"
         }
     }
 }

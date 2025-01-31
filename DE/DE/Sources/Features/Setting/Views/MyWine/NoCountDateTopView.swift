@@ -5,6 +5,7 @@ import Then
 import CoreModule
 import SnapKit
 
+// 기기대응 완료
 /// 날짜 있는 쪽에만 쓰는  빅타이틀
 class NoCountDateTopView: UIView {
     

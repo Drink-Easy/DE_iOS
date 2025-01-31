@@ -10,12 +10,25 @@ class NewbieConsumeViewController: UIViewController {
     private let navigationBarManager = NavigationBarManager()
     
     private var selectedItem: Float?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         self.view = surveySliderView
+        surveySliderView.nextButton.isEnabled = true
+        surveySliderView.nextButton.isEnabled(isEnabled: true)
         setupNavigationBar()
+        
+        UserSurveyManager.shared.union()
+        UserSurveyManager.shared.intersection()
+        
+//        print("====합집합====")
+//        print("\(UserSurveyManager.shared.getUnionVarietyData().count)")
+//        print("\(UserSurveyManager.shared.getUnionSortData().count)")
+//        
+//        print("====교집합====")
+//        print("\(UserSurveyManager.shared.getIntersectionVarietyData().count)")
+//        print("\(UserSurveyManager.shared.getIntersectionSortData().count)")
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -49,8 +62,9 @@ class NewbieConsumeViewController: UIViewController {
     @objc private func sliderValueChanged(_ sender: UISlider) {
         selectedItem = sender.value
         
-        surveySliderView.nextButton.isEnabled = true
-        surveySliderView.nextButton.isEnabled(isEnabled: true)
+        // 버튼 원래부터 enable로
+//        surveySliderView.nextButton.isEnabled = true
+//        surveySliderView.nextButton.isEnabled(isEnabled: true)
     }
     
     @objc func nextButtonTapped() {
@@ -58,7 +72,7 @@ class NewbieConsumeViewController: UIViewController {
         guard let price = self.selectedItem else {return}
         UserSurveyManager.shared.setPrice(Int(price))
         
-        let vc = ResultViewController()
+        let vc = NormalTextViewController()
         navigationController?.pushViewController(vc, animated: true)
     }
 }

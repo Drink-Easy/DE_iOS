@@ -13,8 +13,6 @@ class MyNoteTopView: UIView {
     }
     public lazy var infoView = WineDetailView()
 
-    // 버튼
-//    public lazy var button = CustomButton(title: "저장하기", isEnabled: true)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -44,7 +42,7 @@ class MyNoteTopView: UIView {
         }
         
         infoView.snp.makeConstraints { make in
-            make.top.equalTo(header.snp.bottom).offset(20) // TODO : 동적 기기 대응
+            make.top.equalTo(header.snp.bottom).offset(DynamicPadding.dynamicValue(20))
             make.leading.trailing.equalToSuperview()
         }
     }

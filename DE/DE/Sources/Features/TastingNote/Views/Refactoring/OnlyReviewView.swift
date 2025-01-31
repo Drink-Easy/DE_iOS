@@ -59,24 +59,24 @@ class OnlyReviewView: UIView {
         }
         
         infoView.snp.makeConstraints { make in
-            make.top.equalTo(header.snp.bottom).offset(20) // TODO : 동적 기기 대응
+            make.top.equalTo(header.snp.bottom).offset(DynamicPadding.dynamicValue(20))
             make.leading.trailing.equalToSuperview()
         }
         
         reviewHeader.snp.makeConstraints { make in
-            make.top.equalTo(infoView.snp.bottom).offset(50) // TODO : 동적 기기 대응
+            make.top.equalTo(infoView.snp.bottom).offset(DynamicPadding.dynamicValue(50))
             make.leading.trailing.equalToSuperview()
             make.height.greaterThanOrEqualTo(30)
         }
         
         reviewBody.snp.makeConstraints { make in
-            make.top.equalTo(reviewHeader.snp.bottom).offset(24)
+            make.top.equalTo(reviewHeader.snp.bottom).offset(DynamicPadding.dynamicValue(24))
             make.leading.trailing.equalToSuperview()
             make.height.equalTo(180) // 웬만하면 고정. 버튼 영역 침범 안되도록
         }
         
         saveButton.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().inset(40) // 동적 기기 대응
+            make.bottom.equalToSuperview().inset(DynamicPadding.dynamicValue(40)) // 동적 기기 대응
             make.leading.trailing.equalToSuperview()
 //            make.top.equalTo(reviewBody.snp.bottom).offset(40)
             make.height.equalTo(60)

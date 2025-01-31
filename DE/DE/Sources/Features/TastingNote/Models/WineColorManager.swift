@@ -38,4 +38,5 @@ public final class WineColorManager {
         // Hex 코드와 일치하는 색상 이름을 검색
         return colors.first { $0.colorHexCode == hexCode }?.colorName
     }
+
 }

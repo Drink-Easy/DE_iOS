@@ -33,7 +33,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         setupNavigationBar()
     }
     
-    private lazy var searchHomeView = AddNewWineView(
+    private lazy var searchHomeView = SearchHomeView(
         titleText: "추가할 와인을 선택해주세요",
         placeholder: "와인 이름을 적어 검색"
     )
@@ -141,16 +141,18 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         }
         
         let wine = wineResults[indexPath.row]
-        cell.configureSearch(model: wine)
+        let searchText = searchHomeView.searchBar.text ?? ""
+        cell.configureSearch(model: wine, highlightText: searchText.isEmpty ? nil : searchText)
         
         return cell
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let vc = TastedDateViewController()
+        let vc = BuyNewWineDateViewController()
         let selectedWine = wineResults[indexPath.row]
-        registerWine.updateWine(wineId: selectedWine.wineId, wineName: selectedWine.name)
-        vc.registerWine = self.registerWine
+        MyOwnedWineManager.shared.setWineId(selectedWine.wineId)
+        MyOwnedWineManager.shared.setWineName(selectedWine.name)
+        vc.hidesBottomBarWhenPushed = true // 탭바 숨겨주기
         navigationController?.pushViewController(vc, animated: true)
     }
     
