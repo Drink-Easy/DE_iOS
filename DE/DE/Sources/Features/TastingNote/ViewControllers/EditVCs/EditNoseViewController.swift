@@ -27,10 +27,22 @@ class EditNoseViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        NoseManager.shared.resetSelectedScents()
         topView.header.setTitleLabel(wineData.wineName)
+        
+        for sectionIndex in 0..<NoseManager.shared.scentSections.count {
+            NoseManager.shared.scentSections[sectionIndex].isExpand = false
+        }
         
         scentNames = tnManager.nose
         print(scentNames)
+        
+        for scent in scentNames {
+            NoseManager.shared.toggleScentSelection(scent)
+        }
+
+        middleView.noseCollectionView.reloadData()
+        topView.selectedCollectionView.reloadData()
     }
     
     public override func viewDidLoad() {
@@ -210,7 +222,7 @@ extension EditNoseViewController : UICollectionViewDelegate, UICollectionViewDat
             // 데이터 직접 수정
             NoseManager.shared.scentSections[indexPath.section].scents[indexPath.row].isSelected.toggle()
         }
-
+        
         // UI 업데이트
         collectionView.reloadItems(at: [indexPath])
         Task {
