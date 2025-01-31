@@ -283,8 +283,8 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
             do {
                 try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .wishlist)
                 print("✅ APICounter 생성 완료")
-            } catch APICallCounterError.controllerAlreadyExists {
-                print("✅ APICounter가 이미 존재합니다.")
+            } catch {
+                print(error)
             }
             
             do {

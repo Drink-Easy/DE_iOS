@@ -46,8 +46,8 @@ public class WineData {
 public class WineList {
     @Attribute public var type: String
     @Relationship var wines: [WineData] = []
-    @Attribute var timestamp: Date // 캐시 유효기간 관리
-    @Relationship var user: UserData? // 사용자 관계 (부모 관계)
+    @Attribute var timestamp: Date
+    @Relationship var user: UserData
 
     init(type: WineListType, wines: [WineData], timestamp: Date, user: UserData) {
         self.type = type.rawValue

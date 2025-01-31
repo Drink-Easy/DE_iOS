@@ -47,7 +47,7 @@ class MoreLikelyWineViewController: UIViewController {
             }
             do {
                 // 1. 캐시 데이터 우선 사용
-                wineList = try WineDataManager.shared.fetchWineDataList(userId: userId, wineListType: .recommended)
+                wineList = try await WineDataManager.shared.fetchWineDataList(userId: userId, wineListType: .recommended)
                 if !wineList.isEmpty {
                     print("✅ 캐시된 데이터 사용: \(wineList.count)개")
                     print(wineList[0].wineName)
@@ -110,7 +110,7 @@ class MoreLikelyWineViewController: UIViewController {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
-            try WineDataManager.shared.saveWineData(userId: userId, wineListType: type, wineData: wines, expirationInterval: time)
+            try await WineDataManager.shared.saveWineData(userId: userId, wineListType: type, wineData: wines, expirationInterval: time)
         } catch {
             print("❌ 데이터 저장 중 오류 발생: \(error)")
         }

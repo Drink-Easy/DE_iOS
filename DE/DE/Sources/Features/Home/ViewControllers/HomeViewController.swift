@@ -205,7 +205,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
             do {
                 if type == .recommended {
                     // 1. 캐시 데이터 우선 사용
-                    let cachedWines = try WineDataManager.shared.fetchWineDataList(userId: userId, wineListType: type)
+                    let cachedWines = try await WineDataManager.shared.fetchWineDataList(userId: userId, wineListType: type)
                     if !cachedWines.isEmpty {
                         print("✅ 캐시된 \(type.rawValue) 데이터 사용: \(cachedWines.count)개")
                         updateCollectionView(type: type, with: cachedWines) // 👉 바로 업데이트
@@ -316,7 +316,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                 return
             }
             if type == .recommended {
-                try WineDataManager.shared.saveWineData(userId: userId, wineListType: type, wineData: wines, expirationInterval: time)
+                try await WineDataManager.shared.saveWineData(userId: userId, wineListType: type, wineData: wines, expirationInterval: time)
                 print("✅ \(type.rawValue) 저장 완료: \(wines.count)개")
             } else { // 인기 와인은 다른 데이터 매니저 사용
                 try PopularWineManager.shared.saveWineData(wineData: wines, expirationInterval: time)

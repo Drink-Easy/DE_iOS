@@ -6,30 +6,15 @@ import UIKit
 public final class WineDataManager {
     public static let shared = WineDataManager()
     
-    lazy var container: ModelContainer = {
-        do {
-            let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
-            let container = try ModelContainer(
-                for: WineList.self, WineData.self,
-                configurations: configuration
-            )
-            print("✅ SwiftData 초기화 성공!")
-            return container
-        } catch {
-            print("❌ SwiftData 초기화 실패: \(error.localizedDescription)")
-            fatalError("SwiftData 초기화 실패: \(error.localizedDescription)")
-        }
-    }()
-    
-    private init() {}
+    private init() {} // 싱글톤
     
     /// 와인 데이터를 저장하는 메서드
     @MainActor
     public func saveWineData(userId: Int, wineListType: WineListType, wineData: [WineData], expirationInterval: TimeInterval) throws {
-        let context = container.mainContext
-        
-        // 1. userId 검사
-        let user = try fetchUser(by: userId, in: context)
+        let context = UserDataManager.shared.container.mainContext
+
+        // 1. 사용자 확인
+        let user = try UserDataManager.shared.fetchUser(userId: userId)
         
         do {
             let wineList = try fetchWineList(for: userId, type: wineListType, in: context)
@@ -37,7 +22,12 @@ public final class WineDataManager {
             wineList.wines.append(contentsOf: wineData)
             wineList.timestamp = Date().addingTimeInterval(expirationInterval)
         } catch WineDataManagerError.wineListNotFound {
-            let newWineList = WineList(type: wineListType, wines: wineData, timestamp: Date().addingTimeInterval(expirationInterval), user: user)
+            let newWineList = WineList(
+                type: wineListType,
+                wines: wineData,
+                timestamp: Date().addingTimeInterval(expirationInterval),
+                user: user
+            )
             context.insert(newWineList)
         }
         
@@ -46,38 +36,50 @@ public final class WineDataManager {
     }
     
     /// 와인 데이터 불러오기
+    /// 와인 데이터 불러오기
     @MainActor
     public func fetchWineDataList(userId: Int, wineListType: WineListType) throws -> [WineData] {
-        let context = container.mainContext
+        let context = UserDataManager.shared.container.mainContext
         
-        // 1. 유효 기간이 지난 데이터 삭제
-        try deleteExpiredWineData()
+        // ✅ 1. 유효 기간이 지난 데이터 삭제 (userId 추가)
+        try deleteExpiredWineData(userId: userId)
         
-        // 2. 해당 userId와 wineListType에 맞는 WineList 검색
+        // ✅ 2. 해당 userId와 wineListType에 맞는 WineList 검색
         let wineList = try fetchWineList(for: userId, type: wineListType, in: context)
         
-        // 3. 와인 데이터를 반환
+        // ✅ 3. 와인 데이터를 반환
         return wineList.wines
     }
     
     /// 만료된 와인 데이터 삭제하기
     @MainActor
-    public func deleteExpiredWineData() throws {
-        let context = container.mainContext
+    public func deleteExpiredWineData(userId: Int) {
+        let context = UserDataManager.shared.container.mainContext
         let currentDate = Date()
-        
-        let descriptor = FetchDescriptor<WineList>(predicate: #Predicate { wineList in
-            wineList.timestamp < currentDate
-        })
-        
-        let expiredWineLists = try context.fetch(descriptor)
-        
-        for wineList in expiredWineLists {
-            context.delete(wineList)
+
+        do {
+            let user = try UserDataManager.shared.fetchUser(userId: userId)
+
+            // ✅ 해당 user의 만료된 WineList 필터링
+            let expiredWineLists = user.wines.filter { $0.timestamp < currentDate }
+
+            // ✅ 만료된 WineList 삭제
+            for wineList in expiredWineLists {
+                context.delete(wineList)
+            }
+
+            // ✅ 변경사항 저장
+            if !expiredWineLists.isEmpty {
+                try context.save()
+                print("✅ 만료된 와인 데이터가 삭제되었습니다: \(expiredWineLists.count)개")
+            } else {
+                print("⚠️ 삭제할 만료된 와인 데이터가 없습니다.")
+            }
+        } catch let error as UserDataManagerError {
+            print("❌ 유저 데이터 로드 실패: \(error.localizedDescription)")
+        } catch {
+            print("❌ 알 수 없는 오류 발생: \(error.localizedDescription)")
         }
-        
-        try context.save()
-        print("✅ 만료된 와인 데이터가 삭제되었습니다: \(expiredWineLists.count)개")
     }
     
     // MARK: - 내부 함수
@@ -95,14 +97,16 @@ public final class WineDataManager {
     }
     
     /// WineList의 와인 목록 가져오기
+    @MainActor
     private func fetchWineList(for userId: Int, type: WineListType, in context: ModelContext) throws -> WineList {
-        let descriptor = FetchDescriptor<WineList>(predicate: #Predicate { $0.user?.userId == userId && $0.type == type.rawValue })
-        let wineLists = try context.fetch(descriptor)
-        
-        guard let wineList = wineLists.first else {
+        // ✅ 1. user 가져오기
+        let user = try UserDataManager.shared.fetchUser(userId: userId)
+
+        // ✅ 2. user.wines에서 type이 일치하는 WineList 찾기
+        guard let wineList = user.wines.first(where: { $0.type == type.rawValue }) else {
             throw WineDataManagerError.wineListNotFound
         }
-        
+
         return wineList
     }
     
