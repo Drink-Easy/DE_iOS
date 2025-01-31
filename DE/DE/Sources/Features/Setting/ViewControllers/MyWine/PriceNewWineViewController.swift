@@ -19,6 +19,7 @@ class PriceNewWineViewController: UIViewController {
 
         setupUI()
         setupNavigationBar()
+        setupActions()
     }
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -103,12 +104,11 @@ class PriceNewWineViewController: UIViewController {
             priceNewWineView.nextButton.isEnabled(isEnabled: false)
             return
         }
-        
+
         if text.isEmpty || text == "" {
             priceNewWineView.nextButton.isEnabled(isEnabled: false)
         } else {
             priceNewWineView.nextButton.isEnabled(isEnabled: true)
         }
     }
-
 }

@@ -24,12 +24,12 @@ public final class MyWineService : NetworkManager {
     
     /// 보유와인 추가 데이터 구조 생성
     public func makePostDTO(wineId: Int, buyDate: String, buyPrice: Int) -> MyWineRequest {
-        return MyWineRequest(wineId: wineId, purchaseData: buyDate, purchasePrice: buyPrice)
+        return MyWineRequest(wineId: wineId, purchaseDate: buyDate, purchasePrice: buyPrice)
     }
     
     /// 보유와인 업데이트 데이터 구조 생성
     public func makeUpdateDTO(buyDate: String?, buyPrice: Int?) -> MyWineUpdateRequest {
-        return MyWineUpdateRequest(purchaseData: buyDate, purchasePrice: buyPrice)
+        return MyWineUpdateRequest(purchaseDate: buyDate, purchasePrice: buyPrice)
     }
     
     /// 보유와인 가져오기 API

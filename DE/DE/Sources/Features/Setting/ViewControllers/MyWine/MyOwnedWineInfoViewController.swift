@@ -20,7 +20,6 @@ public class MyOwnedWineInfoViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -35,13 +34,13 @@ public class MyOwnedWineInfoViewController: UIViewController {
         setupNavigationBar()
         setWineData()
         wineDetailView.setEditButton(showEditButton: true)
-        wineDetailView.editButton.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
+        wineDetailView.editButton.addTarget(self, action: #selector(editButtonTapped), for: .allTouchEvents)
     }
     
     private func setWineData() {
         guard let currentWine = self.registerWine else { return }
         header.setTitleLabel(currentWine.wineName)
-        header.infoView.image.sd_setImage(with: URL(string: currentWine.wineImageUrl))
+        header.infoView.image.sd_setImage(with: URL(string: currentWine.wineImageUrl), placeholderImage: UIImage(named: "placeholder"))
         header.infoView.typeContents.text = "\(currentWine.wineCountry), \(currentWine.wineRegion)"
         header.infoView.countryContents.text = currentWine.wineVariety
         header.infoView.kindContents.text = currentWine.wineSort
@@ -57,7 +56,7 @@ public class MyOwnedWineInfoViewController: UIViewController {
         }
         header.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
-            make.leading.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
             make.height.greaterThanOrEqualTo(180)
         }
         wineDetailView.snp.makeConstraints { make in

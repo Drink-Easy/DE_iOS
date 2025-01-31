@@ -18,6 +18,7 @@ class MoreLikelyWineViewController: UIViewController {
             updateLikeWineListView()
         }
     }
+    
     private var wineList: [WineData] = []
     
     override func viewDidLoad() {

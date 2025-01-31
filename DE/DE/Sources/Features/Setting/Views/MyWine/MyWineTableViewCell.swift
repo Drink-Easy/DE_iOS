@@ -21,7 +21,6 @@ class MyWineTableViewCell: UITableViewCell {
     }
     
     private lazy var name = UILabel().then {
-        $0.text = "루이 로드레 빈티지 브륏"
         $0.textColor = Constants.AppColor.DGblack
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
         $0.numberOfLines = 2
@@ -29,13 +28,11 @@ class MyWineTableViewCell: UITableViewCell {
     }
     
     private lazy var price = UILabel().then {
-        $0.text = "구매가 78,000원"
         $0.textColor = Constants.AppColor.gray100
         $0.font = UIFont.ptdRegularFont(ofSize: 14)
     }
     
     private lazy var buyDate = UILabel().then {
-        $0.text = "D+3"
         $0.textColor = Constants.AppColor.purple100
         $0.font = UIFont.ptdRegularFont(ofSize: 14)
     }
@@ -89,14 +86,15 @@ class MyWineTableViewCell: UITableViewCell {
         }
         
         buyDate.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-6)
+            $0.trailing.equalToSuperview().offset(-6).priority(.required)
             $0.top.equalTo(name.snp.top)
         }
         
         name.snp.makeConstraints {
             $0.leading.equalTo(imageBackground.snp.trailing).offset(18)
             $0.top.equalTo(imageBackground.snp.top)
-            //$0.trailing.equalTo(buyDate.snp.leading).offset(-18)
+            $0.trailing.lessThanOrEqualTo(buyDate.snp.leading).offset(-6)
+//            $0.width.lessThanOrEqualTo(Constants.superViewWidth * 0.55)
         }
         
         price.snp.makeConstraints {
