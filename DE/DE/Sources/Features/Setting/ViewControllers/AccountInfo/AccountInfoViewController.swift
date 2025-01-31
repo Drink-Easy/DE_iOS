@@ -45,8 +45,8 @@ class AccountInfoViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        Task {
-            CheckCacheData()
+        DispatchQueue.main.async {
+            self.CheckCacheData()
         }
     }
     
@@ -251,8 +251,8 @@ class AccountInfoViewController: UIViewController {
     //MARK: - SwiftDate Funcs
     
     /// UI에 사용할 데이터 불러오기(캐시 or 서버)
-    /// UI에 사용할 데이터 불러오기 (캐시 or 서버)
     private func CheckCacheData() {
+//        print("캐시데이터 체크하려고 들어옴")
         guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
             print("⚠️ userId가 UserDefaults에 없습니다.")
             return
@@ -261,10 +261,10 @@ class AccountInfoViewController: UIViewController {
         Task {
             do {
                 if try await isCacheDataValid(for: userId) {
-                    print("✅ 캐시 데이터 사용 가능")
+//                    print("✅ 캐시 데이터 사용 가능")
                     await useCacheData(for: userId)
                 } else {
-                    print("⚠️ 캐시 데이터 유효하지 않음, 서버에서 불러오기")
+//                    print("⚠️ 캐시 데이터 유효하지 않음, 서버에서 불러오기")
                     await fetchMemberInfo()
                 }
             } catch {
@@ -276,11 +276,17 @@ class AccountInfoViewController: UIViewController {
     
     /// 캐시 데이터 검증
     private func isCacheDataValid(for userId: Int) async throws -> Bool {
-        let isCallCountZero = try await APICallCounterManager.shared.isCallCountZero(for: userId, controllerName: .member)
-        
-        // 전체 유저 프로필 데이터 nil 검증
-        let hasNilFields = try await PersonalDataManager.shared.checkPersonalDataHasNil(for: userId)
-        return isCallCountZero && !hasNilFields
+        do {
+            let isCallCountZero = try await APICallCounterManager.shared.isCallCountZero(for: userId, controllerName: .member)
+            
+            // 전체 유저 프로필 데이터 nil 검증
+            let hasNilFields = try await PersonalDataManager.shared.checkPersonalDataHasNil(for: userId)
+            return isCallCountZero && !hasNilFields
+        } catch {
+            print(error)
+            try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
+        }
+        return false
     }
     
     /// 캐시 데이터 사용
@@ -294,8 +300,7 @@ class AccountInfoViewController: UIViewController {
                   let city = data.userCity,
                   let authType = data.authType,
                   let adult = data.adult else {
-                print("⚠️ 캐시 데이터에 필요한 정보가 없습니다. -> 서버에서 불러오기")
-                await fetchMemberInfo()
+                print("⚠️ 여기 사실 들어올 일이 없음. 이미 검증해줘서.")
                 return
             }
             
@@ -309,18 +314,13 @@ class AccountInfoViewController: UIViewController {
     
     /// 서버에서 데이터 가져오기
     private func fetchMemberInfo() async {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-
         do {
             let data = try await memberService.fetchUserInfoAsync()
             
             self.userProfile = MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
             self.setUserData(imageURL: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
 
-            print("✅ 서버 데이터 성공적으로 가져옴: \(data.username)")
+//            print("✅ 서버 데이터 성공적으로 가져옴: \(data.username)")
             await saveUserInfo(data: self.userProfile!)
         } catch {
             print("❌ 서버에서 사용자 정보를 가져오지 못함: \(error.localizedDescription)")
@@ -343,12 +343,12 @@ class AccountInfoViewController: UIViewController {
     
     /// 새로 받은 데이터 저장
     private func saveUserInfo(data: MemberInfoResponse) async {
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+            print("⚠️ userId가 UserDefaults에 없습니다.")
+            return
+        }
+        
         do {
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("⚠️ userId가 UserDefaults에 없습니다.")
-                return
-            }
-            
             try await PersonalDataManager.shared.updatePersonalData(for: userId,
                 userName: data.username,
                 userImageURL: data.imageUrl,
@@ -361,7 +361,7 @@ class AccountInfoViewController: UIViewController {
             try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
             try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
 
-            print("✅ 사용자 정보가 성공적으로 캐시에 저장되었습니다.")
+//            print("✅ 사용자 정보가 성공적으로 캐시에 저장되었습니다.")
         } catch {
             print("❌ 사용자 정보 저장 실패: \(error.localizedDescription)")
         }
