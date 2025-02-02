@@ -12,13 +12,13 @@ public class NoticeTableViewCell: UITableViewCell {
     public static let identifier = "NoticeTableViewCell"
 
     public lazy var title = UILabel().then {
-        $0.textColor = .black
+        $0.textColor = AppColor.DGblack
         $0.font = UIFont.ptdMediumFont(ofSize: 16)
         $0.numberOfLines = 1
     }
     
     public lazy var date = UILabel().then {
-        $0.textColor = .black
+        $0.textColor = AppColor.gray70
         $0.font = UIFont.ptdRegularFont(ofSize: 12)
         $0.numberOfLines = 1
     }
@@ -54,13 +54,13 @@ public class NoticeTableViewCell: UITableViewCell {
         title.snp.makeConstraints {
             //$0.top.equalToSuperview().offset(12)
             $0.centerY.equalToSuperview()
-            $0.leading.equalToSuperview().offset(24)
+            $0.leading.equalToSuperview().offset(DynamicPadding.dynamicValue(24))
             $0.width.equalTo(Constants.superViewWidth * 0.6)
         }
         
         date.snp.makeConstraints {
             $0.centerY.equalTo(title)
-            $0.trailing.equalToSuperview().inset(24)
+            $0.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
         }
     }
     

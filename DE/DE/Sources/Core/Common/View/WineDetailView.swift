@@ -111,6 +111,7 @@ public class WineDetailView: UIView {
         titleStackView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().offset(13)
+            $0.width.equalTo(38)
         }
         
         kindContents.snp.makeConstraints {
