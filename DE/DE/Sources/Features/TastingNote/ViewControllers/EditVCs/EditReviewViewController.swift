@@ -24,6 +24,7 @@ public class EditReviewViewController: UIViewController {
         rView.infoView.kindContents.text = wineData.sort
         rView.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")
         rView.reviewBody.text = tnManager.review
+        self.view.addSubview(indicator)
     }
     
     //    public override func viewWillDisappear(_ animated: Bool) {
@@ -31,10 +32,8 @@ public class EditReviewViewController: UIViewController {
     //        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
     //        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     //    }
-    
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.addSubview(indicator)
         view.backgroundColor = AppColor.bgGray
         setConstraints()
         setupActions()

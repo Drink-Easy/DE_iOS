@@ -57,6 +57,7 @@ class HomeTopView: UIView {
         searchBtn.snp.makeConstraints {
             $0.centerY.equalTo(logo)
             $0.trailing.equalTo(safeAreaLayoutGuide).offset(-DynamicPadding.dynamicValue(24.0))
+            $0.width.height.equalTo(DynamicPadding.dynamicValue(24))
         }
     }
     
