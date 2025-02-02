@@ -16,21 +16,20 @@ class SignUpVC: UIViewController {
     
     var isEmailDuplicate : Bool = true
     
-    override func loadView() {
-        view = signUpView
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-        self.view.addSubview(indicator)
+        setupUI()
         setupActions()
         setupNavigationBar()
+        
+        view.addSubview(indicator)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        self.view.addSubview(indicator)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -45,6 +44,13 @@ class SignUpVC: UIViewController {
             target: self,
             action: #selector(backButtonTapped)
         )
+    }
+    
+    private func setupUI(){
+        view.addSubview(signUpView)
+        signUpView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
     
     private func setupActions() {
@@ -65,11 +71,11 @@ class SignUpVC: UIViewController {
     
     //MARK: - Button Funcs
     @objc private func signupButtonTapped() {
+        self.view.showBlockingView()
         let signUpDTO = networkService.makeJoinDTO(username: signUpView.usernameField.text!, password: signUpView.passwordField.text!, rePassword: signUpView.confirmPasswordField.text!)
         
         networkService.join(data: signUpDTO) { [weak self] result in
             guard let self = self else { return }
-            self.view.showBlockingView()
             switch result {
             case .success(_):
                 self.view.hideBlockingView()
@@ -93,8 +99,15 @@ class SignUpVC: UIViewController {
             print("이메일이 없습니다")
             return
         }
-        
-        validationManager.checkEmailDuplicate(email: email, view: signUpView.usernameField)
+        self.view.showBlockingView()
+        validationManager.checkEmailDuplicate(email: email, view: signUpView.usernameField) { [weak self] success in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                self.view.hideBlockingView()  // ✅ 네트워크 요청 후 인디케이터 중지
+                self.validateInputs()  // ✅ UI 업데이트
+            }
+        }
         validateInputs()
     }
     

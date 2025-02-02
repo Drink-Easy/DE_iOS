@@ -54,7 +54,6 @@ public final class SettingMenuViewController : UIViewController, UIGestureRecogn
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-        self.view.addSubview(indicator)
         setupUI()
         setupTableView()
         setupNavigationBar()
@@ -67,6 +66,7 @@ public final class SettingMenuViewController : UIViewController, UIGestureRecogn
         DispatchQueue.main.async {
             self.CheckCacheData()
         }
+        self.view.addSubview(indicator)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {

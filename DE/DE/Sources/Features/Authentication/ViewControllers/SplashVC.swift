@@ -91,7 +91,8 @@ public class SplashVC : UIViewController {
     
     func checkIsFirst() {
         let isFirstString = SelectLoginTypeVC.keychain.getBool("isFirst")
-        if isFirstString == true || isFirstString == nil {
+        print("isFirstString == \(isFirstString)")
+        if isFirstString == true {
             navigateToWelcomeScreen()
         } else { navigateToMainScreen() }
     }

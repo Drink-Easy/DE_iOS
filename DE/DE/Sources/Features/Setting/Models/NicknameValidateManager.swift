@@ -96,15 +96,18 @@ public class NicknameValidateManager {
         return true
     }
     
-    public func checkNicknameDuplicate(nickname: String, view: CustomTextFieldView, completion: (() -> Void)? = nil) {
+    public func checkNicknameDuplicate(nickname: String, view: CustomTextFieldView, completion: ((Bool) -> Void)? = nil) {
         networkService.checkNickname(name: nickname) { [weak self] result in
             guard let self = self else { return }
             
+            var isAvailable = false  // 닉네임 사용 가능 여부
+
             switch result {
             case .success(let response):
                 if response {
                     self.hideValidationError(view, message: "사용 가능한 닉네임이에요")
                     self.isNicknameCanUse = true
+                    isAvailable = true
                 } else {
                     self.showValidationError(view, message: "이미 사용 중인 닉네임이에요")
                     self.isNicknameCanUse = false
@@ -116,8 +119,8 @@ public class NicknameValidateManager {
                 self.isNicknameCanUse = false
             }
             
-            // 응답 완료 후 completion 호출
-            completion?()
+            // ✅ 네트워크 응답이 끝난 후, completion 핸들러에 결과 전달
+            completion?(isAvailable)
         }
     }
     

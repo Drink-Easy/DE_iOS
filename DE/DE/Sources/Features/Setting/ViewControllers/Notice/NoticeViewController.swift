@@ -26,7 +26,6 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.addSubview(indicator)
         self.view.backgroundColor = AppColor.bgGray
         setupNavigationBar()
         setupUI()
@@ -35,6 +34,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
