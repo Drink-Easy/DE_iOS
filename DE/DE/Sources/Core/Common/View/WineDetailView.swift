@@ -14,6 +14,11 @@ public class WineDetailView: UIView {
         $0.layer.shadowOpacity = 0.07
         $0.layer.shadowOffset = CGSize(width: 0, height: 1)
         $0.layer.shadowRadius = 10.5
+        if traitCollection.userInterfaceStyle == .dark {
+            $0.layer.shadowColor = .none
+        } else {
+            $0.layer.shadowColor = AppColor.black?.cgColor
+        }
         $0.clipsToBounds = false
     }
     
