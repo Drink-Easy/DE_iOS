@@ -67,7 +67,7 @@ class AccountInfoViewController: UIViewController {
     
     private func setupNavigationBar() {
         navigationBarManager.setTitle(to: navigationItem, title: "내 정보", textColor: AppColor.black!)
-        navigationBarManager.addLeftRightButtons(
+        navigationBarManager.addLeftRightButtonsWithWeight(
             to: navigationItem,
             leftIcon: "chevron.left",
             leftAction: #selector(backButtonTapped),
