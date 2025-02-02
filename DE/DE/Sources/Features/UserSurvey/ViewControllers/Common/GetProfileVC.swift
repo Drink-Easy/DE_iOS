@@ -134,12 +134,12 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     }
     
     func configureTapGestureForDismissingPicker() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissDatePicker))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissImagePicker))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
     }
     
-    @objc func dismissDatePicker() {
+    @objc func dismissImagePicker() {
         view.endEditing(true)
     }
     
@@ -173,17 +173,22 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     //MARK: - 닉네임 유효성 검사
     @objc func validateNickname(){
         ValidationManager.isNicknameCanUse = false
+        ValidationManager.isLengthValid = false
         ValidationManager.validateNickname(profileView.nicknameTextField)
         checkFormValidity()
     }
     
     //MARK: - 폼 유효성 검사
     @objc func checkFormValidity() {
-        let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true) && ValidationManager.isNicknameCanUse && ValidationManager.isLengthValid
+        let isNicknameValid =  ValidationManager.isNicknameCanUse && ValidationManager.isLengthValid
         let isLocationValid = !(profileView.myLocationTextField.textField.text?.isEmpty ?? true)
         let isImageSelected = profileView.profileImageView.image != nil
         let isFormValid = isNicknameValid && isLocationValid && isImageSelected
         
+        print("isNicknameValid == \(isNicknameValid)")
+        print("isLocationValid == \(isLocationValid)")
+        print("isImageSelected == \(isImageSelected)")
+        print("isFormValid == \(isFormValid)")
         self.userName = profileView.nicknameTextField.textField.text
         self.userRegion = profileView.myLocationTextField.textField.text
         self.profileImg = profileView.profileImageView.image

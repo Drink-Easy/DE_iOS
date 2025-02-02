@@ -91,12 +91,28 @@ class ChangeMyOwnedWineViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc
-    private func deleteNewWine() {
-        callDeleteAPI()
-        DispatchQueue.main.async {
-            self.navigationController?.popViewController(animated: true)
-        }
+    @objc private func deleteNewWine() {
+//        callDeleteAPI()
+//        DispatchQueue.main.async {
+//            self.navigationController?.popViewController(animated: true)
+//        }
+            let alert = UIAlertController(
+                title: "테이스팅 노트 삭제",
+                message: "정말 삭제하시겠습니까?",
+                preferredStyle: .alert
+            )
+        
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        
+        alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { [weak self] _ in
+            self?.callDeleteAPI()
+            DispatchQueue.main.async {
+                self?.navigationController?.popViewController(animated: true)
+            }
+        }))
+        
+        present(alert, animated: true, completion: nil)
+        
     }
     
     @objc
