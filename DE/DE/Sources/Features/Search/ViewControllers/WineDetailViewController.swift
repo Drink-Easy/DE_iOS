@@ -24,8 +24,8 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     
         addView()
         constraints()
-        callWineDetailAPI(wineId: self.wineId)
         setupNavigationBar()
+        callWineDetailAPI(wineId: self.wineId)
     }
     
     override func viewWillAppear(_ animated: Bool) {

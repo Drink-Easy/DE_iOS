@@ -28,6 +28,7 @@ public class RatingWineViewController: UIViewController {
         rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         rView.infoView.kindContents.text = wineData.sort
         rView.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")
+        self.view.addSubview(indicator)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -116,9 +117,9 @@ public class RatingWineViewController: UIViewController {
         }
         tnManager.saveRating(ratingValue)
         tnManager.saveReview(reviewString)
+        self.view.showBlockingView()
         Task {
             do {
-                self.view.showBlockingView()
                 try await postCreateTastingNote()
                 self.view.hideBlockingView()
                 navigationController?.popToRootViewController(animated: true)

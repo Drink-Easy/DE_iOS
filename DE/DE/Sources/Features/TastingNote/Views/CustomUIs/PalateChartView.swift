@@ -10,7 +10,7 @@ struct PalateChartView: View {
     
     let maxValue: Double = 1.0 // 최대값을 1.0으로 정규화
     let levels: Int = 5        // 5단계
-    let spacing: CGFloat = DynamicPadding.dynamicValue(26)  // 각 단계 간 간격 (30 포인트)
+    let spacing: CGFloat = DynamicPadding.dynamicValue(24)  // 각 단계 간 간격
     
     var body: some View {
         ZStack {
