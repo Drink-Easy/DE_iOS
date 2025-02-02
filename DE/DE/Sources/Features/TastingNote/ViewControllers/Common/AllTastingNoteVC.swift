@@ -84,6 +84,8 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate {
         // Call Count 업데이트
         //        await self.updateCallCount()
         allTastingNoteList = data.notePriviewList
+        tastingNoteView.noTastingNoteLabel.isHidden = !self.allTastingNoteList.isEmpty
+        tastingNoteView.TastingNoteCollectionView.isHidden = self.allTastingNoteList.isEmpty
         currentTastingNoteList = data.notePriviewList
         tastingNoteView.wineImageStackView.updateCounts(red: data.sortCount.redCount, white: data.sortCount.whiteCount, sparkling: data.sortCount.sparklingCount, rose: data.sortCount.roseCount, etc: data.sortCount.etcCount)
         tastingNoteView.TastingNoteCollectionView.reloadData()

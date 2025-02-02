@@ -30,6 +30,15 @@ class AllTastingNoteView: UIView {
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 20)
         $0.textColor = AppColor.black
     }
+    lazy var noTastingNoteLabel = UILabel().then {
+        $0.numberOfLines = 0
+        $0.text = "작성된 테이스팅 노트가 없어요.\n나의 경험을 기록해 보세요!"
+        $0.setLineSpacingPercentage(0.3)
+        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.textColor = AppColor.gray70
+        $0.textAlignment = .center
+        $0.isHidden = true
+    }
     lazy var TastingNoteCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout()).then {
         let screenWidth = UIScreen.main.bounds.width
         let itemsPerRow: CGFloat = 3
@@ -60,7 +69,7 @@ class AllTastingNoteView: UIView {
     
     // MARK: - Setup Methods
     private func setupUI() {
-        [titleLabel, /*searchButton,*/ topDividerView, wineImageStackView, tnLabel, TastingNoteCollectionView].forEach {
+        [titleLabel, /*searchButton,*/ topDividerView, wineImageStackView, tnLabel, TastingNoteCollectionView, noTastingNoteLabel].forEach {
             addSubview($0)
         }
     }
@@ -91,6 +100,11 @@ class AllTastingNoteView: UIView {
         TastingNoteCollectionView.snp.makeConstraints {
             $0.top.equalTo(tnLabel.snp.bottom).offset(16)
             $0.leading.trailing.equalToSuperview().inset(8)
+            $0.bottom.equalToSuperview()
+        }
+        noTastingNoteLabel.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.centerY.centerX.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
     }

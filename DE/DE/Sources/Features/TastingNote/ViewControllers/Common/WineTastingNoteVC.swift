@@ -29,7 +29,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     }
     
     let contentView = UIView().then {
-        $0.backgroundColor = AppColor.white
+        $0.backgroundColor = AppColor.bgGray
     }
     
     let wineInfoView = WineInfoView()
@@ -212,7 +212,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         wineInfoView.header.setTitleLabel(wineData.wineName)
         wineInfoView.header.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         wineInfoView.header.infoView.kindContents.text = "\(wineData.sort)"
-        wineInfoView.header.infoView.typeContents.text = "\(wineData.variety)"
+        wineInfoView.header.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")
         wineInfoView.header.infoView.countryContents.text = "\(wineData.country), \(wineData.region)"
         
         //차트 뷰 데이터 로드

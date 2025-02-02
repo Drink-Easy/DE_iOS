@@ -186,10 +186,6 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
         let isImageSelected = profileView.profileImageView.image != nil
         let isFormValid = isNicknameValid && isLocationValid && isImageSelected
         
-        print("isNicknameValid == \(isNicknameValid)")
-        print("isLocationValid == \(isLocationValid)")
-        print("isImageSelected == \(isImageSelected)")
-        print("isFormValid == \(isFormValid)")
         self.userName = profileView.nicknameTextField.textField.text
         self.userRegion = profileView.myLocationTextField.textField.text
         self.profileImg = profileView.profileImageView.image
