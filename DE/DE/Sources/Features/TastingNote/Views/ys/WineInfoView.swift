@@ -199,18 +199,18 @@ public class WineInfoView: UIView {
             make.edges.equalToSuperview().inset(16) // 내부 여백 16pt
         }
         
-        [chartHeaderView, colorHeaderView, noseHeaderView, ratingHeaderView, reviewHeaderView].forEach {
-            $0.snp.makeConstraints { make in
+        [chartHeaderView, colorHeaderView, noseHeaderView, ratingHeaderView, reviewHeaderView].forEach {_ in 
+            chartHeaderView.snp.makeConstraints { make in
                 make.height.greaterThanOrEqualTo(30) // 고정 높이
             }
         }
         chartView.snp.makeConstraints { make in
             make.top.equalTo(chartHeaderView.snp.bottom).offset(24)
             make.leading.trailing.equalToSuperview()
-//            make.height.greaterThanOrEqualTo(200) // 고정 높이
             make.height.greaterThanOrEqualTo(Constants.superViewHeight * 0.45)
         }
         colorView.snp.makeConstraints { make in
+            make.top.equalTo(chartHeaderView.snp.bottom).offset(32)
             make.height.width.equalTo(30)
             make.leading.equalToSuperview()
         }

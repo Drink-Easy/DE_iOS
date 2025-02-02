@@ -101,12 +101,7 @@ extension AppInfoViewController: UITableViewDataSource {
         cell.textLabel?.font = UIFont.ptdRegularFont(ofSize: 16)
         cell.textLabel?.textColor = AppColor.black
         cell.selectionStyle = .none
-
-        // Chevron 추가
-        let chevronImage = UIImageView(image: UIImage(systemName: "chevron.right"))
-        chevronImage.tintColor = AppColor.gray70
-        cell.accessoryView = chevronImage
-
+        
         return cell
     }
 }
