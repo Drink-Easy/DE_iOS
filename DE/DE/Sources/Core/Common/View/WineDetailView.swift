@@ -30,7 +30,6 @@ public class WineDetailView: UIView {
 
     // 실제 콘텐츠를 담는 뷰 (cornerRadius 적용)
     public lazy var image = UIImageView().then {
-        $0.image = UIImage(named: "스파클링")
         $0.layer.cornerRadius = 14
         $0.layer.masksToBounds = true
         $0.contentMode = .scaleAspectFit
@@ -79,9 +78,9 @@ public class WineDetailView: UIView {
     private lazy var kind = createTitle(text: "종류")
     private lazy var type = createTitle(text: "품종")
     private lazy var country = createTitle(text: "생산지")
-    public lazy var kindContents = createContents(text: "스파클링 와인, 샴페인")
-    public lazy var typeContents = createContents(text: "피노누아(60%), 샤르도네(40%)")
-    public lazy var countryContents = createContents(text: "프랑스, 상파뉴")
+    public lazy var kindContents = createContents(text: "")
+    public lazy var typeContents = createContents(text: "")
+    public lazy var countryContents = createContents(text: "")
     
     private lazy var titleStackView = makeStackView(arrangedSubviews: [kind, type, country])
     

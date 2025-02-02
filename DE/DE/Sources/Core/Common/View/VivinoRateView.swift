@@ -9,7 +9,7 @@ import Cosmos
 
 public class VivinoRateView: UIView {
     
-    public var score = 4.0 {
+    public var score = 0.0 {
         didSet {
             updateScore()
         }

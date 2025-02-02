@@ -35,8 +35,8 @@ public class AverageTastingNoteView: UIView {
     
     private lazy var nose = createTitle(text: "Nose")
     private lazy var palate = createTitle(text: "Palate")
-    public lazy var noseContents = createContents(text: "신선한, 시트러스, 미묘한, 배")
-    public lazy var palateContents = createContents(text: "섬세한, 농축된, 균형잡힌, 생동감, 아몬드")
+    public lazy var noseContents = createContents(text: "")
+    public lazy var palateContents = createContents(text: "")
 
     public override init(frame: CGRect) {
         super.init(frame: frame)

@@ -19,6 +19,7 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
         self.navigationController?.isNavigationBarHidden = false
         view.backgroundColor = Constants.AppColor.grayBG
         self.view = searchHomeView
+        self.view.addSubview(indicator)
         
         searchHomeView.searchResultTableView.dataSource = self
         searchHomeView.searchResultTableView.delegate = self
@@ -53,11 +54,14 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let query = searchHomeView.searchBar.text, query.count >= 2 {
+            indicator.startAnimating()
             Task {
                 do {
                     try await callSearchAPI(query: query, startPage: 0)
+                    indicator.stopAnimating()
                 } catch {
                     print(error)
+                    indicator.stopAnimating()
                 }
             }
             return true
@@ -154,12 +158,14 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
         if contentOffsetY > contentHeight - scrollViewHeight { // Trigger when arrive the bottom
             guard !isLoading, currentPage + 1 < totalPage else { return }
             isLoading = true
-            
+            indicator.startAnimating()
             Task {
                 do {
                     try await callSearchAPI(query: searchHomeView.searchBar.text ?? "", startPage: currentPage + 1)
+                    indicator.stopAnimating()
                 } catch {
                     print("Failed to fetch next page: \(error)")
+                    indicator.stopAnimating()
                 }
                 DispatchQueue.main.async {
                     self.searchHomeView.searchResultTableView.reloadData()

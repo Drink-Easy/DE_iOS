@@ -20,6 +20,7 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
         view.backgroundColor = Constants.AppColor.grayBG
         self.view = searchHomeView
         setupNavigationBar()
+        self.view.addSubview(indicator)
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -49,11 +50,14 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let query = searchHomeView.searchBar.text, query.count >= 2 {
+            indicator.startAnimating()
             Task {
                 do {
                     try await callSearchAPI(query: query, startPage: 0)
+                    indicator.stopAnimating()
                 } catch {
                     print(error)
+                    indicator.stopAnimating()
                 }
             }
             return true
@@ -161,12 +165,14 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
         if contentOffsetY > contentHeight - scrollViewHeight { // Trigger when arrive the bottom
             guard !isLoading, currentPage + 1 < totalPage else { return }
             isLoading = true
-            
+            indicator.startAnimating()
             Task {
                 do {
                     try await callSearchAPI(query: searchHomeView.searchBar.text ?? "", startPage: currentPage + 1)
+                    indicator.stopAnimating()
                 } catch {
                     print("Failed to fetch next page: \(error)")
+                    indicator.stopAnimating()
                 }
                 DispatchQueue.main.async {
                     self.searchHomeView.searchResultTableView.reloadData()

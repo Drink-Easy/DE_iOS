@@ -36,6 +36,7 @@ public class WishListViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
+        self.view.addSubview(indicator)
         setupNavigationBar()
         addComponents()
         setConstraints()
@@ -119,6 +120,7 @@ public class WishListViewController: UIViewController {
                 } else {
                     // 호출 카운트가 1 이상이면 API 호출
                     print("✅ 호출 카운트 1 이상: API 호출")
+                    indicator.startAnimating()
                     networkService.fetchWishlist { [weak self] result in
                         guard let self = self else { return }
                         
@@ -156,8 +158,10 @@ public class WishListViewController: UIViewController {
                                         
                                         // 호출 카운트 초기화
                                         try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .wishlist)
+                                        indicator.stopAnimating()
                                     } catch {
                                         print("❌ 캐시 업데이트 또는 호출 카운트 초기화 실패: \(error.localizedDescription)")
+                                        indicator.stopAnimating()
                                     }
                                 }
                                 
