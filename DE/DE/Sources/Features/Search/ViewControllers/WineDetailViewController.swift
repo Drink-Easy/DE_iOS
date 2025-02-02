@@ -260,7 +260,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func callWineDetailAPI(wineId: Int) {
-        indicator.startAnimating()
+        self.view.showBlockingView()
         wineNetworkService.fetchWineInfo(wineId: wineId) { [weak self] result in
             guard let self = self else { return }
             
@@ -269,10 +269,10 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
                 if let data = responseData {
                     self.transformResponseData(data)
                 }
-                indicator.stopAnimating()
+                self.view.hideBlockingView()
             case .failure(let error) :
                 print("\(error)")
-                indicator.stopAnimating()
+                self.view.hideBlockingView()
             }
         }
     }
@@ -307,32 +307,32 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func callLikeAPI(wineId: Int) async {
-        indicator.startAnimating()
+        self.view.showBlockingView()
         do {
             let responseData = try await likedNetworkService.postWishlist(wineId: wineId)
             print("✅ 좋아요 API 호출 성공: \(responseData)") // 이제 프린트가 확실히 출력됩니다.
             
             // 호출 카운터 증가
             await checkCallCounter(up: true)
-            indicator.stopAnimating()
+            self.view.hideBlockingView()
         } catch {
             print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")
-            indicator.stopAnimating()
+            self.view.hideBlockingView()
         }
     }
     
     func calldeleteLikedAPI(wineId: Int) async {
-        indicator.startAnimating()
+        self.view.showBlockingView()
         do {
             let responseData = try await likedNetworkService.deleteWishlist(wineId: wineId)
             print("✅ 좋아요 API 호출 성공: \(responseData)") // 이제 프린트가 확실히 출력됩니다.
             
             // 호출 카운터 감소
             await checkCallCounter(up: false)
-            indicator.stopAnimating()
+            self.view.hideBlockingView()
         } catch {
             print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")
-            indicator.stopAnimating()
+            self.view.hideBlockingView()
         }
     }
     

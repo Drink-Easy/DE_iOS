@@ -54,7 +54,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         self.view.addSubview(indicator)
         Task {
             do {
-                indicator.startAnimating()
+                self.view.showBlockingView()
                 try await CallTastingNote()
                 smallTitleLabel.text = wineData.wineName
                 
@@ -62,11 +62,11 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
                     self.setupNavigationBar() // 제목 설정
                 }
                 setWineData()
-                indicator.stopAnimating()
+                self.view.hideBlockingView()
             } catch {
                 print("Error: \(error)")
                 // Alert 표시 등 추가
-                indicator.stopAnimating()
+                self.view.hideBlockingView()
             }
         }
     }

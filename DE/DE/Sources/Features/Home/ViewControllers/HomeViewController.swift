@@ -5,7 +5,7 @@ import CoreModule
 import Then
 import Network
 
-public class HomeViewController: UIViewController, HomeTopViewDelegate {
+public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestureRecognizerDelegate {
     
     private var adImage: [HomeBannerModel] = []
     var recommendWineDataList: [HomeWineModel] = []
@@ -64,7 +64,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     }
     
     public func fetchName() { // TODO : 이름 호출 로직 수정하기
-        indicator.startAnimating()
+        self.view.showBlockingView()
         Task {
             guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
@@ -72,10 +72,10 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
             }
             do {
                 self.userName = try await PersonalDataManager.shared.fetchUserName(for: userId)
-                indicator.stopAnimating()
+                self.view.hideBlockingView()
             } catch {
                 print(error.localizedDescription)
-                indicator.stopAnimating()
+                self.view.hideBlockingView()
             }
         }
     }
@@ -112,6 +112,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.isNavigationBarHidden = true
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         self.view.addSubview(indicator)
         setAdBanner()
         fetchWines(isRecommend: true) // 추천 와인
@@ -227,10 +228,10 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
             }
             
             // 2. 캐시 데이터가 없으면 네트워크 요청
-            indicator.startAnimating()
+            self.view.showBlockingView()
             print("🌐 네트워크 요청 시작")
             await fetchWinesFromNetwork(isRecommend)
-            indicator.stopAnimating()
+            self.view.hideBlockingView()
         }
     }
 
@@ -250,17 +251,17 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
 
             } catch {
                 print("⚠️ 캐시 데이터 없음 → 네트워크 요청 수행")
-                indicator.startAnimating()
+                self.view.showBlockingView()
                 do {
                     let newData = try await fetchHomeBanner()
                     try AdBannerListManager.shared.saveAdBannerList(
                         bannerData: newData.map { AdBannerDataModel(bannerId: $0.bannerId, imageUrl: $0.imageUrl, postUrl: $0.postUrl) },
                         expirationDate: Date()
                     )
-                    indicator.stopAnimating()
+                    self.view.hideBlockingView()
                 } catch {
                     print("❌ 네트워크 요청 실패: \(error)")
-                    indicator.stopAnimating()
+                    self.view.hideBlockingView()
                 }
             }
         }

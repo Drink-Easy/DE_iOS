@@ -67,7 +67,7 @@ class MoreLikelyWineViewController: UIViewController {
     
     // MARK: - 네트워크 요청 처리
     private func fetchWinesFromNetwork(_ isRecommend: Bool) async {
-        indicator.startAnimating()
+        self.view.showBlockingView()
         let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
         
         if isRecommend {
@@ -86,11 +86,11 @@ class MoreLikelyWineViewController: UIViewController {
                         await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
                         continuation.resume()
                     }
-                    indicator.stopAnimating()
+                    self.view.hideBlockingView()
                 case .failure(let error):
                     print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
                     continuation.resume()
-                    indicator.stopAnimating()
+                    self.view.hideBlockingView()
                 }
             }
         }

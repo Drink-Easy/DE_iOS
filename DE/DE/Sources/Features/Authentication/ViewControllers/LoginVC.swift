@@ -103,7 +103,7 @@ class LoginVC: UIViewController {
     @objc private func loginButtonTapped() {
         let loginDTO = networkService.makeLoginDTO(username: loginView.usernameField.text!, password: loginView.passwordField.text!)
         usernameString = loginDTO.username
-        indicator.startAnimating()
+        self.view.showBlockingView()
         networkService.login(data: loginDTO) { [weak self] result in
             guard let self = self else { return }
             
@@ -115,11 +115,11 @@ class LoginVC: UIViewController {
                 Task {
                     await UserDataManager.shared.createUser(userId: response.id)
                 }
-                indicator.stopAnimating()
+                self.view.hideBlockingView()
                 self.goToNextView(response.isFirst)
             case .failure(let error):
                 print(error)
-                indicator.stopAnimating()
+                self.view.hideBlockingView()
                 self.loginView.loginButton.isEnabled = false
                 self.loginView.loginButton.isEnabled(isEnabled: false)
                 self.validationManager.showValidationError(loginView.usernameField, message: "")
@@ -132,10 +132,16 @@ class LoginVC: UIViewController {
     private func goToNextView(_ isFirstLogin: Bool) {
         if isFirstLogin {
             let enterTasteTestViewController = TermsOfServiceVC()
-            navigationController?.pushViewController(enterTasteTestViewController, animated: true)
+            if let window = UIApplication.shared.windows.first {
+                window.rootViewController = enterTasteTestViewController
+                UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+            }
         } else {
             let homeViewController = MainTabBarController()
-            navigationController?.pushViewController(homeViewController, animated: true)
+            if let window = UIApplication.shared.windows.first {
+                window.rootViewController = homeViewController
+                UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+            }
         }
     }
     

@@ -18,7 +18,7 @@ import Network
 // 검증 2: 데이터 필드 값 중에 nil이 없는가
 // 이름, 이미지만 캐시데이터 사용
 
-public final class SettingMenuViewController : UIViewController {
+public final class SettingMenuViewController : UIViewController, UIGestureRecognizerDelegate {
     
     private let networkService = MemberService()
 //    private var memberData: MemberInfoResponse?
@@ -63,6 +63,7 @@ public final class SettingMenuViewController : UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         DispatchQueue.main.async {
             self.CheckCacheData()
         }
@@ -144,13 +145,13 @@ public final class SettingMenuViewController : UIViewController {
     }
 
     private func fetchMemberInfo() async {
+        self.view.showBlockingView()
         guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
             print("⚠️ userId가 UserDefaults에 없습니다.")
             return
         }
         
         do {
-            indicator.startAnimating()
             let data = try await networkService.fetchUserInfoAsync()
             
             self.profileData = SimpleProfileInfoData(name: data.username, imageURL: data.imageUrl, uniqueUserId: userId)
@@ -160,10 +161,10 @@ public final class SettingMenuViewController : UIViewController {
             self.setUserData(userName: data.username, imageURL: data.imageUrl)
 //            print("✅ 서버 데이터 성공적으로 가져옴: \(data.username)")
             await saveUserInfo(data: userData)
-            indicator.stopAnimating()
+            
         } catch {
             print("❌ 서버에서 사용자 정보를 가져오지 못함: \(error.localizedDescription)")
-            indicator.stopAnimating()
+            self.view.hideBlockingView()
         }
     }
         
@@ -172,6 +173,7 @@ public final class SettingMenuViewController : UIViewController {
         let profileImgURL = URL(string: imageURL)
         self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
         self.nameLabel.text = "\(userName) 님"
+        self.view.hideBlockingView()
     }
     
     private func saveUserInfo(data: MemberInfoResponse) async {

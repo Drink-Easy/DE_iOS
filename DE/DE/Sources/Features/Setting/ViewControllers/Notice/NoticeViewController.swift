@@ -69,7 +69,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func callNoticeAPI() {
-        indicator.startAnimating()
+        self.view.showBlockingView()
         networkService.fetchAllNotices() { [weak self] result in
             guard let self = self else { return }
             
@@ -79,10 +79,10 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     self.noticeData = responseData!
                     self.noticeListView.reloadData()
                 }
-                indicator.stopAnimating()
+                self.view.hideBlockingView()
             case .failure(let error) :
                 print("\(error)")
-                indicator.stopAnimating()
+                self.view.hideBlockingView()
             }
         }
     }

@@ -118,13 +118,13 @@ public class RatingWineViewController: UIViewController {
         tnManager.saveReview(reviewString)
         Task {
             do {
-                indicator.startAnimating()
+                self.view.showBlockingView()
                 try await postCreateTastingNote()
-                indicator.stopAnimating()
+                self.view.hideBlockingView()
                 navigationController?.popToRootViewController(animated: true)
             } catch {
                 print("Error: \(error)")
-                indicator.stopAnimating()
+                self.view.hideBlockingView()
                 // Alert 표시 등 추가
             }
         }

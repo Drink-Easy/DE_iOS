@@ -134,9 +134,9 @@ class EditNoseViewController: UIViewController {
         let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
         Task {
             do {
-                indicator.startAnimating()
+                self.view.showBlockingView()
                 try await networkService.patchNote(data: tnData)
-                indicator.stopAnimating()
+                self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             }
         }

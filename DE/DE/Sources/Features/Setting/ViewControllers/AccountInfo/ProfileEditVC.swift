@@ -128,13 +128,13 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     @objc private func editCompleteTapped() {
         Task {
             do {
-                indicator.startAnimating()
+                self.view.showBlockingView()
                 try await callPatchAPI()
-                indicator.stopAnimating()
+                self.view.hideBlockingView()
                 self.navigationController?.popViewController(animated: true)
             } catch {
                 print("Error: \(error)")
-                indicator.stopAnimating()
+                self.view.hideBlockingView()
                 // Alert 표시 등 추가
             }
         }

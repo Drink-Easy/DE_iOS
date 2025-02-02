@@ -44,7 +44,7 @@ final class ValidationManager {
     
     func checkEmailDuplicate(email: String, view: CustomLabelTextFieldView) {
         let emailCheckDTO = networkService.makeEmailCheckDTO(emailString: email)
-        indicator.startAnimating()
+        self.view.showBlockingView()
         
         networkService.checkEmail(data: emailCheckDTO) { [weak self] result in
             guard let self = self else { return }
@@ -62,7 +62,7 @@ final class ValidationManager {
                 print("네트워크 요청 실패: \(error)")
                 self.showValidationError(view, message: "이메일 확인 중 오류가 발생했습니다.")
             }
-            indicator.stopAnimating()
+            self.view.hideBlockingView()
         }
     }
     

@@ -69,14 +69,14 @@ class SignUpVC: UIViewController {
         
         networkService.join(data: signUpDTO) { [weak self] result in
             guard let self = self else { return }
-            indicator.startAnimating()
+            self.view.showBlockingView()
             switch result {
             case .success(_):
-                indicator.stopAnimating()
+                self.view.hideBlockingView()
                 self.goToLoginView()
             case .failure(let error):
                 print(error)
-                indicator.stopAnimating()
+                self.view.hideBlockingView()
                 //TODO: alert
             }
         }
