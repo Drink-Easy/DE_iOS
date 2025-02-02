@@ -14,7 +14,7 @@ public class SearchResultTableViewCell: UITableViewCell {
     private lazy var imageBackground = UIView().then {
         $0.layer.cornerRadius = 5
         $0.layer.masksToBounds = true
-        $0.backgroundColor = UIColor(hex: "#2f2f2f")
+        $0.backgroundColor = AppColor.winebg
     }
     
     private lazy var image = UIImageView().then {

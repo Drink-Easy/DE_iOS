@@ -98,7 +98,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
             : UIImage(systemName: "heart")?.withTintColor(AppColor.purple100!, renderingMode: .alwaysOriginal)
 
         button.setImage(heartImage, for: .normal)
-        button.tintColor = AppColor.bgGray
+        button.tintColor = .clear
     }
     
     private lazy var largeTitleLabel = UILabel().then {
