@@ -24,11 +24,15 @@ class EntireReviewViewController: UIViewController {
 
         addView()
         constraints()
+        self.view.addSubview(indicator)
+        indicator.startAnimating()
         Task {
             do {
                 try await callEntireReviewAPI(wineId: self.wineId, sortType: "최신순", page: 0)
+                indicator.stopAnimating()
             } catch {
                 print(error)
+                indicator.stopAnimating()
             }
         }
         setupDropdownAction()
@@ -99,6 +103,7 @@ class EntireReviewViewController: UIViewController {
             } else if selectedOption == "별점 낮은 순" {
                 currentType = "별점 낮은 순"
             }
+            indicator.startAnimating()
             Task {
                 do {
                     try await self.callEntireReviewAPI(wineId: self.wineId, sortType: self.currentType, page: 0)
@@ -106,8 +111,10 @@ class EntireReviewViewController: UIViewController {
                         // 강제로 맨위로 올리기
                         self.entireReviewView.reviewCollectionView.setContentOffset(.zero, animated: true)
                     }
+                    indicator.stopAnimating()
                 } catch {
                     print(error)
+                    indicator.stopAnimating()
                 }
             }
         }
@@ -209,12 +216,14 @@ extension EntireReviewViewController: UICollectionViewDataSource, UICollectionVi
         if contentOffsetY > contentHeight - scrollViewHeight { // Trigger when arrive the bottom
             guard !isLoading, currentPage + 1 < totalPage else { return }
             isLoading = true
-            
+            indicator.startAnimating()
             Task {
                 do {
                     try await callEntireReviewAPI(wineId: self.wineId, sortType: currentType, page: currentPage + 1)
+                    indicator.stopAnimating()
                 } catch {
                     print("Failed to fetch next page: \(error)")
+                    indicator.stopAnimating()
                 }
                 DispatchQueue.main.async {
                     self.entireReviewView.reviewCollectionView.reloadData()
