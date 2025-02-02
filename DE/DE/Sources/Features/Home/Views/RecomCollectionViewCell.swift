@@ -23,7 +23,7 @@ class RecomCollectionViewCell: UICollectionViewCell {
     
     public lazy var name = UILabel().then {
         $0.text = "부와젤, 조아유 드 프랑스"
-        $0.textColor = .black
+        $0.textColor = AppColor.black
         $0.font = UIFont.ptdMediumFont(ofSize: 14)
     }
     
@@ -35,12 +35,14 @@ class RecomCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.backgroundColor = .white
+        contentView.backgroundColor = AppColor.white
         contentView.layer.cornerRadius = 10
         contentView.layer.masksToBounds = true
         addComponents()
         constraints()
-        configureShadow()
+        if traitCollection.userInterfaceStyle == .light {
+            configureShadow()
+        }
     }
         
     required init?(coder: NSCoder) {

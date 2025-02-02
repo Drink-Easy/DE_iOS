@@ -19,7 +19,7 @@ public class AverageTastingNoteView: UIView {
     private func createTitle(text: String) ->  UILabel {
         return UILabel().then {
             $0.text = text
-            $0.textColor = .black
+            $0.textColor = AppColor.black
             $0.font = UIFont.ptdMediumFont(ofSize: 18)
         }
     }
@@ -27,7 +27,7 @@ public class AverageTastingNoteView: UIView {
     private func createContents(text: String) ->  UILabel {
         return UILabel().then {
             $0.text = text
-            $0.textColor = .black
+            $0.textColor = AppColor.black
             $0.font = UIFont.ptdRegularFont(ofSize: 14)
             $0.numberOfLines = 0
         }
