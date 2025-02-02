@@ -23,7 +23,7 @@ public class EntireReviewView: UIView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .white
+        backgroundColor = AppColor.bgGray
         self.addComponents()
         self.constraints()
     }

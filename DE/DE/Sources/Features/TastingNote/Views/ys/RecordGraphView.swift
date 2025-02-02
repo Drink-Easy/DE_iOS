@@ -26,7 +26,6 @@ class RecordGraphView: UIView {
     private func setupUI() {
         backgroundColor = AppColor.bgGray
         
-        
         [chartHeaderView, chartView, recordSliderView].forEach {
             addSubview($0)
         }
@@ -46,7 +45,7 @@ class RecordGraphView: UIView {
         recordSliderView.snp.makeConstraints { make in
             make.top.equalTo(chartView.snp.bottom)
             make.leading.trailing.equalToSuperview()
-            make.height.greaterThanOrEqualTo(Constants.superViewHeight * 0.6)
+            make.height.greaterThanOrEqualTo(400)
         }
     }
     

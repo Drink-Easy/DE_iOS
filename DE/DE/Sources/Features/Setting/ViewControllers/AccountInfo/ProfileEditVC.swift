@@ -189,6 +189,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     //MARK: - 폼 유효성 검사
     @objc func validateNickname(){
         ValidationManager.isNicknameCanUse = false
+        ValidationManager.isLengthValid = false
         if originUsername == profileView.nicknameTextField.text {
             ValidationManager.noNeedToCheck(profileView.nicknameTextField)
         } else {

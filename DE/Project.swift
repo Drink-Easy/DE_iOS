@@ -174,6 +174,7 @@ let project = Project(
             resources: ["DE/Resources/**"],
             dependencies: [
                 .external(name: "SnapKit"),
+                .external(name: "NVActivityIndicatorView"),
                 .external(name: "SDWebImage"),
                 .external(name: "SwiftyToaster"),
                 .external(name: "Then"),

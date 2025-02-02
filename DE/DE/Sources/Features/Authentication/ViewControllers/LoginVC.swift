@@ -27,6 +27,7 @@ class LoginVC: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         validationManager.isEmailDuplicate = false
+        self.view.addSubview(indicator)
         setupActions()
         setupNavigationBar()
     }
@@ -102,7 +103,7 @@ class LoginVC: UIViewController {
     @objc private func loginButtonTapped() {
         let loginDTO = networkService.makeLoginDTO(username: loginView.usernameField.text!, password: loginView.passwordField.text!)
         usernameString = loginDTO.username
-        
+        indicator.startAnimating()
         networkService.login(data: loginDTO) { [weak self] result in
             guard let self = self else { return }
             
@@ -114,9 +115,11 @@ class LoginVC: UIViewController {
                 Task {
                     await UserDataManager.shared.createUser(userId: response.id)
                 }
+                indicator.stopAnimating()
                 self.goToNextView(response.isFirst)
             case .failure(let error):
                 print(error)
+                indicator.stopAnimating()
                 self.loginView.loginButton.isEnabled = false
                 self.loginView.loginButton.isEnabled(isEnabled: false)
                 self.validationManager.showValidationError(loginView.usernameField, message: "")
