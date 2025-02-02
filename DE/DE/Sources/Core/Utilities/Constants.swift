@@ -43,6 +43,7 @@ public struct Constants {
         static public let grayBG = UIColor(named: "background")
         static public let DGblack = UIColor(named: "Dblack")
         static public let winebg = UIColor(named: "winebg")
+        static public let tooltipbg = UIColor(named: "tooltipbg")
 //        static public let gray100 = UIColor(hex: "#434343")
 //        static public let gray90 = UIColor(hex: "#5D5D5D")
         static public let gray80 = UIColor(hex: "#A7A7A7")

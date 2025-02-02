@@ -77,7 +77,7 @@ struct PalateChartView: View {
                     Text("\(viewModel.stats[index].label)")
                         .font(.system(size: 14, weight: .bold))
                         .multilineTextAlignment(.center)
-                        .foregroundColor(.black)
+                        .foregroundColor(Color("Dblack"))
                         .frame(width: 60)
                         .position(x: x, y: y)
                     Text("\(Int(viewModel.stats[index].value * 100))%")
