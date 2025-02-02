@@ -29,7 +29,7 @@ class SelectLoginTypeView: UIView {
     
     let appleButton = UIButton().then {
         $0.backgroundColor = UIColor(hex: "#000000")
-        $0.setTitle("애플로 시작하기", for: .normal)
+        $0.setTitle("Apple로 시작하기", for: .normal)
         $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         $0.setTitleColor(UIColor(hex: "#FFFFFF"), for: .normal)
         $0.layer.cornerRadius = 15

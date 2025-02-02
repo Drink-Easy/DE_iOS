@@ -23,7 +23,7 @@ class SignUpVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-        
+        self.view.addSubview(indicator)
         setupActions()
         setupNavigationBar()
     }
@@ -69,13 +69,15 @@ class SignUpVC: UIViewController {
         
         networkService.join(data: signUpDTO) { [weak self] result in
             guard let self = self else { return }
-            
+            indicator.startAnimating()
             switch result {
             case .success(_):
                 self.goToLoginView()
             case .failure(let error):
+                //TODO: alert
                 print(error)
             }
+            indicator.stopAnimating()
         }
     }
     

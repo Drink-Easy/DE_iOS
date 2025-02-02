@@ -22,7 +22,7 @@ public class EditRateViewController: UIViewController {
         rView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         rView.infoView.kindContents.text = wineData.sort
-        rView.infoView.typeContents.text = wineData.variety
+        rView.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")
         rView.ratingButton.rating = tnManager.rating
     }
     

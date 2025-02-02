@@ -11,6 +11,6 @@ let centerX = (Constants.superViewWidth - viewWidth) / 2
 let centerY = (Constants.superViewHeight - viewHeight) / 2
 
 public let indicator = NVActivityIndicatorView(frame: CGRect(x: centerX, y: centerY, width: viewWidth, height: viewHeight),
-                                                   type: .lineSpinFadeLoader,
-                                               color: AppColor.gray30,
-                                                   padding: 0)
+                                                   type: .circleStrokeSpin,
+                                               color: AppColor.gray70,
+                                               padding: 0)

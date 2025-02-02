@@ -25,7 +25,7 @@ public class ChooseWineColorViewController: UIViewController {
         colorView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         colorView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         colorView.infoView.kindContents.text = wineData.sort
-        colorView.infoView.typeContents.text = wineData.variety
+        colorView.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")
     }
 
     public override func viewDidLoad() {
