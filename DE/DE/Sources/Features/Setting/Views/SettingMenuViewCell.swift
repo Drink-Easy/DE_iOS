@@ -7,20 +7,19 @@ import Then
 import CoreModule
 import Network
 
-public class NoticeTableViewCell: UITableViewCell {
+public class SettingMenuViewCell: UITableViewCell {
     
-    public static let identifier = "NoticeTableViewCell"
+    public static let identifier = "SettingMenuViewCell"
 
     public lazy var title = UILabel().then {
         $0.textColor = AppColor.DGblack
-        $0.font = UIFont.ptdMediumFont(ofSize: 16)
+        $0.font = UIFont.ptdRegularFont(ofSize: 16)
         $0.numberOfLines = 1
     }
     
-    public lazy var date = UILabel().then {
-        $0.textColor = AppColor.gray70
-        $0.font = UIFont.ptdRegularFont(ofSize: 12)
-        $0.numberOfLines = 1
+    public lazy var rightArrow = UIImageView().then {
+        $0.image = UIImage(systemName: "chevron.right")
+        $0.tintColor = AppColor.gray50
     }
     
     public override func awakeFromNib() {
@@ -39,7 +38,6 @@ public class NoticeTableViewCell: UITableViewCell {
     public override func prepareForReuse() {
         super.prepareForReuse()
         self.title.text = nil
-        self.date.text = nil
     }
         
     required init?(coder: NSCoder) {
@@ -47,25 +45,23 @@ public class NoticeTableViewCell: UITableViewCell {
     }
     
     private func addComponents() {
-        [title, date].forEach { self.addSubview($0) }
+        [title, rightArrow].forEach { self.addSubview($0) }
     }
     
     private func constraints() {
         title.snp.makeConstraints {
-            //$0.top.equalToSuperview().offset(12)
             $0.centerY.equalToSuperview()
-            $0.leading.equalToSuperview().offset(DynamicPadding.dynamicValue(24))
-            $0.width.equalTo(Constants.superViewWidth * 0.6)
+            $0.leading.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
         }
         
-        date.snp.makeConstraints {
+        rightArrow.snp.makeConstraints {
             $0.centerY.equalTo(title)
-            $0.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
+            $0.height.equalTo(18)
+            $0.trailing.equalToSuperview()
         }
     }
     
-    public func configure(data: NoticeResponse) {
-        self.title.text = "[\(data.tag)] \(data.title)"
-        self.date.text = data.createdAt
+    public func configure(name: String) {
+        self.title.text = name
     }
 }

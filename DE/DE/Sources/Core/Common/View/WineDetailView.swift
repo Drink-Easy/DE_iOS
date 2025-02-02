@@ -40,7 +40,7 @@ public class WineDetailView: UIView {
     private func createTitle(text: String) ->  UILabel {
         return UILabel().then {
             $0.text = text
-            $0.textColor = Constants.AppColor.purple100
+            $0.textColor = AppColor.purple100
             $0.font = UIFont.ptdSemiBoldFont(ofSize: 14)
         }
     }
@@ -48,7 +48,7 @@ public class WineDetailView: UIView {
     private func createContents(text: String) -> UILabel {
         return UILabel().then {
             $0.text = text
-            $0.textColor = Constants.AppColor.DGblack
+            $0.textColor = AppColor.black
             $0.font = UIFont.ptdMediumFont(ofSize: 12)
         }
     }
@@ -73,7 +73,7 @@ public class WineDetailView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.AppColor.grayBG
+        backgroundColor = AppColor.bgGray
         self.addComponents()
         self.constraints()
     }
@@ -111,6 +111,7 @@ public class WineDetailView: UIView {
         titleStackView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.equalToSuperview().offset(13)
+            $0.width.equalTo(38)
         }
         
         kindContents.snp.makeConstraints {

@@ -10,6 +10,7 @@ public struct AppColor {
     //        static public let purple30 = UIColor(hex: "#D5B3E2")
             static public let purple20 = UIColor(hex: "#E1CAE9")
     static public let winebg = UIColor(named: "winebg")
+    static public let tooltipbg = UIColor(named: "tooltipbg")
     //        static public let purple10 = UIColor(hex: "#EEE1F0")
     //
     static public let grayBG = UIColor(named: "background")

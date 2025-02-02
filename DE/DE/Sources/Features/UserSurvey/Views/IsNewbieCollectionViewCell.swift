@@ -49,9 +49,47 @@ class IsNewbieCollectionViewCell: UICollectionViewCell {
     }
     
     public func configure(model: IsNewbieModel) {
-        contents.text = model.contents
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 2
+        paragraphStyle.alignment = .left
+
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.ptdMediumFont(ofSize: 20),
+            .foregroundColor: AppColor.gray90!,
+            .paragraphStyle: paragraphStyle
+        ]
+        
+        let attributedText = NSAttributedString(string: model.contents, attributes: attributes)
+        
+        // ✅ 기존 contents UILabel을 사용하여 적용
+        contents.attributedText = attributedText
         emoji.text = model.emoji
     }
+    
+//    public func configure(model: IsNewbieModel) {
+//        contents.text = model.contents
+//        emoji.text = model.emoji
+//        
+//        contents = UILabel().then({
+//            let text = model.contents
+//            
+//            let paragraphStyle = NSMutableParagraphStyle()
+//            paragraphStyle.lineSpacing = 4
+//            paragraphStyle.alignment = .left
+//
+//            let attributes: [NSAttributedString.Key: Any] = [
+//                .font: UIFont.ptdMediumFont(ofSize: 20),
+//                .foregroundColor: AppColor.gray90!,
+//                .paragraphStyle: paragraphStyle
+//            ]
+//            
+//            let attributedText = NSAttributedString(string: text, attributes: attributes)
+//            
+//            $0.attributedText = attributedText
+//            $0.numberOfLines = 0
+//        })
+//        
+//    }
     
     public func updateSelectionState(isSelected: Bool) {
         contentView.backgroundColor = isSelected ? AppColor.purple10 : AppColor.gray10
@@ -68,5 +106,15 @@ class IsNewbieCollectionViewCell: UICollectionViewCell {
         self.layer.borderColor = AppColor.gray10?.cgColor
         self.contents.font = UIFont.ptdMediumFont(ofSize: 20)
         self.contents.textColor = AppColor.gray90
+        self.contents.attributedText = nil // ✅ 기존 AttributedText 초기화
     }
+    
+//    override func prepareForReuse() {
+//        super.prepareForReuse()
+//        self.backgroundColor = AppColor.gray10
+//        self.layer.borderWidth = 0
+//        self.layer.borderColor = AppColor.gray10?.cgColor
+//        self.contents.font = UIFont.ptdMediumFont(ofSize: 20)
+//        self.contents.textColor = AppColor.gray90
+//    }
 }

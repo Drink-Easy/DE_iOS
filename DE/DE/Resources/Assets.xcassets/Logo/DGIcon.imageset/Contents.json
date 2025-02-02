@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Group 1437255711.png",
+      "filename" : "DGIcon.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Group 1437255711@2x.png",
+      "filename" : "DGIcon 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Group 1437255711@3x.png",
+      "filename" : "DGIcon 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

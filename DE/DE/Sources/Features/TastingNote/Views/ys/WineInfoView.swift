@@ -29,17 +29,28 @@ public class WineInfoView: UIView {
     
     private let detailContentView = UIStackView().then {
         $0.axis = .vertical
-        $0.spacing = 16
+        $0.spacing = 32
         $0.distribution = .fill
         $0.alignment = .fill
     }
     
     //그래프 뷰
+    let chartStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 16
+        $0.distribution = .fill
+        $0.alignment = .fill
+    }
     let chartHeaderView = PropertyTitleView(type: .palateGraph)
     let chartView = PolygonChartView()
     
     //TODO: 컬러 뷰
-
+    let colorStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 16
+        $0.distribution = .fill
+        $0.alignment = .fill
+    }
     let colorHeaderView = PropertyTitleView(type: .color)
     lazy var colorBodyView = UIView()
     
@@ -52,6 +63,12 @@ public class WineInfoView: UIView {
     }
     
     //노즈 뷰
+    let noseStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 16
+        $0.distribution = .fill
+        $0.alignment = .fill
+    }
     let noseHeaderView = PropertyTitleView(type: .nose)
     let noseView = UILabel().then {
         $0.text = ""
@@ -61,6 +78,12 @@ public class WineInfoView: UIView {
     }
     
     //별점 뷰
+    let ratingStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 16
+        $0.distribution = .fill
+        $0.alignment = .fill
+    }
     let ratingHeaderView = PropertyTitleView(type: .rate)
     public lazy var ratingView = UIView()
     public var ratingValue: Double = 2.5 {
@@ -130,6 +153,12 @@ public class WineInfoView: UIView {
     }()
     
     //리뷰 뷰
+    let reviewStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 16
+        $0.distribution = .fill
+        $0.alignment = .fill
+    }
     let reviewHeaderView = PropertyTitleView(type: .review)
     let dateView = UILabel().then {
         $0.font = .ptdMediumFont(ofSize: 14)
@@ -174,7 +203,23 @@ public class WineInfoView: UIView {
     private func setupUI() {
         [ratingLabel, ratingButton].forEach{ ratingView.addSubview($0) }
         [colorView, colorLabel].forEach{ colorBodyView.addSubview($0) }
-        [chartHeaderView, chartView, colorHeaderView, colorBodyView, noseHeaderView, noseView, ratingHeaderView, ratingView, reviewHeaderView, dateView, reviewView].forEach {
+        [chartHeaderView, chartView].forEach {
+            chartStackView.addArrangedSubview($0) // addArrangedSubview로 추가
+        }
+        [colorHeaderView, colorBodyView].forEach {
+            colorStackView.addArrangedSubview($0) // addArrangedSubview로 추가
+        }
+        [noseHeaderView, noseView].forEach {
+            noseStackView.addArrangedSubview($0) // addArrangedSubview로 추가
+        }
+        [ratingHeaderView, ratingView].forEach {
+            ratingStackView.addArrangedSubview($0) // addArrangedSubview로 추가
+        }
+        [reviewHeaderView, dateView, reviewView].forEach {
+            reviewStackView.addArrangedSubview($0) // addArrangedSubview로 추가
+        }
+        
+        [chartStackView, colorStackView, noseStackView, ratingStackView, reviewStackView].forEach {
             detailContentView.addArrangedSubview($0) // addArrangedSubview로 추가
         }
         
@@ -199,18 +244,16 @@ public class WineInfoView: UIView {
             make.edges.equalToSuperview().inset(16) // 내부 여백 16pt
         }
         
-        [chartHeaderView, colorHeaderView, noseHeaderView, ratingHeaderView, reviewHeaderView].forEach {_ in 
-            chartHeaderView.snp.makeConstraints { make in
+        [chartHeaderView, colorHeaderView, noseHeaderView, ratingHeaderView, reviewHeaderView].forEach {
+            $0.snp.makeConstraints { make in
                 make.height.greaterThanOrEqualTo(30) // 고정 높이
             }
         }
         chartView.snp.makeConstraints { make in
-            make.top.equalTo(chartHeaderView.snp.bottom).offset(24)
             make.leading.trailing.equalToSuperview()
             make.height.greaterThanOrEqualTo(Constants.superViewHeight * 0.45)
         }
         colorView.snp.makeConstraints { make in
-            make.top.equalTo(chartHeaderView.snp.bottom).offset(32)
             make.height.width.equalTo(30)
             make.leading.equalToSuperview()
         }

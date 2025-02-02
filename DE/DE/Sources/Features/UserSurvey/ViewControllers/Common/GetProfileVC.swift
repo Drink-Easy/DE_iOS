@@ -33,6 +33,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
         $0.textAlignment = .left
         $0.numberOfLines = 0
+        $0.textColor = AppColor.black
     }
     
     let nextButton = CustomButton(

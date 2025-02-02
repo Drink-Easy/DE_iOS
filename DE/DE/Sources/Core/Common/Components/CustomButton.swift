@@ -7,7 +7,7 @@ import SnapKit
 open class CustomButton: UIButton {
     public init(
         title: String = "",
-        titleColor: UIColor = AppColor.white ?? .systemBackground,
+        titleColor: UIColor = .white,
         isEnabled: Bool = true
     ) {
         super.init(frame: .zero)

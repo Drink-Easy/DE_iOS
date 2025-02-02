@@ -78,12 +78,13 @@ public final class SettingMenuViewController : UIViewController {
         tableView.dataSource = self
         tableView.isScrollEnabled = false
         tableView.rowHeight = 50
-        tableView.backgroundColor = .clear
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.backgroundColor = AppColor.bgGray
+        tableView.register(SettingMenuViewCell.self, forCellReuseIdentifier: SettingMenuViewCell.identifier)
+        
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.top.equalTo(nameLabel.snp.bottom).offset(DynamicPadding.dynamicValue(16.0))
-            make.trailing.equalToSuperview().inset(16)
+            make.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
             make.leading.equalToSuperview()
             make.bottom.equalToSuperview()
         }
@@ -224,13 +225,12 @@ extension SettingMenuViewController: UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.backgroundColor = .clear
-        cell.textLabel?.text = settingMenuItems[indexPath.row].name
-        cell.textLabel?.font = UIFont.ptdRegularFont(ofSize: 16)
-        cell.textLabel?.textColor = AppColor.black
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: SettingMenuViewCell.identifier, for: indexPath) as? SettingMenuViewCell else {
+            return UITableViewCell()
+        }
         cell.selectionStyle = .none
-
+        cell.configure(name: settingMenuItems[indexPath.row].name)
+        
         return cell
     }
 }

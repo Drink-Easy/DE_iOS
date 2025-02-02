@@ -15,7 +15,7 @@ public class TastedDateViewController: UIViewController {
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tastedDateView.topView.title.text = self.wineData.wineName
+        tastedDateView.topView.setTitleLabel(title: self.wineData.wineName, description: "시음 시기를 선택해주세요")
     }
     
     public override func viewDidLoad() {
@@ -120,20 +120,3 @@ extension TastedDateViewController: UICalendarViewDelegate {
         return nil
     }
 }
-
-//extension TastedDateViewController: UICalendarViewDelegate {
-//    public func calendarView(_ calendarView: UICalendarView, decorationFor dateComponents: DateComponents) -> UICalendarView.Decoration? {
-//        if dateComponents == selectedDate {
-//            return .customView {
-//                let backgroundView = UIView()
-//                backgroundView.backgroundColor = AppColor.purple100
-//                backgroundView.layer.cornerRadius = 18
-//                backgroundView.layer.masksToBounds = true
-//                
-//                return backgroundView
-//            }
-//        }
-//        return nil
-//    }
-//}
-
