@@ -119,7 +119,7 @@ class MoreLikelyWineViewController: UIViewController {
     }
     
     private lazy var moreLikelyWineView = MoreRecomWineView().then {
-        $0.title.text = "\(userName) 님을 위한 추천 와인"
+        $0.title.text = "\(userName)님을 위한 추천 와인"
         $0.moreWineTableView.dataSource = self
         $0.moreWineTableView.delegate = self
     }
@@ -137,7 +137,7 @@ class MoreLikelyWineViewController: UIViewController {
     }
     
     private func updateLikeWineListView() {
-        moreLikelyWineView.title.text = "\(userName) 님을 위한 추천 와인"
+        moreLikelyWineView.title.text = "\(userName)님을 위한 추천 와인"
         moreLikelyWineView.title.setPartialTextStyle(
             text: moreLikelyWineView.title.text ?? "",
             targetText: "\(userName)",

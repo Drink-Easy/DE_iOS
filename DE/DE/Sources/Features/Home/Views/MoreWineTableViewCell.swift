@@ -18,7 +18,6 @@ class MoreWineTableViewCell: UITableViewCell {
     }
     
     private lazy var image = UIImageView().then {
-        $0.image = UIImage(named: "스파클링")
         $0.contentMode = .scaleAspectFit
         $0.layer.cornerRadius = 5
         $0.layer.masksToBounds = true
@@ -26,27 +25,24 @@ class MoreWineTableViewCell: UITableViewCell {
     }
     
     private lazy var name = UILabel().then {
-        $0.text = "루이 로드레 빈티지 브륏 살롱 라따미 살라 어쩌구"
         $0.textColor = Constants.AppColor.DGblack
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 18)
         $0.numberOfLines = 2
         $0.lineBreakMode = .byTruncatingTail
+        $0.lineBreakStrategy = .standard
     }
     
     private lazy var kind = UILabel().then {
-        $0.text = "와인 > 스파클링, 샴페인"
         $0.textColor = AppColor.gray100
         $0.font = UIFont.ptdRegularFont(ofSize: 14)
     }
     
     private lazy var score = UILabel().then {
-        $0.text = "★ 3.0"
         $0.textColor = Constants.AppColor.purple100
         $0.font = UIFont.ptdRegularFont(ofSize: 14)
     }
     
     private lazy var price = UILabel().then {
-        $0.text = "3만원대"
         $0.textColor = Constants.AppColor.purple100
         $0.font = UIFont.ptdRegularFont(ofSize: 14)
     }

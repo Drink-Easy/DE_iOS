@@ -14,7 +14,6 @@ class MyWineTableViewCell: UITableViewCell {
     }
     
     private lazy var image = UIImageView().then {
-        $0.image = UIImage(named: "스파클링")
         $0.contentMode = .scaleAspectFit
         $0.layer.cornerRadius = 5
         $0.layer.masksToBounds = true
@@ -25,6 +24,7 @@ class MyWineTableViewCell: UITableViewCell {
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
         $0.numberOfLines = 2
         $0.lineBreakMode = .byTruncatingTail
+        $0.lineBreakStrategy = .standard
     }
     
     private lazy var price = UILabel().then {

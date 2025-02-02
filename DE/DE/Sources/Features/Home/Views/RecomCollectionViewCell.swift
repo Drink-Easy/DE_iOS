@@ -22,13 +22,11 @@ class RecomCollectionViewCell: UICollectionViewCell {
     }
     
     public lazy var name = UILabel().then {
-        $0.text = "부와젤, 조아유 드 프랑스"
         $0.textColor = AppColor.black
         $0.font = UIFont.ptdMediumFont(ofSize: 14)
     }
     
     public lazy var kind = UILabel().then {
-        $0.text = "스파클링 와인, 샴페인"
         $0.textColor = AppColor.gray70
         $0.font = UIFont.ptdRegularFont(ofSize: 10)
     }
