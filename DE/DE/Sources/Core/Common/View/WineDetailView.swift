@@ -27,7 +27,7 @@ public class WineDetailView: UIView {
     }
     
     public lazy var labelView = UIView().then {
-        $0.backgroundColor = .white
+        $0.backgroundColor = AppColor.white
         $0.layer.cornerRadius = 14
         $0.layer.masksToBounds = true
         $0.layer.shadowColor = UIColor.black.cgColor
@@ -40,7 +40,7 @@ public class WineDetailView: UIView {
     private func createTitle(text: String) ->  UILabel {
         return UILabel().then {
             $0.text = text
-            $0.textColor = Constants.AppColor.purple100
+            $0.textColor = AppColor.purple100
             $0.font = UIFont.ptdSemiBoldFont(ofSize: 14)
         }
     }
@@ -48,7 +48,7 @@ public class WineDetailView: UIView {
     private func createContents(text: String) -> UILabel {
         return UILabel().then {
             $0.text = text
-            $0.textColor = Constants.AppColor.DGblack
+            $0.textColor = AppColor.black
             $0.font = UIFont.ptdMediumFont(ofSize: 12)
         }
     }
@@ -73,7 +73,7 @@ public class WineDetailView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.AppColor.grayBG
+        backgroundColor = AppColor.bgGray
         self.addComponents()
         self.constraints()
     }

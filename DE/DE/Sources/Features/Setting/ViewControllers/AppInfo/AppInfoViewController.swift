@@ -57,8 +57,8 @@ class AppInfoViewController : UIViewController {
         tableView.dataSource = self
         tableView.isScrollEnabled = false
         tableView.rowHeight = 50
-        tableView.backgroundColor = .clear
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.backgroundColor = AppColor.bgGray
+        tableView.register(SettingMenuViewCell.self, forCellReuseIdentifier: SettingMenuViewCell.identifier)
     }
     
     // MARK: - UI Setup
@@ -70,8 +70,8 @@ class AppInfoViewController : UIViewController {
     private func setupUI(){
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
-            make.trailing.equalToSuperview().inset(16)
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(16.0))
+            make.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
             make.leading.equalToSuperview()
             make.height.equalTo(200)
         }
@@ -79,7 +79,7 @@ class AppInfoViewController : UIViewController {
         view.addSubview(appVersionLabel)
         appVersionLabel.snp.makeConstraints { make in
             make.top.equalTo(tableView.snp.bottom).offset(10)
-            make.leading.equalToSuperview().inset(20)
+            make.leading.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
         }
     }
     
@@ -95,17 +95,11 @@ extension AppInfoViewController: UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.backgroundColor = .clear
-        cell.textLabel?.text = appInfoItems[indexPath.row]
-        cell.textLabel?.font = UIFont.ptdRegularFont(ofSize: 16)
-        cell.textLabel?.textColor = AppColor.black
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: SettingMenuViewCell.identifier, for: indexPath) as? SettingMenuViewCell else {
+            return UITableViewCell()
+        }
         cell.selectionStyle = .none
-
-        // Chevron 추가
-        let chevronImage = UIImageView(image: UIImage(systemName: "chevron.right"))
-        chevronImage.tintColor = AppColor.gray70
-        cell.accessoryView = chevronImage
+        cell.configure(name: appInfoItems[indexPath.row])
 
         return cell
     }
