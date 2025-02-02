@@ -15,7 +15,7 @@ class NoseCollectionReusableView: UICollectionReusableView {
     // 타이틀 레이블
     private let titleLabel = UILabel().then { label in
         label.font = .ptdSemiBoldFont(ofSize: 18)
-        label.textColor = .black
+        label.textColor = AppColor.black
     }
     
     // 화살표 아이콘 - 열려있을 떄만 보이게. 기본 값이 안보기에
