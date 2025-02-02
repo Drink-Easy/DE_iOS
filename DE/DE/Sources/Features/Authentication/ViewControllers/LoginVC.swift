@@ -19,15 +19,11 @@ class LoginVC: UIViewController {
     var isSavingId : Bool = false
     var usernameString : String = ""
     
-    override func loadView() {
-        view = loginView // 커스텀 뷰 사용
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         validationManager.isEmailDuplicate = false
-        self.view.addSubview(indicator)
+        setupUI()
         setupActions()
         setupNavigationBar()
     }
@@ -35,6 +31,7 @@ class LoginVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        self.view.addSubview(indicator)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -56,7 +53,15 @@ class LoginVC: UIViewController {
         )
     }
     
-    // MARK: - Action 설정
+    // MARK: - setup Methods
+    private func setupUI(){
+        view.addSubview(loginView)
+        view.addSubview(indicator)
+        loginView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
     private func setupActions() {
         loginView.usernameField.textField.addTarget(self, action: #selector(usernameValidate), for: .editingChanged)
         loginView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .editingChanged)
@@ -131,12 +136,14 @@ class LoginVC: UIViewController {
     
     private func goToNextView(_ isFirstLogin: Bool) {
         if isFirstLogin {
+            SelectLoginTypeVC.keychain.set(true, forKey: "isFirst")
             let enterTasteTestViewController = TermsOfServiceVC()
             if let window = UIApplication.shared.windows.first {
                 window.rootViewController = enterTasteTestViewController
                 UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
             }
         } else {
+            SelectLoginTypeVC.keychain.set(false, forKey: "isFirst")
             let homeViewController = MainTabBarController()
             if let window = UIApplication.shared.windows.first {
                 window.rootViewController = homeViewController

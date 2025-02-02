@@ -48,6 +48,7 @@ class AccountInfoViewController: UIViewController {
         DispatchQueue.main.async {
             self.CheckCacheData()
         }
+        self.view.addSubview(indicator)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -57,7 +58,6 @@ class AccountInfoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.addSubview(indicator)
         view.backgroundColor = AppColor.bgGray
         setupNavigationBar()
         setupUI()
@@ -333,7 +333,6 @@ class AccountInfoViewController: UIViewController {
 
 //            print("✅ 서버 데이터 성공적으로 가져옴: \(data.username)")
             await saveUserInfo(data: self.userProfile!)
-            self.view.hideBlockingView()
         } catch {
             print("❌ 서버에서 사용자 정보를 가져오지 못함: \(error.localizedDescription)")
             self.view.hideBlockingView()
@@ -353,6 +352,7 @@ class AccountInfoViewController: UIViewController {
         ("연동상태", authType)
 //        ("성인인증", adultText)
         ]
+        
     }
     
     /// 새로 받은 데이터 저장
@@ -374,10 +374,11 @@ class AccountInfoViewController: UIViewController {
 
             try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
             try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
-
+            self.view.hideBlockingView()
 //            print("✅ 사용자 정보가 성공적으로 캐시에 저장되었습니다.")
         } catch {
             print("❌ 사용자 정보 저장 실패: \(error.localizedDescription)")
+            self.view.hideBlockingView()
         }
     }
 }
