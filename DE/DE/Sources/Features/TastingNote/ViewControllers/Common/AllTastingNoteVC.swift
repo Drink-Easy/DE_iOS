@@ -31,13 +31,16 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate {
     // MARK: - Life Cycle
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
         Task {
             do {
+                indicator.startAnimating()
                 try await CallAllTastingNote()
-                
+                indicator.stopAnimating()
             } catch {
                 print("Error: \(error)")
+                indicator.stopAnimating()
                 // Alert 표시 등 추가
             }
         }

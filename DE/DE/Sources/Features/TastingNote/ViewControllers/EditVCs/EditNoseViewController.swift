@@ -47,6 +47,7 @@ class EditNoseViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.addSubview(indicator)
         view.backgroundColor = AppColor.bgGray
         setupUI()
         setupCollectionView()
@@ -133,7 +134,9 @@ class EditNoseViewController: UIViewController {
         let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
         Task {
             do {
+                indicator.startAnimating()
                 try await networkService.patchNote(data: tnData)
+                indicator.stopAnimating()
                 navigationController?.popViewController(animated: true)
             }
         }

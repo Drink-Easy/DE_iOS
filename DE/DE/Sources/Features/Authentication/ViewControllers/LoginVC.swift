@@ -125,6 +125,7 @@ class LoginVC: UIViewController {
                 self.validationManager.showValidationError(loginView.usernameField, message: "")
                 self.validationManager.showValidationError(loginView.passwordField, message: "회원 정보를 다시 확인해 주세요")
             }
+            
         }
     }
     

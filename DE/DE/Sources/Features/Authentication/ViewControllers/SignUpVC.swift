@@ -72,12 +72,13 @@ class SignUpVC: UIViewController {
             indicator.startAnimating()
             switch result {
             case .success(_):
+                indicator.stopAnimating()
                 self.goToLoginView()
             case .failure(let error):
-                //TODO: alert
                 print(error)
+                indicator.stopAnimating()
+                //TODO: alert
             }
-            indicator.stopAnimating()
         }
     }
     

@@ -54,7 +54,7 @@ public final class SettingMenuViewController : UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-        
+        self.view.addSubview(indicator)
         setupUI()
         setupTableView()
         setupNavigationBar()
@@ -150,6 +150,7 @@ public final class SettingMenuViewController : UIViewController {
         }
         
         do {
+            indicator.startAnimating()
             let data = try await networkService.fetchUserInfoAsync()
             
             self.profileData = SimpleProfileInfoData(name: data.username, imageURL: data.imageUrl, uniqueUserId: userId)
@@ -159,8 +160,10 @@ public final class SettingMenuViewController : UIViewController {
             self.setUserData(userName: data.username, imageURL: data.imageUrl)
 //            print("✅ 서버 데이터 성공적으로 가져옴: \(data.username)")
             await saveUserInfo(data: userData)
+            indicator.stopAnimating()
         } catch {
             print("❌ 서버에서 사용자 정보를 가져오지 못함: \(error.localizedDescription)")
+            indicator.stopAnimating()
         }
     }
         

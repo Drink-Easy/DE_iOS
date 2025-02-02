@@ -19,6 +19,13 @@ public class WineDetailView: UIView {
         } else {
             $0.layer.shadowColor = AppColor.black?.cgColor
         }
+        $0.clipsToBounds = false
+    }
+    
+    private lazy var imageBackground = UIView().then {
+        $0.layer.cornerRadius = 14
+        $0.layer.masksToBounds = true
+        $0.backgroundColor = AppColor.white
     }
 
     // 실제 콘텐츠를 담는 뷰 (cornerRadius 적용)

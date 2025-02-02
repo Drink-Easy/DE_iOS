@@ -35,6 +35,7 @@ public class WishListViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.addSubview(indicator)
         view.backgroundColor = AppColor.bgGray
         setupNavigationBar()
         addComponents()
