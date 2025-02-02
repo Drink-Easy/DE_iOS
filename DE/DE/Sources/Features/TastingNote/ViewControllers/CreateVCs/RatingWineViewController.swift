@@ -118,7 +118,7 @@ public class RatingWineViewController: UIViewController {
         Task {
             do {
                 try await postCreateTastingNote()
-                
+                navigationController?.popToRootViewController(animated: true)
             } catch {
                 print("Error: \(error)")
                 // Alert 표시 등 추가

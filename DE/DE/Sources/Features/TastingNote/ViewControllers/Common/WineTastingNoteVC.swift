@@ -54,7 +54,14 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         
         Task {
             do {
-                try await CallAllTastingNote()
+                try await CallTastingNote()
+                smallTitleLabel.text = wineData.wineName
+                
+                DispatchQueue.main.async {
+                    self.setupNavigationBar() // 제목 설정
+                }
+                setWineData()
+                
             } catch {
                 print("Error: \(error)")
                 // Alert 표시 등 추가
@@ -188,7 +195,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         //        }
     }
     
-    private func CallAllTastingNote() async throws {
+    private func CallTastingNote() async throws {
         
         let data = try await networkService.fetchNote(noteId: noteId)
         // Call Count 업데이트
@@ -197,32 +204,29 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         wineData.updateWineData(wineId: data.wineId, wineName: data.wineName, sort: data.sort, country: data.country, region: data.region, imageUrl: data.imageUrl, variety: data.variety)
         
         tnManager.saveAllData(noteId: noteId,wineId: data.wineId, color: data.color, tasteDate: data.tasteDate, sugarContent: data.sweetness, acidity: data.acidity, tannin: data.tannin, body: data.body, alcohol: data.alcohol, nose: data.noseList, rating: data.rating, review: data.review)
-        
-        smallTitleLabel.text = data.wineName
-        
-        DispatchQueue.main.async {
-            self.setupNavigationBar() // 제목 설정
-        }
-        
-        //와인 상세 정보 데이터
-        wineInfoView.header.setTitleLabel(data.wineName)
-        wineInfoView.header.infoView.image.sd_setImage(with: URL(string: data.imageUrl))
-        wineInfoView.header.infoView.kindContents.text = "\(data.sort)"
-        wineInfoView.header.infoView.typeContents.text = "\(data.variety)"
-        wineInfoView.header.infoView.countryContents.text = "\(data.country), \(data.region)"
+
+    }
+    
+    private func setWineData() {
+        print(wineData.wineName)
+        wineInfoView.header.setTitleLabel(wineData.wineName)
+        wineInfoView.header.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
+        wineInfoView.header.infoView.kindContents.text = "\(wineData.sort)"
+        wineInfoView.header.infoView.typeContents.text = "\(wineData.variety)"
+        wineInfoView.header.infoView.countryContents.text = "\(wineData.country), \(wineData.region)"
         
         //차트 뷰 데이터 로드
-        wineInfoView.chartView.viewModel.loadSavedValues(sweetness: Double(data.sweetness), alcohol: Double(data.alcohol), tannin: Double(data.tannin), body: Double(data.body), acidity: Double(data.acidity))
+        wineInfoView.chartView.viewModel.loadSavedValues(sweetness: Double(tnManager.sugarContent), alcohol: Double(tnManager.alcohol), tannin: Double(tnManager.tannin), body: Double(tnManager.body), acidity: Double(tnManager.acidity))
         
-        wineInfoView.noseView.text = formatNoseList(data.noseList)
+        wineInfoView.noseView.text = formatNoseList(tnManager.nose)
         
-        wineInfoView.colorView.backgroundColor = UIColor(hex: data.color)
-        wineInfoView.colorLabel.text = WineColorManager().getColorName(for: data.color) ?? "색상 이름 없음"
+        wineInfoView.colorView.backgroundColor = UIColor(hex: tnManager.color)
+        wineInfoView.colorLabel.text = WineColorManager().getColorName(for: tnManager.color) ?? "색상 이름 없음"
         
-        wineInfoView.ratingValue = data.rating
-        wineInfoView.ratingButton.rating = data.rating
+        wineInfoView.ratingValue = tnManager.rating
+        wineInfoView.ratingButton.rating = tnManager.rating
         
-        wineInfoView.dateView.text = "\(data.tasteDate)에 작성되었어요."
-        wineInfoView.reviewView.text = data.review
+        wineInfoView.dateView.text = "\(tnManager.tasteDate)에 작성되었어요."
+        wineInfoView.reviewView.text = tnManager.review
     }
 }

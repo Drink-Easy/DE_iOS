@@ -205,8 +205,10 @@ public class WineInfoView: UIView {
             }
         }
         chartView.snp.makeConstraints { make in
+            make.top.equalTo(chartHeaderView.snp.bottom).offset(24)
             make.leading.trailing.equalToSuperview()
-            make.height.greaterThanOrEqualTo(200) // 고정 높이
+//            make.height.greaterThanOrEqualTo(200) // 고정 높이
+            make.height.greaterThanOrEqualTo(Constants.superViewHeight * 0.45)
         }
         colorView.snp.makeConstraints { make in
             make.height.width.equalTo(30)
