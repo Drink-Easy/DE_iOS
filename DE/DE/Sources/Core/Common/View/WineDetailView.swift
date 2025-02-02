@@ -11,10 +11,14 @@ public class WineDetailView: UIView {
     
     // 이미지 그림자 전용 뷰 (그림자만 표시)
     public lazy var shadowContainerView = UIView().then {
-        $0.layer.shadowColor = AppColor.black?.cgColor
         $0.layer.shadowOpacity = 0.07
         $0.layer.shadowOffset = CGSize(width: 0, height: 1)
         $0.layer.shadowRadius = 10.5
+        if traitCollection.userInterfaceStyle == .dark {
+            $0.layer.shadowColor = .none
+        } else {
+            $0.layer.shadowColor = AppColor.black?.cgColor
+        }
     }
 
     // 실제 콘텐츠를 담는 뷰 (cornerRadius 적용)
@@ -30,7 +34,11 @@ public class WineDetailView: UIView {
         $0.backgroundColor = AppColor.white
         $0.layer.cornerRadius = 14
         $0.layer.masksToBounds = true
-        $0.layer.shadowColor = AppColor.black?.cgColor
+        if traitCollection.userInterfaceStyle == .dark {
+            $0.layer.shadowColor = .none
+        } else {
+            $0.layer.shadowColor = AppColor.black?.cgColor
+        }
         $0.layer.shadowOpacity = 0.07
         $0.layer.shadowOffset = CGSize(width: 0, height: 1)
         $0.layer.shadowRadius = 10.5
