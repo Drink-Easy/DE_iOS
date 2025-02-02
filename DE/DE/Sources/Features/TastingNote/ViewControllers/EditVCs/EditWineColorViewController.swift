@@ -34,6 +34,7 @@ public class EditWineColorViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.addSubview(indicator)
         setupUI()
         setConstraints()
         setupActions()
@@ -87,7 +88,9 @@ public class EditWineColorViewController: UIViewController {
         let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
         Task {
             do {
+                self.view.showBlockingView()
                 try await networkService.patchNote(data: tnData)
+                self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             }
         }

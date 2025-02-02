@@ -74,15 +74,13 @@ public class SplashVC : UIViewController {
         
         //토큰 유효
         if Date() < ExpiresAt {
-            navigateToMainScreen()
+            checkIsFirst()
         } else {
             networkService.reissueToken { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .success(_):
-                    navigateToMainScreen()
-//                    navigateToOnBoaringScreen()
-//                    print(response)
+                    checkIsFirst()
                 case .failure(let error):
                     navigateToOnBoaringScreen()
                     print(error)
@@ -91,10 +89,25 @@ public class SplashVC : UIViewController {
         }
     }
     
+    func checkIsFirst() {
+        let isFirstString = SelectLoginTypeVC.keychain.getBool("isFirst")
+        if isFirstString == true || isFirstString == nil {
+            navigateToWelcomeScreen()
+        } else { navigateToMainScreen() }
+    }
+    
     func navigateToMainScreen() {
         let mainTabBarController = MainTabBarController()
         if let window = UIApplication.shared.windows.first {
             window.rootViewController = mainTabBarController
+            UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+        }
+    }
+    
+    func navigateToWelcomeScreen() {
+        let vc = TermsOfServiceVC()
+        if let window = UIApplication.shared.windows.first {
+            window.rootViewController = vc
             UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
         }
     }

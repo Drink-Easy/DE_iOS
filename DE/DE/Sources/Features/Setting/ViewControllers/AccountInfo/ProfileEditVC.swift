@@ -39,7 +39,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-        
+        self.view.addSubview(indicator)
         setupUI()
         setupConstraints()
         setupNavigationBar()
@@ -128,10 +128,13 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     @objc private func editCompleteTapped() {
         Task {
             do {
+                self.view.showBlockingView()
                 try await callPatchAPI()
+                self.view.hideBlockingView()
                 self.navigationController?.popViewController(animated: true)
             } catch {
                 print("Error: \(error)")
+                self.view.hideBlockingView()
                 // Alert 표시 등 추가
             }
         }
@@ -177,7 +180,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         }
     }
     
-    //MARK: - 닉네임 중복 검사 // TODO: 경고 떠있을 때 완료버튼 안눌리게 처리하기
+    //MARK: - 닉네임 중복 검사
     @objc func checkNicknameValidity(){
         guard let nickname = profileView.nicknameTextField.text, !nickname.isEmpty, ValidationManager.isLengthValid else {
             print("닉네임이 없습니다")

@@ -51,9 +51,10 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        
+        self.view.addSubview(indicator)
         Task {
             do {
+                self.view.showBlockingView()
                 try await CallTastingNote()
                 smallTitleLabel.text = wineData.wineName
                 
@@ -61,10 +62,11 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
                     self.setupNavigationBar() // 제목 설정
                 }
                 setWineData()
-                
+                self.view.hideBlockingView()
             } catch {
                 print("Error: \(error)")
                 // Alert 표시 등 추가
+                self.view.hideBlockingView()
             }
         }
     }

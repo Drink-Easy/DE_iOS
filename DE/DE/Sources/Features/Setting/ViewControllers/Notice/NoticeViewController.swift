@@ -26,6 +26,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.addSubview(indicator)
         self.view.backgroundColor = AppColor.bgGray
         setupNavigationBar()
         setupUI()
@@ -68,6 +69,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func callNoticeAPI() {
+        self.view.showBlockingView()
         networkService.fetchAllNotices() { [weak self] result in
             guard let self = self else { return }
             
@@ -77,8 +79,10 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     self.noticeData = responseData!
                     self.noticeListView.reloadData()
                 }
+                self.view.hideBlockingView()
             case .failure(let error) :
                 print("\(error)")
+                self.view.hideBlockingView()
             }
         }
     }

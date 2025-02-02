@@ -33,6 +33,7 @@ public class RatingWineViewController: UIViewController {
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+        self.view.addSubview(indicator)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
@@ -117,10 +118,13 @@ public class RatingWineViewController: UIViewController {
         tnManager.saveReview(reviewString)
         Task {
             do {
+                self.view.showBlockingView()
                 try await postCreateTastingNote()
+                self.view.hideBlockingView()
                 navigationController?.popToRootViewController(animated: true)
             } catch {
                 print("Error: \(error)")
+                self.view.hideBlockingView()
                 // Alert 표시 등 추가
             }
         }

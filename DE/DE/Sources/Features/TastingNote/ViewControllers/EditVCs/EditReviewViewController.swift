@@ -34,6 +34,7 @@ public class EditReviewViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.addSubview(indicator)
         view.backgroundColor = AppColor.bgGray
         setConstraints()
         setupActions()
@@ -103,7 +104,9 @@ public class EditReviewViewController: UIViewController {
         let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
         Task {
             do {
+                self.view.showBlockingView()
                 try await networkService.patchNote(data: tnData)
+                self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             }
         }

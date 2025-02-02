@@ -6,7 +6,7 @@ import CoreModule
 import Network
 
 //테이스팅노트 메인 노트 보관함 뷰
-public class AllTastingNoteVC: UIViewController, WineSortDelegate {
+public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureRecognizerDelegate {
     
     private let networkService = TastingNoteService()
     
@@ -31,13 +31,18 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate {
     // MARK: - Life Cycle
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
+        tastingNoteView.noTastingNoteLabel.isHidden = true
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         Task {
             do {
+                self.view.showBlockingView()
                 try await CallAllTastingNote()
-                
+                self.view.hideBlockingView()
             } catch {
                 print("Error: \(error)")
+                self.view.hideBlockingView()
                 // Alert 표시 등 추가
             }
         }
