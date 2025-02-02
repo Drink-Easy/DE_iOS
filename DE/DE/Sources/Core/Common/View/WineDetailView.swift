@@ -27,7 +27,6 @@ public class WineDetailView: UIView {
         $0.layer.cornerRadius = 14
         $0.layer.masksToBounds = true
         $0.contentMode = .scaleAspectFit
-        $0.backgroundColor = AppColor.white
     }
     
     public lazy var labelView = UIView().then {
@@ -92,7 +91,8 @@ public class WineDetailView: UIView {
     
     private func addComponents() {
         [shadowContainerView, labelView].forEach{ self.addSubview($0) }
-        shadowContainerView.addSubview(image)
+        shadowContainerView.addSubview(imageBackground)
+        imageBackground.addSubview(image)
         [titleStackView, kindContents, typeContents, countryContents].forEach{ labelView.addSubview($0) }
     }
     
@@ -103,16 +103,20 @@ public class WineDetailView: UIView {
             $0.width.height.equalTo(100)
         }
         
-        image.snp.makeConstraints { 
+        imageBackground.snp.makeConstraints {
+            $0.edges.equalToSuperview()
+        }
+        
+        image.snp.makeConstraints {
             $0.verticalEdges.equalToSuperview().inset(3)
             $0.horizontalEdges.equalToSuperview()
         }
         
         labelView.snp.makeConstraints {
-            $0.centerY.equalTo(image)
-            $0.leading.equalTo(image.snp.trailing).offset(8)
+            $0.centerY.equalTo(imageBackground)
+            $0.leading.equalTo(imageBackground.snp.trailing).offset(8)
             $0.trailing.equalToSuperview()
-            $0.height.equalTo(image.snp.height)
+            $0.height.equalTo(imageBackground.snp.height)
             $0.bottom.equalToSuperview()
         }
         
