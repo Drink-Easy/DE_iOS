@@ -334,7 +334,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         likeWineListView.title.text = "For \(userName),"
         likeWineListView.title.setPartialTextStyle(
             text: likeWineListView.title.text ?? "",
-            targetText: "\(userName)",
+            targetText: "\(userName),",
             color: AppColor.purple100 ?? .purple,
             font: UIFont.ptdSemiBoldFont(ofSize: 26)
         )
