@@ -4,8 +4,21 @@ import UIKit
 import SnapKit
 import Moya
 import SDWebImage
+import CoreModule
 
 class NoteCollectionViewCell: UICollectionViewCell { // 셀에 이미지와 label을 추가하기 위한 커스텀 셀
+    
+    private lazy var imageBackground = UIView().then {
+        $0.layer.cornerRadius = 10
+        $0.layer.masksToBounds = true
+        $0.backgroundColor = AppColor.winebg
+    }
+    
+    private lazy var image = UIImageView().then {
+        $0.contentMode = .scaleAspectFit
+        $0.layer.cornerRadius = 10
+        $0.layer.masksToBounds = true
+    }
     
     let imageView = UIImageView() // CollectionView에 image와 label 추가
     let nameLabel = UILabel()
@@ -17,18 +30,19 @@ class NoteCollectionViewCell: UICollectionViewCell { // 셀에 이미지와 labe
         contentView.addSubview(imageView)
         contentView.addSubview(nameLabel)
         
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 10
-        
         nameLabel.textAlignment = .center
         nameLabel.font = UIFont.systemFont(ofSize: 12)
         nameLabel.textColor = .black
         nameLabel.numberOfLines = 0
         
-        imageView.snp.makeConstraints { make in
+        imageBackground.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
             make.height.equalTo(contentView.snp.width)
+        }
+        
+        image.snp.makeConstraints { make in
+            make.verticalEdges.equalToSuperview().inset(3)
+            make.horizontalEdges.equalToSuperview()
         }
         
         nameLabel.snp.makeConstraints { make in

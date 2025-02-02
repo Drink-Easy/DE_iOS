@@ -33,6 +33,7 @@ public class NormalTextViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        self.view.addSubview(indicator)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -233,7 +234,6 @@ public class NormalTextViewController: UIViewController {
             print("⚠️ userId가 UserDefaults에 없습니다.")
             return
         }
-        
         Task {
             do {
                 // 데이터 전송

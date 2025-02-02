@@ -25,7 +25,7 @@ class EntireReviewViewController: UIViewController {
         addView()
         constraints()
         self.view.addSubview(indicator)
-        self.view.showBlockingView()
+        self.view.showColorBlockingView()
         Task {
             do {
                 try await callEntireReviewAPI(wineId: self.wineId, sortType: "최신순", page: 0)

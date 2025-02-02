@@ -18,14 +18,12 @@ public class SearchResultTableViewCell: UITableViewCell {
     }
     
     private lazy var image = UIImageView().then {
-        $0.image = UIImage(named: "스파클링")
         $0.contentMode = .scaleAspectFit
         $0.layer.cornerRadius = 5
         $0.layer.masksToBounds = true
     }
     
     private lazy var name = UILabel().then {
-        //$0.text = "루이 로드레 빈티지 브륏"
         $0.textColor = Constants.AppColor.DGblack
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
         $0.numberOfLines = 1
@@ -33,7 +31,6 @@ public class SearchResultTableViewCell: UITableViewCell {
     }
     
     private lazy var kind = UILabel().then {
-        //$0.text = "와인 > 스파클링, 샴페인"
         $0.textColor = AppColor.gray100
         $0.font = UIFont.ptdRegularFont(ofSize: 14)
     }

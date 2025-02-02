@@ -24,7 +24,6 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     
         addView()
         constraints()
-        self.view.addSubview(indicator)
         callWineDetailAPI(wineId: self.wineId)
         setupNavigationBar()
     }
@@ -32,6 +31,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        self.view.addSubview(indicator)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -260,7 +260,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func callWineDetailAPI(wineId: Int) {
-        self.view.showBlockingView()
+        self.view.showColorBlockingView() 
         wineNetworkService.fetchWineInfo(wineId: wineId) { [weak self] result in
             guard let self = self else { return }
             

@@ -17,9 +17,8 @@ class SurveySliderView: UIView {
     
     init(titleText: String, currentPage: Int, entirePage: Int, buttonTitle: String) {
         self.surveyTopView = SurveyTopView(titleText: titleText, currentPage: currentPage, entirePage: entirePage)
-        self.nextButton = CustomButton(title: buttonTitle, titleColor: .white, isEnabled: false).then {
-            $0.isEnabled = false
-        }
+        self.nextButton = CustomButton(title: buttonTitle, titleColor: .white, isEnabled: true)
+        self.nextButton.isEnabled = true
         
         super.init(frame: .zero)
         backgroundColor = AppColor.bgGray
