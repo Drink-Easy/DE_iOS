@@ -11,7 +11,7 @@ class MyWineDateView: UIView {
     public lazy var topView = NoCountDateTopView()
     
     lazy var calendarContainer = UIView().then {
-        $0.backgroundColor = .white
+        $0.backgroundColor = AppColor.white
         $0.layer.cornerRadius = 10
         
         // 그림자 설정

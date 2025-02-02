@@ -15,17 +15,64 @@ class DateTopView: UIView {
         $0.font = UIFont.ptdMediumFont(ofSize: 16)
     }
     
-    public lazy var title = UILabel().then {
-        $0.textColor = AppColor.purple100
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+    public lazy var titleLabel = UILabel().then {
         $0.numberOfLines = 0
     }
     
-    private lazy var desp = UILabel().then {
-        $0.text = "시음 시기를 선택해주세요"
-        $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
-        $0.numberOfLines = 1
+//
+//    public lazy var title = UILabel().then {
+//        $0.textColor = AppColor.purple100
+//        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+//        $0.numberOfLines = 0
+//    }
+//    
+//    private lazy var desp = UILabel().then {
+//        $0.text = "시음 시기를 선택해주세요"
+//        $0.textColor = AppColor.black
+//        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+//        $0.numberOfLines = 1
+//    }
+    
+    /// 제목과 설명을 하나의 라벨에서 관리
+    /// - Parameters:
+    ///   - title: 메인 제목
+    ///   - titleColor: 메인 제목 색상 (기본값: `AppColor.purple100`)
+    ///   - titleFont: 메인 제목 폰트 (기본값: `UIFont.ptdSemiBoldFont(ofSize: 24)`)
+    ///   - description: 설명 텍스트
+    ///   - descriptionColor: 설명 텍스트 색상 (기본값: `AppColor.black`)
+    ///   - descriptionFont: 설명 텍스트 폰트 (기본값: `UIFont.ptdMediumFont(ofSize: 18)`)
+    ///   - lineSpacing: 행간 (기본값: `2`)
+    public func setTitleLabel(
+        title: String,
+        titleColor: UIColor = AppColor.purple100!,
+        titleFont: UIFont = UIFont.ptdSemiBoldFont(ofSize: 24),
+        description: String,
+        descriptionColor: UIColor = AppColor.black!,
+        descriptionFont: UIFont = UIFont.ptdSemiBoldFont(ofSize: 24),
+        lineSpacing: CGFloat = 2
+    ) {
+        let fullText = "\(title)\n\(description)"
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = lineSpacing
+        
+        let attributedString = NSMutableAttributedString(string: fullText)
+        
+        let titleRange = (fullText as NSString).range(of: title)
+        attributedString.addAttributes([
+            .font: titleFont,
+            .foregroundColor: titleColor,
+            .paragraphStyle: paragraphStyle
+        ], range: titleRange)
+        
+        let descriptionRange = (fullText as NSString).range(of: description)
+        attributedString.addAttributes([
+            .font: descriptionFont,
+            .foregroundColor: descriptionColor,
+            .paragraphStyle: paragraphStyle
+        ], range: descriptionRange)
+        
+        titleLabel.attributedText = attributedString
     }
 
     init(currentPage: Int, entirePage: Int) {
@@ -60,7 +107,7 @@ class DateTopView: UIView {
     }
     
     private func addComponents() {
-        [page, title, desp].forEach{ self.addSubview($0) }
+        [page, titleLabel].forEach{ self.addSubview($0) }
     }
     
     private func constraints() {
@@ -69,17 +116,11 @@ class DateTopView: UIView {
             $0.leading.equalToSuperview()
         }
         
-        title.snp.makeConstraints {
+        titleLabel.snp.makeConstraints {
             $0.top.equalTo(page.snp.bottom).offset(4)
-            $0.leading.trailing.equalToSuperview()
-        }
-        
-        desp.snp.makeConstraints {
-            $0.top.equalTo(title.snp.bottom).offset(2)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
-        
         
     }
 }
