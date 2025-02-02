@@ -45,4 +45,35 @@ extension UILabel {
         
         self.attributedText = attributedText
     }
+    
+    /// 행간(Line Spacing)을 조절하는 함수
+    /// - Parameters:
+    ///   - lineSpacing: 원하는 행간 (기본값: 4)
+    ///   - alignment: 텍스트 정렬 방식 (기본값: `.left`)
+    public func setLineSpacing(lineSpacing: CGFloat = 4, alignment: NSTextAlignment = .left, font: UIFont = .ptdRegularFont(ofSize: 16)) {
+        guard let text = self.text, !text.isEmpty else { return }
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = lineSpacing
+        paragraphStyle.alignment = alignment
+        
+        let attributes: [NSAttributedString.Key: Any] = [
+            .paragraphStyle: paragraphStyle,
+            .font: font,
+            .foregroundColor: self.textColor ?? UIColor.black, // ✅ 기존 텍스트 색상 유지
+            .kern: attributedText?.attribute(.kern, at: 0, effectiveRange: nil) ?? 0 // ✅ 기존 자간 유지
+        ]
+        
+        let attributedString = NSMutableAttributedString(string: text, attributes: attributes)
+        
+        // ✅ 기존 AttributedText가 있다면 속성 유지 (ex: 특정 글자 색상 다르게 적용한 경우)
+        if let existingAttributedText = self.attributedText {
+            existingAttributedText.enumerateAttributes(in: NSRange(location: 0, length: existingAttributedText.length), options: []) { attrs, range, _ in
+                attributedString.addAttributes(attrs, range: range)
+            }
+        }
+        
+        self.attributedText = attributedString
+    }
 }
+
