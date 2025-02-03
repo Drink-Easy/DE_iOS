@@ -28,19 +28,13 @@ class EditNoseViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         NoseManager.shared.resetSelectedScents()
+        NoseManager.shared.collapseAllSections()
+        
         topView.header.setTitleLabel(wineData.wineName)
         
-        for sectionIndex in 0..<NoseManager.shared.scentSections.count {
-            NoseManager.shared.scentSections[sectionIndex].isExpand = false
-        }
-        
         scentNames = tnManager.nose
-        print(scentNames)
+        NoseManager.shared.applySelectedScents(from: scentNames)
         
-        for scent in scentNames {
-            NoseManager.shared.toggleScentSelection(scent)
-        }
-
         middleView.noseCollectionView.reloadData()
         topView.selectedCollectionView.reloadData()
     }
@@ -53,6 +47,21 @@ class EditNoseViewController: UIViewController {
         setupCollectionView()
         setupActions()
         setupNavigationBar()
+    }
+    
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        self.topView.selectedCollectionView.reloadData()
+        
+        DispatchQueue.main.async {
+            self.topView.updateSelectedCollectionViewHeight()
+            self.contentView.snp.updateConstraints { make in
+                make.bottom.equalTo(self.middleView.snp.bottom).offset(30)
+            }
+            
+            self.view.layoutIfNeeded() // 레이아웃 강제 업데이트
+        }
     }
     
     private func setupUI() {
@@ -92,6 +101,7 @@ class EditNoseViewController: UIViewController {
         selectedCollectionView.tag = 1
         selectedCollectionView.delegate = self
         selectedCollectionView.dataSource = self
+        topView.selectedCollectionView.allowsSelection = false
         selectedCollectionView.register(NoseCollectionViewCell.self, forCellWithReuseIdentifier: NoseCollectionViewCell.identifier)
         
         let noseCollectionView = middleView.noseCollectionView
@@ -129,13 +139,14 @@ class EditNoseViewController: UIViewController {
     }
     
     private func callUpdateAPI() {
-        let updateData = networkService.makeUpdateNoteBodyDTO(addNoseList: scentNames)
+        let updateData = networkService.makeUpdateNoteBodyDTO(updateNoseList: tnManager.nose)
         
         let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
         Task {
             do {
                 self.view.showBlockingView()
-                try await networkService.patchNote(data: tnData)
+                _ = try await networkService.patchNote(data: tnData)
+                NoseManager.shared.resetAllScents()
                 self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             }
@@ -163,6 +174,8 @@ extension EditNoseViewController : UICollectionViewDelegate, UICollectionViewDat
                 return 0
             }
         } else if collectionView.tag == 1 {
+//            scentNames = tnManager.nose
+//            NoseManager.shared.applySelectedScents(from: scentNames)
             return NoseManager.shared.selectedScents.count
         }
         return 0
@@ -225,8 +238,13 @@ extension EditNoseViewController : UICollectionViewDelegate, UICollectionViewDat
             // 데이터 직접 수정
             NoseManager.shared.scentSections[indexPath.section].scents[indexPath.row].isSelected.toggle()
         }
+//        else if collectionView.tag == 1 {
+//            if let cell = collectionView.cellForItem(at: indexPath) as? NoseCollectionViewCell {
+//                guard let name = cell.menuLabel.text else { return }
+//                NoseManager.shared.toggleScentSelection(name)
+//            }
+//        }
         
-        // UI 업데이트
         collectionView.reloadItems(at: [indexPath])
         Task {
             self.topView.selectedCollectionView.reloadData()
@@ -238,7 +256,6 @@ extension EditNoseViewController : UICollectionViewDelegate, UICollectionViewDat
             self.view.layoutIfNeeded() // 레이아웃 강제 업데이트
         }
     }
-    
 }
 
 extension EditNoseViewController: NoseHeaderViewDelegate {
