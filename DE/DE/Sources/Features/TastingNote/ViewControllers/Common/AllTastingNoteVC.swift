@@ -179,16 +179,7 @@ extension AllTastingNoteVC: UICollectionViewDataSource, UICollectionViewDelegate
         }
         
         let tnItem = currentTastingNoteList[indexPath.row]
-        if let url = URL(string: tnItem.imageUrl) {
-            DispatchQueue.global().async {
-                if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        cell.image.image = image
-                    }
-                }
-            }
-        }
-        cell.name.text = tnItem.wineName
+        cell.configure(name: tnItem.wineName, imageURL: tnItem.imageUrl)
         return cell
     }
 }
