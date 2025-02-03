@@ -284,3 +284,7 @@ extension NoseTestVC: UICollectionViewDelegateFlowLayout {
         return CGSize(width: collectionView.frame.width, height: 52) // 기본 헤더 크기
     }
 }
+
+protocol NoseHeaderViewDelegate: AnyObject {
+    func toggleSection(_ section: Int) // 섹션 상태 토글을 위한 델리게이트 메서드
+}
