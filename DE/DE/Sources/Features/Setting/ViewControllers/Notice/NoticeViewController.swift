@@ -40,6 +40,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
         super.viewWillAppear(animated)
         self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        setNavBarAppearance(navigationController: self.navigationController)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
