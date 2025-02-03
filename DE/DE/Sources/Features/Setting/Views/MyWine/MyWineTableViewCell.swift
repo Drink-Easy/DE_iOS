@@ -117,7 +117,7 @@ class MyWineTableViewCell: UITableViewCell {
         if model.period >= 0 {
             self.buyDate.text = "D+\(model.period + 1)"
         } else {
-            self.buyDate.text = "D\(model.period - 1)"
+            self.buyDate.text = "D\(model.period)"
         }
     }
 }

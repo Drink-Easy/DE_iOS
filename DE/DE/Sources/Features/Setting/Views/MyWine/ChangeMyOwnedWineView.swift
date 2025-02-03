@@ -13,7 +13,9 @@ class ChangeMyOwnedWineView: UIView {
         descriptionLabelText: "구매 가격",
         textFieldPlaceholder: "가격을 입력해주세요",
         validationText: ""
-    )
+    ).then { t in
+        t.textField.keyboardType = .numberPad
+    }
     
     public lazy var dateTitle = UILabel().then {
         $0.text = "구매 일자"
@@ -23,7 +25,7 @@ class ChangeMyOwnedWineView: UIView {
     }
     
     lazy var calendarContainer = UIView().then {
-        $0.backgroundColor = .white
+        $0.backgroundColor = AppColor.white
         $0.layer.cornerRadius = 10
         
         // 그림자 설정
@@ -56,8 +58,8 @@ class ChangeMyOwnedWineView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setWinePrice(_ price: String) {
-        self.priceTextField.textField.placeholder = price
+    func setWinePrice(_ price: Int) {
+        self.priceTextField.textField.text = "\(price)"
     }
     
     func setupUI() {

@@ -14,9 +14,11 @@ class ChangeMyOwnedWineViewController: UIViewController {
     
     let networkService = MyWineService()
     
-    var registerWine: MyOwnedWine = MyOwnedWine()
+    var registerWine: MyWineViewModel?
     lazy var selectedDate: DateComponents = {
-        guard let date = registerWine.getBuyDate() else {
+        guard let wine = registerWine else { return Calendar.current.dateComponents([.year, .month, .day], from: Date()) }
+        
+        guard let date = wine.getBuyDate() else {
             return Calendar.current.dateComponents([.year, .month, .day], from: Date())
         }
         return date
@@ -34,7 +36,7 @@ class ChangeMyOwnedWineViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        view.backgroundColor = AppColor.bgGray
         setupUI()
         setupNavigationBar()
         setupActions()
@@ -46,7 +48,9 @@ class ChangeMyOwnedWineViewController: UIViewController {
     }
     
     func setupUI() {
-        editInfoView.setWinePrice(registerWine.price)
+        guard let wine = registerWine else {return}
+        
+        editInfoView.setWinePrice(wine.purchasePrice)
         
         view.addSubview(editInfoView)
         editInfoView.snp.makeConstraints { make in
@@ -91,11 +95,13 @@ class ChangeMyOwnedWineViewController: UIViewController {
     }
     
     @objc private func deleteNewWine() {
-            let alert = UIAlertController(
-                title: "테이스팅 노트 삭제",
-                message: "정말 삭제하시겠습니까?",
-                preferredStyle: .alert
-            )
+        guard let currentWine = self.registerWine else { return }
+        
+        let alert = UIAlertController(
+            title: "이 와인을 삭제하시겠습니까?",
+            message: "\(currentWine.wineName)",
+            preferredStyle: .alert
+        )
         
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         
@@ -107,12 +113,12 @@ class ChangeMyOwnedWineViewController: UIViewController {
         }))
         
         present(alert, animated: true, completion: nil)
-        
     }
     
     @objc
     private func completeEdit() {
-        callUpdateAPI(wineId: self.registerWine.wineId, price: checkPrice(), buyDate: checkDate())
+        guard let wine = registerWine else {return}
+        callUpdateAPI(wineId: wine.myWineId, price: checkPrice(), buyDate: checkDate())
         DispatchQueue.main.async {
             self.navigationController?.popViewController(animated: true)
         }
@@ -140,10 +146,11 @@ class ChangeMyOwnedWineViewController: UIViewController {
             print("⚠️ userId가 UserDefaults에 없습니다.")
             return
         }
+        guard let wine = registerWine else {return}
         
         Task {
             do {
-                _ = try await networkService.deleteMyWine(myWineId: registerWine.wineId)
+                _ = try await networkService.deleteMyWine(myWineId: wine.myWineId)
                 try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
                 try await APICallCounterManager.shared.incrementDelete(for: userId, controllerName: .myWine)
             } catch {
