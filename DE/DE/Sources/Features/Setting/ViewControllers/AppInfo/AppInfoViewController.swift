@@ -120,7 +120,7 @@ extension AppInfoViewController: UITableViewDelegate {
             content = Constants.Policy.location
         //TODO: 오픈소스 라이브러리 추가
         case "오픈소스 라이브러리":
-            content = "오픈소스 라이브러리 목록입니다.\n\n- Alamofire\n- SDWebImage\n- SnapKit\n..."
+            content = Constants.Policy.openSource
         default:
             content = "정보를 찾을 수 없습니다."
         }

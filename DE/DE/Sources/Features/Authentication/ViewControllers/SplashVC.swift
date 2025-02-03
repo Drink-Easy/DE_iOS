@@ -64,6 +64,7 @@ public class SplashVC : UIViewController {
                 if cookie.name == "accessToken" {
                     if let expires = cookie.expiresDate {
                         ExpiresAt = expires
+                        print("\(ExpiresAt)")
                     }
                 }
                 if cookie.name == "refreshToken" {

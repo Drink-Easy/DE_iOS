@@ -62,6 +62,7 @@ public class MyOwnedWineInfoViewController: UIViewController {
         wineDetailView.snp.makeConstraints { make in
             make.top.equalTo(header.snp.bottom).offset(DynamicPadding.dynamicValue(36))
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
+            make.height.equalTo(100)
         }
     }
     
