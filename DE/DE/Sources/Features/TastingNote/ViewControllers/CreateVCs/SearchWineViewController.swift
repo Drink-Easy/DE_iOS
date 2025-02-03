@@ -17,7 +17,7 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.isNavigationBarHidden = false
-        view.backgroundColor = Constants.AppColor.grayBG
+        view.backgroundColor = AppColor.grayBG
         self.view = searchHomeView
         self.view.addSubview(indicator)
         

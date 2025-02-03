@@ -11,7 +11,7 @@ class TopNameView: UIView {
         let config = UIImage.SymbolConfiguration(pointSize: 22, weight: .regular)
         let image = UIImage(systemName: "chevron.backward", withConfiguration: config)
         $0.setImage(image, for: .normal)
-        $0.tintColor = Constants.AppColor.gray80
+        $0.tintColor = AppColor.gray80
         $0.backgroundColor = .clear
     }
     
@@ -24,13 +24,13 @@ class TopNameView: UIView {
     
     public lazy var name = UILabel().then {
         $0.text = "루이 로드레 크리스탈 2015"
-        $0.textColor = Constants.AppColor.DGblack
+        $0.textColor = AppColor.DGblack
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
     }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.AppColor.grayBG
+        backgroundColor = AppColor.grayBG
         self.addComponents()
         self.constraints()
     }

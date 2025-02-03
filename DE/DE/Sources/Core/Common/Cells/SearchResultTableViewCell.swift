@@ -24,7 +24,7 @@ public class SearchResultTableViewCell: UITableViewCell {
     }
     
     private lazy var name = UILabel().then {
-        $0.textColor = Constants.AppColor.DGblack
+        $0.textColor = AppColor.DGblack
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
         $0.numberOfLines = 1
         $0.lineBreakMode = .byTruncatingTail
@@ -44,7 +44,7 @@ public class SearchResultTableViewCell: UITableViewCell {
     
     private lazy var score = UILabel().then {
         //$0.text = "★ 4.0"
-        $0.textColor = Constants.AppColor.purple100
+        $0.textColor = AppColor.purple100
         $0.font = UIFont.ptdRegularFont(ofSize: 14)
     }
 
@@ -57,16 +57,16 @@ public class SearchResultTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         if selected {
             borderLayer.cornerRadius = 8
-            contentView.backgroundColor = Constants.AppColor.purple10 // 선택된 배경색
-            borderLayer.borderColor = Constants.AppColor.purple70?.cgColor // 선택된 테두리색
+            contentView.backgroundColor = AppColor.purple10 // 선택된 배경색
+            borderLayer.borderColor = AppColor.purple70?.cgColor // 선택된 테두리색
             // 1초 후 기본 상태로 복원
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
                 guard let self = self else { return }
-                self.contentView.backgroundColor = Constants.AppColor.grayBG // 기본 배경색
+                self.contentView.backgroundColor = AppColor.grayBG // 기본 배경색
                 self.borderLayer.borderColor = UIColor.clear.cgColor // 기본 테두리 없음
             }
         } else {
-            contentView.backgroundColor = Constants.AppColor.grayBG // 기본 배경색
+            contentView.backgroundColor = AppColor.grayBG // 기본 배경색
             borderLayer.borderColor = UIColor.clear.cgColor // 기본 테두리 없음
         }
     }
@@ -92,7 +92,7 @@ public class SearchResultTableViewCell: UITableViewCell {
     
     private func setupView() {
         // 기본 셀 스타일 설정
-        contentView.backgroundColor = Constants.AppColor.grayBG
+        contentView.backgroundColor = AppColor.grayBG
         selectionStyle = .none // 기본 선택 스타일 제거
         
         // 테두리 설정

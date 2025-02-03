@@ -19,7 +19,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private lazy var noticeListView = UITableView().then {
         $0.register(NoticeTableViewCell.self, forCellReuseIdentifier: NoticeTableViewCell.identifier)
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        $0.backgroundColor = Constants.AppColor.grayBG
+        $0.backgroundColor = AppColor.grayBG
         $0.showsVerticalScrollIndicator = false
         $0.separatorStyle = .singleLine
         $0.rowHeight = 50

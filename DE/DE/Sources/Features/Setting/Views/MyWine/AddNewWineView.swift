@@ -18,7 +18,7 @@ public class AddNewWineView: UIView {
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.ptdSemiBoldFont(ofSize: 24),
             .paragraphStyle: paragraphStyle,
-            .foregroundColor: Constants.AppColor.DGblack ?? .black
+            .foregroundColor: AppColor.DGblack ?? .black
         ]
         $0.attributedText = NSAttributedString(string: text, attributes: attributes)
     }
@@ -28,12 +28,12 @@ public class AddNewWineView: UIView {
     public lazy var searchResultTableView = UITableView().then {
         $0.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        $0.backgroundColor = Constants.AppColor.grayBG
+        $0.backgroundColor = AppColor.grayBG
     }
 
     public init(titleText: String, placeholder: String) {
         super.init(frame: .zero)
-        backgroundColor = Constants.AppColor.grayBG
+        backgroundColor = AppColor.grayBG
 
         title.text = titleText
         searchBar.placeholderText = placeholder
