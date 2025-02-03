@@ -7,7 +7,7 @@ import SnapKit
 open class CustomButton: UIButton {
     public init(
         title: String = "",
-        titleColor: UIColor = AppColor.white ?? .systemBackground,
+        titleColor: UIColor = .white,
         isEnabled: Bool = true
     ) {
         super.init(frame: .zero)
@@ -18,6 +18,7 @@ open class CustomButton: UIButton {
         self.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         self.layer.cornerRadius = 15
         
+        self.isEnabled = isEnabled
         self.snp.makeConstraints { make in
             make.height.equalTo(60)
         }

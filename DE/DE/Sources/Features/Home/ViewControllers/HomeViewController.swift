@@ -5,7 +5,7 @@ import CoreModule
 import Then
 import Network
 
-public class HomeViewController: UIViewController, HomeTopViewDelegate {
+public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestureRecognizerDelegate {
     
     private var adImage: [HomeBannerModel] = []
     var recommendWineDataList: [HomeWineModel] = []
@@ -56,7 +56,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     
     private lazy var likeWineListView = RecomView().then {
         $0.title.text = "For \(userName),"
-        $0.title.setPartialTextStyle(text: $0.title.text ?? "", targetText: "\(userName)", color: AppColor.purple100 ?? .purple, font: UIFont.ptdSemiBoldFont(ofSize: 26))
+        $0.title.setPartialTextStyle(text: $0.title.text ?? "", targetText: "\(userName),", color: AppColor.purple100 ?? .purple, font: UIFont.ptdSemiBoldFont(ofSize: 26))
         $0.recomCollectionView.delegate = self
         $0.recomCollectionView.dataSource = self
         $0.recomCollectionView.tag = 1
@@ -64,6 +64,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     }
     
     public func fetchName() { // TODO : 이름 호출 로직 수정하기
+        self.view.showBlockingView()
         Task {
             guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
@@ -71,8 +72,10 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
             }
             do {
                 self.userName = try await PersonalDataManager.shared.fetchUserName(for: userId)
+                self.view.hideBlockingView()
             } catch {
                 print(error.localizedDescription)
+                self.view.hideBlockingView()
             }
         }
     }
@@ -100,7 +103,6 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-        
         addComponents()
         constraints()
         startAutoScrolling()
@@ -110,7 +112,8 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.isNavigationBarHidden = true
-        
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+        self.view.addSubview(indicator)
         setAdBanner()
         fetchWines(isRecommend: true) // 추천 와인
         fetchWines(isRecommend: false) // 인기 와인
@@ -138,7 +141,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         contentView.snp.makeConstraints {
             $0.edges.equalTo(scrollView) // 스크롤뷰의 모든 가장자리에 맞춰 배치
             $0.width.equalTo(scrollView.snp.width) // 가로 스크롤을 방지, 스크롤뷰와 같은 너비로 설정
-            $0.bottom.equalTo(popularWineListView.snp.bottom).offset(24)
+            $0.bottom.equalTo(popularWineListView.snp.bottom).offset(DynamicPadding.dynamicValue(35))
         }
         
         adCollectionView.snp.makeConstraints {
@@ -154,12 +157,12 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         }
         
         likeWineListView.snp.makeConstraints {
-            $0.top.equalTo(adCollectionView.snp.bottom).offset(DynamicPadding.dynamicValue(24))
+            $0.top.equalTo(adCollectionView.snp.bottom).offset(DynamicPadding.dynamicValue(35))
             $0.horizontalEdges.equalToSuperview()
         }
         
         popularWineListView.snp.makeConstraints {
-            $0.top.equalTo(likeWineListView.snp.bottom).offset(DynamicPadding.dynamicValue(24))
+            $0.top.equalTo(likeWineListView.snp.bottom).offset(DynamicPadding.dynamicValue(40))
             $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
@@ -225,8 +228,10 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
             }
             
             // 2. 캐시 데이터가 없으면 네트워크 요청
+            self.view.showBlockingView()
             print("🌐 네트워크 요청 시작")
             await fetchWinesFromNetwork(isRecommend)
+            self.view.hideBlockingView()
         }
     }
 
@@ -246,14 +251,17 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
 
             } catch {
                 print("⚠️ 캐시 데이터 없음 → 네트워크 요청 수행")
+                self.view.showBlockingView()
                 do {
                     let newData = try await fetchHomeBanner()
                     try AdBannerListManager.shared.saveAdBannerList(
                         bannerData: newData.map { AdBannerDataModel(bannerId: $0.bannerId, imageUrl: $0.imageUrl, postUrl: $0.postUrl) },
                         expirationDate: Date()
                     )
+                    self.view.hideBlockingView()
                 } catch {
                     print("❌ 네트워크 요청 실패: \(error)")
+                    self.view.hideBlockingView()
                 }
             }
         }
@@ -334,7 +342,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         likeWineListView.title.text = "For \(userName),"
         likeWineListView.title.setPartialTextStyle(
             text: likeWineListView.title.text ?? "",
-            targetText: "\(userName)",
+            targetText: "\(userName),",
             color: AppColor.purple100 ?? .purple,
             font: UIFont.ptdSemiBoldFont(ofSize: 26)
         )

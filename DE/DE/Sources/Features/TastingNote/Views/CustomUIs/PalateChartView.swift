@@ -1,6 +1,8 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import SwiftUI
+
+import CoreModule
 import Charts
 
 struct PalateChartView: View {
@@ -8,7 +10,7 @@ struct PalateChartView: View {
     
     let maxValue: Double = 1.0 // 최대값을 1.0으로 정규화
     let levels: Int = 5        // 5단계
-    let spacing: CGFloat = 26  // 각 단계 간 간격 (30 포인트)
+    let spacing: CGFloat = DynamicPadding.dynamicValue(24)  // 각 단계 간 간격
     
     var body: some View {
         ZStack {
@@ -75,7 +77,7 @@ struct PalateChartView: View {
                     Text("\(viewModel.stats[index].label)")
                         .font(.system(size: 14, weight: .bold))
                         .multilineTextAlignment(.center)
-                        .foregroundColor(.black)
+                        .foregroundColor(Color("Dblack"))
                         .frame(width: 60)
                         .position(x: x, y: y)
                     Text("\(Int(viewModel.stats[index].value * 100))%")

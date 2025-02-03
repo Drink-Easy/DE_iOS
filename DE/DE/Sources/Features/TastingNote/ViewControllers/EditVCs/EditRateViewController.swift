@@ -22,17 +22,19 @@ public class EditRateViewController: UIViewController {
         rView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         rView.infoView.kindContents.text = wineData.sort
-        rView.infoView.typeContents.text = wineData.variety
+        rView.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")
         rView.ratingButton.rating = tnManager.rating
     }
     
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.addSubview(indicator)
         view.backgroundColor = AppColor.bgGray
         setConstraints()
         setupActions()
         setupNavigationBar()
+        hideKeyboardWhenTappedAround()
     }
     
     func setConstraints() {
@@ -68,10 +70,6 @@ public class EditRateViewController: UIViewController {
         rView.setRate(rating)
     }
     
-    @objc private func dismissKeyboard() {
-        view.endEditing(true)
-    }
-    
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)
     }
@@ -87,7 +85,9 @@ public class EditRateViewController: UIViewController {
         let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
         Task {
             do {
+                self.view.showBlockingView()
                 try await networkService.patchNote(data: tnData)
+                self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             }
         }

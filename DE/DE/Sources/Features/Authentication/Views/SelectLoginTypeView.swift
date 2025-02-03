@@ -29,7 +29,7 @@ class SelectLoginTypeView: UIView {
     
     let appleButton = UIButton().then {
         $0.backgroundColor = UIColor(hex: "#000000")
-        $0.setTitle("애플로 시작하기", for: .normal)
+        $0.setTitle("Apple로 시작하기", for: .normal)
         $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         $0.setTitleColor(UIColor(hex: "#FFFFFF"), for: .normal)
         $0.layer.cornerRadius = 15
@@ -94,16 +94,16 @@ class SelectLoginTypeView: UIView {
         kakaoButton.snp.makeConstraints { make in
             make.bottom.equalTo(appleButton.snp.top).inset(-DynamicPadding.dynamicValue(10.0))
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
-            make.height.equalTo(60)
+            make.height.equalTo(50)
         }
         appleButton.snp.makeConstraints { make in
             make.bottom.equalTo(loginButton.snp.top).inset(-DynamicPadding.dynamicValue(10.0))
-            make.height.equalTo(60)
+            make.height.equalTo(50)
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
         }
         loginButton.snp.makeConstraints { make in
             make.bottom.equalTo(joinStackView.snp.top).inset(-DynamicPadding.dynamicValue(20.0))
-            make.height.equalTo(60)
+            make.height.equalTo(50)
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
         }
         joinStackView.snp.makeConstraints { make in

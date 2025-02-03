@@ -34,7 +34,6 @@ public class MyOwnedWineInfoViewController: UIViewController {
         setupNavigationBar()
         setWineData()
         wineDetailView.setEditButton(showEditButton: true)
-        wineDetailView.editButton.addTarget(self, action: #selector(editButtonTapped), for: .allTouchEvents)
     }
     
     private func setWineData() {
@@ -46,6 +45,7 @@ public class MyOwnedWineInfoViewController: UIViewController {
         header.infoView.kindContents.text = currentWine.wineSort
         
         self.setWineDetailInfo(currentWine)
+        wineDetailView.editButton.addTarget(self, action: #selector(editButtonTapped), for: .allTouchEvents)
     }
     
     // MARK: - Setup Methods
@@ -62,6 +62,7 @@ public class MyOwnedWineInfoViewController: UIViewController {
         wineDetailView.snp.makeConstraints { make in
             make.top.equalTo(header.snp.bottom).offset(DynamicPadding.dynamicValue(36))
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
+            make.height.equalTo(100)
         }
     }
     
@@ -85,6 +86,7 @@ public class MyOwnedWineInfoViewController: UIViewController {
     }
     
     @objc func editButtonTapped() {
+        print(self.registerWine?.wineName ?? "와인 이름 없으나 버튼이 눌리긴 해")
         guard let currentWine = self.registerWine else { return }
         
         let nextVC = ChangeMyOwnedWineViewController()

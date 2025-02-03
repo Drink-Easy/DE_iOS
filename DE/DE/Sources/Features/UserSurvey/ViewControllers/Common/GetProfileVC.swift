@@ -10,6 +10,8 @@ import CoreModule
 import CoreLocation
 import Network
 
+// 기본 이미지를 어디서 설정하는지?
+
 public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
     
     private let navigationBarManager = NavigationBarManager()
@@ -33,6 +35,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
         $0.textAlignment = .left
         $0.numberOfLines = 0
+        $0.textColor = AppColor.black
     }
     
     let nextButton = CustomButton(
@@ -134,12 +137,12 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     }
     
     func configureTapGestureForDismissingPicker() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissDatePicker))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissImagePicker))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
     }
     
-    @objc func dismissDatePicker() {
+    @objc func dismissImagePicker() {
         view.endEditing(true)
     }
     
@@ -150,10 +153,12 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     //MARK: - 위치 정보 불러오기 로직
     @objc func getMyLocation() {
+        self.view.showBlockingView()
         LocationManager.shared.requestLocationPermission { [weak self] address in
             DispatchQueue.main.async {
                 self?.profileView.myLocationTextField.textField.text = address ?? ""
                 self?.checkFormValidity()
+                self?.view.hideBlockingView()
             }
         }
     }
@@ -164,22 +169,28 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
             print("닉네임이 없습니다")
             return
         }
-        
-        ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField) {
-                self.checkFormValidity() // 네트워크 응답 후 호출
+        self.view.showBlockingView()
+        ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField) { [weak self] success in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                self.view.hideBlockingView()  // ✅ 네트워크 요청 후 인디케이터 중지
+                self.checkFormValidity()  // ✅ UI 업데이트
             }
+        }
     }
     
     //MARK: - 닉네임 유효성 검사
     @objc func validateNickname(){
         ValidationManager.isNicknameCanUse = false
+        ValidationManager.isLengthValid = false
         ValidationManager.validateNickname(profileView.nicknameTextField)
         checkFormValidity()
     }
     
     //MARK: - 폼 유효성 검사
     @objc func checkFormValidity() {
-        let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true) && ValidationManager.isNicknameCanUse && ValidationManager.isLengthValid
+        let isNicknameValid =  ValidationManager.isNicknameCanUse && ValidationManager.isLengthValid
         let isLocationValid = !(profileView.myLocationTextField.textField.text?.isEmpty ?? true)
         let isImageSelected = profileView.profileImageView.image != nil
         let isFormValid = isNicknameValid && isLocationValid && isImageSelected

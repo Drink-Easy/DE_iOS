@@ -13,7 +13,9 @@ class MyWinePriceView: UIView {
         descriptionLabelText: "구매 가격",
         textFieldPlaceholder: "가격을 입력해주세요",
         validationText: ""
-    )
+    ).then { t in
+        t.textField.keyboardType = .numberPad
+    }
     public lazy var nextButton = CustomButton(title: "저장하기", isEnabled: false)
     
     override init(frame: CGRect) {
@@ -27,8 +29,9 @@ class MyWinePriceView: UIView {
     }
     
     func setWineName(_ name: String) {
-        self.topView.title.text = name
-        self.topView.desp.text = "구매 가격을 입력해주세요"
+        topView.setTitleLabel(title: name, description: "구매 가격을 입력해주세요")
+//        self.topView.title.text = name
+//        self.topView.desp.text = "구매 가격을 입력해주세요"
     }
     
     func setupUI() {

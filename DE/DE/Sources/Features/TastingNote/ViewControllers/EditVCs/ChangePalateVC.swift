@@ -54,6 +54,7 @@ public class ChangePalateVC: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.addSubview(indicator)
         palateInfo = tnManager.getSliderValues()
         setupUI()
         setupActions()
@@ -89,7 +90,7 @@ public class ChangePalateVC: UIViewController {
         recordGraphView.snp.makeConstraints { make in
             make.top.equalTo(wineNameTitle.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview().inset(24)
-            make.height.equalTo(Constants.superViewHeight)
+            make.height.equalTo(Constants.superViewHeight * 0.5 + 460)
         }
         nextButton.snp.makeConstraints { make in
             make.top.equalTo(recordGraphView.snp.bottom).offset(50)
@@ -127,7 +128,9 @@ public class ChangePalateVC: UIViewController {
         let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
         Task {
             do {
+                self.view.showBlockingView()
                 try await networkService.patchNote(data: tnData)
+                self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             }
         }

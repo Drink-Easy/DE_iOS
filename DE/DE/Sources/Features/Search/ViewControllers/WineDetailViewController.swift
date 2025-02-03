@@ -9,7 +9,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     
     let navigationBarManager = NavigationBarManager()
     public var wineId: Int = 0
-    var wineName: String = ""
+    var wineName: String = "123"
     var isLiked: Bool = false
     var originalIsLiked: Bool = false
     let wineNetworkService = WineService()
@@ -24,13 +24,14 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     
         addView()
         constraints()
-        callWineDetailAPI(wineId: self.wineId)
         setupNavigationBar()
+        callWineDetailAPI(wineId: self.wineId)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        self.view.addSubview(indicator)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -52,9 +53,6 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func setupNavigationBar() {
-        
-        largeTitleLabel.text = wineName
-        
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
@@ -98,13 +96,29 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
             : UIImage(systemName: "heart")?.withTintColor(AppColor.purple100!, renderingMode: .alwaysOriginal)
 
         button.setImage(heartImage, for: .normal)
-        button.tintColor = AppColor.bgGray
+        button.tintColor = .clear
     }
     
+//    private lazy var largeTitleLabel = UILabel().then {
+//        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+//        $0.numberOfLines = 0
+//        $0.textColor = AppColor.black
+//    }
+    
     private lazy var largeTitleLabel = UILabel().then {
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        let text = wineName
         $0.numberOfLines = 0
-        $0.textColor = AppColor.black
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 2
+        
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.ptdSemiBoldFont(ofSize: 24),
+            .paragraphStyle: paragraphStyle,
+            .foregroundColor: AppColor.black!
+        ]
+        
+        $0.attributedText = NSAttributedString(string: text, attributes: attributes)
     }
     
     private var smallTitleLabel = UILabel()
@@ -259,6 +273,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func callWineDetailAPI(wineId: Int) {
+        self.view.showColorBlockingView() 
         wineNetworkService.fetchWineInfo(wineId: wineId) { [weak self] result in
             guard let self = self else { return }
             
@@ -267,8 +282,10 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
                 if let data = responseData {
                     self.transformResponseData(data)
                 }
+                self.view.hideBlockingView()
             case .failure(let error) :
                 print("\(error)")
+                self.view.hideBlockingView()
             }
         }
     }
@@ -303,26 +320,32 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func callLikeAPI(wineId: Int) async {
+        self.view.showBlockingView()
         do {
             let responseData = try await likedNetworkService.postWishlist(wineId: wineId)
             print("✅ 좋아요 API 호출 성공: \(responseData)") // 이제 프린트가 확실히 출력됩니다.
             
             // 호출 카운터 증가
             await checkCallCounter(up: true)
+            self.view.hideBlockingView()
         } catch {
             print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")
+            self.view.hideBlockingView()
         }
     }
     
     func calldeleteLikedAPI(wineId: Int) async {
+        self.view.showBlockingView()
         do {
             let responseData = try await likedNetworkService.deleteWishlist(wineId: wineId)
             print("✅ 좋아요 API 호출 성공: \(responseData)") // 이제 프린트가 확실히 출력됩니다.
             
             // 호출 카운터 감소
             await checkCallCounter(up: false)
+            self.view.hideBlockingView()
         } catch {
             print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")
+            self.view.hideBlockingView()
         }
     }
     

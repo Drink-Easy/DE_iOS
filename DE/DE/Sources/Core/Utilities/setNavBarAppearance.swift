@@ -13,7 +13,7 @@ public func setNavBarAppearance(navigationController: UINavigationController?) {
     scrollEdgeAppearance.configureWithOpaqueBackground()
     scrollEdgeAppearance.backgroundColor = AppColor.bgGray
     scrollEdgeAppearance.titleTextAttributes = [.foregroundColor: AppColor.black!]
-    scrollEdgeAppearance.shadowColor = AppColor.gray50
+    scrollEdgeAppearance.shadowColor = .clear
     
     navigationController?.navigationBar.standardAppearance = scrollEdgeAppearance
     navigationController?.navigationBar.scrollEdgeAppearance = standardAppearance

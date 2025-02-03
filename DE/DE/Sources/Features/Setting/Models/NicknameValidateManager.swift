@@ -28,61 +28,86 @@ public class NicknameValidateManager {
             return false
         }
         
-        let koreanRegex = "^[가-힣]+$"  // 한글만 포함
-        let englishRegex = "^[A-Za-z]+$" // 영어만 포함
+        let koreanJamoRegex = "[ㄱ-ㅎㅏ-ㅣ]" // ✅ 한글 자모 포함 여부 검사
+        let koreanCompleteRegex = "[가-힣]" // ✅ 한글 완성형 포함 여부 검사
+        let englishRegex = "[A-Za-z]" // ✅ 영어 포함 여부 검사
+        let numberRegex = "[0-9]" // ✅ 숫자 포함 여부 검사
+        let specialCharRegex = "[^가-힣ㄱ-ㅎㅏ-ㅣA-Za-z0-9]" // ✅ 특수문자 포함 여부 검사
         
-        let isKoreanOnly = username.range(of: koreanRegex, options: .regularExpression) != nil
-        let isEnglishOnly = username.range(of: englishRegex, options: .regularExpression) != nil
+        // 한글 자모 포함 여부
+        let containsKoreanJamo = username.range(of: koreanJamoRegex, options: .regularExpression) != nil
+        // 한글 완성형 포함 여부
+        let containsKoreanComplete = username.range(of: koreanCompleteRegex, options: .regularExpression) != nil
+        // 영어 포함 여부
+        let containsEnglish = username.range(of: englishRegex, options: .regularExpression) != nil
+        // 숫자 포함 여부
+        let containsNumber = username.range(of: numberRegex, options: .regularExpression) != nil
+        // 특수문자 포함 여부
+        let containsSpecialChar = username.range(of: specialCharRegex, options: .regularExpression) != nil
         
-        // 닉네임 길이 검증
-        if isKoreanOnly {
-            if username.count < 2 {
-                showValidationError(view, message: "2자 이상의 닉네임을 입력해 주세요")
-                self.isLengthValid = true
-                return false
-            } else if username.count > 6 {
-                showValidationError(view, message: "한글 닉네임은 6자 이하만 가능해요")
-                self.isLengthValid = false
-                return false
-            }
-        } else if isEnglishOnly {
-            if username.count < 2 {
-                showValidationError(view, message: "2자 이상의 닉네임을 입력해 주세요")
-                self.isLengthValid = true
-                return false
-            } else if username.count > 10 {
-                showValidationError(view, message: "영어 닉네임은 10자 이하만 가능해요")
-                self.isLengthValid = false
-                return false
-            }
-        } else { // 한글 + 영어 포함된 경우
-            if username.count > 6 {
-                showValidationError(view, message: "한글+영문 닉네임은 6자 이하만 가능해요")
-                self.isLengthValid = false
+        let length = username.count
+        
+        // **한글 자모만 포함 → 최대 6자**
+        if containsKoreanJamo && !containsKoreanComplete && !containsEnglish && !containsNumber && !containsSpecialChar {
+            if length > 6 {
+                showValidationError(view, message: "한글 자모만 포함된 닉네임은 6자 이하만 가능해요")
                 return false
             }
         }
-
+        // **한글 완성형만 포함 → 최대 6자**
+        else if containsKoreanComplete && !containsKoreanJamo && !containsEnglish && !containsNumber && !containsSpecialChar {
+            if length > 6 {
+                showValidationError(view, message: "한글 닉네임은 6자 이하만 가능해요")
+                return false
+            }
+        }
+        // **영어만 포함 → 최대 10자**
+        else if containsEnglish && !containsKoreanJamo && !containsKoreanComplete && !containsNumber && !containsSpecialChar {
+            if length > 10 {
+                showValidationError(view, message: "영어 닉네임은 10자 이하만 가능해요")
+                return false
+            }
+        }
+        // **숫자만 포함 → 최대 10자**
+        else if containsNumber && !containsKoreanJamo && !containsKoreanComplete && !containsEnglish && !containsSpecialChar {
+            if length > 10 {
+                showValidationError(view, message: "숫자만 포함된 닉네임은 10자 이하만 가능해요")
+                return false
+            }
+        }
+        // **한글(자모 또는 완성형) + 영어 + 숫자 + 특수문자 포함 → 최대 6자**
+        else {
+            if length > 6 {
+                showValidationError(view, message: "한글, 영어, 숫자, 특수문자가 포함된 닉네임은 6자 이하만 가능해요")
+                return false
+            }
+        }
+        
+        isLengthValid = true
+        
         // 닉네임 중복 확인
         guard isNicknameCanUse else {
             showValidationError(view, message: "닉네임 중복 확인이 필요해요")
             return true
         }
-
+        
         // 모든 검증 통과
         hideValidationError(view, message: "")
         return true
     }
     
-    public func checkNicknameDuplicate(nickname: String, view: CustomTextFieldView, completion: (() -> Void)? = nil) {
+    public func checkNicknameDuplicate(nickname: String, view: CustomTextFieldView, completion: ((Bool) -> Void)? = nil) {
         networkService.checkNickname(name: nickname) { [weak self] result in
             guard let self = self else { return }
             
+            var isAvailable = false  // 닉네임 사용 가능 여부
+
             switch result {
             case .success(let response):
                 if response {
                     self.hideValidationError(view, message: "사용 가능한 닉네임이에요")
                     self.isNicknameCanUse = true
+                    isAvailable = true
                 } else {
                     self.showValidationError(view, message: "이미 사용 중인 닉네임이에요")
                     self.isNicknameCanUse = false
@@ -94,8 +119,8 @@ public class NicknameValidateManager {
                 self.isNicknameCanUse = false
             }
             
-            // 응답 완료 후 completion 호출
-            completion?()
+            // ✅ 네트워크 응답이 끝난 후, completion 핸들러에 결과 전달
+            completion?(isAvailable)
         }
     }
     

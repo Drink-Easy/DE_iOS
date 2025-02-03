@@ -9,7 +9,6 @@ class AdCollectionViewCell: UICollectionViewCell {
     static let identifier = "AdCollectionViewCell"
     
     private let image = UIImageView().then {
-        $0.image = UIImage(named: "ad4")
         $0.contentMode = .scaleAspectFill
     }
     

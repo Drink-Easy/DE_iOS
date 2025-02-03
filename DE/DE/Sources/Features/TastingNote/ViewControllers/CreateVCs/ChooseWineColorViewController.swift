@@ -21,12 +21,13 @@ public class ChooseWineColorViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         colorView.header.setTitleLabel(wineData.wineName)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
         colorView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         colorView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         colorView.infoView.kindContents.text = wineData.sort
-        colorView.infoView.typeContents.text = wineData.variety
+        colorView.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")
     }
-    
+
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()

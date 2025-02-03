@@ -18,22 +18,22 @@ class LoginVC: UIViewController {
     
     var isSavingId : Bool = false
     var usernameString : String = ""
-    
-    override func loadView() {
-        view = loginView // 커스텀 뷰 사용
-    }
+    var textFields: [UITextField] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         validationManager.isEmailDuplicate = false
+        setupUI()
         setupActions()
         setupNavigationBar()
+        hideKeyboardWhenTappedAround()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        self.view.addSubview(indicator)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -55,25 +55,32 @@ class LoginVC: UIViewController {
         )
     }
     
-    // MARK: - Action 설정
+    // MARK: - setup Methods
+    private func setupUI(){
+        view.addSubview(loginView)
+        view.addSubview(indicator)
+        loginView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
     private func setupActions() {
         loginView.usernameField.textField.addTarget(self, action: #selector(usernameValidate), for: .editingChanged)
         loginView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .editingChanged)
         loginView.idSaveCheckBox.addTarget(self, action: #selector(idSaveCheckBoxTapped), for: .touchUpInside)
         loginView.joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        view.addGestureRecognizer(tapGesture)
-        
         loginView.loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+        
+        textFields = [loginView.usernameField.textField, loginView.passwordField.textField]
+        
+        for textField in textFields {
+            textField.delegate = self
+        }
     }
     
     @objc private func backButtonTapped() {
         navigationController?.popViewController(animated: true)
-    }
-    
-    @objc private func dismissKeyboard() {
-        self.view.endEditing(true)
     }
     
     @objc func usernameValidate() {
@@ -102,7 +109,7 @@ class LoginVC: UIViewController {
     @objc private func loginButtonTapped() {
         let loginDTO = networkService.makeLoginDTO(username: loginView.usernameField.text!, password: loginView.passwordField.text!)
         usernameString = loginDTO.username
-        
+        self.view.showBlockingView()
         networkService.login(data: loginDTO) { [weak self] result in
             guard let self = self else { return }
             
@@ -114,24 +121,35 @@ class LoginVC: UIViewController {
                 Task {
                     await UserDataManager.shared.createUser(userId: response.id)
                 }
+                self.view.hideBlockingView()
                 self.goToNextView(response.isFirst)
             case .failure(let error):
                 print(error)
+                self.view.hideBlockingView()
                 self.loginView.loginButton.isEnabled = false
                 self.loginView.loginButton.isEnabled(isEnabled: false)
                 self.validationManager.showValidationError(loginView.usernameField, message: "")
                 self.validationManager.showValidationError(loginView.passwordField, message: "회원 정보를 다시 확인해 주세요")
             }
+            
         }
     }
     
     private func goToNextView(_ isFirstLogin: Bool) {
         if isFirstLogin {
+            SelectLoginTypeVC.keychain.set(true, forKey: "isFirst")
             let enterTasteTestViewController = TermsOfServiceVC()
-            navigationController?.pushViewController(enterTasteTestViewController, animated: true)
+            if let window = UIApplication.shared.windows.first {
+                window.rootViewController = enterTasteTestViewController
+                UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+            }
         } else {
+            SelectLoginTypeVC.keychain.set(false, forKey: "isFirst")
             let homeViewController = MainTabBarController()
-            navigationController?.pushViewController(homeViewController, animated: true)
+            if let window = UIApplication.shared.windows.first {
+                window.rootViewController = homeViewController
+                UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+            }
         }
     }
     
@@ -153,4 +171,15 @@ class LoginVC: UIViewController {
         UserDefaults.standard.set(userId, forKey: "userId")
     }
     
+}
+
+extension LoginVC: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let index = textFields.firstIndex(of: textField), index < textFields.count - 1 {
+            textFields[index + 1].becomeFirstResponder()
+        } else {
+            textField.resignFirstResponder()
+        }
+        return true
+    }
 }

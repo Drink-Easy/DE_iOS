@@ -22,7 +22,7 @@ public class EditReviewViewController: UIViewController {
         rView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         rView.infoView.kindContents.text = wineData.sort
-        rView.infoView.typeContents.text = wineData.variety
+        rView.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")
         rView.reviewBody.text = tnManager.review
     }
     
@@ -34,12 +34,14 @@ public class EditReviewViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.addSubview(indicator)
         view.backgroundColor = AppColor.bgGray
         setConstraints()
         setupActions()
         
         setupNavigationBar()
         //        addExtendedBackgroundView()
+        hideKeyboardWhenTappedAround()
     }
     
     private func addExtendedBackgroundView() {
@@ -67,11 +69,6 @@ public class EditReviewViewController: UIViewController {
     func setupActions() {
         rView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
         rView.reviewBody.delegate = self
-        
-        // 탭 제스처 추가
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tapGesture.cancelsTouchesInView = false // 다른 제스처(버튼 클릭 등)를 방해하지 않음
-        view.addGestureRecognizer(tapGesture)
     }
     
     private func setupNavigationBar() {
@@ -82,10 +79,6 @@ public class EditReviewViewController: UIViewController {
         )
         
         self.navigationController?.navigationBar.backgroundColor = AppColor.bgGray
-    }
-    
-    @objc private func dismissKeyboard() {
-        view.endEditing(true)
     }
     
     @objc func prevVC() {
@@ -103,7 +96,9 @@ public class EditReviewViewController: UIViewController {
         let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
         Task {
             do {
+                self.view.showBlockingView()
                 try await networkService.patchNote(data: tnData)
+                self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             }
         }

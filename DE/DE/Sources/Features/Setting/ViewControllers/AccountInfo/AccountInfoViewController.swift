@@ -48,6 +48,7 @@ class AccountInfoViewController: UIViewController {
         DispatchQueue.main.async {
             self.CheckCacheData()
         }
+        self.view.addSubview(indicator)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -67,7 +68,7 @@ class AccountInfoViewController: UIViewController {
     
     private func setupNavigationBar() {
         navigationBarManager.setTitle(to: navigationItem, title: "내 정보", textColor: AppColor.black!)
-        navigationBarManager.addLeftRightButtons(
+        navigationBarManager.addLeftRightButtonsWithWeight(
             to: navigationItem,
             leftIcon: "chevron.left",
             leftAction: #selector(backButtonTapped),
@@ -126,6 +127,7 @@ class AccountInfoViewController: UIViewController {
     }
     
     @objc private func logoutButtonTapped() {
+        self.view.showBlockingView()
         authService.logout() { [weak self] result in
             guard let self = self else { return }
             
@@ -139,10 +141,12 @@ class AccountInfoViewController: UIViewController {
                 }
                 self.clearForLogout()
                 Task {
+                    self.view.hideBlockingView()
                     self.showSplashScreen()
                 }
             case .failure(let error):
                 print(error)
+                self.view.hideBlockingView()
             }
         }
     }
@@ -169,6 +173,7 @@ class AccountInfoViewController: UIViewController {
     
     //MARK: - Funcs
     private func performUserDeletion() {
+        self.view.showBlockingView()
         memberService.deleteUser() { [weak self] result in
             guard let self = self else { return }
             
@@ -183,22 +188,26 @@ class AccountInfoViewController: UIViewController {
                                 Task {
                                     await self.deleteUserInSwiftData() // 로컬 디비에서 유저 정보 삭제 후 splash 화면으로 이동
                                     self.clearForQuit()
+                                    self.view.hideBlockingView()
                                     self.showSplashScreen()
                                 }
                             } else {
                                 print("❌ 카카오 계정 연동 해제 실패")
+                                self.view.hideBlockingView()
                             }
                         }
                 default :
                     Task {
                         await self.deleteUserInSwiftData()
                         self.clearForQuit()
+                        self.view.hideBlockingView()
                         self.showSplashScreen()
                     }
                 }
                 
             case .failure(let error):
                 print("회원탈퇴 실패: \(error.localizedDescription)")
+                self.view.hideBlockingView()
             }
         }
     }
@@ -236,6 +245,7 @@ class AccountInfoViewController: UIViewController {
     
     private func clearForLogout() {
         SelectLoginTypeVC.keychain.delete("userId")
+        SelectLoginTypeVC.keychain.delete("isFirst")
         UserDefaults.standard.removeObject(forKey: "userId")
         clearCookie()
     }
@@ -315,6 +325,7 @@ class AccountInfoViewController: UIViewController {
     /// 서버에서 데이터 가져오기
     private func fetchMemberInfo() async {
         do {
+            self.view.showBlockingView()
             let data = try await memberService.fetchUserInfoAsync()
             
             self.userProfile = MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
@@ -324,6 +335,7 @@ class AccountInfoViewController: UIViewController {
             await saveUserInfo(data: self.userProfile!)
         } catch {
             print("❌ 서버에서 사용자 정보를 가져오지 못함: \(error.localizedDescription)")
+            self.view.hideBlockingView()
         }
     }
     
@@ -337,8 +349,10 @@ class AccountInfoViewController: UIViewController {
         accountView.items = [("닉네임", username),
         ("내 동네", city),
         ("이메일", email),
-        ("연동상태", authType),
-        ("성인인증", adultText)]
+        ("연동상태", authType)
+//        ("성인인증", adultText)
+        ]
+        
     }
     
     /// 새로 받은 데이터 저장
@@ -360,10 +374,11 @@ class AccountInfoViewController: UIViewController {
 
             try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
             try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
-
+            self.view.hideBlockingView()
 //            print("✅ 사용자 정보가 성공적으로 캐시에 저장되었습니다.")
         } catch {
             print("❌ 사용자 정보 저장 실패: \(error.localizedDescription)")
+            self.view.hideBlockingView()
         }
     }
 }

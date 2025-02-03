@@ -34,6 +34,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -68,6 +69,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func callNoticeAPI() {
+        self.view.showBlockingView()
         networkService.fetchAllNotices() { [weak self] result in
             guard let self = self else { return }
             
@@ -77,8 +79,10 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     self.noticeData = responseData!
                     self.noticeListView.reloadData()
                 }
+                self.view.hideBlockingView()
             case .failure(let error) :
                 print("\(error)")
+                self.view.hideBlockingView()
             }
         }
     }

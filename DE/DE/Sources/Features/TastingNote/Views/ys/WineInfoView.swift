@@ -23,23 +23,39 @@ public class WineInfoView: UIView {
     
     //디테일 뷰 담을 껍데기
     let backgroundView = UIView().then {
-        $0.backgroundColor = AppColor.white
+        $0.backgroundColor = AppColor.tnbg
         $0.layer.cornerRadius = 10
+        
+        $0.layer.shadowColor = UIColor.black.cgColor  // 그림자 색상
+        $0.layer.shadowOpacity = 0.1                 // 그림자 투명도 (0 ~ 1)
+        $0.layer.shadowOffset = CGSize(width: 0, height: 4) // 그림자 위치 (x, y)
+        $0.layer.shadowRadius = 10                   // 그림자 퍼짐 정도
     }
     
     private let detailContentView = UIStackView().then {
         $0.axis = .vertical
-        $0.spacing = 16
+        $0.spacing = 32
         $0.distribution = .fill
         $0.alignment = .fill
     }
     
     //그래프 뷰
+    let chartStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 16
+        $0.distribution = .fill
+        $0.alignment = .fill
+    }
     let chartHeaderView = PropertyTitleView(type: .palateGraph)
     let chartView = PolygonChartView()
     
     //TODO: 컬러 뷰
-
+    let colorStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 16
+        $0.distribution = .fill
+        $0.alignment = .fill
+    }
     let colorHeaderView = PropertyTitleView(type: .color)
     lazy var colorBodyView = UIView()
     
@@ -52,6 +68,12 @@ public class WineInfoView: UIView {
     }
     
     //노즈 뷰
+    let noseStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 16
+        $0.distribution = .fill
+        $0.alignment = .fill
+    }
     let noseHeaderView = PropertyTitleView(type: .nose)
     let noseView = UILabel().then {
         $0.text = ""
@@ -61,6 +83,12 @@ public class WineInfoView: UIView {
     }
     
     //별점 뷰
+    let ratingStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 16
+        $0.distribution = .fill
+        $0.alignment = .fill
+    }
     let ratingHeaderView = PropertyTitleView(type: .rate)
     public lazy var ratingView = UIView()
     public var ratingValue: Double = 2.5 {
@@ -130,6 +158,12 @@ public class WineInfoView: UIView {
     }()
     
     //리뷰 뷰
+    let reviewStackView = UIStackView().then {
+        $0.axis = .vertical
+        $0.spacing = 16
+        $0.distribution = .fill
+        $0.alignment = .fill
+    }
     let reviewHeaderView = PropertyTitleView(type: .review)
     let dateView = UILabel().then {
         $0.font = .ptdMediumFont(ofSize: 14)
@@ -174,7 +208,23 @@ public class WineInfoView: UIView {
     private func setupUI() {
         [ratingLabel, ratingButton].forEach{ ratingView.addSubview($0) }
         [colorView, colorLabel].forEach{ colorBodyView.addSubview($0) }
-        [chartHeaderView, chartView, colorHeaderView, colorBodyView, noseHeaderView, noseView, ratingHeaderView, ratingView, reviewHeaderView, dateView, reviewView].forEach {
+        [chartHeaderView, chartView].forEach {
+            chartStackView.addArrangedSubview($0) // addArrangedSubview로 추가
+        }
+        [colorHeaderView, colorBodyView].forEach {
+            colorStackView.addArrangedSubview($0) // addArrangedSubview로 추가
+        }
+        [noseHeaderView, noseView].forEach {
+            noseStackView.addArrangedSubview($0) // addArrangedSubview로 추가
+        }
+        [ratingHeaderView, ratingView].forEach {
+            ratingStackView.addArrangedSubview($0) // addArrangedSubview로 추가
+        }
+        [reviewHeaderView, dateView, reviewView].forEach {
+            reviewStackView.addArrangedSubview($0) // addArrangedSubview로 추가
+        }
+        
+        [chartStackView, colorStackView, noseStackView, ratingStackView, reviewStackView].forEach {
             detailContentView.addArrangedSubview($0) // addArrangedSubview로 추가
         }
         
@@ -206,7 +256,7 @@ public class WineInfoView: UIView {
         }
         chartView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
-            make.height.greaterThanOrEqualTo(200) // 고정 높이
+            make.height.greaterThanOrEqualTo(Constants.superViewHeight * 0.45)
         }
         colorView.snp.makeConstraints { make in
             make.height.width.equalTo(30)

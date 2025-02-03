@@ -8,7 +8,7 @@ public class UserSurveyManager {
     
     public var name: String = ""
     public var region: String = ""
-    public var imageData: UIImage = UIImage()
+    public var imageData: UIImage = UIImage(named: "profilePlaceholder")!
     
     public var isNewbie: Bool = true
     public var monthPrice: Int = 0

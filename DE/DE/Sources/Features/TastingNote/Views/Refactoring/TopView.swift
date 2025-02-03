@@ -37,8 +37,18 @@ class TopView: UIView {
         super.init(coder: coder)
     }
 
-    public func setTitleLabel(_ text: String) {
-        self.title.text = text
+    public func setTitleLabel(_ text: String, lineSpacing: CGFloat = 2) {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = lineSpacing
+
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: title.font ?? UIFont.ptdSemiBoldFont(ofSize: 24), // ✅ 기존 폰트 유지
+            .foregroundColor: title.textColor ?? AppColor.black!,    // ✅ 기존 색상 유지
+            .paragraphStyle: paragraphStyle
+        ]
+        
+        let attributedText = NSAttributedString(string: text, attributes: attributes)
+        title.attributedText = attributedText
     }
     
     private func updatePageLabel() {

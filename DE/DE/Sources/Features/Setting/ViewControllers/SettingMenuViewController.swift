@@ -18,7 +18,7 @@ import Network
 // 검증 2: 데이터 필드 값 중에 nil이 없는가
 // 이름, 이미지만 캐시데이터 사용
 
-public final class SettingMenuViewController : UIViewController {
+public final class SettingMenuViewController : UIViewController, UIGestureRecognizerDelegate {
     
     private let networkService = MemberService()
 //    private var memberData: MemberInfoResponse?
@@ -54,7 +54,6 @@ public final class SettingMenuViewController : UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-        
         setupUI()
         setupTableView()
         setupNavigationBar()
@@ -63,9 +62,11 @@ public final class SettingMenuViewController : UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         DispatchQueue.main.async {
             self.CheckCacheData()
         }
+        self.view.addSubview(indicator)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -78,12 +79,13 @@ public final class SettingMenuViewController : UIViewController {
         tableView.dataSource = self
         tableView.isScrollEnabled = false
         tableView.rowHeight = 50
-        tableView.backgroundColor = .clear
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.backgroundColor = AppColor.bgGray
+        tableView.register(SettingMenuViewCell.self, forCellReuseIdentifier: SettingMenuViewCell.identifier)
+        
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
             make.top.equalTo(nameLabel.snp.bottom).offset(DynamicPadding.dynamicValue(16.0))
-            make.trailing.equalToSuperview().inset(16)
+            make.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
             make.leading.equalToSuperview()
             make.bottom.equalToSuperview()
         }
@@ -143,6 +145,7 @@ public final class SettingMenuViewController : UIViewController {
     }
 
     private func fetchMemberInfo() async {
+        self.view.showBlockingView()
         guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
             print("⚠️ userId가 UserDefaults에 없습니다.")
             return
@@ -158,8 +161,10 @@ public final class SettingMenuViewController : UIViewController {
             self.setUserData(userName: data.username, imageURL: data.imageUrl)
 //            print("✅ 서버 데이터 성공적으로 가져옴: \(data.username)")
             await saveUserInfo(data: userData)
+            
         } catch {
             print("❌ 서버에서 사용자 정보를 가져오지 못함: \(error.localizedDescription)")
+            self.view.hideBlockingView()
         }
     }
         
@@ -168,6 +173,7 @@ public final class SettingMenuViewController : UIViewController {
         let profileImgURL = URL(string: imageURL)
         self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
         self.nameLabel.text = "\(userName) 님"
+        self.view.hideBlockingView()
     }
     
     private func saveUserInfo(data: MemberInfoResponse) async {
@@ -224,21 +230,12 @@ extension SettingMenuViewController: UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.backgroundColor = .clear
-        cell.textLabel?.text = settingMenuItems[indexPath.row].name
-        cell.textLabel?.font = UIFont.ptdRegularFont(ofSize: 16)
-        cell.textLabel?.textColor = AppColor.black
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: SettingMenuViewCell.identifier, for: indexPath) as? SettingMenuViewCell else {
+            return UITableViewCell()
+        }
         cell.selectionStyle = .none
-
-        // ✅ Chevron 추가 (정렬 조정)
-        let chevronImage = UIImageView(image: UIImage(systemName: "chevron.right"))
-        chevronImage.tintColor = AppColor.gray70
-        chevronImage.frame = CGRect(x: 0, y: 0, width: 12, height: 20) // 원하는 크기로 조정
-        chevronImage.contentMode = .scaleAspectFit
+        cell.configure(name: settingMenuItems[indexPath.row].name)
         
-        cell.accessoryView = chevronImage
-        cell.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 20)
         return cell
     }
 }

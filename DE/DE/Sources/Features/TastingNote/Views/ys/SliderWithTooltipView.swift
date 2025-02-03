@@ -28,7 +28,9 @@ class SliderWithTooltipView: UIView {
     }
 
     let tooltipPopTip = PopTip().then {
-        $0.bubbleColor = AppColor.winebg?.withAlphaComponent(0.7) ?? .systemGray
+        $0.bubbleColor = AppColor.tooltipbg?.withAlphaComponent(0.7) ?? .systemGray
+        $0.arrowSize = CGSize(width: 12, height: 10)
+        $0.arrowRadius = 3
         $0.padding = 10.0
         $0.textAlignment = .center
         $0.cornerRadius = 10
