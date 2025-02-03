@@ -3,6 +3,7 @@
 import UIKit
 import Then
 import SnapKit
+import CoreModule
 
 class AdCollectionViewCell: UICollectionViewCell {
     
@@ -34,9 +35,9 @@ class AdCollectionViewCell: UICollectionViewCell {
     
     func configure(model: HomeBannerModel) {
         if let url = URL(string: model.imageUrl) {
-            image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+            image.sd_setImage(with: url, placeholderImage: UIImage(named: "adPlaceholder"))
         } else {
-            image.image = UIImage(named: "placeholder")
+            image.image = UIImage(named: "adPlaceholder")
         }
     }
 }
