@@ -53,7 +53,7 @@ jobs:
           description: '${{ steps.md2jira.outputs.output-text }}'
           fields: |
             {
-              "parent": {
+              "epic": {
                 "key": "${{ steps.issue-parser.outputs.issueparser_parentKey }}"
               }
             }
