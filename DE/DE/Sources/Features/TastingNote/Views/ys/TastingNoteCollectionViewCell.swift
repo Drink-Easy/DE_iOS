@@ -8,16 +8,20 @@ import Then
 import CoreModule
 
 class TastingNoteCollectionViewCell: UICollectionViewCell {
-
-    public lazy var image = UIImageView().then { i in
-        i.contentMode = .scaleAspectFit
-        i.layer.cornerRadius = 8
-        i.layer.masksToBounds = true
-        i.layer.frame.inset(by: UIEdgeInsets(top: 50.0, left: 0, bottom: 50.0, right: 0))
-        i.backgroundColor = AppColor.winebg
+    
+    private lazy var imageBackground = UIView().then {
+        $0.layer.cornerRadius = 8
+        $0.layer.masksToBounds = true
+        $0.backgroundColor = AppColor.winebg
     }
     
-    public lazy var name = UILabel().then { l in
+    private lazy var image = UIImageView().then {
+        $0.contentMode = .scaleAspectFit
+        $0.layer.cornerRadius = 8
+        $0.layer.masksToBounds = true
+    }
+    
+    private lazy var name = UILabel().then { l in
         l.font = UIFont.ptdMediumFont(ofSize: 14)
         l.textColor = Constants.AppColor.gray100
         l.textAlignment = .center
@@ -48,17 +52,32 @@ class TastingNoteCollectionViewCell: UICollectionViewCell {
     
     //레이아웃까지
     private func setupUI() {
-        self.contentView.addSubview(image)
+        self.contentView.addSubview(imageBackground)
+        imageBackground.addSubview(image)
         self.contentView.addSubview(name)
         
-        image.snp.makeConstraints { make in
+        imageBackground.snp.makeConstraints { make in
             make.top.horizontalEdges.equalToSuperview()
             make.height.equalTo(image.snp.width).multipliedBy(1.0)
+        }
+        
+        image.snp.makeConstraints { make in
+            make.verticalEdges.equalToSuperview().inset(3)
+            make.horizontalEdges.equalToSuperview()
         }
         
         name.snp.makeConstraints { make in
             make.top.equalTo(image.snp.bottom).offset(4)
             make.leading.trailing.equalToSuperview()
         }
+    }
+    
+    public func configure(name : String, imageURL: String) {
+        if let url = URL(string: imageURL) {
+            image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+        } else {
+            image.image = UIImage(named: "placeholder")
+        }
+        self.name.text = name
     }
 }
