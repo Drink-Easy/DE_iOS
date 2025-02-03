@@ -15,6 +15,7 @@ class SignUpVC: UIViewController {
     let validationManager = ValidationManager()
     
     var isEmailDuplicate : Bool = true
+    var textFields: [UITextField] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +23,7 @@ class SignUpVC: UIViewController {
         setupUI()
         setupActions()
         setupNavigationBar()
-        
+        hideKeyboardWhenTappedAround()
         view.addSubview(indicator)
     }
     
@@ -59,14 +60,13 @@ class SignUpVC: UIViewController {
         signUpView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .editingChanged)
         signUpView.confirmPasswordField.textField.addTarget(self, action: #selector(confirmPasswordValidate), for: .editingChanged)
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        view.addGestureRecognizer(tapGesture)
-        
         signUpView.signupButton.addTarget(self, action: #selector(signupButtonTapped), for: .touchUpInside)
-    }
-    
-    @objc private func dismissKeyboard() {
-        self.view.endEditing(true)
+        
+        textFields = [signUpView.usernameField.textField, signUpView.passwordField.textField, signUpView.confirmPasswordField.textField]
+        
+        for textField in textFields {
+            textField.delegate = self
+        }
     }
     
     //MARK: - Button Funcs
@@ -141,3 +141,13 @@ class SignUpVC: UIViewController {
     
 }
 
+extension SignUpVC: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let index = textFields.firstIndex(of: textField), index < textFields.count - 1 {
+            textFields[index + 1].becomeFirstResponder()
+        } else {
+            textField.resignFirstResponder()
+        }
+        return true
+    }
+}

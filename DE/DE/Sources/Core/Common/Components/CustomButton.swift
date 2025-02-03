@@ -18,6 +18,7 @@ open class CustomButton: UIButton {
         self.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         self.layer.cornerRadius = 15
         
+        self.isEnabled = isEnabled
         self.snp.makeConstraints { make in
             make.height.equalTo(60)
         }

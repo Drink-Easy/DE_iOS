@@ -10,7 +10,7 @@ class MyWineTableViewCell: UITableViewCell {
     private lazy var imageBackground = UIView().then {
         $0.layer.cornerRadius = 5
         $0.layer.masksToBounds = true
-        $0.backgroundColor = UIColor(hex: "#2f2f2f")
+        $0.backgroundColor = AppColor.winebg
     }
     
     private lazy var image = UIImageView().then {
@@ -19,8 +19,8 @@ class MyWineTableViewCell: UITableViewCell {
         $0.layer.masksToBounds = true
     }
     
-    public lazy var name = UILabel().then {
-        $0.textColor = Constants.AppColor.DGblack
+    private lazy var name = UILabel().then {
+        $0.textColor = AppColor.black
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
         $0.numberOfLines = 2
         $0.lineBreakMode = .byTruncatingTail
@@ -28,12 +28,12 @@ class MyWineTableViewCell: UITableViewCell {
     }
     
     private lazy var price = UILabel().then {
-        $0.textColor = Constants.AppColor.gray100
+        $0.textColor = AppColor.gray100
         $0.font = UIFont.ptdRegularFont(ofSize: 14)
     }
     
     private lazy var buyDate = UILabel().then {
-        $0.textColor = Constants.AppColor.purple100
+        $0.textColor = AppColor.purple100
         $0.font = UIFont.ptdRegularFont(ofSize: 14)
     }
     
@@ -63,7 +63,7 @@ class MyWineTableViewCell: UITableViewCell {
     
     private func setupView() {
         // 기본 셀 스타일 설정
-        contentView.backgroundColor = Constants.AppColor.grayBG
+        contentView.backgroundColor = AppColor.bgGray
         selectionStyle = .none // 기본 선택 스타일 제거
     }
     
@@ -93,8 +93,8 @@ class MyWineTableViewCell: UITableViewCell {
         name.snp.makeConstraints {
             $0.leading.equalTo(imageBackground.snp.trailing).offset(18)
             $0.top.equalTo(imageBackground.snp.top)
-            $0.trailing.lessThanOrEqualTo(buyDate.snp.leading).offset(-6)
-//            $0.width.lessThanOrEqualTo(Constants.superViewWidth * 0.55)
+            $0.trailing.lessThanOrEqualTo(buyDate.snp.leading).offset(-4)
+            $0.width.lessThanOrEqualTo(Constants.superViewWidth * 0.58)
         }
         
         price.snp.makeConstraints {
@@ -111,8 +111,14 @@ class MyWineTableViewCell: UITableViewCell {
         }
         self.name.text = model.wineName
         let priceString = formatPrice(model.purchasePrice)
+        
         self.price.text = "구매가 \(priceString)원"
-        self.buyDate.text = "D+\(model.period)"
+        
+        if model.period >= 0 {
+            self.buyDate.text = "D+\(model.period + 1)"
+        } else {
+            self.buyDate.text = "D\(model.period)"
+        }
     }
 }
 

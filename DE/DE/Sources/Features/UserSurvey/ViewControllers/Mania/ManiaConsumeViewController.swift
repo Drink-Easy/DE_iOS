@@ -9,7 +9,7 @@ class ManiaConsumeViewController: UIViewController {
     
     private let navigationBarManager = NavigationBarManager()
     
-    private var selectedItem: Float?
+    private var selectedItem: Float? = 15
 
     override func viewDidLoad() {
         super.viewDidLoad()

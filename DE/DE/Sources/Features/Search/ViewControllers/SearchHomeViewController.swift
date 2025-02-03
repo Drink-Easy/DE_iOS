@@ -50,14 +50,14 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let query = searchHomeView.searchBar.text, query.count >= 2 {
-            self.view.showBlockingView()
+            indicator.startAnimating()
             Task {
                 do {
                     try await callSearchAPI(query: query, startPage: 0)
-                    self.view.hideBlockingView()
+                    indicator.stopAnimating()
                 } catch {
                     print(error)
-                    self.view.hideBlockingView()
+                    indicator.stopAnimating()
                 }
             }
             return true
@@ -165,14 +165,14 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
         if contentOffsetY > contentHeight - scrollViewHeight { // Trigger when arrive the bottom
             guard !isLoading, currentPage + 1 < totalPage else { return }
             isLoading = true
-            self.view.showBlockingView()
+            indicator.startAnimating()
             Task {
                 do {
                     try await callSearchAPI(query: searchHomeView.searchBar.text ?? "", startPage: currentPage + 1)
-                    self.view.hideBlockingView()
+                    indicator.stopAnimating()
                 } catch {
                     print("Failed to fetch next page: \(error)")
-                    self.view.hideBlockingView()
+                    indicator.stopAnimating()
                 }
                 DispatchQueue.main.async {
                     self.searchHomeView.searchResultTableView.reloadData()

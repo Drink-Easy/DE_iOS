@@ -31,6 +31,7 @@ public class SimpleListView: UIView {
             for: .normal
         )
         $0.isHidden = true
+        $0.isEnabled = true
     }
     
     public var items: [(title: String, value: String)] = [] {

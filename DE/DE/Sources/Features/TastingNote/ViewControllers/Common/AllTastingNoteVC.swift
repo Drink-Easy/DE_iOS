@@ -89,9 +89,11 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
         // Call Count 업데이트
         //        await self.updateCallCount()
         allTastingNoteList = data.notePriviewList
+        currentTastingNoteList = data.notePriviewList
+        // 데이터 없을 때 콜렉션 뷰 숨기고 없음 라벨
         tastingNoteView.noTastingNoteLabel.isHidden = !self.allTastingNoteList.isEmpty
         tastingNoteView.TastingNoteCollectionView.isHidden = self.allTastingNoteList.isEmpty
-        currentTastingNoteList = data.notePriviewList
+        
         tastingNoteView.wineImageStackView.updateCounts(red: data.sortCount.redCount, white: data.sortCount.whiteCount, sparkling: data.sortCount.sparklingCount, rose: data.sortCount.roseCount, etc: data.sortCount.etcCount)
         tastingNoteView.TastingNoteCollectionView.reloadData()
     }
@@ -116,9 +118,11 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
     func didTapSortButton(for type: WineSortType) {
         // 필터링된 데이터 가져오기
         let filteredList = filterPieces(for: type)
-        
-        // 필터링된 데이터를 컬렉션 뷰와 동기화
         currentTastingNoteList = filteredList
+        // 필터링 데이터 없을 때 콜렉션 뷰 숨기고 없음 라벨
+        tastingNoteView.noTastingNoteLabel.isHidden = !self.currentTastingNoteList.isEmpty
+        tastingNoteView.TastingNoteCollectionView.isHidden = self.currentTastingNoteList.isEmpty
+        // 필터링된 데이터를 컬렉션 뷰와 동기화
         tastingNoteView.TastingNoteCollectionView.reloadData()
     }
 

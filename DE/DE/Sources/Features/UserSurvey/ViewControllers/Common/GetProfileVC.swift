@@ -10,6 +10,8 @@ import CoreModule
 import CoreLocation
 import Network
 
+// 기본 이미지를 어디서 설정하는지?
+
 public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
     
     private let navigationBarManager = NavigationBarManager()

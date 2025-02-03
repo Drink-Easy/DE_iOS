@@ -118,6 +118,35 @@ class MyOwnedWineViewController: UIViewController {
         }
     }
     
+    func validateWineData(wine: MyWineResponse) {
+        print("🔍 [데이터 검증 시작] wineId: \(wine.wineId)")
+
+        // `nil` 또는 빈 값 체크
+        let fieldsToCheck: [(String, Any?)] = [
+            ("myWineId", wine.myWineId),
+            ("wineId", wine.wineId),
+            ("wineName", wine.wineName),
+            ("wineSort", wine.wineSort),
+            ("wineCountry", wine.wineCountry),
+            ("wineRegion", wine.wineRegion),
+            ("wineVariety", wine.wineVariety),
+            ("wineImageUrl", wine.wineImageUrl),
+            ("purchaseDate", wine.purchaseDate),
+            ("purchasePrice", wine.purchasePrice),
+            ("period", wine.period)
+        ]
+
+        for (key, value) in fieldsToCheck {
+            if let strValue = value as? String, strValue.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                print("🚨 [경고] \(key) 값이 공백입니다.")
+            } else if value == nil {
+                print("🚨 [경고] \(key) 값이 nil입니다.")
+            }
+        }
+        
+        print("✅ [데이터 검증 완료] wineId: \(wine.wineId)\n")
+    }
+    
     /// API 호출
     @MainActor
     func callGetAPI(for userId: Int) async {
@@ -125,21 +154,24 @@ class MyOwnedWineViewController: UIViewController {
             let data = try await networkService.fetchAllMyWines()
             wineResults.removeAll()
             var savedList: [SavedWineDataModel] = []
-
+            
             data?.forEach { wine in
-                let usingWine = MyWineViewModel(myWineId: wine.myWineId, wineId: wine.wineId, wineName: wine.wineName, wineSort: wine.wineSort, wineCountry: wine.wineCountry, wineRegion: wine.wineRegion, wineVariety: wine.wineVariety, wineImageUrl: wine.wineImageUrl, purchaseDate: wine.purchaseDate, purchasePrice: wine.purchasePrice, period: wine.period)
+                validateWineData(wine: wine)
+                let usingWine = MyWineViewModel(myWineId: wine.myWineId,wineId: wine.wineId, wineName: wine.wineName, wineSort: wine.wineSort, wineCountry: wine.wineCountry, wineRegion: wine.wineRegion, wineVariety: wine.wineVariety, wineImageUrl: wine.wineImageUrl, purchaseDate: wine.purchaseDate, purchasePrice: wine.purchasePrice, period: wine.period)
 
                 let savingWine = SavedWineDataModel(wineId: wine.wineId, myWineId: wine.myWineId, wineName: wine.wineName, imageURL: wine.wineImageUrl, wineSort: wine.wineSort, wineCountry: wine.wineCountry, wineRegion: wine.wineRegion, wineVariety: wine.wineVariety, price: wine.purchasePrice, date: wine.purchaseDate, Dday: wine.period)
 
                 wineResults.append(usingWine)
                 savedList.append(savingWine)
             }
+            
+            
 
             myWienTableView.reloadData()
 
             // 🔥 캐시 저장 & 콜카운트 초기화
             do {
-                try await MyWineListDataManager.shared.createSavedWineListIfNeeded(for: userId, with: savedList, date: Date())
+                try await MyWineListDataManager.shared.createSavedWineListIfNeeded(for: userId, with: savedList, date: Date()) // 사실상 캐시 정보 업데이트
                 try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
                 try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .myWine)
             } catch {

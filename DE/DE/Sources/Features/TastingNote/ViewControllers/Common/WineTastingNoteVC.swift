@@ -52,23 +52,6 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         self.view.addSubview(indicator)
-        Task {
-            do {
-                self.view.showBlockingView()
-                try await CallTastingNote()
-                smallTitleLabel.text = wineData.wineName
-                
-                DispatchQueue.main.async {
-                    self.setupNavigationBar() // 제목 설정
-                }
-                setWineData()
-                self.view.hideBlockingView()
-            } catch {
-                print("Error: \(error)")
-                // Alert 표시 등 추가
-                self.view.hideBlockingView()
-            }
-        }
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -83,6 +66,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         setupUI()
         setupNavigationBar()
         setNavBarAppearance(navigationController: self.navigationController)
+        self.callFetchApi()
     }
     
     // MARK: - Setup Methods
@@ -181,6 +165,25 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         
     }
     
+    func callFetchApi() {
+        self.view.showColorBlockingView()
+        Task {
+            do {
+                try await CallTastingNote()
+                smallTitleLabel.text = wineData.wineName
+                
+                DispatchQueue.main.async {
+                    self.setupNavigationBar() // 제목 설정
+                }
+                setWineData()
+                self.view.hideBlockingView()
+            } catch {
+                print("Error: \(error)")
+                // Alert 표시 등 추가
+                self.view.hideBlockingView()
+            }
+        }
+    }
     func updateCallCount() async {
         //        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
         //            print("⚠️ userId가 UserDefaults에 없습니다.")

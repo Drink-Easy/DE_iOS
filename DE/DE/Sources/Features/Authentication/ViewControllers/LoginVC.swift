@@ -18,6 +18,7 @@ class LoginVC: UIViewController {
     
     var isSavingId : Bool = false
     var usernameString : String = ""
+    var textFields: [UITextField] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +27,7 @@ class LoginVC: UIViewController {
         setupUI()
         setupActions()
         setupNavigationBar()
+        hideKeyboardWhenTappedAround()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -68,18 +70,17 @@ class LoginVC: UIViewController {
         loginView.idSaveCheckBox.addTarget(self, action: #selector(idSaveCheckBoxTapped), for: .touchUpInside)
         loginView.joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        view.addGestureRecognizer(tapGesture)
-        
         loginView.loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+        
+        textFields = [loginView.usernameField.textField, loginView.passwordField.textField]
+        
+        for textField in textFields {
+            textField.delegate = self
+        }
     }
     
     @objc private func backButtonTapped() {
         navigationController?.popViewController(animated: true)
-    }
-    
-    @objc private func dismissKeyboard() {
-        self.view.endEditing(true)
     }
     
     @objc func usernameValidate() {
@@ -170,4 +171,15 @@ class LoginVC: UIViewController {
         UserDefaults.standard.set(userId, forKey: "userId")
     }
     
+}
+
+extension LoginVC: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let index = textFields.firstIndex(of: textField), index < textFields.count - 1 {
+            textFields[index + 1].becomeFirstResponder()
+        } else {
+            textField.resignFirstResponder()
+        }
+        return true
+    }
 }
