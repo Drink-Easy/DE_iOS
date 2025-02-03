@@ -41,6 +41,7 @@ public class EditReviewViewController: UIViewController {
         
         setupNavigationBar()
         //        addExtendedBackgroundView()
+        hideKeyboardWhenTappedAround()
     }
     
     private func addExtendedBackgroundView() {
@@ -68,11 +69,6 @@ public class EditReviewViewController: UIViewController {
     func setupActions() {
         rView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
         rView.reviewBody.delegate = self
-        
-        // 탭 제스처 추가
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tapGesture.cancelsTouchesInView = false // 다른 제스처(버튼 클릭 등)를 방해하지 않음
-        view.addGestureRecognizer(tapGesture)
     }
     
     private func setupNavigationBar() {
@@ -83,10 +79,6 @@ public class EditReviewViewController: UIViewController {
         )
         
         self.navigationController?.navigationBar.backgroundColor = AppColor.bgGray
-    }
-    
-    @objc private func dismissKeyboard() {
-        view.endEditing(true)
     }
     
     @objc func prevVC() {

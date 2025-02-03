@@ -34,6 +34,7 @@ public class EditRateViewController: UIViewController {
         setConstraints()
         setupActions()
         setupNavigationBar()
+        hideKeyboardWhenTappedAround()
     }
     
     func setConstraints() {
@@ -67,10 +68,6 @@ public class EditRateViewController: UIViewController {
     private func updateRatingLabel(with rating: Double) {
         ratingValue = rating
         rView.setRate(rating)
-    }
-    
-    @objc private func dismissKeyboard() {
-        view.endEditing(true)
     }
     
     @objc func prevVC() {

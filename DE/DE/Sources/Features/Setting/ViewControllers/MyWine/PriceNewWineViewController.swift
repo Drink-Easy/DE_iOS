@@ -20,6 +20,7 @@ class PriceNewWineViewController: UIViewController {
         setupUI()
         setupNavigationBar()
         setupActions()
+        hideKeyboardWhenTappedAround()
     }
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
