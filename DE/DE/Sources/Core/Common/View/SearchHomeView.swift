@@ -12,7 +12,7 @@ public class SearchHomeView: UIView {
         let text = "검색하고 싶은\n와인을 입력해주세요"
         
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineHeightMultiple = 1.25 // 줄 간격 설정
+        paragraphStyle.lineSpacing = 2
         
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.ptdSemiBoldFont(ofSize: 24),

@@ -23,7 +23,8 @@ class SurveyKindView: UIView {
     public var nextButton: CustomButton
     
     init(titleText: String, currentPage: Int, entirePage: Int, buttonTitle: String) {
-        self.surveyTopView = SurveyTopView(titleText: titleText, currentPage: currentPage, entirePage: entirePage)
+        self.surveyTopView = SurveyTopView(currentPage: currentPage, entirePage: entirePage)
+        surveyTopView.setTitleLabel(titleText)
         self.nextButton = CustomButton(title: buttonTitle, titleColor: .white, isEnabled: false).then {
             $0.isEnabled = false
         }

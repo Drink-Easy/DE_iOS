@@ -126,21 +126,34 @@ public class NormalTextViewController: UIViewController {
         }
     }
 
-    private func setStyledText(mainText: String, highlightText: String, mainFontSize: CGFloat, highlightFontSize: CGFloat) -> NSAttributedString {
-        let attributedString = NSMutableAttributedString(string: mainText + highlightText)
+    private func setStyledText(
+        mainText: String,
+        highlightText: String,
+        mainFontSize: CGFloat,
+        highlightFontSize: CGFloat,
+        lineSpacing: CGFloat = 2
+    ) -> NSAttributedString {
+        
+        let fullText = mainText + highlightText
+        let attributedString = NSMutableAttributedString(string: fullText)
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = lineSpacing // ✅ 행간 추가
         
         let mainAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.ptdSemiBoldFont(ofSize: mainFontSize),
-            .foregroundColor: AppColor.purple70!
+            .foregroundColor: AppColor.purple70!,
+            .paragraphStyle: paragraphStyle // ✅ 모든 텍스트에 행간 적용
         ]
         
         let highlightAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.ptdRegularFont(ofSize: highlightFontSize),
-            .foregroundColor: AppColor.black!
+            .foregroundColor: AppColor.black!,
+            .paragraphStyle: paragraphStyle // ✅ 모든 텍스트에 행간 적용
         ]
         
-        attributedString.addAttributes(mainAttributes, range: (mainText as NSString).range(of: mainText))
-        attributedString.addAttributes(highlightAttributes, range: (mainText + highlightText as NSString).range(of: highlightText))
+        attributedString.addAttributes(mainAttributes, range: (fullText as NSString).range(of: mainText))
+        attributedString.addAttributes(highlightAttributes, range: (fullText as NSString).range(of: highlightText))
         
         return attributedString
     }
