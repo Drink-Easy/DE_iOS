@@ -75,7 +75,7 @@ class NoseTopView: UIView {
         selectedCollectionView.snp.makeConstraints { make in
             make.top.equalTo(selectedLabel.snp.bottom).offset(20)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(0)
+            make.height.equalTo(DynamicPadding.dynamicValue(20))
             make.bottom.equalToSuperview()
         }
     }
@@ -88,15 +88,13 @@ class NoseTopView: UIView {
         self.snp.updateConstraints { make in
             make.height.equalTo(newHeight)
         }
-        
-        self.updateTopViewHeight()
     }
     
     func updateSelectedCollectionViewHeight() {
         selectedCollectionView.layoutIfNeeded() // 레이아웃 업데이트
         let contentHeight = selectedCollectionView.contentSize.height
         selectedCollectionView.snp.updateConstraints { make in
-            make.height.equalTo(contentHeight)
+            make.height.equalTo(contentHeight + DynamicPadding.dynamicValue(10))
         }
     }
 }
