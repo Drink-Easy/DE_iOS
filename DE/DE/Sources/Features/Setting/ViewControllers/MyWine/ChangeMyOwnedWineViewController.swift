@@ -24,7 +24,6 @@ class ChangeMyOwnedWineViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -92,10 +91,6 @@ class ChangeMyOwnedWineViewController: UIViewController {
     }
     
     @objc private func deleteNewWine() {
-//        callDeleteAPI()
-//        DispatchQueue.main.async {
-//            self.navigationController?.popViewController(animated: true)
-//        }
             let alert = UIAlertController(
                 title: "테이스팅 노트 삭제",
                 message: "정말 삭제하시겠습니까?",
@@ -183,6 +178,17 @@ extension ChangeMyOwnedWineViewController: UICalendarSelectionSingleDateDelegate
         
         selectedDate = validDateComponents
         editInfoView.calender.reloadDecorations(forDateComponents: [validDateComponents], animated: true)
+    }
+    
+    /// ✅ 미래 날짜 선택 차단 (미래 날짜 선택을 아예 못하게 막음)
+    public func dateSelection(_ selection: UICalendarSelectionSingleDate, canSelectDate dateComponents: DateComponents?) -> Bool {
+        guard let dateComponents = dateComponents,
+              let selectedDate = Calendar.current.date(from: dateComponents) else { return false }
+        
+        let today = Calendar.current.startOfDay(for: Date()) // 오늘 날짜 (00:00:00 기준)
+        
+        // ✅ 미래 날짜 선택 차단 (미래 날짜면 false 반환)
+        return selectedDate <= today
     }
 }
 

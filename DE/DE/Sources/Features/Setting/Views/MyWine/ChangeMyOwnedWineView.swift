@@ -61,9 +61,9 @@ class ChangeMyOwnedWineView: UIView {
     }
     
     func setupUI() {
-        backgroundColor = .clear
+        backgroundColor = AppColor.bgGray
         calendarContainer.addSubview(calender)
-        [priceTextField, calendarContainer, nextButton].forEach{ addSubview($0) }
+        [priceTextField, dateTitle, calendarContainer, nextButton].forEach{ addSubview($0) }
         
     }
     

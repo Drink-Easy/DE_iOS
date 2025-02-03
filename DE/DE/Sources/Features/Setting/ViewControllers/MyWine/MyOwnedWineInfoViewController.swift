@@ -86,11 +86,12 @@ public class MyOwnedWineInfoViewController: UIViewController {
     }
     
     @objc func editButtonTapped() {
-        print(self.registerWine?.wineName ?? "와인 이름 없으나 버튼이 눌리긴 해")
         guard let currentWine = self.registerWine else { return }
         
         let nextVC = ChangeMyOwnedWineViewController()
         nextVC.registerWine = MyOwnedWine(wineId: currentWine.wineId, wineName: currentWine.wineName, price: String(currentWine.purchasePrice), buyDate: currentWine.purchaseDate)
+        
+        navigationController?.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(nextVC, animated: true)
     }
 }
