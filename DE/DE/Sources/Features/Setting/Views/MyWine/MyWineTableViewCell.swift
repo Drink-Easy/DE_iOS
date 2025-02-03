@@ -19,7 +19,7 @@ class MyWineTableViewCell: UITableViewCell {
         $0.layer.masksToBounds = true
     }
     
-    private lazy var name = UILabel().then {
+    public lazy var name = UILabel().then {
         $0.textColor = Constants.AppColor.DGblack
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
         $0.numberOfLines = 2
