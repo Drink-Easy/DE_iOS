@@ -16,6 +16,7 @@ class HomeTopView: UIView {
     
     private lazy var logo = UIImageView().then {
         $0.image = UIImage(named: "HomeLogo")
+        $0.contentMode = .scaleAspectFit
         $0.backgroundColor = .clear
     }
     
@@ -52,6 +53,7 @@ class HomeTopView: UIView {
         logo.snp.makeConstraints {
             $0.centerY.equalTo(icon)
             $0.leading.equalTo(icon.snp.trailing).offset(DynamicPadding.dynamicValue(10.0))
+            $0.width.equalTo(DynamicPadding.dynamicValue(74))
         }
         
         searchBtn.snp.makeConstraints {
