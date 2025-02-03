@@ -9,7 +9,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     
     let navigationBarManager = NavigationBarManager()
     public var wineId: Int = 0
-    var wineName: String = ""
+    var wineName: String = "123"
     var isLiked: Bool = false
     var originalIsLiked: Bool = false
     let wineNetworkService = WineService()
@@ -52,9 +52,6 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func setupNavigationBar() {
-        
-        largeTitleLabel.text = wineName
-        
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
@@ -101,10 +98,26 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         button.tintColor = .clear
     }
     
+//    private lazy var largeTitleLabel = UILabel().then {
+//        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+//        $0.numberOfLines = 0
+//        $0.textColor = AppColor.black
+//    }
+    
     private lazy var largeTitleLabel = UILabel().then {
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        let text = wineName
         $0.numberOfLines = 0
-        $0.textColor = AppColor.black
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 2
+        
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.ptdSemiBoldFont(ofSize: 24),
+            .paragraphStyle: paragraphStyle,
+            .foregroundColor: AppColor.black!
+        ]
+        
+        $0.attributedText = NSAttributedString(string: text, attributes: attributes)
     }
     
     private var smallTitleLabel = UILabel()
