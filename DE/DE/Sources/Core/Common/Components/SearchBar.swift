@@ -32,6 +32,9 @@ public class SearchBar: UITextField {
         self.textColor = AppColor.gray100
         self.tintColor = AppColor.purple100
         //self.font = UIFont.ptdSemiBoldFont(ofSize: 14)
+        self.autocapitalizationType = .none //자동 대문자
+        self.spellCheckingType = .no //맞춤법 검사
+        self.autocorrectionType = .no //자동완성
         
         let icon = UIImage(named: "searchBarIcon")?.withRenderingMode(.alwaysTemplate)
         imageView.image = icon

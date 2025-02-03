@@ -64,12 +64,12 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     }
     
     public func fetchName() { // TODO : 이름 호출 로직 수정하기
-        self.view.showBlockingView()
         Task {
             guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
+            self.view.showBlockingView()
             do {
                 self.userName = try await PersonalDataManager.shared.fetchUserName(for: userId)
                 self.view.hideBlockingView()
@@ -228,10 +228,8 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
             }
             
             // 2. 캐시 데이터가 없으면 네트워크 요청
-            self.view.showBlockingView()
             print("🌐 네트워크 요청 시작")
             await fetchWinesFromNetwork(isRecommend)
-            self.view.hideBlockingView()
         }
     }
 
@@ -259,6 +257,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                         expirationDate: Date()
                     )
                     self.view.hideBlockingView()
+                    
                 } catch {
                     print("❌ 네트워크 요청 실패: \(error)")
                     self.view.hideBlockingView()
@@ -278,11 +277,11 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
             self.pageControlNumberView.totalPages = self.adImage.count
             self.adCollectionView.reloadData()
         }
-
         return response.bannerResponseList
     }
     
     private func fetchWinesFromNetwork(_ isRecommend: Bool) async {
+        self.view.showBlockingView()
         let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
         
         if isRecommend {
@@ -299,10 +298,13 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                 case .success(let responseData):
                     Task {
                         await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
+                        self.view.hideBlockingView()
                         continuation.resume()
                     }
+                    
                 case .failure(let error):
                     print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
+                    self.view.hideBlockingView()
                     continuation.resume()
                 }
             }
