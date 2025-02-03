@@ -13,7 +13,7 @@ import SwiftyToaster
 /// 계정 정보 확인 페이지
 class AccountInfoViewController: UIViewController {
     
-    //MARK: - Variables
+    //MARK: - Variables 
     private let navigationBarManager = NavigationBarManager()
     let memberService = MemberService()
     private let authService = AuthService()
