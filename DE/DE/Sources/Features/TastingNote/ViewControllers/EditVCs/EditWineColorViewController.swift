@@ -30,11 +30,11 @@ public class EditWineColorViewController: UIViewController {
         colorView.infoView.kindContents.text = wineData.sort
         colorView.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")
         selectedColor = tnManager.color
+        self.view.addSubview(indicator)
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.addSubview(indicator)
         setupUI()
         setConstraints()
         setupActions()

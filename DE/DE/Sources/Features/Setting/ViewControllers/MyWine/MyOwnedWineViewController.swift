@@ -243,28 +243,50 @@ extension MyOwnedWineViewController: UITableViewDelegate, UITableViewDataSource 
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
+        let wineName = wineResults[indexPath.row].wineName
+        
         let deleteAction = UIContextualAction(style: .destructive, title: "") { (action, view, completionHandler) in
+            let alert = UIAlertController(title: "이 와인을 삭제하시겠습니까?", message: wineName, preferredStyle: .alert)
             guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
-            
-            Task {
-                do {
-                    // 1️⃣ 서버에서 와인 삭제
-                    _ = try await self.networkService.deleteMyWine(myWineId: self.wineResults[indexPath.row].myWineId)
-                    
-                    // 2️⃣ 삭제 API 호출 성공 후, 콜카운트 증가
-                    try await APICallCounterManager.shared.incrementDelete(for: userId, controllerName: .myWine)
-                    
-                    // 3️⃣ 최신 데이터를 다시 불러오기
-                    self.CheckCacheData()
-                    
-                    completionHandler(true)
-                } catch {
-                    print("❌ 삭제 실패: \(error)")
-                    completionHandler(false)
+            let deleteConfirmAction = UIAlertAction(title: "삭제", style: .destructive) { _ in
+                Task {
+                    do {
+                        // 1️⃣ 서버에서 와인 삭제
+                        _ = try await self.networkService.deleteMyWine(myWineId: self.wineResults[indexPath.row].myWineId)
+                        
+                        // 2️⃣ 삭제 API 호출 성공 후, 콜카운트 증가
+                        try await APICallCounterManager.shared.incrementDelete(for: userId, controllerName: .myWine)
+                        
+                        // 3️⃣ 최신 데이터를 다시 불러오기
+                        self.CheckCacheData()
+        
+                        self.wineResults.remove(at: indexPath.row)
+                        tableView.deleteRows(at: [indexPath], with: .fade)
+                        completionHandler(true)
+                        
+                        self.noWineLabel.isHidden = !self.wineResults.isEmpty
+    
+                        
+                    } catch {
+                        print("❌ 삭제 실패: \(error)")
+                        completionHandler(false)
+                    }
                 }
+            }
+            
+            
+            let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in
+                completionHandler(false) // ✅ 스와이프 해제 (셀 원상복귀)
+            }
+            
+            alert.addAction(deleteConfirmAction)
+            alert.addAction(cancelAction)
+            
+            if let topVC = UIApplication.shared.windows.first?.rootViewController {
+                topVC.present(alert, animated: true, completion: nil)
             }
         }
         
@@ -274,6 +296,4 @@ extension MyOwnedWineViewController: UITableViewDelegate, UITableViewDataSource 
 
         return UISwipeActionsConfiguration(actions: [deleteAction])
     }
-    
 }
-
