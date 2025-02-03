@@ -8,7 +8,7 @@ public class UserSurveyManager {
     
     public var name: String = ""
     public var region: String = ""
-    public var imageData: UIImage = UIImage()
+    public var imageData: UIImage?
     
     public var isNewbie: Bool = true
     public var monthPrice: Int = 0
@@ -33,7 +33,7 @@ public class UserSurveyManager {
         self.wineVariety = self.getIntersectionVarietyData()
     }
     
-    public func setPersonalInfo(name : String, addr region: String, profileImg image : UIImage) {
+    public func setPersonalInfo(name : String, addr region: String, profileImg image : UIImage? = nil) {
         self.name = name
         self.region = region
         self.imageData = image

@@ -77,12 +77,21 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     // MARK: - 이미지 피커 설정
     private func setupImagePicker() {
-        // 이미지 선택 후 동작 설정
         imagePickerManager.onImagePicked = { [weak self] image, fileName in
             guard let self = self else { return }
-            self.profileView.profileImageView.image = image
-            self.profileImgFileName = fileName
-            self.profileImg = image
+
+            // ✅ 기본 이미지와 현재 이미지가 동일하면 nil 처리
+            if let placeholderImage = UIImage(named: "profilePlaceholder"),
+               let currentImageData = self.profileView.profileImageView.image?.pngData(),
+               let placeholderImageData = placeholderImage.pngData(),
+               currentImageData == placeholderImageData {
+                self.profileImgFileName = ""
+                self.profileImg = nil
+            } else {
+                self.profileImgFileName = fileName
+                self.profileImg = image
+                self.profileView.profileImageView.image = self.profileImg
+            }
         }
     }
     
@@ -126,8 +135,16 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     @objc func nextButtonTapped() {
         // 정보 저장
         guard let name = self.userName,
-              let addr = self.userRegion,
-              let profileImg = self.profileImg else { return }
+              let addr = self.userRegion else { return }
+        
+        if let placeholderImage = UIImage(named: "profilePlaceholder"),
+           let currentImageData = self.profileView.profileImageView.image?.pngData(),
+           let placeholderImageData = placeholderImage.pngData(),
+           currentImageData == placeholderImageData {
+            self.profileImgFileName = ""
+            self.profileImg = nil
+        }
+        
         UserSurveyManager.shared.setPersonalInfo(name: name, addr: addr, profileImg: profileImg)
         
         let vc = IsNewbieViewController()

@@ -10,6 +10,7 @@ import Network
 public class NormalTextViewController: UIViewController {
     
     let networkService = MemberService()
+    let userMng = UserSurveyManager.shared
     
     private let navigationBarManager = NavigationBarManager()
     
@@ -239,17 +240,24 @@ public class NormalTextViewController: UIViewController {
     }
     
     func callPatchAPI() {
-        let userMng = UserSurveyManager.shared
         guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
             print("⚠️ userId가 UserDefaults에 없습니다.")
             return
         }
-        
+        print(userMng.imageData ?? "이미지 없음")
         Task {
             do {
-                // 데이터 전송
-                _ = try await networkService.postUserInfoAsync(body: setDTO())
-                _ = try await networkService.postImgAsync(image: userMng.imageData)
+                async let imageUpload: String? = {
+                    if let profileImage = userMng.imageData {
+                        return try await networkService.postImgAsync(image: profileImage)
+                    }
+                    return nil
+                }()
+                
+                async let userInfoUpdate = try networkService.postUserInfoAsync(body: setDTO())
+
+                // ✅ 두 개의 네트워크 요청이 모두 끝날 때까지 기다림
+                _ = try await (imageUpload, userInfoUpdate)
                 
                 // 로컬 데이터 업데이트
                 try await PersonalDataManager.shared.createPersonalData(for: userId, userName: userMng.name, userCity: userMng.region)
