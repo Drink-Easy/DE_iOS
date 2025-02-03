@@ -67,7 +67,7 @@ class TastingNoteCollectionViewCell: UICollectionViewCell {
         }
         
         name.snp.makeConstraints { make in
-            make.top.equalTo(image.snp.bottom).offset(4)
+            make.top.equalTo(image.snp.bottom).offset(8)
             make.leading.trailing.equalToSuperview()
         }
     }

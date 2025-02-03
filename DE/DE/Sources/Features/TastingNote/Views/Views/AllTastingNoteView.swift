@@ -81,7 +81,7 @@ class AllTastingNoteView: UIView {
         }
         searchButton.snp.makeConstraints {
             $0.top.equalToSuperview()
-            $0.trailing.equalTo(safeAreaLayoutGuide).inset(16)
+            $0.trailing.equalTo(safeAreaLayoutGuide).inset(24)
             $0.size.equalTo(25)
         }
         topDividerView.snp.makeConstraints {
