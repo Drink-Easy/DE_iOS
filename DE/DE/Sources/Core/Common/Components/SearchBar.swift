@@ -38,10 +38,9 @@ public class SearchBar: UITextField {
         imageView.tintColor = AppColor.gray70 ?? .gray
         imageView.contentMode = .scaleAspectFit
         
-        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 47, height: 24))
-        imageView.frame = CGRect(x: 14.6, y: 0, width: 24, height: 24)
+        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: DynamicPadding.dynamicValue(47), height: DynamicPadding.dynamicValue(24)))
+        imageView.frame = CGRect(x: DynamicPadding.dynamicValue(14.6), y: 0, width: DynamicPadding.dynamicValue(24), height: DynamicPadding.dynamicValue(24))
         containerView.addSubview(imageView)
-        
         self.leftView = containerView
         self.leftViewMode = .always
         
