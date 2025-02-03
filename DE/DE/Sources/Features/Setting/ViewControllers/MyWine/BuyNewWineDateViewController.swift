@@ -100,15 +100,25 @@ public class BuyNewWineDateViewController: UIViewController {
         }
         
     }
+    
+//    private func showAlert() {
+//        let alert = UIAlertController(
+//            title: "잘못된 날짜 선택",
+//            message: "미래 날짜는 선택할 수 없습니다.",
+//            preferredStyle: .alert
+//        )
+//        alert.addAction(UIAlertAction(title: "확인", style: .default))
+//        present(alert, animated: true, completion: nil)
+//    }
 }
 
 extension BuyNewWineDateViewController: UICalendarSelectionSingleDateDelegate {
+    
+    /// ✅ 날짜 선택 시 (미래 날짜면 선택 안됨, 아니라면 선택 적용)
     public func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
-        guard let validDateComponents = dateComponents else {
-            return
-        }
-        selectedDate = validDateComponents
+        guard let validDateComponents = dateComponents else { return }
         
+        selectedDate = validDateComponents
         tastedDateView.calender.reloadDecorations(forDateComponents: [validDateComponents], animated: true)
         
         UIView.animate(withDuration: 0.2) {
@@ -116,6 +126,17 @@ extension BuyNewWineDateViewController: UICalendarSelectionSingleDateDelegate {
         }
         
         self.tastedDateView.nextButton.isEnabled(isEnabled: true)
+    }
+    
+    /// ✅ 미래 날짜 선택 차단 (미래 날짜 선택을 아예 못하게 막음)
+    public func dateSelection(_ selection: UICalendarSelectionSingleDate, canSelectDate dateComponents: DateComponents?) -> Bool {
+        guard let dateComponents = dateComponents,
+              let selectedDate = Calendar.current.date(from: dateComponents) else { return false }
+        
+        let today = Calendar.current.startOfDay(for: Date()) // 오늘 날짜 (00:00:00 기준)
+        
+        // ✅ 미래 날짜 선택 차단 (미래 날짜면 false 반환)
+        return selectedDate <= today
     }
 }
 

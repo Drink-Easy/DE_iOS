@@ -46,8 +46,9 @@ class MyWineDateView: UIView {
     }
     
     func setWineName(_ name: String) {
-        self.topView.title.text = name
-        self.topView.desp.text = "구매 일자를 선택해주세요"
+        topView.setTitleLabel(title: name, description: "구매 일자를 선택해주세요")
+//        self.topView.title.text = name
+//        self.topView.desp.text = "구매 일자를 선택해주세요"
     }
     
     func setupUI() {

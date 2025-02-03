@@ -63,10 +63,19 @@ class EntireReviewViewController: UIViewController {
     }
     
     private lazy var largeTitleLabel = UILabel().then {
-        $0.text = wineName
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        let text = wineName
         $0.numberOfLines = 0
-        $0.textColor = AppColor.black
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 2
+        
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.ptdSemiBoldFont(ofSize: 24),
+            .paragraphStyle: paragraphStyle,
+            .foregroundColor: AppColor.black!
+        ]
+        
+        $0.attributedText = NSAttributedString(string: text, attributes: attributes)
     }
 
     private lazy var entireReviewView = EntireReviewView().then {
