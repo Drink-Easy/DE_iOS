@@ -19,15 +19,15 @@ class NoteCollectionViewCell: UICollectionViewCell { // 셀에 이미지와 labe
         $0.layer.cornerRadius = 10
         $0.layer.masksToBounds = true
     }
-    
-    let imageView = UIImageView() // CollectionView에 image와 label 추가
+
     let nameLabel = UILabel()
     
     static let identifier = "NoteCollectionViewCell"
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.addSubview(imageView)
+        contentView.addSubview(imageBackground)
+        imageBackground.addSubview(image)
         contentView.addSubview(nameLabel)
         
         nameLabel.textAlignment = .center
@@ -46,9 +46,9 @@ class NoteCollectionViewCell: UICollectionViewCell { // 셀에 이미지와 labe
         }
         
         nameLabel.snp.makeConstraints { make in
-            make.top.equalTo(imageView.snp.bottom).offset(8)
+            make.top.equalTo(imageBackground.snp.bottom).offset(8)
             make.leading.equalToSuperview()
-            make.centerX.equalTo(imageView.snp.centerX)
+            make.centerX.equalTo(imageBackground.snp.centerX)
             make.height.equalTo(16)
         }
         
@@ -61,12 +61,11 @@ class NoteCollectionViewCell: UICollectionViewCell { // 셀에 이미지와 labe
     }
     
     public func configure(name : String, imageURL: String) {
-        self.imageView.sd_setImage(
-            with: URL(string: imageURL),
-            placeholderImage: UIImage(named: "placeholder"), // 로드 중 보여줄 기본 이미지
-            options: .highPriority, // 우선순위 높은 옵션
-            completed: nil
-        )
+        if let url = URL(string: imageURL) {
+            image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+        } else {
+            image.image = UIImage(named: "placeholder")
+        }
         
         self.nameLabel.text = name
     }
