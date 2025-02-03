@@ -79,6 +79,9 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
         textField.layer.cornerRadius = 10
         textField.isSecureTextEntry = isPasswordField // 비밀번호 필드 여부에 따라 처리
         
+        textField.tintColor = AppColor.purple100
+        
+        
         let placeholderColor = AppColor.gray70
         textField.attributedPlaceholder = NSAttributedString(
             string: textFieldPlaceholder,
