@@ -96,6 +96,8 @@ public class WishListViewController: UIViewController {
         }
     }
     
+    // TODO : 구조 변경하기
+    
     func callFetchWishlistAPI() {
         Task {
             do {
@@ -113,9 +115,12 @@ public class WishListViewController: UIViewController {
                         self.wineResults = cachedWishlist.map { data in
                             WishResultModel(wineId: data.wineId, imageUrl: data.imageUrl, wineName: data.wineName, sort: data.sort, price: data.price, vivinoRating: data.vivinoRating)
                         }
+                        
                         DispatchQueue.main.async {
                             self.searchResultTableView.reloadData()
-                            self.noWineLabel.isHidden = !self.wineResults.isEmpty
+                            if self.wineResults.isEmpty || self.wineResults.count == 0 {
+                                self.noWineLabel.isHidden = false
+                            }
                         }
                     }
                 } else {
