@@ -21,7 +21,8 @@ public final class MyWineListDataManager {
             print("✅ \(userId) 유저의 보유와인리스트가 이미 존재합니다. 업데이트 실행.")
             
             do {
-                try await updateSavedWinelist(for: userId, with: newWines, date: date)
+                try await deleteSavedWinelist(for: userId) // 빈 보유와인으로 만들어줌 : unique 에러 방지
+                try await updateSavedWinelist(for: userId, with: newWines, date: date) // 새로 받은 모든 와인 다 넣어줌
             } catch {
                 print("⚠️ 보유와인리스트 업데이트 중 오류 발생: \(error)")
             }
@@ -114,7 +115,7 @@ public final class MyWineListDataManager {
         }
 
         context.delete(myWineList)
-        user.savedWineList = nil
+        user.savedWineList = MyWineList(wineList: []) // 빈 보유와인 상태로 놓기
 
         do {
             try context.save()

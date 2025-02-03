@@ -14,7 +14,6 @@ class MyWineTableViewCell: UITableViewCell {
     }
     
     private lazy var image = UIImageView().then {
-//        $0.image = UIImage(named: "스파클링")
         $0.contentMode = .scaleAspectFit
         $0.layer.cornerRadius = 5
         $0.layer.masksToBounds = true
@@ -93,8 +92,8 @@ class MyWineTableViewCell: UITableViewCell {
         name.snp.makeConstraints {
             $0.leading.equalTo(imageBackground.snp.trailing).offset(18)
             $0.top.equalTo(imageBackground.snp.top)
-            $0.trailing.lessThanOrEqualTo(buyDate.snp.leading).offset(-6)
-//            $0.width.lessThanOrEqualTo(Constants.superViewWidth * 0.55)
+            $0.trailing.lessThanOrEqualTo(buyDate.snp.leading).offset(-4)
+            $0.width.lessThanOrEqualTo(Constants.superViewWidth * 0.58)
         }
         
         price.snp.makeConstraints {
