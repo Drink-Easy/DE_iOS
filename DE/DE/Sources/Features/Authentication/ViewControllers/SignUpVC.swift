@@ -100,10 +100,8 @@ class SignUpVC: UIViewController {
         view.showBlockingView()
         Task {
             await validationManager.checkEmailDuplicate(email: email, view: signUpView.usernameField)
-            DispatchQueue.main.async {
-                self.view.hideBlockingView()  // ✅ 네트워크 요청 후 인디케이터 중지
-                self.validateInputs()  // ✅ UI 업데이트
-            }
+            self.view.hideBlockingView()  // ✅ 네트워크 요청 후 인디케이터 중지
+            self.validateInputs()  // ✅ UI 업데이트
         }
     }
     

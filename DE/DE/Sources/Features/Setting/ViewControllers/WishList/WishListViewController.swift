@@ -46,7 +46,7 @@ public class WishListViewController: UIViewController {
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if !shouldSkipWishlistUpdate {
-            callFetchWishlistAPI()
+            checkCacheData()
         }
         shouldSkipWishlistUpdate = false
     }
@@ -98,7 +98,64 @@ public class WishListViewController: UIViewController {
     
     // TODO : 구조 변경하기
     
-    func callFetchWishlistAPI() {
+    func callFetchAPI(userId: Int) async {
+        do {
+            let responseData = try await networkService.fetchWishlist()
+            DispatchQueue.main.async {
+                if let responseData = responseData {
+                    self.wineResults = responseData.map { data in
+                        WishResultModel(wineId: data.wineId, imageUrl: data.imageUrl, wineName: data.name, sort: data.sort, price: data.price, vivinoRating: data.vivinoRating)
+                    }
+                }
+                self.saveInCacheDB(userId: userId)
+            }
+            DispatchQueue.main.async {
+                self.view.hideBlockingView()
+                self.searchResultTableView.reloadData()
+                self.noWineLabel.isHidden = !self.wineResults.isEmpty
+            }
+        } catch {
+            self.view.hideBlockingView()
+            print(error.localizedDescription)
+        }
+    }
+    
+    func saveInCacheDB(userId: Int) {
+        Task {
+            do {
+                try await WishlistDataManager.shared.createWishlistIfNeeded(for: userId, with: self.wineResults.map { wine in
+                    WineData(wineId: wine.wineId,
+                             imageUrl: wine.imageUrl,
+                             wineName: wine.wineName,
+                             sort: wine.sort,
+                             price: wine.price,
+                             vivinoRating: wine.vivinoRating
+                    )
+                })
+                try await WishlistDataManager.shared.updateWishlist(
+                    for: userId,
+                    with: self.wineResults.map { wine in
+                        WineData(wineId: wine.wineId,
+                                 imageUrl: wine.imageUrl,
+                                 wineName: wine.wineName,
+                                 sort: wine.sort,
+                                 price: wine.price,
+                                 vivinoRating: wine.vivinoRating
+                        )
+                    }
+                )
+                
+                // 호출 카운트 초기화
+                try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .wishlist)
+                self.view.hideBlockingView()
+            } catch {
+                print("❌ 캐시 업데이트 또는 호출 카운트 초기화 실패: \(error.localizedDescription)")
+                self.view.hideBlockingView()
+            }
+        }
+    }
+    
+    func checkCacheData() {
         Task {
             do {
                 guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
@@ -127,59 +184,7 @@ public class WishListViewController: UIViewController {
                     // 호출 카운트가 1 이상이면 API 호출
                     print("✅ 호출 카운트 1 이상: API 호출")
                     self.view.showBlockingView()
-                    networkService.fetchWishlist { [weak self] result in
-                        guard let self = self else { return }
-                        
-                        switch result {
-                        case .success(let responseData):
-                            if let responseData = responseData {
-                                self.wineResults = responseData.map { data in
-                                    WishResultModel(wineId: data.wineId, imageUrl: data.imageUrl, wineName: data.name, sort: data.sort, price: data.price, vivinoRating: data.vivinoRating)
-                                }
-                                
-                                // API 데이터로 캐시 덮어쓰기
-                                Task {
-                                    do {
-                                        try await WishlistDataManager.shared.createWishlistIfNeeded(for: userId, with: self.wineResults.map { wine in
-                                            WineData(wineId: wine.wineId,
-                                                     imageUrl: wine.imageUrl,
-                                                     wineName: wine.wineName,
-                                                     sort: wine.sort,
-                                                     price: wine.price,
-                                                     vivinoRating: wine.vivinoRating
-                                            )
-                                        })
-                                        try await WishlistDataManager.shared.updateWishlist(
-                                            for: userId,
-                                            with: self.wineResults.map { wine in
-                                                WineData(wineId: wine.wineId,
-                                                         imageUrl: wine.imageUrl,
-                                                         wineName: wine.wineName,
-                                                         sort: wine.sort,
-                                                         price: wine.price,
-                                                         vivinoRating: wine.vivinoRating
-                                                )
-                                            }
-                                        )
-                                        
-                                        // 호출 카운트 초기화
-                                        try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .wishlist)
-                                        self.view.hideBlockingView()
-                                    } catch {
-                                        print("❌ 캐시 업데이트 또는 호출 카운트 초기화 실패: \(error.localizedDescription)")
-                                        self.view.hideBlockingView()
-                                    }
-                                }
-                                
-                                DispatchQueue.main.async {
-                                    self.searchResultTableView.reloadData()
-                                    self.noWineLabel.isHidden = !self.wineResults.isEmpty
-                                }
-                            }
-                        case .failure(let error):
-                            print("❌ 위시리스트 API 호출 실패: \(error.localizedDescription)")
-                        }
-                    }
+                    await callFetchAPI(userId: userId)
                 }
             } catch {
                 print("❌ 호출 카운트 확인 실패: \(error.localizedDescription)")

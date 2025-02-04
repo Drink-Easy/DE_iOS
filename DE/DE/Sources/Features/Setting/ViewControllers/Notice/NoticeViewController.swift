@@ -80,6 +80,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 let data = try await networkService.fetchAllNotices()
                 DispatchQueue.main.async {
                     self.noticeData = data
+                    self.view.hideBlockingView()
                     self.noticeListView.reloadData()
                 }
             } catch {

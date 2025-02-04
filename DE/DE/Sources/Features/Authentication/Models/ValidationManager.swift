@@ -92,18 +92,23 @@ final class ValidationManager {
     
     // MARK: - UI 업데이트 메서드
     func showValidationError(_ view: CustomLabelTextFieldView, message: String) {
-        view.updateValidationText(message, isHidden: false, color: AppColor.red)
-        view.textField.layer.borderColor = AppColor.red?.cgColor
-        view.textField.backgroundColor = AppColor.red?.withAlphaComponent(0.1)
-        view.textField.textColor = AppColor.red
-        view.iconImageView.tintColor = AppColor.red
+        DispatchQueue.main.async {
+            view.updateValidationText(message, isHidden: false, color: AppColor.red)
+            view.textField.layer.borderColor = AppColor.red?.cgColor
+            view.textField.backgroundColor = AppColor.red?.withAlphaComponent(0.1)
+            view.textField.textColor = AppColor.red
+            view.iconImageView.tintColor = AppColor.red
+        }
     }
     
     func hideValidationError(_ view: CustomLabelTextFieldView, message: String) {
-        view.updateValidationText(message, isHidden: false, color: AppColor.purple100)
-        view.textField.layer.borderColor = AppColor.purple100?.cgColor
-        view.textField.backgroundColor = AppColor.purple10
-        view.textField.textColor = AppColor.purple100
-        view.iconImageView.tintColor = AppColor.purple100
+        DispatchQueue.main.async {
+            view.updateValidationText(message, isHidden: false, color: AppColor.purple100)
+            view.textField.layer.borderColor = AppColor.purple100?.cgColor
+            view.textField.backgroundColor = AppColor.purple10
+            view.textField.textColor = AppColor.purple100
+            view.iconImageView.tintColor = AppColor.purple100
+        }
+
     }
 }
