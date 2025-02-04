@@ -151,6 +151,7 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = WineDetailViewController()
         vc.wineId = wineResults[indexPath.row].wineId
+        vc.wineName = wineResults[indexPath.row].name
         navigationController?.pushViewController(vc, animated: true)
     }
     
