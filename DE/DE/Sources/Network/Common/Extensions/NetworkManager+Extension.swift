@@ -8,7 +8,7 @@ extension NetworkManager {
     // ✅ 1. 비동기 데이터 요청
     func requestAsync<T: Decodable>(
         target: Endpoint,
-        decodingType: T.Type
+        decodingType: T.Type = String.self
     ) async throws -> T {
         let response = try await provider.request(target)
         return try await handleResponseRequired(response, decodingType: decodingType, target: target)
@@ -17,7 +17,7 @@ extension NetworkManager {
     // ✅ 2. 옵셔널 응답 (데이터가 없을 수도 있음)
     func requestOptionalAsync<T: Decodable>(
         target: Endpoint,
-        decodingType: T.Type
+        decodingType: T.Type = String.self
     ) async throws -> T? {
         let response = try await provider.request(target)
         
@@ -30,7 +30,7 @@ extension NetworkManager {
     // ✅ 3. 응답 + 캐시 유효 시간 반환
     func requestWithTimeAsync<T: Decodable>(
         target: Endpoint,
-        decodingType: T.Type
+        decodingType: T.Type = String.self
     ) async throws -> (T, TimeInterval?) {
         let response = try await provider.request(target)
         let result = try await handleResponseRequired(response, decodingType: decodingType, target: target)
