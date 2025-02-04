@@ -125,7 +125,16 @@ class SignUpVC: UIViewController {
     }
     
     @objc private func backButtonTapped() {
-        navigationController?.popViewController(animated: true)
+        guard let navigationController = self.navigationController else {
+            return
+        }
+        
+        if let targetIndex = navigationController.viewControllers.firstIndex(where: { $0 is SelectLoginTypeVC }) {
+            let targetVC = navigationController.viewControllers[targetIndex]
+            navigationController.popToViewController(targetVC, animated: true)
+        } else {
+            navigationController.popToRootViewController(animated: true) // 못 찾으면 루트로 이동
+        }
     }
     
     @objc private func goToLoginView() {

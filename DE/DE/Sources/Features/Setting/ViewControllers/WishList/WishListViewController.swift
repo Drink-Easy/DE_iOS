@@ -30,7 +30,6 @@ public class WishListViewController: UIViewController {
         $0.font = UIFont.ptdRegularFont(ofSize: 14)
         $0.textColor = AppColor.gray70
         $0.textAlignment = .center
-        $0.isHidden = true
     }
     
     public override func viewDidLoad() {
@@ -54,6 +53,7 @@ public class WishListViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        setNavBarAppearance(navigationController: self.navigationController)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -111,8 +111,8 @@ public class WishListViewController: UIViewController {
             }
             DispatchQueue.main.async {
                 self.view.hideBlockingView()
-                self.searchResultTableView.reloadData()
                 self.noWineLabel.isHidden = !self.wineResults.isEmpty
+                self.searchResultTableView.reloadData()
             }
         } catch {
             self.view.hideBlockingView()
@@ -172,12 +172,13 @@ public class WishListViewController: UIViewController {
                         self.wineResults = cachedWishlist.map { data in
                             WishResultModel(wineId: data.wineId, imageUrl: data.imageUrl, wineName: data.wineName, sort: data.sort, price: data.price, vivinoRating: data.vivinoRating)
                         }
-                        
                         DispatchQueue.main.async {
-                            self.searchResultTableView.reloadData()
                             if self.wineResults.isEmpty || self.wineResults.count == 0 {
                                 self.noWineLabel.isHidden = false
+                            } else {
+                                self.noWineLabel.isHidden = true
                             }
+                            self.searchResultTableView.reloadData()
                         }
                     }
                 } else {
