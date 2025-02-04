@@ -476,6 +476,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         if collectionView.tag == 1 || collectionView.tag == 2 {
             let vc = WineDetailViewController()
             vc.wineId = (collectionView.tag == 1) ? recommendWineDataList[indexPath.row].wineId : popularWineDataList[indexPath.row].wineId
+            vc.wineName = (collectionView.tag == 1) ? recommendWineDataList[indexPath.row].wineName : popularWineDataList[indexPath.row].wineName
             navigationController?.pushViewController(vc, animated: true)
         } else if collectionView.tag == 0 {
             print("\(adImage[indexPath.row].postUrl) : 이 주소로 이동하세요")

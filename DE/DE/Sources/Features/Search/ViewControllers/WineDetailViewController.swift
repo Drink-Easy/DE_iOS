@@ -241,7 +241,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         let tastingNoteString = noseNotes.joined(separator: ", ")
         
         DispatchQueue.main.async {
-            self.setupNavigationBar() // 제목 및 좋아요 설정
+            //self.setupNavigationBar() // 제목 및 좋아요 설정
             self.updateReviewView()
         }
         

@@ -4,7 +4,7 @@ import UIKit
 import CoreModule
 import Network
 
-class EditNoseViewController: UIViewController {
+class EditNoseViewController: UIViewController, UIScrollViewDelegate {
 
     let wineData = TNWineDataManager.shared
     let tnManager = NewTastingNoteManager.shared
@@ -24,6 +24,7 @@ class EditNoseViewController: UIViewController {
     let navigationBarManager = NavigationBarManager()
     let networkService = TastingNoteService()
     var scentNames: [String] = []
+    private var smallTitleLabel = UILabel()
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -68,7 +69,10 @@ class EditNoseViewController: UIViewController {
         topView.propertyHeader.setName(eng: "Nose", kor: "향")
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
+        scrollView.delegate = self
         [middleView, topView].forEach { contentView.addSubview($0) }
+        
+        topView.header.setTitleLabel(wineData.wineName)
         
         scrollView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
@@ -124,6 +128,13 @@ class EditNoseViewController: UIViewController {
             target: self,
             action: #selector(prevVC)
         )
+        
+        smallTitleLabel = navigationBarManager.setNReturnTitle(
+            to: navigationItem,
+            title: wineData.wineName,
+            textColor: AppColor.black ?? .black
+        )
+        smallTitleLabel.isHidden = true
     }
     
     @objc func prevVC() {
@@ -150,6 +161,16 @@ class EditNoseViewController: UIViewController {
                 self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             }
+        }
+    }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let largeTitleBottom = topView.header.frame.maxY + 10
+        
+        UIView.animate(withDuration: 0.1) {
+            self.topView.header.alpha = offsetY > largeTitleBottom ? 0 : 1
+            self.smallTitleLabel.isHidden = !(offsetY > largeTitleBottom)
         }
     }
 }

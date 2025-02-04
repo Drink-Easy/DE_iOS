@@ -164,7 +164,7 @@ extension ManiaCountryViewController: UICollectionViewDelegateFlowLayout, UIColl
         let font = UIFont.ptdMediumFont(ofSize: 16)
         let size = title.size(withAttributes: [.font: font])
         
-        let padding: CGFloat = DynamicPadding.dynamicValue(44.0)
+        let padding: CGFloat = DynamicPadding.dynamicValue(40.0)
         let cellWidth = size.width + padding
         
         return CGSize(width: cellWidth, height: DynamicPadding.dynamicValue(49.0))
