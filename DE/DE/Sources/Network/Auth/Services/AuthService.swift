@@ -67,24 +67,9 @@ public final class AuthService : NetworkManager {
         return try await requestAsync(target: .postAppleLogin(data: data), decodingType: LoginResponseDTO.self)
     }
     /// 로그아웃 API
-//    public func logout(completion: @escaping (Result<Void, NetworkError>) -> Void) {
-//        provider.request(.postLogout) { result in
-//            switch result {
-//            case .success(let response):
-//                if response.statusCode == 200 {
-//                    completion(.success(()))
-//                } else {
-//                    let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: response.data)
-//                    let finalMessage = errorResponse?.message ?? "에러 메세지 없음"
-//                    return completion(.failure(.serverError(statusCode: response.statusCode, message: finalMessage)))
-//                }
-//                
-//            case .failure(let error):
-//                let networkError = self.handleNetworkError(error)
-//                completion(.failure(networkError))
-//            }
-//        }
-//    }
+    public func logout() async throws -> String {
+        return try await requestAsync(target: .postLogout, decodingType: String.self)
+    }
     
     /// 자체 회원가입 API
     public func join(data: JoinDTO) async throws -> String {
