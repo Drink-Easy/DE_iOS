@@ -96,31 +96,19 @@ public class NicknameValidateManager {
         return true
     }
     
-    public func checkNicknameDuplicate(nickname: String, view: CustomTextFieldView, completion: ((Bool) -> Void)? = nil) {
-        networkService.checkNickname(name: nickname) { [weak self] result in
-            guard let self = self else { return }
-            
-            var isAvailable = false  // 닉네임 사용 가능 여부
-
-            switch result {
-            case .success(let response):
-                if response {
-                    self.hideValidationError(view, message: "사용 가능한 닉네임이에요")
-                    self.isNicknameCanUse = true
-                    isAvailable = true
-                } else {
-                    self.showValidationError(view, message: "이미 사용 중인 닉네임이에요")
-                    self.isNicknameCanUse = false
-                }
-                
-            case .failure(let error):
-                print("네트워크 요청 실패: \(error)")
-                self.showValidationError(view, message: "네트워크 오류가 발생했습니다. 다시 시도해주세요.")
+    public func checkNicknameDuplicate(nickname: String, view: CustomTextFieldView) async {
+        do {
+            let data = try await networkService.checkNickname(name: nickname)
+            if data {
+                self.hideValidationError(view, message: "사용 가능한 닉네임이에요")
+                self.isNicknameCanUse = true
+            } else {
+                self.showValidationError(view, message: "이미 사용 중인 닉네임이에요")
                 self.isNicknameCanUse = false
             }
-            
-            // ✅ 네트워크 응답이 끝난 후, completion 핸들러에 결과 전달
-            completion?(isAvailable)
+        } catch {
+            self.showValidationError(view, message: "네트워크 오류가 발생했습니다. 다시 시도해주세요.")
+            self.isNicknameCanUse = false
         }
     }
     

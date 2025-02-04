@@ -186,10 +186,9 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
             print("닉네임이 없습니다")
             return
         }
-        self.view.showBlockingView()
-        ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField) { [weak self] success in
-            guard let self = self else { return }
-            
+        view.showBlockingView()
+        Task {
+            await ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField)
             DispatchQueue.main.async {
                 self.view.hideBlockingView()  // ✅ 네트워크 요청 후 인디케이터 중지
                 self.checkFormValidity()  // ✅ UI 업데이트

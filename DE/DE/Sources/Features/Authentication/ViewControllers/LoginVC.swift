@@ -107,31 +107,26 @@ class LoginVC: UIViewController {
     }
     
     @objc private func loginButtonTapped() {
+        self.view.showBlockingView()
         let loginDTO = networkService.makeLoginDTO(username: loginView.usernameField.text!, password: loginView.passwordField.text!)
         usernameString = loginDTO.username
-        self.view.showBlockingView()
-        networkService.login(data: loginDTO) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let response):
+        Task {
+            do {
+                let data = try await networkService.login(data: loginDTO)
                 SelectLoginTypeVC.keychain.set(usernameString, forKey: "savedUserEmail")
                 // userId 저장
-                saveUserId(userId: response.id) // 현재 로그인한 유저 정보
-                Task {
-                    await UserDataManager.shared.createUser(userId: response.id)
-                }
+                saveUserId(userId: data.id) // 현재 로그인한 유저 정보
+                await UserDataManager.shared.createUser(userId: data.id)
                 self.view.hideBlockingView()
-                self.goToNextView(response.isFirst)
-            case .failure(let error):
-                print(error)
+                self.goToNextView(data.isFirst)
+            } catch {
+                print("Error: \(error)")
                 self.view.hideBlockingView()
                 self.loginView.loginButton.isEnabled = false
                 self.loginView.loginButton.isEnabled(isEnabled: false)
                 self.validationManager.showValidationError(loginView.usernameField, message: "")
                 self.validationManager.showValidationError(loginView.passwordField, message: "회원 정보를 다시 확인해 주세요")
             }
-            
         }
     }
     
