@@ -269,6 +269,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                 DispatchQueue.main.async {
                     self.adImage = bannerModels
                     self.adCollectionView.reloadData()
+                    self.pageControlNumberView.totalPages = self.adImage.count
                 }
 
             } catch {
