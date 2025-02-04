@@ -41,8 +41,10 @@ extension AccountInfoViewController: ASAuthorizationControllerDelegate {
                         let result = try await memberService.deleteAppleUser(body: data) // 서버에 삭제 요청
                         print(result)
                         await deleteUserInSwiftData() // 성공 후, 로컬 디비에서 유저 삭제
-                        clearForQuit()
-                        showSplashScreen()
+                        DispatchQueue.main.async {
+                            self.clearForQuit()
+                            self.showSplashScreen()
+                        }
                     } catch {
                         print(error)
                     }
