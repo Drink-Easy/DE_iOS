@@ -82,27 +82,15 @@ class MorePopularWineViewController: UIViewController {
     // MARK: - 네트워크 요청 처리
     private func fetchWinesFromNetwork() async {
         self.view.showBlockingView()
-        let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
-        
-        fetchFunction = networkService.fetchPopularWines
-
-        await withCheckedContinuation { continuation in
-            fetchFunction { [weak self] result in
-                guard let self = self else { return }
-
-                switch result {
-                case .success(let responseData):
-                    Task {
-                        await self.processPopularWineData(responseData: responseData.0, time: responseData.1 ?? 3600)
-                        continuation.resume()
-                    }
-                    self.view.hideBlockingView()
-                case .failure(let error):
-                    print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
-                    continuation.resume()
-                    self.view.hideBlockingView()
-                }
+        do {
+            let responseData = try await networkService.fetchPopularWines()
+            await self.processPopularWineData(responseData: responseData.0, time: responseData.1 ?? 3600)
+            DispatchQueue.main.async {
+                self.view.hideBlockingView()
             }
+        } catch {
+            print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
+            self.view.hideBlockingView()
         }
     }
     
