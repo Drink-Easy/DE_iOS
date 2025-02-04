@@ -18,7 +18,7 @@ public class InquiryMenuViewCell: UITableViewCell {
     
     public lazy var title = UILabel().then {
         $0.textColor = AppColor.gray100
-        $0.font = UIFont.ptdRegularFont(ofSize: 18)
+        $0.font = UIFont.ptdRegularFont(ofSize: 16)
         $0.numberOfLines = 1
     }
     
@@ -56,6 +56,7 @@ public class InquiryMenuViewCell: UITableViewCell {
     private func constraints() {
         iconImage.snp.makeConstraints {
             $0.centerY.equalToSuperview()
+            $0.size.equalTo(20)
             $0.leading.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
         }
         title.snp.makeConstraints {

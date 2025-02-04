@@ -26,9 +26,14 @@ class AppInfoViewController : UIViewController {
         "서비스 이용약관", "개인정보 처리방침", "위치정보 이용약관", "오픈소스 라이브러리"
     ]
     
+    private let instaButton = UIButton().then {
+        $0.setImage(UIImage(named: "instagram")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        $0.tintColor = AppColor.gray70// 원하는 색상 적용
+        $0.addTarget(self, action: #selector(openInstagram), for: .touchUpInside)
+    }
     lazy var appVersionLabel = UILabel().then {
         $0.text = "버전 정보"
-        $0.font = UIFont.ptdMediumFont(ofSize: 14)
+        $0.font = UIFont.ptdRegularFont(ofSize: 12)
         $0.textColor = AppColor.gray70
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
@@ -36,7 +41,7 @@ class AppInfoViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-        appVersionLabel.text = "버전 정보 \(appVersion)"
+        appVersionLabel.text = "Version \(appVersion)"
         setupTableView()
         setupUI()
         setupNavigationBar()
@@ -76,10 +81,16 @@ class AppInfoViewController : UIViewController {
             make.height.equalTo(200)
         }
         
+        view.addSubview(instaButton)
         view.addSubview(appVersionLabel)
+        instaButton.snp.makeConstraints { make in
+            make.top.equalTo(tableView.snp.bottom).offset(50)
+            make.centerX.equalToSuperview()
+            make.size.equalTo(24)
+        }
         appVersionLabel.snp.makeConstraints { make in
-            make.top.equalTo(tableView.snp.bottom).offset(10)
-            make.leading.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
+            make.top.equalTo(instaButton.snp.bottom).offset(10)
+            make.centerX.equalToSuperview()
         }
     }
     
@@ -87,6 +98,11 @@ class AppInfoViewController : UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
+    @objc private func openInstagram() {
+        if let url = URL(string: "https://www.instagram.com/drinki.g") {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
+    }
 }
 
 extension AppInfoViewController: UITableViewDataSource {

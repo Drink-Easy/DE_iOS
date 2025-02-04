@@ -106,7 +106,7 @@ class InquiryViewController: UIViewController {
         
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(descriptionLabel.snp.bottom).offset(8)
+            make.top.equalTo(descriptionLabel.snp.bottom).offset(16)
             make.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
             make.leading.equalToSuperview()
             make.bottom.equalToSuperview()
