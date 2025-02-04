@@ -42,30 +42,20 @@ final class ValidationManager {
         return true
     }
     
-    func checkEmailDuplicate(email: String, view: CustomLabelTextFieldView, completion: @escaping (Bool) -> Void) {
+    func checkEmailDuplicate(email: String, view: CustomLabelTextFieldView) async {
         let emailCheckDTO = networkService.makeEmailCheckDTO(emailString: email)
 
-        networkService.checkEmail(data: emailCheckDTO) { [weak self] result in
-            guard let self = self else { return }
-
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let response):
-                    if response {
-                        self.showValidationError(view, message: "이미 사용 중인 이메일입니다.")
-                        self.isEmailDuplicate = true
-                    } else {
-                        self.hideValidationError(view, message: "사용 가능한 이메일입니다.")
-                        self.isEmailDuplicate = false
-                    }
-                    completion(!self.isEmailDuplicate) // ✅ 이메일 중복 여부를 completion으로 전달
-
-                case .failure(let error):
-                    print("네트워크 요청 실패: \(error)")
-                    self.showValidationError(view, message: "이메일 확인 중 오류가 발생했습니다.")
-                    completion(false) // ✅ 오류 발생 시 false 전달
-                }
+        do {
+            let data = try await networkService.checkEmail(data: emailCheckDTO)
+            if data {
+                self.showValidationError(view, message: "이미 사용 중인 이메일입니다.")
+                self.isEmailDuplicate = true
+            } else {
+                self.hideValidationError(view, message: "사용 가능한 이메일입니다.")
+                self.isEmailDuplicate = false
             }
+        } catch {
+            self.showValidationError(view, message: "이메일 확인 중 오류가 발생했습니다.")
         }
     }
     
