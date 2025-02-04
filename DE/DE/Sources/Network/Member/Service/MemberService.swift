@@ -42,43 +42,27 @@ public final class MemberService : NetworkManager {
     }
     
     /// 이미지 업로드 API
-    public func postImg(image: UIImage, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .postImage(image: image), decodingType: String.self, completion: completion)
-    }
-    
     public func postImgAsync(image: UIImage) async throws -> String {
         return try await requestAsync(target: .postImage(image: image), decodingType: String.self)
     }
     
     /// 개인정보 갱신 API(마이페이지)
-    public func patchUserInfo(body: MemberUpdateRequest, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .patchMemeberPersonalInfo(body: body), decodingType: String.self, completion: completion)
-    }
-    
     public func patchUserInfoAsync(body: MemberUpdateRequest) async throws -> String {
         return try await requestAsync(target: .patchMemeberPersonalInfo(body: body), decodingType: String.self)
     }
     
     /// 취향찾기 등록 API
-    public func postUserInfo(body: MemberRequestDTO, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .patchMemberInfo(body: body), decodingType: String.self, completion: completion)
-    }
-    
     public func postUserInfoAsync(body: MemberRequestDTO) async throws -> String {
-        return try await requestAsync(target: .patchMemberInfo(body: body))
+        return try await requestAsync(target: .patchMemberInfo(body: body), decodingType: String.self)
     }
     
     /// 개인정보 불러오기 API
-    public func fetchUserInfo(completion: @escaping (Result<MemberInfoResponse, NetworkError>) -> Void) {
-        request(target: .getMemberInfo, decodingType: MemberInfoResponse.self, completion: completion)
-    }
-    
     public func fetchUserInfoAsync() async throws -> MemberInfoResponse {
         return try await requestAsync(target: .getMemberInfo, decodingType: MemberInfoResponse.self)
     }
     
     public func getUserName() async throws -> String {
-        return try await requestAsync(target: .getNickname)
+        return try await requestAsync(target: .getNickname, decodingType: String.self)
     }
     
     /// 사용자 탈퇴 API
