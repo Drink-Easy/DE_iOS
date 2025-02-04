@@ -2,57 +2,9 @@
 
 import UIKit
 import CoreModule
-import Network
 
 public class MainTabBarController: UITabBarController {
     
-    let homeVC = HomeViewController()
-    
-    let networkService = MemberService()
-    
-    public var userName: String? {
-        didSet {
-            updateUserName()
-        }
-    }
-
-    private func updateUserName() {
-        if let name = userName {
-            print("✅ 닉네임 업데이트: \(name)")
-            homeVC.userName = name
-        } else {
-            guard let userId = UserDefaults.standard.object(forKey: "userId") as? Int else {
-                print("⚠️ userId가 UserDefaults에 저장되어 있지 않습니다.")
-                return
-            }
-            
-            Task {
-                do {
-                    let name = try await PersonalDataManager.shared.fetchUserName(for: userId)
-                    homeVC.userName = name
-                } catch {
-                    let name = try await networkService.getUserName()
-                    homeVC.userName = name
-                    print(error.localizedDescription)
-                }
-            }
-        }
-    }
-    
-    func saveUserInfo(userId: Int, data: MemberInfoResponse) async {
-        do {
-            try await PersonalDataManager.shared.updatePersonalData(for: userId,
-                                                                    userName: data.username,
-                                                                    userImageURL: data.imageUrl,
-                                                                    userCity: data.city,
-                                                                    authType: data.authType,
-                                                                    email: data.email,
-                                                                    adult: data.adult)
-        } catch {
-            print(error)
-        }
-    }
-
     public override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -67,7 +19,7 @@ public class MainTabBarController: UITabBarController {
     }
     
     public func configureTabs() {
-        let nav1 = UINavigationController(rootViewController: homeVC)
+        let nav1 = UINavigationController(rootViewController: HomeViewController())
         let nav2 = UINavigationController(rootViewController: AllTastingNoteVC())
         let nav3 = UINavigationController(rootViewController: SettingMenuViewController())
         

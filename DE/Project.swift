@@ -92,14 +92,13 @@ let project = Project(
             ]
         ),
         .target(
-            name: "FirstVersionApp",
+            name: "DRINKIG",
             destinations: .iOS,
             product: .app,
             bundleId: "\(bundleId).\(bundleMid).drinkig",
             deploymentTargets: .iOS("17.0"),
             infoPlist: .extendingDefault(
                 with: [
-//                    "UIUserInterfaceStyle" : "Light", // 다크모드 제거
                     "UISupportedInterfaceOrientations" : ["UIInterfaceOrientationPortrait"], // 화면 방향 세로 고정
                     "UIApplicationSceneManifest": [ // Scene 설정
                         "UIApplicationSupportsMultipleScenes": false,
@@ -111,7 +110,7 @@ let project = Project(
                                 ],
                             ]
                         ]
-                                                  ],
+                    ],
                     // 폰트 추가
                     "UIAppFonts": ["Pretendard-Black.otf",
                                    "Pretendard-Bold.otf",
