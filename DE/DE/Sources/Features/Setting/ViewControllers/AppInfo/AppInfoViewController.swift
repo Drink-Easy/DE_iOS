@@ -84,12 +84,12 @@ class AppInfoViewController : UIViewController {
         view.addSubview(instaButton)
         view.addSubview(appVersionLabel)
         instaButton.snp.makeConstraints { make in
-            make.top.equalTo(tableView.snp.bottom).offset(50)
+            make.top.equalTo(tableView.snp.bottom).offset(40)
             make.centerX.equalToSuperview()
             make.size.equalTo(24)
         }
         appVersionLabel.snp.makeConstraints { make in
-            make.top.equalTo(instaButton.snp.bottom).offset(10)
+            make.top.equalTo(instaButton.snp.bottom).offset(20)
             make.centerX.equalToSuperview()
         }
     }

@@ -14,7 +14,7 @@ public class CustomBlurButton: UIButton {
     public init(
         title: String = "",
         titleColor: UIColor = .black,
-        blurStyle: UIBlurEffect.Style = .light
+        blurStyle: UIBlurEffect.Style = .systemChromeMaterial
     ) {
         super.init(frame: .zero)
         

@@ -154,11 +154,13 @@ public final class SettingMenuViewController : UIViewController, UIGestureRecogn
         do {
             let data = try await networkService.fetchUserInfoAsync()
             
-            self.profileData = SimpleProfileInfoData(name: data.username, imageURL: data.imageUrl, uniqueUserId: userId)
+            let safeImageUrl = data.imageUrl ?? "https://placehold.co/400x400"
             
-            let userData = MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
+            self.profileData = SimpleProfileInfoData(name: data.username, imageURL: safeImageUrl, uniqueUserId: userId)
             
-            self.setUserData(userName: data.username, imageURL: data.imageUrl)
+            let userData = MemberInfoResponse(imageUrl: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
+            
+            self.setUserData(userName: data.username, imageURL: safeImageUrl)
 //            print("✅ 서버 데이터 성공적으로 가져옴: \(data.username)")
             await saveUserInfo(data: userData)
             

@@ -87,11 +87,11 @@ class InquiryViewController: UIViewController {
             view.addSubview($0)
         }
         inquiryLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(8))
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(12))
             make.leading.equalTo(DynamicPadding.dynamicValue(24))
         }
         descriptionLabel.snp.makeConstraints { make in
-            make.top.equalTo(inquiryLabel.snp.bottom).offset(8)
+            make.top.equalTo(inquiryLabel.snp.bottom).offset(DynamicPadding.dynamicValue(8))
             make.leading.equalTo(inquiryLabel.snp.leading)
         }
     }
@@ -106,7 +106,7 @@ class InquiryViewController: UIViewController {
         
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(descriptionLabel.snp.bottom).offset(16)
+            make.top.equalTo(descriptionLabel.snp.bottom).offset(DynamicPadding.dynamicValue(16))
             make.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
             make.leading.equalToSuperview()
             make.bottom.equalToSuperview()
