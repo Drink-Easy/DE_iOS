@@ -150,6 +150,7 @@ extension MoreLikelyWineViewController: UITableViewDelegate, UITableViewDataSour
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = WineDetailViewController()
         vc.wineId = wineList[indexPath.row].wineId
+        vc.wineName = wineList[indexPath.row].wineName
         navigationController?.pushViewController(vc, animated: true)
     }
 }

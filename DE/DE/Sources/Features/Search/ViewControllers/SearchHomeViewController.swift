@@ -51,6 +51,10 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let query = searchHomeView.searchBar.text, query.count >= 2 {
             indicator.startAnimating()
+            DispatchQueue.main.async {
+                // 강제로 맨위로 올리기
+                self.searchHomeView.searchResultTableView.setContentOffset(.zero, animated: true)
+            }
             Task {
                 do {
                     try await callSearchAPI(query: query, startPage: 0)
@@ -147,6 +151,7 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = WineDetailViewController()
         vc.wineId = wineResults[indexPath.row].wineId
+        vc.wineName = wineResults[indexPath.row].name
         navigationController?.pushViewController(vc, animated: true)
     }
     

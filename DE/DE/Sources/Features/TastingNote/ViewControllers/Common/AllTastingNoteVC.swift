@@ -165,6 +165,7 @@ extension AllTastingNoteVC: UICollectionViewDataSource, UICollectionViewDelegate
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = WineTastingNoteVC()
         vc.noteId = currentTastingNoteList[indexPath.row].noteId
+        vc.wineName = currentTastingNoteList[indexPath.row].wineName
         vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: true)
     }
