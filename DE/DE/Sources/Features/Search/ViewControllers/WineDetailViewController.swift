@@ -10,7 +10,13 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     let navigationBarManager = NavigationBarManager()
     public var wineId: Int = 0
     var wineName: String = "Default Name"
-    var isLiked: Bool = false
+    var isLiked: Bool = false {
+        didSet {
+            DispatchQueue.main.async {
+                self.showLiked()
+            }
+        }
+    }
     var originalIsLiked: Bool = false
     let wineNetworkService = WineService()
     let likedNetworkService = WishlistService()
@@ -26,6 +32,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         constraints()
         setupNavigationBar()
 //        callWineDetailAPI(wineId: self.wineId)
+        showLiked()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -74,10 +81,14 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
             action: #selector(tappedLiked),
             tintColor: AppColor.purple100!
         )
-        
-        if let rightButton = navigationItem.rightBarButtonItem?.customView as? UIButton {
-            rightButton.isSelected = isLiked
-            updateHeartButton(button: rightButton)  // 초기 좋아요 상태 반영
+    }
+    
+    private func showLiked() {
+        DispatchQueue.main.async {
+            if let rightButton = self.navigationItem.rightBarButtonItem?.customView as? UIButton {
+                rightButton.isSelected = self.isLiked
+                self.updateHeartButton(button: rightButton)
+            }
         }
     }
     
