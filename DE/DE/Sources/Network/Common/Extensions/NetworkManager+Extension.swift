@@ -4,9 +4,6 @@ import Moya
 import UIKit
 
 extension NetworkManager {
-    ) {
-        provider.request(target) { result in
-            switch result {
     //MARK: - Concurrency로 모두 리팩토링
     // ✅ 1. 비동기 데이터 요청
     func requestAsync<T: Decodable>(
