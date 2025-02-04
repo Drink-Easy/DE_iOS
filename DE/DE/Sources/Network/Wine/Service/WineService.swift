@@ -28,8 +28,8 @@ public final class WineService: NetworkManager {
     }
 
     /// 선택 와인 정보 조회
-    public func fetchWineInfo(wineId: Int, completion: @escaping (Result<WineResponseWithThreeReviewsDTO?, NetworkError>) -> Void) {
-        requestOptional(target: .getWineInfo(wineId: wineId), decodingType: WineResponseWithThreeReviewsDTO.self, completion: completion)
+    public func fetchWineInfo(wineId: Int) async throws -> WineResponseWithThreeReviewsDTO? {
+        return try await requestOptionalAsync(target: .getWineInfo(wineId: wineId), decodingType: WineResponseWithThreeReviewsDTO.self)
     }
     
     /// 선택 와인 리뷰 조회
@@ -38,14 +38,13 @@ public final class WineService: NetworkManager {
     }
     
     /// 추천 와인 조회
-    public func fetchRecommendWines(completion: @escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) {
-        requestWithTime(target: .getRecommendWines, decodingType: [HomeWineDTO].self, completion: completion)
+    public func fetchRecommendWines() async throws -> ([HomeWineDTO], TimeInterval?) {
+        return try await requestWithTimeAsync(target: .getRecommendWines, decodingType: [HomeWineDTO].self)
     }
     
     /// 인기 와인 조회
-    public func fetchPopularWines(completion: @escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) {
-        requestWithTime(target: .getMostLikedWines, decodingType: [HomeWineDTO].self, completion: completion)
-//        request(target: .getMostLikedWines, decodingType: [HomeWineDTO].self, completion: completion)
+    public func fetchPopularWines() async throws -> ([HomeWineDTO], TimeInterval?) {
+        return try await requestWithTimeAsync(target: .getMostLikedWines, decodingType: [HomeWineDTO].self)
     }
     
 }
