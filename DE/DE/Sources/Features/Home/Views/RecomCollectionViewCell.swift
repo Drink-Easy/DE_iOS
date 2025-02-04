@@ -12,7 +12,6 @@ class RecomCollectionViewCell: UICollectionViewCell {
     
     public lazy var image = UIImageView().then {
         $0.contentMode = .scaleAspectFit
-//        $0.sd_imageIndicator = SDWebImageActivityIndicator.gray // 로딩 인디케이터 추가
         $0.clipsToBounds = true
     }
     
@@ -90,11 +89,11 @@ class RecomCollectionViewCell: UICollectionViewCell {
     
     func configure(imageURL: String, score: String, price: String, name: String, kind: String) {
         // SDWebImage를 이용한 이미지 로딩
-        image.sd_setImage(
-            with: URL(string: imageURL),
-            placeholderImage: nil,
-            options: [.decodeFirstFrameOnly, .preloadAllFrames]
-        )
+        if let url = URL(string: imageURL) {
+            image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+        } else {
+            image.image = UIImage(named: "placeholder")
+        }
         // 데이터 설정
         scoreNprice.text = Int(price) == 0 ? "★ \(score)  |  가격 정보 없음" : "★ \(score)  |  ₩ \(price)만원 대"
         self.name.text = name

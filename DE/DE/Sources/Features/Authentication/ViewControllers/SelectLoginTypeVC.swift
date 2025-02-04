@@ -83,20 +83,17 @@ public class SelectLoginTypeVC: UIViewController {
     
     private func kakaoLoginProceed(_ userIDString: String, userEmail: String) {
         let kakaoDTO = self.networkService.makeKakaoDTO(username: userIDString, email: userEmail)
-        self.networkService.kakaoLogin(data: kakaoDTO) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let response):
-                print("카카오 로그인 성공")
+        Task {
+            do {
+                let response = try await networkService.kakaoLogin(data: kakaoDTO)
                 saveUserId(userId: response.id)
-                Task {
-                    // userID저장
-                    await UserDataManager.shared.createUser(userId: response.id)
+                await UserDataManager.shared.createUser(userId: response.id)
+                
+                DispatchQueue.main.async {
+                    self.goToNextView(response.isFirst)
                 }
-                self.goToNextView(response.isFirst)
-            case .failure(let error):
-                print(error)
+            } catch {
+                print(error.localizedDescription)
             }
         }
     }

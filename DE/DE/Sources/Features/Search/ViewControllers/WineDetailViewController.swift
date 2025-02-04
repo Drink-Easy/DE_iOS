@@ -9,7 +9,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     
     let navigationBarManager = NavigationBarManager()
     public var wineId: Int = 0
-    var wineName: String = "123"
+    var wineName: String = "Default Name"
     var isLiked: Bool = false
     var originalIsLiked: Bool = false
     let wineNetworkService = WineService()
@@ -25,12 +25,13 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         addView()
         constraints()
         setupNavigationBar()
-        callWineDetailAPI(wineId: self.wineId)
+//        callWineDetailAPI(wineId: self.wineId)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        callWineDetailAPI(wineId: self.wineId)
         self.view.addSubview(indicator)
     }
     
@@ -273,19 +274,19 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func callWineDetailAPI(wineId: Int) {
-        self.view.showColorBlockingView() 
-        wineNetworkService.fetchWineInfo(wineId: wineId) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let responseData) :
-                if let data = responseData {
-                    self.transformResponseData(data)
+        self.view.showColorBlockingView()
+        Task {
+            do {
+                let responseData = try await wineNetworkService.fetchWineInfo(wineId: wineId)
+                DispatchQueue.main.async {
+                    if let data = responseData {
+                        self.transformResponseData(data)
+                    }
+                    self.view.hideBlockingView()
                 }
+            } catch {
                 self.view.hideBlockingView()
-            case .failure(let error) :
-                print("\(error)")
-                self.view.hideBlockingView()
+                print(error.localizedDescription)
             }
         }
     }

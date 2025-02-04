@@ -2,13 +2,13 @@
 
 import UIKit
 
-import Moya
 import SnapKit
 
 import KeychainSwift
 import SwiftyToaster
 import AppTrackingTransparency
 import AdSupport
+import Then
 
 import Network
 import CoreModule
@@ -22,11 +22,9 @@ public class SplashVC : UIViewController {
     var refreshToken: String = ""
     var ExpiresAt: Date = Date()
     
-    private lazy var logoImage: UIImageView = {
-        let logoImage = UIImageView()
+    private lazy var logoImage = UIImageView().then { logoImage in
         logoImage.image = UIImage(named: "logo")
-        return logoImage
-    }()
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,8 +62,6 @@ public class SplashVC : UIViewController {
                 if cookie.name == "accessToken" {
                     if let expires = cookie.expiresDate {
                         ExpiresAt = expires
-                        print("\(ExpiresAt)")
-                        print(Date())
                     }
                 }
                 if cookie.name == "refreshToken" {
@@ -76,17 +72,16 @@ public class SplashVC : UIViewController {
         
         //토큰 유효
         if Date() < ExpiresAt {
-            print(Date())
             checkIsFirst()
         } else {
-            networkService.reissueToken { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(_):
+            Task {
+                do {
+                    let _ = try await networkService.reissueTokenAsync()
                     checkIsFirst()
-                case .failure(let error):
-                    navigateToOnBoaringScreen()
-                    print(error)
+                } catch {
+                    DispatchQueue.main.async {
+                        self.navigateToOnBoaringScreen()
+                    }
                 }
             }
         }
@@ -94,7 +89,6 @@ public class SplashVC : UIViewController {
     
     func checkIsFirst() {
         let isFirstString = SelectLoginTypeVC.keychain.getBool("isFirst")
-        print("isFirstString == \(isFirstString)")
         if isFirstString == true || isFirstString == nil {
             navigateToWelcomeScreen()
         } else { navigateToMainScreen() }

@@ -74,16 +74,14 @@ class SignUpVC: UIViewController {
         self.view.showBlockingView()
         let signUpDTO = networkService.makeJoinDTO(username: signUpView.usernameField.text!, password: signUpView.passwordField.text!, rePassword: signUpView.confirmPasswordField.text!)
         
-        networkService.join(data: signUpDTO) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(_):
+        Task {
+            do{
+                let _ = try await networkService.join(data: signUpDTO)
                 self.view.hideBlockingView()
                 self.goToLoginView()
-            case .failure(let error):
+            } catch {
                 print(error)
                 self.view.hideBlockingView()
-                //TODO: alert
             }
         }
     }
@@ -99,16 +97,12 @@ class SignUpVC: UIViewController {
             print("이메일이 없습니다")
             return
         }
-        self.view.showBlockingView()
-        validationManager.checkEmailDuplicate(email: email, view: signUpView.usernameField) { [weak self] success in
-            guard let self = self else { return }
-            
-            DispatchQueue.main.async {
-                self.view.hideBlockingView()  // ✅ 네트워크 요청 후 인디케이터 중지
-                self.validateInputs()  // ✅ UI 업데이트
-            }
+        view.showBlockingView()
+        Task {
+            await validationManager.checkEmailDuplicate(email: email, view: signUpView.usernameField)
+            self.view.hideBlockingView()  // ✅ 네트워크 요청 후 인디케이터 중지
+            self.validateInputs()  // ✅ UI 업데이트
         }
-        validateInputs()
     }
     
     @objc func passwordValidate() {
@@ -131,7 +125,16 @@ class SignUpVC: UIViewController {
     }
     
     @objc private func backButtonTapped() {
-        navigationController?.popViewController(animated: true)
+        guard let navigationController = self.navigationController else {
+            return
+        }
+        
+        if let targetIndex = navigationController.viewControllers.firstIndex(where: { $0 is SelectLoginTypeVC }) {
+            let targetVC = navigationController.viewControllers[targetIndex]
+            navigationController.popToViewController(targetVC, animated: true)
+        } else {
+            navigationController.popToRootViewController(animated: true) // 못 찾으면 루트로 이동
+        }
     }
     
     @objc private func goToLoginView() {

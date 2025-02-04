@@ -85,7 +85,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     }
 
     private func showCharacterLimitAlert() {
-        let alert = UIAlertController(title: "경고", message: "최소 2자 이상 입력해 주세요.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "", message: "검색어를 2자 이상 입력해 주세요.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }

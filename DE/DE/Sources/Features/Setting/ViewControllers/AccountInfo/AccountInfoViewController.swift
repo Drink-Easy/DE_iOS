@@ -128,28 +128,28 @@ class AccountInfoViewController: UIViewController {
     
     @objc private func logoutButtonTapped() {
         self.view.showBlockingView()
-        authService.logout() { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(_):
+        Task {
+            do {
+                let result = try await authService.logout()
                 if userProfile?.authType == "kakao" {
                     self.kakaoAuthVM.kakaoLogout()
-                    Toaster.shared.makeToast("로그아웃")
+                    Toaster.shared.makeToast(result)
                 } else {
-                    Toaster.shared.makeToast("로그아웃")
+                    Toaster.shared.makeToast(result)
                 }
                 self.clearForLogout()
-                Task {
+                
+                DispatchQueue.main.async {
                     self.view.hideBlockingView()
                     self.showSplashScreen()
                 }
-            case .failure(let error):
+            } catch {
                 print(error)
                 self.view.hideBlockingView()
             }
         }
     }
+
 
     @objc private func deleteButtonTapped() {
         let alert = UIAlertController(
@@ -173,41 +173,25 @@ class AccountInfoViewController: UIViewController {
     
     //MARK: - Funcs
     private func performUserDeletion() {
-        self.view.showBlockingView()
-        memberService.deleteUser() { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(_):
-                print("회원탈퇴 완료")
-                switch userProfile?.authType.lowercased() { // 무조건 소문자 처리
-                    case "kakao" :
-                        self.kakaoAuthVM.unlinkKakaoAccount { isSuccess in
-                            if isSuccess {
-                                print("✅ 카카오 계정 연동 해제 성공")
-                                Task {
-                                    await self.deleteUserInSwiftData() // 로컬 디비에서 유저 정보 삭제 후 splash 화면으로 이동
-                                    self.clearForQuit()
-                                    self.view.hideBlockingView()
-                                    self.showSplashScreen()
-                                }
-                            } else {
-                                print("❌ 카카오 계정 연동 해제 실패")
-                                self.view.hideBlockingView()
-                            }
-                        }
-                default :
-                    Task {
-                        await self.deleteUserInSwiftData()
-                        self.clearForQuit()
-                        self.view.hideBlockingView()
-                        self.showSplashScreen()
+        view.showBlockingView()
+        Task {
+            do {
+                let result = try await memberService.deleteUser()
+                
+                if userProfile?.authType.lowercased() == "kakao" {
+                    if await !self.kakaoAuthVM.unlinkKakaoAccount() {
+                        view.hideBlockingView()
                     }
                 }
-                
-            case .failure(let error):
+                await self.deleteUserInSwiftData() // 로컬 디비에서 유저 정보 삭제 후 splash 화면으로 이동
+                DispatchQueue.main.async {
+                    self.clearForQuit()
+                    self.view.hideBlockingView()
+                    self.showSplashScreen()
+                }
+            } catch {
                 print("회원탈퇴 실패: \(error.localizedDescription)")
-                self.view.hideBlockingView()
+                view.hideBlockingView()
             }
         }
     }
@@ -328,8 +312,10 @@ class AccountInfoViewController: UIViewController {
             self.view.showBlockingView()
             let data = try await memberService.fetchUserInfoAsync()
             
-            self.userProfile = MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
-            self.setUserData(imageURL: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
+            let safeImageUrl = data.imageUrl ?? "https://placehold.co/400x400"
+            
+            self.userProfile = MemberInfoResponse(imageUrl: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
+            self.setUserData(imageURL: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
 
 //            print("✅ 서버 데이터 성공적으로 가져옴: \(data.username)")
             await saveUserInfo(data: self.userProfile!)

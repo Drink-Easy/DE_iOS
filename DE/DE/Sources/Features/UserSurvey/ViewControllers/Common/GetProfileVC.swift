@@ -2,6 +2,7 @@
 
 import UIKit
 import PhotosUI
+import UniformTypeIdentifiers
 
 import SnapKit
 import Then
@@ -9,8 +10,6 @@ import Then
 import CoreModule
 import CoreLocation
 import Network
-
-// 기본 이미지를 어디서 설정하는지?
 
 public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
     
@@ -79,12 +78,21 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     // MARK: - 이미지 피커 설정
     private func setupImagePicker() {
-        // 이미지 선택 후 동작 설정
         imagePickerManager.onImagePicked = { [weak self] image, fileName in
             guard let self = self else { return }
-            self.profileView.profileImageView.image = image
-            self.profileImgFileName = fileName
-            self.profileImg = image
+
+            // ✅ 기본 이미지와 현재 이미지가 동일하면 nil 처리
+            if let placeholderImage = UIImage(named: "profilePlaceholder"),
+               let currentImageData = self.profileView.profileImageView.image?.pngData(),
+               let placeholderImageData = placeholderImage.pngData(),
+               currentImageData == placeholderImageData {
+                self.profileImgFileName = ""
+                self.profileImg = nil
+            } else {
+                self.profileImgFileName = fileName
+                self.profileImg = image
+                self.profileView.profileImageView.image = self.profileImg
+            }
         }
     }
     
@@ -128,8 +136,16 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     @objc func nextButtonTapped() {
         // 정보 저장
         guard let name = self.userName,
-              let addr = self.userRegion,
-              let profileImg = self.profileImg else { return }
+              let addr = self.userRegion else { return }
+        
+        if let placeholderImage = UIImage(named: "profilePlaceholder"),
+           let currentImageData = self.profileView.profileImageView.image?.pngData(),
+           let placeholderImageData = placeholderImage.pngData(),
+           currentImageData == placeholderImageData {
+            self.profileImgFileName = ""
+            self.profileImg = nil
+        }
+        
         UserSurveyManager.shared.setPersonalInfo(name: name, addr: addr, profileImg: profileImg)
         
         let vc = IsNewbieViewController()
@@ -148,7 +164,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     // 프로필 이미지 선택
     @objc func selectProfileImage() {
-        imagePickerManager.presentImagePicker(from: self)
+        imagePickerManager.requestPhotoLibraryPermission(from: self)
     }
     
     //MARK: - 위치 정보 불러오기 로직
@@ -169,10 +185,9 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
             print("닉네임이 없습니다")
             return
         }
-        self.view.showBlockingView()
-        ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField) { [weak self] success in
-            guard let self = self else { return }
-            
+        view.showBlockingView()
+        Task {
+            await ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField)
             DispatchQueue.main.async {
                 self.view.hideBlockingView()  // ✅ 네트워크 요청 후 인디케이터 중지
                 self.checkFormValidity()  // ✅ UI 업데이트

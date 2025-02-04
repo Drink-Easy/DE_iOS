@@ -64,6 +64,14 @@ class AppInfoViewController : UIViewController {
         tableView.rowHeight = 50
         tableView.backgroundColor = AppColor.bgGray
         tableView.register(SettingMenuViewCell.self, forCellReuseIdentifier: SettingMenuViewCell.identifier)
+        
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(8.0))
+            make.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
+            make.leading.equalToSuperview()
+            make.height.equalTo(200)
+        }
     }
     
     // MARK: - UI Setup
@@ -73,23 +81,15 @@ class AppInfoViewController : UIViewController {
     }
     
     private func setupUI(){
-        view.addSubview(tableView)
-        tableView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(16.0))
-            make.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
-            make.leading.equalToSuperview()
-            make.height.equalTo(200)
-        }
-        
         view.addSubview(instaButton)
         view.addSubview(appVersionLabel)
         instaButton.snp.makeConstraints { make in
-            make.top.equalTo(tableView.snp.bottom).offset(50)
+            make.top.equalTo(tableView.snp.bottom).offset(40)
             make.centerX.equalToSuperview()
             make.size.equalTo(24)
         }
         appVersionLabel.snp.makeConstraints { make in
-            make.top.equalTo(instaButton.snp.bottom).offset(10)
+            make.top.equalTo(instaButton.snp.bottom).offset(20)
             make.centerX.equalToSuperview()
         }
     }
@@ -134,7 +134,6 @@ extension AppInfoViewController: UITableViewDelegate {
             content = Constants.Policy.privacy
         case "위치정보 이용약관":
             content = Constants.Policy.location
-        //TODO: 오픈소스 라이브러리 추가
         case "오픈소스 라이브러리":
             content = Constants.Policy.openSource
         default:

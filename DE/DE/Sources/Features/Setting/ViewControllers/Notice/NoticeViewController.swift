@@ -74,19 +74,16 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func callNoticeAPI() {
-        self.view.showBlockingView()
-        networkService.fetchAllNotices() { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let responseData) :
+        view.showBlockingView()
+        Task {
+            do {
+                let data = try await networkService.fetchAllNotices()
                 DispatchQueue.main.async {
-                    self.noticeData = responseData!
+                    self.noticeData = data
+                    self.view.hideBlockingView()
                     self.noticeListView.reloadData()
                 }
-                self.view.hideBlockingView()
-            case .failure(let error) :
-                print("\(error)")
+            } catch {
                 self.view.hideBlockingView()
             }
         }
@@ -114,12 +111,5 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
             let safariVC = SFSafariViewController(url: url)
             present(safariVC, animated: true, completion: nil)
         }
-        
-        /// 아예 앱 밖으로 나가기
-//        guard let url = URL(string: data.contentUrl) else {
-//            return
-//        }
-//        
-//        UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 }

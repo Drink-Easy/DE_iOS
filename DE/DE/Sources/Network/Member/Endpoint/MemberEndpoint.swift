@@ -15,6 +15,7 @@ public enum MemberEndpoint {
     case deleteAppleUser(body: AppleDeleteRequest)
     
     case postImage(image: UIImage)
+    case deleteImage
     
     // 취향찾기
     case patchMemberInfo(body : MemberRequestDTO)
@@ -36,7 +37,7 @@ extension MemberEndpoint: TargetType {
             return "/\(name)"
         case .deleteMember :
             return "/delete"
-        case .postImage:
+        case .postImage, .deleteImage:
             return "/profileImage"
         case .deleteAppleUser:
             return "/delete/apple" // TODO : path 바뀌면 추가 적용
@@ -55,7 +56,7 @@ extension MemberEndpoint: TargetType {
             return .get
         case .patchMemberInfo, .patchMemeberPersonalInfo :
             return .patch
-        case .deleteMember, .deleteAppleUser :
+        case .deleteMember, .deleteAppleUser, .deleteImage :
             return .delete
         }
     }
@@ -64,10 +65,6 @@ extension MemberEndpoint: TargetType {
         switch self {
         case .checkNickname(let nickname):
             return .requestParameters(parameters: ["nickname": nickname], encoding: URLEncoding.queryString)
-        case .getMemberInfo:
-            return .requestPlain
-        case .deleteMember:
-            return .requestPlain
         case .postImage(let image):
             var multipartData: [MultipartFormData] = []
             let fileName = "\(UUID().uuidString).jpeg"
@@ -87,7 +84,7 @@ extension MemberEndpoint: TargetType {
             return .requestJSONEncodable(body)
         case .deleteAppleUser(let body):
             return .requestJSONEncodable(body)
-        case .getNickname:
+        default :
             return .requestPlain
         }
     }
