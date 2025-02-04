@@ -52,6 +52,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         self.view.addSubview(indicator)
+        self.callFetchApi()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -66,7 +67,6 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         setupUI()
         setupNavigationBar()
         setNavBarAppearance(navigationController: self.navigationController)
-        self.callFetchApi()
     }
     
     // MARK: - Setup Methods
@@ -178,9 +178,9 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
                 setWineData()
                 self.view.hideBlockingView()
             } catch {
+                self.view.hideBlockingView()
                 print("Error: \(error)")
                 // Alert 표시 등 추가
-                self.view.hideBlockingView()
             }
         }
     }
