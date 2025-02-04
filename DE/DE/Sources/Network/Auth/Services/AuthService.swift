@@ -102,6 +102,23 @@ public final class AuthService : NetworkManager {
         request(target: .postReIssueToken, decodingType: String.self, completion: completion)
     }
     
+    /// ✅ 토큰 재발급 API (무한 루프 방지)
+    private var isReissuingToken = false
+
+    public func reissueTokenAsync() async throws {
+        guard !isReissuingToken else {
+            print("⚠️ [토큰 재발급] 이미 요청 진행 중...")
+            throw NetworkError.serverError(statusCode: 401, message: "이미 토큰 재발급 요청 중")
+        }
+
+        isReissuingToken = true // ✅ 재발급 진행 중
+        defer { isReissuingToken = false } // ✅ 요청 완료 후 해제
+
+        _ = try await requestAsync(target: .postReIssueToken, decodingType: String.self)
+        
+        print("✅ [토큰 재발급 완료]")
+    }
+    
     /// 멤버 정보 전송 API
 //    public func sendMemberInfo(data: MemberRequestDTO, completion: @escaping (Result<MemberResponseDTO, NetworkError>) -> Void) {
 //        request(target: .patchMemberInfo(data: data), decodingType: MemberResponseDTO.self, completion: completion)
