@@ -87,7 +87,12 @@ public final class MemberService : NetworkManager {
     }
     
     public func deleteAppleUser(body: AppleDeleteRequest) async throws -> String {
-        try await requestAsync(target: .deleteAppleUser(body: body))
+        return try await requestAsync(target: .deleteAppleUser(body: body))
+    }
+    
+    /// 사용자 프로필 이미지 삭제하기
+    public func deleteProfileImage() async throws -> String {
+        return try await requestAsync(target: .deleteImage)
     }
     
 }

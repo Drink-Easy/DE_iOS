@@ -328,8 +328,10 @@ class AccountInfoViewController: UIViewController {
             self.view.showBlockingView()
             let data = try await memberService.fetchUserInfoAsync()
             
-            self.userProfile = MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
-            self.setUserData(imageURL: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
+            let safeImageUrl = data.imageUrl ?? "https://placehold.co/400x400"
+            
+            self.userProfile = MemberInfoResponse(imageUrl: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
+            self.setUserData(imageURL: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
 
 //            print("✅ 서버 데이터 성공적으로 가져옴: \(data.username)")
             await saveUserInfo(data: self.userProfile!)
