@@ -81,6 +81,9 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
         
         textField.tintColor = AppColor.purple100
         
+        textField.autocapitalizationType = .none //자동 대문자
+        textField.spellCheckingType = .no //맞춤법 검사
+        textField.autocorrectionType = .no //자동완성
         
         let placeholderColor = AppColor.gray70
         textField.attributedPlaceholder = NSAttributedString(
