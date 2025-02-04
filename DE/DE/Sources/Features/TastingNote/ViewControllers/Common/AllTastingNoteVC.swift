@@ -18,7 +18,7 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
     let floatingButton = UIButton(type: .system).then {
         $0.setImage(UIImage(named: "pencil"), for: .normal)
         $0.tintColor = .white
-        $0.backgroundColor = AppColor.purple70
+        $0.backgroundColor = AppColor.purple100
         $0.layer.cornerRadius = DynamicPadding.dynamicValue(25.0)
         
         $0.layer.shadowColor = UIColor.black.cgColor

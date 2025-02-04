@@ -179,7 +179,7 @@ class LoginVC: UIViewController {
 
 extension LoginVC: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let index = textFields.firstIndex(of: textField), index < textFields.count - 1 {
+        if let index = textFields.firstIndex(of: textField), index + 1 < textFields.count {
             textFields[index + 1].becomeFirstResponder()
         } else {
             textField.resignFirstResponder()

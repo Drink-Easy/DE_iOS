@@ -57,11 +57,10 @@ public class ImagePickerManager: NSObject, PHPickerViewControllerDelegate {
         guard let result = results.first else { return }
 
         if result.itemProvider.canLoadObject(ofClass: UIImage.self) {
-            let fileName = result.itemProvider.suggestedName ?? "\(UUID().uuidString).jpeg"
-            
             result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] object, error in
                 guard let self = self else { return }
                 if let image = object as? UIImage {
+                    let fileName = "\(UUID().uuidString).jpeg"
                     DispatchQueue.main.async {
                         self.onImagePicked?(image, fileName)
                     }

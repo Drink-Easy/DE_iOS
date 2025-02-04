@@ -70,9 +70,9 @@ class SliderWithTooltipView: UIView {
     
     private func setupConstraints() {
         labelView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
+            make.bottom.equalToSuperview()
             make.leading.equalToSuperview()
-            make.height.greaterThanOrEqualTo(30)
+            make.height.greaterThanOrEqualTo(16)
             make.width.equalToSuperview().multipliedBy(0.25)
         }
         titleLabel.snp.makeConstraints { make in
@@ -90,7 +90,7 @@ class SliderWithTooltipView: UIView {
             make.centerY.equalTo(titleLabel)
             make.leading.equalTo(labelView.snp.trailing)
             make.trailing.equalToSuperview().inset(6)
-//            make.width.equalToSuperview().multipliedBy(0.75)
+            make.height.equalTo(80)
         }
     }
     
@@ -99,7 +99,7 @@ class SliderWithTooltipView: UIView {
         guard let superview = self.superview else { return }
 
         // 버튼 프레임을 superview 좌표계로 변환
-        let buttonFrame = self.convert(tooltipImage.frame, to: superview)
+        let buttonFrame = self.convert(tooltipImage.frame.offsetBy(dx: 0, dy: 55), to: superview)
 
         // 기본 폰트 적용 (폰트는 원하는 대로 교체 가능)
         let font = UIFont.ptdMediumFont(ofSize: 12)

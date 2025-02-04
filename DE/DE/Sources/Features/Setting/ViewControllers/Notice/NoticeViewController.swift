@@ -67,7 +67,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
         
         noticeListView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(36))
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(8))
             $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
