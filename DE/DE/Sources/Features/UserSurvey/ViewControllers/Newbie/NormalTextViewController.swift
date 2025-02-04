@@ -269,7 +269,6 @@ public class NormalTextViewController: UIViewController {
                 // UI 변경
                 DispatchQueue.main.async {
                     let homeTabBarController = MainTabBarController()
-                    homeTabBarController.userName = UserSurveyManager.shared.name
                     SelectLoginTypeVC.keychain.set(false, forKey: "isFirst")
                     self.view.hideBlockingView()
                     if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
