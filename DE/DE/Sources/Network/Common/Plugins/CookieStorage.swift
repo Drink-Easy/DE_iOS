@@ -73,7 +73,7 @@ public class CookieStorage {
     }
     
     private func updateHTTPCookies(with newToken: String, key: String, expiredIn endTime: Date, domain: String, path: String, isSecure: Bool, isHttpOnly: Bool, sameSite: String) {
-        guard let url = URL(string: "https://\(domain)") else { return }
+        guard let url = URL(string: API.baseURL) else { return }
 
         let newCookie = HTTPCookie(properties: [
             .domain: domain,
@@ -87,12 +87,13 @@ public class CookieStorage {
 
         if let newCookie = newCookie {
             HTTPCookieStorage.shared.setCookie(newCookie)
+            print("새 토큰 쿠키 생성 성공 : \(key)")
         } else {
             print("⚠️ 새로운 쿠키 생성 실패")
         }
 
         // ✅ 저장된 쿠키 확인 (디버깅용)
-        if let updatedCookies = HTTPCookieStorage.shared.cookies {
+        if let updatedCookies = HTTPCookieStorage.shared.cookies(for: URL(string: API.baseURL)!) {
             print("🍪 현재 저장된 쿠키 목록:")
             for cookie in updatedCookies {
                 print("🔹 \(cookie.name): \(cookie.value) | Expiry: \(cookie.expiresDate ?? Date()) | Domain: \(cookie.domain) | Path: \(cookie.path)")
