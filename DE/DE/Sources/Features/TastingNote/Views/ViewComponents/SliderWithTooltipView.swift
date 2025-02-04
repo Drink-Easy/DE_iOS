@@ -11,6 +11,8 @@ import AMPopTip
 class SliderWithTooltipView: UIView {
     
     // MARK: - UI Components
+    let labelView = UIView()
+    
     let titleLabel = UILabel().then {
         $0.textColor = AppColor.black
         $0.textAlignment = .left
@@ -60,12 +62,19 @@ class SliderWithTooltipView: UIView {
     
     // MARK: - Setup Methods
     private func setupSubviews() {
-        addSubview(titleLabel)
-        addSubview(tooltipImage)
+        labelView.addSubview(titleLabel)
+        labelView.addSubview(tooltipImage)
+        addSubview(labelView)
         addSubview(slider)
     }
     
     private func setupConstraints() {
+        labelView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.equalToSuperview()
+            make.height.greaterThanOrEqualTo(30)
+            make.width.equalToSuperview().multipliedBy(0.25)
+        }
         titleLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.equalToSuperview()
@@ -73,15 +82,15 @@ class SliderWithTooltipView: UIView {
         
         tooltipImage.snp.makeConstraints { make in
             make.centerY.equalTo(titleLabel)
-            make.leading.equalTo(titleLabel.snp.trailing)
+            make.leading.equalTo(titleLabel.snp.trailing).offset(6)
             make.width.height.equalTo(16)
         }
         
         slider.snp.makeConstraints { make in
             make.centerY.equalTo(titleLabel)
-            make.leading.equalTo(tooltipImage.snp.trailing).offset(23)
-            make.trailing.equalToSuperview()
-            make.width.equalTo(240)
+            make.leading.equalTo(labelView.snp.trailing)
+            make.trailing.equalToSuperview().inset(6)
+//            make.width.equalToSuperview().multipliedBy(0.75)
         }
     }
     
