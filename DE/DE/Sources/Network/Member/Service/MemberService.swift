@@ -37,8 +37,8 @@ public final class MemberService : NetworkManager {
     }
     
     /// 닉네임 체크 API
-    public func checkNickname(name: String, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
-        request(target: .checkNickname(nickname: name), decodingType: Bool.self, completion: completion)
+    public func checkNickname(name: String) async throws -> Bool {
+        return try await requestAsync(target: .checkNickname(nickname: name), decodingType: Bool.self)
     }
     
     /// 이미지 업로드 API
@@ -66,8 +66,8 @@ public final class MemberService : NetworkManager {
     }
     
     /// 사용자 탈퇴 API
-    public func deleteUser(completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .deleteMember, decodingType: String.self, completion: completion)
+    public func deleteUser() async throws -> String {
+        return try await requestAsync(target: .deleteMember, decodingType: String.self)
     }
     
     public func deleteAppleUser(body: AppleDeleteRequest) async throws -> String {
