@@ -17,7 +17,7 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
     }
     
     public lazy var score = UILabel().then {
-        $0.textColor = Constants.AppColor.purple100
+        $0.textColor = AppColor.purple100
         $0.font = UIFont.ptdMediumFont(ofSize: 14)
     }
     

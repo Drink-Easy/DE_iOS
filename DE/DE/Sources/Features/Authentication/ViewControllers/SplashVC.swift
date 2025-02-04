@@ -65,6 +65,7 @@ public class SplashVC : UIViewController {
                     if let expires = cookie.expiresDate {
                         ExpiresAt = expires
                         print("\(ExpiresAt)")
+                        print(Date())
                     }
                 }
                 if cookie.name == "refreshToken" {
@@ -75,6 +76,7 @@ public class SplashVC : UIViewController {
         
         //토큰 유효
         if Date() < ExpiresAt {
+            print(Date())
             checkIsFirst()
         } else {
             networkService.reissueToken { [weak self] result in
@@ -93,7 +95,7 @@ public class SplashVC : UIViewController {
     func checkIsFirst() {
         let isFirstString = SelectLoginTypeVC.keychain.getBool("isFirst")
         print("isFirstString == \(isFirstString)")
-        if isFirstString == true {
+        if isFirstString == true || isFirstString == nil {
             navigateToWelcomeScreen()
         } else { navigateToMainScreen() }
     }

@@ -11,15 +11,18 @@ import Network
 public class MyOwnedWineInfoViewController: UIViewController {
     
     let navigationBarManager = NavigationBarManager()
+    let networkService = MyWineService()
     
     //MARK: UI Elements
     private lazy var header = MyNoteTopView()
     private lazy var wineDetailView = SimpleListView()
+    public lazy var deleteButton = CustomButton(title: "다 마셨어요", isEnabled: true)
     
     var registerWine: MyWineViewModel?
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -45,24 +48,32 @@ public class MyOwnedWineInfoViewController: UIViewController {
         header.infoView.kindContents.text = currentWine.wineSort
         
         self.setWineDetailInfo(currentWine)
-        wineDetailView.editButton.addTarget(self, action: #selector(editButtonTapped), for: .allTouchEvents)
+        wineDetailView.editButton.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
+        deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
     }
     
     // MARK: - Setup Methods
     private func setupUI() {
         view.backgroundColor = AppColor.bgGray
-        [header, wineDetailView].forEach{
+        [header, wineDetailView, deleteButton].forEach{
             view.addSubview($0)
         }
+        
         header.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
             make.height.greaterThanOrEqualTo(180)
         }
+        
         wineDetailView.snp.makeConstraints { make in
             make.top.equalTo(header.snp.bottom).offset(DynamicPadding.dynamicValue(36))
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
             make.height.equalTo(100)
+        }
+        
+        deleteButton.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(40))
         }
     }
     
@@ -77,8 +88,13 @@ public class MyOwnedWineInfoViewController: UIViewController {
     private func setWineDetailInfo(_ registerWine: MyWineViewModel) {
         let priceString = formatPrice(registerWine.purchasePrice)
         wineDetailView.titleLabel.text = "구매 정보"
-        wineDetailView.items = [("구매 가격", "\(priceString)원"),
-                                ("구매일 D+\(registerWine.period)", "\(registerWine.purchaseDate)")]
+        if registerWine.period >= 0 {
+            wineDetailView.items = [("구매 가격", "\(priceString)원"),
+                                    ("구매일 D+\(registerWine.period+1)", "\(registerWine.purchaseDate)")]
+        } else {
+            wineDetailView.items = [("구매 가격", "\(priceString)원"),
+                                    ("구매일 D\(registerWine.period)", "\(registerWine.purchaseDate)")]
+        }
     }
     
     @objc func prevVC() {
@@ -86,11 +102,50 @@ public class MyOwnedWineInfoViewController: UIViewController {
     }
     
     @objc func editButtonTapped() {
-        print(self.registerWine?.wineName ?? "와인 이름 없으나 버튼이 눌리긴 해")
         guard let currentWine = self.registerWine else { return }
         
         let nextVC = ChangeMyOwnedWineViewController()
-        nextVC.registerWine = MyOwnedWine(wineId: currentWine.wineId, wineName: currentWine.wineName, price: String(currentWine.purchasePrice), buyDate: currentWine.purchaseDate)
+        nextVC.registerWine = currentWine
+        
+        nextVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    @objc func deleteButtonTapped() {
+        guard let currentWine = self.registerWine else { return }
+        
+        let alert = UIAlertController(
+            title: "이 와인을 삭제하시겠습니까?",
+            message: "\(currentWine.wineName)",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        
+        alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { [weak self] _ in
+            self?.callDeleteAPI()
+            DispatchQueue.main.async {
+                self?.navigationController?.popViewController(animated: true)
+            }
+        }))
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    private func callDeleteAPI() {
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+            print("⚠️ userId가 UserDefaults에 없습니다.")
+            return
+        }
+        
+        Task {
+            do {
+                _ = try await networkService.deleteMyWine(myWineId: registerWine!.wineId)
+                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
+                try await APICallCounterManager.shared.incrementDelete(for: userId, controllerName: .myWine)
+            } catch {
+                print("\(error)\n 잠시후 다시 시도해주세요.")
+            }
+        }
     }
 }

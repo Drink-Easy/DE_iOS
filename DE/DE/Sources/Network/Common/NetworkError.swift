@@ -26,5 +26,6 @@ extension NetworkError: LocalizedError {
 
 
 public struct ErrorResponse: Decodable {
+    let code : String
     let message: String
 }

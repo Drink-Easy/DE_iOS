@@ -100,16 +100,6 @@ public class BuyNewWineDateViewController: UIViewController {
         }
         
     }
-    
-//    private func showAlert() {
-//        let alert = UIAlertController(
-//            title: "잘못된 날짜 선택",
-//            message: "미래 날짜는 선택할 수 없습니다.",
-//            preferredStyle: .alert
-//        )
-//        alert.addAction(UIAlertAction(title: "확인", style: .default))
-//        present(alert, animated: true, completion: nil)
-//    }
 }
 
 extension BuyNewWineDateViewController: UICalendarSelectionSingleDateDelegate {

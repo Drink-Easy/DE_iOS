@@ -113,6 +113,7 @@ public class RatingWineViewController: UIViewController {
         Task {
             do {
                 try await postCreateTastingNote()
+                NoseManager.shared.resetAllScents()
                 self.view.hideBlockingView()
                 navigationController?.popToRootViewController(animated: true)
             } catch {

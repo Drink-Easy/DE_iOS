@@ -26,14 +26,14 @@ class WineSearchBar: UITextField {
         self.attributedPlaceholder = NSAttributedString(
             string: "와인 이름을 적어 검색",
             attributes: [
-                .foregroundColor: Constants.AppColor.gray80 ?? .gray,
+                .foregroundColor: Constants.AppColor.gray70 ?? .gray,
                 .font: UIFont.ptdRegularFont(ofSize: 14)
             ]
         )
         
         let icon = UIImage(named: "searchBarIcon")
         let imageView = UIImageView(image: icon)
-        imageView.tintColor = Constants.AppColor.gray80 ?? .gray
+        imageView.tintColor = Constants.AppColor.gray70 ?? .gray
         imageView.contentMode = .scaleAspectFit
         
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 24))
@@ -45,7 +45,7 @@ class WineSearchBar: UITextField {
         
         self.layer.cornerRadius = 10
         self.layer.masksToBounds = true
-        self.backgroundColor = Constants.AppColor.gray20
+        self.backgroundColor = Constants.AppColor.gray30
         self.contentHorizontalAlignment = .left
     }
     
@@ -55,7 +55,7 @@ class WineSearchBar: UITextField {
             self.attributedPlaceholder = NSAttributedString(
                 string: text,
                 attributes: [
-                    .foregroundColor: Constants.AppColor.gray80 ?? .gray,
+                    .foregroundColor: Constants.AppColor.gray70 ?? .gray,
                     .font: UIFont.systemFont(ofSize: 13.5, weight: .regular)
                 ]
             )

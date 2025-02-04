@@ -48,12 +48,11 @@ public struct TastingNoteUpdateRequestDTO : Codable {
     let tannin : Int?
     let body : Int?
     let alcohol : Int?
-    let addNoseList : [String]?
-    let removeNoseList : [Int]?
+    let updateNoseList : [String]?
     let rating : Double?
     let review : String?
     
-    public init(color: String?, tastingDate: String?, sugarContent: Int?, acidity: Int?, tannin: Int?, body: Int?, alcohol: Int?, addNoseList: [String]?, removeNoseList: [Int]?, rating: Double?, review: String?) {
+    public init(color: String?, tastingDate: String?, sugarContent: Int?, acidity: Int?, tannin: Int?, body: Int?, alcohol: Int?, updateNoseList: [String]?, rating: Double?, review: String?) {
         self.color = color
         self.tastingDate = tastingDate
         self.sweetness = sugarContent
@@ -61,8 +60,7 @@ public struct TastingNoteUpdateRequestDTO : Codable {
         self.tannin = tannin
         self.body = body
         self.alcohol = alcohol
-        self.addNoseList = addNoseList
-        self.removeNoseList = removeNoseList
+        self.updateNoseList = updateNoseList
         self.rating = rating
         self.review = review
     }

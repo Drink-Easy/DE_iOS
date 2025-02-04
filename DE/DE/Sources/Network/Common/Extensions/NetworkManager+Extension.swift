@@ -69,13 +69,16 @@ extension NetworkManager {
                     do {
                         // 상태 코드 검증
                         guard (200...299).contains(response.statusCode) else {
+                            // 300 ~ 에러 처리
                             let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: response.data)
                             let message = errorResponse?.message ?? "상태 코드 오류: \(response.statusCode)"
+                            // 여기서 idtoken 재발급 해볼까
                             throw NetworkError.serverError(statusCode: response.statusCode, message: message)
                         }
                         
                         // 응답 디코딩
                         let decodedResponse = try JSONDecoder().decode(ApiResponse<T>.self, from: response.data)
+                        
                         if let result = decodedResponse.result {
                             continuation.resume(returning: result)
                         } else {

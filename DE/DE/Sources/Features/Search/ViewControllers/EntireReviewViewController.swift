@@ -20,7 +20,7 @@ class EntireReviewViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Constants.AppColor.grayBG
+        view.backgroundColor = AppColor.grayBG
 
         addView()
         constraints()

@@ -18,7 +18,7 @@ public class WishListViewController: UIViewController {
     private lazy var searchResultTableView = UITableView().then {
         $0.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        $0.backgroundColor = Constants.AppColor.grayBG
+        $0.backgroundColor = AppColor.grayBG
         $0.dataSource = self
         $0.delegate = self
     }
@@ -96,6 +96,8 @@ public class WishListViewController: UIViewController {
         }
     }
     
+    // TODO : 구조 변경하기
+    
     func callFetchWishlistAPI() {
         Task {
             do {
@@ -113,9 +115,12 @@ public class WishListViewController: UIViewController {
                         self.wineResults = cachedWishlist.map { data in
                             WishResultModel(wineId: data.wineId, imageUrl: data.imageUrl, wineName: data.wineName, sort: data.sort, price: data.price, vivinoRating: data.vivinoRating)
                         }
+                        
                         DispatchQueue.main.async {
                             self.searchResultTableView.reloadData()
-                            self.noWineLabel.isHidden = !self.wineResults.isEmpty
+                            if self.wineResults.isEmpty || self.wineResults.count == 0 {
+                                self.noWineLabel.isHidden = false
+                            }
                         }
                     }
                 } else {

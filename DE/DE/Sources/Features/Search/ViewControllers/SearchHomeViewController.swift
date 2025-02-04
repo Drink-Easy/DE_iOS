@@ -17,7 +17,7 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Constants.AppColor.grayBG
+        view.backgroundColor = AppColor.grayBG
         self.view = searchHomeView
         setupNavigationBar()
         self.view.addSubview(indicator)

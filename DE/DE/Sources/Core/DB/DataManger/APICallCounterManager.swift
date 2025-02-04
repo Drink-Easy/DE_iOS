@@ -92,10 +92,14 @@ public final class APICallCounterManager {
     @MainActor
     public func isCallCountZero(for userId: Int, controllerName: EndpointType) async throws -> Bool {
         let user = try UserDataManager.shared.fetchUser(userId: userId)
-        let controller = try fetchController(for: user, controllerName: controllerName)
-
-        let counter = controller.counter
-        return counter.postCount == 0 && counter.deleteCount == 0 && counter.patchCount == 0
+        do {
+            let controller = try fetchController(for: user, controllerName: controllerName)
+            let counter = controller.counter
+            return counter.postCount == 0 && counter.deleteCount == 0 && counter.patchCount == 0
+        } catch APICallCounterError.controllerNotExists {
+            try await createAPIControllerCounter(for: userId, controllerName: controllerName)
+            return true
+        }
     }
     
     /// ✅ 특정 엔드포인트의 호출 카운트 초기화
