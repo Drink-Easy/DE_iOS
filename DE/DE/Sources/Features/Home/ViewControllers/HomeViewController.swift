@@ -17,7 +17,9 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     
     public var userName: String = "" {
         didSet {
-            updateLikeWineListView()
+            DispatchQueue.main.async {
+                self.updateLikeWineListView()
+            }
         }
     }
     
@@ -132,6 +134,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
         setAdBanner()
         fetchWines(isRecommend: true) // 추천 와인
         fetchWines(isRecommend: false) // 인기 와인
+        
     }
     
     private func addComponents() {
@@ -184,15 +187,17 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     
     // MARK: - 컬렉션뷰 업데이트 함수
     func updateCollectionView(isRecommend : Bool, with wines: [WineData]) {
-        let maxDisplayCount = 5
-        let homeWineModels = toHomeWineModels(Array(wines.prefix(maxDisplayCount)))
-        
-        if isRecommend {
-            recommendWineDataList = homeWineModels
-            likeWineListView.recomCollectionView.reloadData()
-        } else { // 인기 와인인 경우
-            popularWineDataList = homeWineModels
-            popularWineListView.recomCollectionView.reloadData()
+        DispatchQueue.main.async {
+            let maxDisplayCount = 5
+            let homeWineModels = self.toHomeWineModels(Array(wines.prefix(maxDisplayCount)))
+            
+            if isRecommend {
+                self.recommendWineDataList = homeWineModels
+                self.likeWineListView.recomCollectionView.reloadData()
+            } else { // 인기 와인인 경우
+                self.popularWineDataList = homeWineModels
+                self.popularWineListView.recomCollectionView.reloadData()
+            }
         }
     }
     
@@ -218,6 +223,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
             return
         }
         self.userId = userId
+        
         Task {
             do {
                 if isRecommend {
@@ -226,13 +232,17 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                     
                     if !cachedWines.isEmpty {
                         print("✅ 캐시된 추천와인 데이터 사용: \(cachedWines.count)개")
+                        updateCollectionView(isRecommend: isRecommend, with: cachedWines) // ✅ 추가
                         return
                     }
+                    
                     self.updateCollectionView(isRecommend: isRecommend, with: cachedWines)
                 } else { // 인기 와인은 따로 처리
                     let cachedWines = try PopularWineManager.shared.fetchWineDataList()
+                    
                     if !cachedWines.isEmpty {
-                        print("✅ 캐시된 인기와인 데이터 사용: \(cachedWines.count)개")
+                        print("✅ 캐시된 추천와인 데이터 사용: \(cachedWines.count)개")
+                        updateCollectionView(isRecommend: isRecommend, with: cachedWines) // ✅ 추가
                         return
                     }
                     self.updateCollectionView(isRecommend: isRecommend, with: cachedWines)
