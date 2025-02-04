@@ -53,55 +53,47 @@ public final class AuthService : NetworkManager {
 
     //MARK: - API funcs
     /// 자체 로그인 API
-    public func login(data: LoginDTO, completion: @escaping (Result<LoginResponseDTO, NetworkError>) -> Void) {
-        request(target: .postLogin(data: data), decodingType: LoginResponseDTO.self, completion: completion)
+    public func login(data: LoginDTO) async throws -> LoginResponseDTO {
+        return try await requestAsync(target: .postLogin(data: data), decodingType: LoginResponseDTO.self)
     }
     
     /// 카카오 로그인 API
-    public func kakaoLogin(data: KakaoLoginRequestDTO, completion: @escaping (Result<LoginResponseDTO, NetworkError>) -> Void) {
-        request(target: .postKakaoLogin(data: data), decodingType: LoginResponseDTO.self, completion: completion)
+    public func kakaoLogin(data: KakaoLoginRequestDTO) async throws -> LoginResponseDTO {
+        return try await requestAsync(target: .postKakaoLogin(data: data), decodingType: LoginResponseDTO.self)
     }
     
     /// 애플 로그인 API
-    public func appleLogin(data: AppleLoginRequestDTO, completion: @escaping (Result<LoginResponseDTO, NetworkError>) -> Void) {
-        request(target: .postAppleLogin(data: data), decodingType: LoginResponseDTO.self, completion: completion)
+    public func appleLogin(data: AppleLoginRequestDTO) async throws -> LoginResponseDTO {
+        return try await requestAsync(target: .postAppleLogin(data: data), decodingType: LoginResponseDTO.self)
     }
-    
     /// 로그아웃 API
-    public func logout(completion: @escaping (Result<Void, NetworkError>) -> Void) {
-        provider.request(.postLogout) { result in
-            switch result {
-            case .success(let response):
-                if response.statusCode == 200 {
-                    completion(.success(()))
-                } else {
-                    let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: response.data)
-                    let finalMessage = errorResponse?.message ?? "에러 메세지 없음"
-                    return completion(.failure(.serverError(statusCode: response.statusCode, message: finalMessage)))
-                }
-                
-            case .failure(let error):
-                let networkError = self.handleNetworkError(error)
-                completion(.failure(networkError))
-            }
-        }
-    }
+//    public func logout(completion: @escaping (Result<Void, NetworkError>) -> Void) {
+//        provider.request(.postLogout) { result in
+//            switch result {
+//            case .success(let response):
+//                if response.statusCode == 200 {
+//                    completion(.success(()))
+//                } else {
+//                    let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: response.data)
+//                    let finalMessage = errorResponse?.message ?? "에러 메세지 없음"
+//                    return completion(.failure(.serverError(statusCode: response.statusCode, message: finalMessage)))
+//                }
+//                
+//            case .failure(let error):
+//                let networkError = self.handleNetworkError(error)
+//                completion(.failure(networkError))
+//            }
+//        }
+//    }
     
     /// 자체 회원가입 API
-    public func join(data: JoinDTO, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .postJoin(data: data), decodingType: String.self, completion: completion)
+    public func join(data: JoinDTO) async throws -> String {
+        return try await requestAsync(target: .postJoin(data: data), decodingType: String.self)
     }
-    
     /// 이메일 중복 체크 API
-    public func checkEmail(data : UsernameCheckRequest, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
-        request(target: .emailVerification(data: data), decodingType: Bool.self, completion: completion)
+    public func checkEmail(data: UsernameCheckRequest) async throws -> Bool {
+        return try await requestAsync(target: .emailVerification(data: data), decodingType: Bool.self)
     }
-    
-    /// 토큰 재발급 API
-    public func reissueToken(completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .postReIssueToken, decodingType: String.self, completion: completion)
-    }
-    
     /// ✅ 토큰 재발급 API (무한 루프 방지)
     private var isReissuingToken = false
 
@@ -118,9 +110,4 @@ public final class AuthService : NetworkManager {
         
         print("✅ [토큰 재발급 완료]")
     }
-    
-    /// 멤버 정보 전송 API
-//    public func sendMemberInfo(data: MemberRequestDTO, completion: @escaping (Result<MemberResponseDTO, NetworkError>) -> Void) {
-//        request(target: .patchMemberInfo(data: data), decodingType: MemberResponseDTO.self, completion: completion)
-//    }
 }
