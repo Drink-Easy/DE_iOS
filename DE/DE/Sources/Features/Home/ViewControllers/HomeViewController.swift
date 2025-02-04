@@ -4,6 +4,7 @@ import UIKit
 import CoreModule
 import Then
 import Network
+import SafariServices
 
 public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestureRecognizerDelegate {
     
@@ -23,6 +24,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     private var homeTopView = HomeTopView()
     let networkService = WineService()
     let bannerNetworkService = NoticeService()
+    let memberService = MemberService()
     
     // View 세팅
     private lazy var scrollView: UIScrollView = {
@@ -63,17 +65,28 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
         $0.moreBtn.addTarget(self, action: #selector(goToMoreLikely), for: .touchUpInside)
     }
     
-    public func fetchName() { // TODO : 이름 호출 로직 수정하기
+    public func fetchName() {
         Task {
             guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
             self.view.showBlockingView()
+            
             do {
+                // 캐시 데이터 사용 시도
                 self.userName = try await PersonalDataManager.shared.fetchUserName(for: userId)
                 self.view.hideBlockingView()
             } catch {
+                do {
+                    // get api 사용 시도 -> 캐시 데이터 업데이트
+                    self.userName = try await memberService.getUserName()
+                    try await PersonalDataManager.shared.updatePersonalData(for: userId, userName: self.userName)
+                    
+                    self.view.hideBlockingView()
+                } catch {
+                    print(error.localizedDescription)
+                }
                 print(error.localizedDescription)
                 self.view.hideBlockingView()
             }
@@ -114,10 +127,11 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
         self.navigationController?.isNavigationBarHidden = true
         self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         self.view.addSubview(indicator)
+        fetchName()
+        
         setAdBanner()
         fetchWines(isRecommend: true) // 추천 와인
         fetchWines(isRecommend: false) // 인기 와인
-        fetchName()
     }
     
     private func addComponents() {
@@ -456,8 +470,13 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             vc.wineId = (collectionView.tag == 1) ? recommendWineDataList[indexPath.row].wineId : popularWineDataList[indexPath.row].wineId
             navigationController?.pushViewController(vc, animated: true)
         } else if collectionView.tag == 0 {
-            // TODO : 웹페이지 뷰 띄우기
             print("\(adImage[indexPath.row].postUrl) : 이 주소로 이동하세요")
+            
+            // 사파리 뷰 띄우는거 주석 해제만 하면 됨! by dyk.
+//            if let url = URL(string: adImage[indexPath.row].postUrl) {
+//                let safariVC = SFSafariViewController(url: url)
+//                present(safariVC, animated: true, completion: nil)
+//            }
         }
     }
     
