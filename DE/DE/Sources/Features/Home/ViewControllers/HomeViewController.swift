@@ -296,31 +296,28 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     
     private func fetchWinesFromNetwork(_ isRecommend: Bool) async {
         self.view.showBlockingView()
-        let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
         
         if isRecommend {
-            fetchFunction = networkService.fetchRecommendWines
-        } else { // 인기 와인인 경우
-            fetchFunction = networkService.fetchPopularWines
-        }
-
-        await withCheckedContinuation { continuation in
-            fetchFunction { [weak self] result in
-                guard let self = self else { return }
-
-                switch result {
-                case .success(let responseData):
-                    Task {
-                        await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
-                        self.view.hideBlockingView()
-                        continuation.resume()
-                    }
-                    
-                case .failure(let error):
-                    print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
+            do {
+                let responseData = try await networkService.fetchRecommendWines()
+                await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
+                DispatchQueue.main.async {
                     self.view.hideBlockingView()
-                    continuation.resume()
                 }
+            } catch {
+                print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
+                self.view.hideBlockingView()
+            }
+        } else { // 인기 와인인 경우
+            do {
+                let responseData = try await networkService.fetchPopularWines()
+                await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
+                DispatchQueue.main.async {
+                    self.view.hideBlockingView()
+                }
+            } catch {
+                print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
+                self.view.hideBlockingView()
             }
         }
     }
