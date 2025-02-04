@@ -108,7 +108,6 @@ class ManiaCountryViewController: UIViewController {
             // UI 전환
             await MainActor.run {
                 let homeTabBarController = MainTabBarController()
-                homeTabBarController.userName = userMng.name
                 SelectLoginTypeVC.keychain.set(false, forKey: "isFirst")
                 
                 if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,

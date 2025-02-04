@@ -161,8 +161,91 @@ let project = Project(
                 .external(name: "KakaoSDK")
             ]
         ),
+        
+            .target(
+                name: "AuthTestApp",
+                destinations: .iOS,
+                product: .app,
+                bundleId: "\(bundleId).\(bundleMid).AuthTestApp",
+                deploymentTargets: .iOS("17.0"),
+                infoPlist: .extendingDefault(
+                    with: [
+                        "UISupportedInterfaceOrientations" : ["UIInterfaceOrientationPortrait"], // 화면 방향 세로 고정
+                        "UIApplicationSceneManifest": [ // Scene 설정
+                            "UIApplicationSupportsMultipleScenes": false,
+                            "UISceneConfigurations": [
+                                "UIWindowSceneSessionRoleApplication": [
+                                    [
+                                        "UISceneConfigurationName": "Default Configuration",
+                                        "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).SceneDelegate"
+                                    ],
+                                ]
+                            ]
+                        ],
+                        // 폰트 추가
+                        "UIAppFonts": ["Pretendard-Black.otf",
+                                       "Pretendard-Bold.otf",
+                                       "Pretendard-ExtraBold.otf",
+                                       "Pretendard-ExtraLight.otf",
+                                       "Pretendard-Light.otf",
+                                       "Pretendard-Medium.otf",
+                                       "Pretendard-Regular.otf",
+                                       "Pretendard-SemiBold.otf",
+                                       "Pretendard-Thin.otf"
+                                      ],
+                        // http 연결 설정
+                        "NSAppTransportSecurity" : [
+                            "NSAllowsArbitraryLoads" : true
+                        ],
+                        "UILaunchStoryboardName": "",
+                        "NSLocationAlwaysAndWhenInUseUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 항상 혹은 앱 활성 시에만 허용하시겠습니까?",
+                        "NSLocationWhenInUseUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 앱 활성 시에만 허용하시겠습니까?",
+                        "NSLocationAlwaysUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 항상 허용하시겠습니까?",
+                        "NSCameraUsageDescription" : "사용자 프로필 설정을 위한 카메라 사용 권한을 허용하시겠습니까?",
+                        // 런치 스크린
+                        //                    "UILaunchScreen" : [
+                        //                        "UIColorName" : "LaunchScreenBGColor",
+                        //                        "UIImageName" : "LaunchLogo",
+                        //                        "UIImageRespectsSafeAreaInsets" : true
+                        //                    ],
+                        // 카카오 로그인 설정
+                        "KAKAO_NATIVE_APP_KEY" : "180ebe6367eb8ee6eafe439aa551744a",
+                        "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink", "kakaoplus"],
+                        "CFBundleURLTypes" : [
+                            [
+                                "CFBundleTypeRole" : "Editor",
+                                "CFBundleURLName" : "kakaologin",
+                                "CFBundleURLSchemes" : ["kakao74177ce7b14b89614c47ac7d51464b95"]
+                            ],
+                        ],
+                        // 다른 설정은 여기에다가 추가
+                    ]
+                ),
+                sources: ["DE/Sources/App/**"],
+                resources: [],
+                entitlements: "DE/DE.entitlements",
+                scripts: [  ],
+                dependencies: [
+                    .target(name: "AuthModule"),
+                    
+                    .external(name: "KeychainSwift"),
+                    .external(name: "KakaoSDK")
+                ]
+            ),
 
         // module
+        .target(
+            name: "AuthModule",
+            destinations: .iOS,
+            product: .staticFramework,
+            bundleId: "\(bundleId).\(bundleMid).AuthModule",
+            deploymentTargets: .iOS("17.0"),
+            sources: ["DE/Sources/Features/Authentication/**"],
+            resources: ["DE/Resources/**"],
+            dependencies: [
+                .target(name: "CoreModule")
+            ]
+        ),
         .target(
             name: "CoreModule",
             destinations: .iOS,
@@ -215,8 +298,10 @@ let project = Project(
             bundleId: "io.tuist.DETests",
             infoPlist: .default,
             sources: ["DE/Tests/**"],
-            resources: [],
-            dependencies: [.target(name: "DE")]
+            resources: ["DE/Resources/**"],
+            dependencies: [.target(name: "DRINKIG"),
+                           .target(name: "Network"),
+            ]
         ),
     ],
     fileHeaderTemplate: "Copyright © 2024 DRINKIG. All rights reserved"
