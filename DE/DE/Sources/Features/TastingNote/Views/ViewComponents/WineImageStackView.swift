@@ -77,15 +77,11 @@ class WineImageStackContainerView: UIView {
         for (category, imageName) in images {
             let backgroundView = UIView()
             backgroundView.layer.shadowOpacity = 0.1
-            backgroundView.layer.shadowOffset = CGSize(width: 5, height: 5)
-            backgroundView.layer.shadowRadius = 10
+            backgroundView.layer.shadowColor = AppColor.black?.cgColor
+            backgroundView.layer.shadowOffset = CGSize(width: 5, height: 2)
+            backgroundView.layer.shadowRadius = 5
             backgroundView.backgroundColor = .clear
 
-            if traitCollection.userInterfaceStyle == .dark {
-                backgroundView.layer.shadowColor = .none
-            } else {
-                backgroundView.layer.shadowColor = AppColor.black?.cgColor
-            }
             let contentView = UIView()
             contentView.layer.cornerRadius = 10
             contentView.backgroundColor = AppColor.white
