@@ -6,18 +6,18 @@ import SwiftData
 @Model
 public class SavedWineDataModel {
     @Attribute(.unique) public var myWineId: Int
-    @Attribute public var wineId: Int
-    @Attribute public var wineName: String
-    @Attribute public var imageURL : String
-    @Attribute public var wineSort : String
-    @Attribute public var wineCountry : String
-    @Attribute public var wineRegion : String
-    @Attribute public var wineVariety : String
-    @Attribute public var price: Int
-    @Attribute public var date: String
-    @Attribute public var Dday: Int
+    public var wineId: Int
+    public var wineName: String
+    public var imageURL : String
+    public var wineSort : String
+    public var wineCountry : String
+    public var wineRegion : String
+    public var wineVariety : String
+    public var price: Int
+    public var date: String
+    public var Dday: Int
     
-    public init(wineId: Int, myWineId: Int, wineName: String, imageURL: String, wineSort: String, wineCountry: String, wineRegion: String, wineVariety: String, price: Int, date: String, Dday: Int) {
+    public init(wineId: Int = -1, myWineId: Int = -1, wineName: String = "noname", imageURL: String = "none", wineSort: String = "알 수 없음", wineCountry: String = "알 수 없음", wineRegion: String = "알 수 없음", wineVariety: String = "알 수 없음", price: Int = -1, date: String = "0000-00-00", Dday: Int = -1) {
         self.wineId = wineId
         self.myWineId = myWineId
         self.wineName = wineName

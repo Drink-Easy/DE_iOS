@@ -27,12 +27,14 @@ public class RatingWineViewController: UIViewController {
         rView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         rView.infoView.kindContents.text = wineData.sort
-        rView.infoView.typeContents.text = wineData.variety
+        rView.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")
+        self.view.addSubview(indicator)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+        self.view.addSubview(indicator)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
@@ -45,6 +47,7 @@ public class RatingWineViewController: UIViewController {
         
         setupNavigationBar()
         addExtendedBackgroundView()
+        hideKeyboardWhenTappedAround()
     }
 
     private func addExtendedBackgroundView() {
@@ -78,11 +81,6 @@ public class RatingWineViewController: UIViewController {
         }
         
         rView.reviewBody.delegate = self
-        
-        // 탭 제스처 추가
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tapGesture.cancelsTouchesInView = false // 다른 제스처(버튼 클릭 등)를 방해하지 않음
-        view.addGestureRecognizer(tapGesture)
     }
     
     private func setupNavigationBar() {
@@ -100,10 +98,6 @@ public class RatingWineViewController: UIViewController {
         rView.setRate(rating)
     }
     
-    @objc private func dismissKeyboard() {
-        view.endEditing(true)
-    }
-    
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)
     }
@@ -115,12 +109,16 @@ public class RatingWineViewController: UIViewController {
         }
         tnManager.saveRating(ratingValue)
         tnManager.saveReview(reviewString)
+        self.view.showBlockingView()
         Task {
             do {
                 try await postCreateTastingNote()
+                NoseManager.shared.resetAllScents()
+                self.view.hideBlockingView()
                 navigationController?.popToRootViewController(animated: true)
             } catch {
                 print("Error: \(error)")
+                self.view.hideBlockingView()
                 // Alert 표시 등 추가
             }
         }

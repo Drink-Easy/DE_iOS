@@ -61,10 +61,16 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
         textField.borderStyle = .none
         textField.font = UIFont.ptdSemiBoldFont(ofSize: 14)
         textField.backgroundColor = AppColor.gray10
+        
         textField.delegate = self
         textField.layer.borderColor = AppColor.gray10?.cgColor
         textField.layer.borderWidth = 2
         textField.layer.cornerRadius = 8
+        
+        textField.tintColor = AppColor.purple100
+        textField.autocapitalizationType = .none //자동 대문자
+        textField.spellCheckingType = .no //맞춤법 검사
+        textField.autocorrectionType = .no //자동완성
         
         validationLabel.text = validationText
         validationLabel.textColor = AppColor.red

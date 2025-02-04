@@ -16,7 +16,7 @@ final class LoginView: UIView {
         textFieldPlaceholder: "이메일을 입력해 주세요",
         validationText: "유효하지 않은 이메일 형식입니다"
     ).then {
-        $0.textField.keyboardType = .default
+        $0.textField.keyboardType = .emailAddress
     }
 
     lazy var passwordField = CustomLabelTextFieldView(

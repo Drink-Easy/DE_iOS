@@ -12,7 +12,7 @@ class RecomCollectionViewCell: UICollectionViewCell {
     
     public lazy var image = UIImageView().then {
         $0.contentMode = .scaleAspectFit
-        $0.sd_imageIndicator = SDWebImageActivityIndicator.gray // 로딩 인디케이터 추가
+//        $0.sd_imageIndicator = SDWebImageActivityIndicator.gray // 로딩 인디케이터 추가
         $0.clipsToBounds = true
     }
     
@@ -22,13 +22,11 @@ class RecomCollectionViewCell: UICollectionViewCell {
     }
     
     public lazy var name = UILabel().then {
-        $0.text = "부와젤, 조아유 드 프랑스"
         $0.textColor = AppColor.black
         $0.font = UIFont.ptdMediumFont(ofSize: 14)
     }
     
     public lazy var kind = UILabel().then {
-        $0.text = "스파클링 와인, 샴페인"
         $0.textColor = AppColor.gray70
         $0.font = UIFont.ptdRegularFont(ofSize: 10)
     }
@@ -92,8 +90,11 @@ class RecomCollectionViewCell: UICollectionViewCell {
     
     func configure(imageURL: String, score: String, price: String, name: String, kind: String) {
         // SDWebImage를 이용한 이미지 로딩
-        image.sd_setImage(with: URL(string: imageURL), placeholderImage: UIImage(named: "placeholder")) // 로딩 중에는 placeholder 표시
-        
+        image.sd_setImage(
+            with: URL(string: imageURL),
+            placeholderImage: nil,
+            options: [.decodeFirstFrameOnly, .preloadAllFrames]
+        )
         // 데이터 설정
         scoreNprice.text = Int(price) == 0 ? "★ \(score)  |  가격 정보 없음" : "★ \(score)  |  ₩ \(price)만원 대"
         self.name.text = name

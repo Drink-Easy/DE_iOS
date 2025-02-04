@@ -6,7 +6,7 @@ import CoreModule
 import Network
 
 //테이스팅노트 메인 노트 보관함 뷰
-public class AllTastingNoteVC: UIViewController, WineSortDelegate {
+public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureRecognizerDelegate {
     
     private let networkService = TastingNoteService()
     
@@ -31,13 +31,18 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate {
     // MARK: - Life Cycle
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
+        tastingNoteView.noTastingNoteLabel.isHidden = true
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         Task {
             do {
+                self.view.showBlockingView()
                 try await CallAllTastingNote()
-                
+                self.view.hideBlockingView()
             } catch {
                 print("Error: \(error)")
+                self.view.hideBlockingView()
                 // Alert 표시 등 추가
             }
         }
@@ -85,6 +90,10 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate {
         //        await self.updateCallCount()
         allTastingNoteList = data.notePriviewList
         currentTastingNoteList = data.notePriviewList
+        // 데이터 없을 때 콜렉션 뷰 숨기고 없음 라벨
+        tastingNoteView.noTastingNoteLabel.isHidden = !self.allTastingNoteList.isEmpty
+        tastingNoteView.TastingNoteCollectionView.isHidden = self.allTastingNoteList.isEmpty
+        
         tastingNoteView.wineImageStackView.updateCounts(red: data.sortCount.redCount, white: data.sortCount.whiteCount, sparkling: data.sortCount.sparklingCount, rose: data.sortCount.roseCount, etc: data.sortCount.etcCount)
         tastingNoteView.TastingNoteCollectionView.reloadData()
     }
@@ -109,9 +118,11 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate {
     func didTapSortButton(for type: WineSortType) {
         // 필터링된 데이터 가져오기
         let filteredList = filterPieces(for: type)
-        
-        // 필터링된 데이터를 컬렉션 뷰와 동기화
         currentTastingNoteList = filteredList
+        // 필터링 데이터 없을 때 콜렉션 뷰 숨기고 없음 라벨
+        tastingNoteView.noTastingNoteLabel.isHidden = !self.currentTastingNoteList.isEmpty
+        tastingNoteView.TastingNoteCollectionView.isHidden = self.currentTastingNoteList.isEmpty
+        // 필터링된 데이터를 컬렉션 뷰와 동기화
         tastingNoteView.TastingNoteCollectionView.reloadData()
     }
 
@@ -168,16 +179,7 @@ extension AllTastingNoteVC: UICollectionViewDataSource, UICollectionViewDelegate
         }
         
         let tnItem = currentTastingNoteList[indexPath.row]
-        if let url = URL(string: tnItem.imageUrl) {
-            DispatchQueue.global().async {
-                if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        cell.image.image = image
-                    }
-                }
-            }
-        }
-        cell.name.text = tnItem.wineName
+        cell.configure(name: tnItem.wineName, imageURL: tnItem.imageUrl)
         return cell
     }
 }

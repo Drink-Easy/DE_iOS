@@ -5,7 +5,7 @@ import CoreModule
 import Then
 import Network
 
-public class HomeViewController: UIViewController, HomeTopViewDelegate {
+public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestureRecognizerDelegate {
     
     private var adImage: [HomeBannerModel] = []
     var recommendWineDataList: [HomeWineModel] = []
@@ -69,10 +69,13 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
+            self.view.showBlockingView()
             do {
                 self.userName = try await PersonalDataManager.shared.fetchUserName(for: userId)
+                self.view.hideBlockingView()
             } catch {
                 print(error.localizedDescription)
+                self.view.hideBlockingView()
             }
         }
     }
@@ -100,7 +103,6 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-        
         addComponents()
         constraints()
         startAutoScrolling()
@@ -110,7 +112,8 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.isNavigationBarHidden = true
-        
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+        self.view.addSubview(indicator)
         setAdBanner()
         fetchWines(isRecommend: true) // 추천 와인
         fetchWines(isRecommend: false) // 인기 와인
@@ -246,14 +249,18 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
 
             } catch {
                 print("⚠️ 캐시 데이터 없음 → 네트워크 요청 수행")
+                self.view.showBlockingView()
                 do {
                     let newData = try await fetchHomeBanner()
                     try AdBannerListManager.shared.saveAdBannerList(
                         bannerData: newData.map { AdBannerDataModel(bannerId: $0.bannerId, imageUrl: $0.imageUrl, postUrl: $0.postUrl) },
                         expirationDate: Date()
                     )
+                    self.view.hideBlockingView()
+                    
                 } catch {
                     print("❌ 네트워크 요청 실패: \(error)")
+                    self.view.hideBlockingView()
                 }
             }
         }
@@ -270,11 +277,11 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
             self.pageControlNumberView.totalPages = self.adImage.count
             self.adCollectionView.reloadData()
         }
-
         return response.bannerResponseList
     }
     
     private func fetchWinesFromNetwork(_ isRecommend: Bool) async {
+        self.view.showBlockingView()
         let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
         
         if isRecommend {
@@ -291,10 +298,13 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
                 case .success(let responseData):
                     Task {
                         await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
+                        self.view.hideBlockingView()
                         continuation.resume()
                     }
+                    
                 case .failure(let error):
                     print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
+                    self.view.hideBlockingView()
                     continuation.resume()
                 }
             }
@@ -334,7 +344,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate {
         likeWineListView.title.text = "For \(userName),"
         likeWineListView.title.setPartialTextStyle(
             text: likeWineListView.title.text ?? "",
-            targetText: "\(userName)",
+            targetText: "\(userName),",
             color: AppColor.purple100 ?? .purple,
             font: UIFont.ptdSemiBoldFont(ofSize: 26)
         )

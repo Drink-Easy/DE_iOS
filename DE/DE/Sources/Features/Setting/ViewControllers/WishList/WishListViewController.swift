@@ -18,7 +18,7 @@ public class WishListViewController: UIViewController {
     private lazy var searchResultTableView = UITableView().then {
         $0.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        $0.backgroundColor = Constants.AppColor.grayBG
+        $0.backgroundColor = AppColor.grayBG
         $0.dataSource = self
         $0.delegate = self
     }
@@ -35,7 +35,9 @@ public class WishListViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.addSubview(indicator)
         view.backgroundColor = AppColor.bgGray
+        self.view.addSubview(indicator)
         setupNavigationBar()
         addComponents()
         setConstraints()
@@ -94,6 +96,8 @@ public class WishListViewController: UIViewController {
         }
     }
     
+    // TODO : 구조 변경하기
+    
     func callFetchWishlistAPI() {
         Task {
             do {
@@ -111,14 +115,18 @@ public class WishListViewController: UIViewController {
                         self.wineResults = cachedWishlist.map { data in
                             WishResultModel(wineId: data.wineId, imageUrl: data.imageUrl, wineName: data.wineName, sort: data.sort, price: data.price, vivinoRating: data.vivinoRating)
                         }
+                        
                         DispatchQueue.main.async {
                             self.searchResultTableView.reloadData()
-                            self.noWineLabel.isHidden = !self.wineResults.isEmpty
+                            if self.wineResults.isEmpty || self.wineResults.count == 0 {
+                                self.noWineLabel.isHidden = false
+                            }
                         }
                     }
                 } else {
                     // 호출 카운트가 1 이상이면 API 호출
                     print("✅ 호출 카운트 1 이상: API 호출")
+                    self.view.showBlockingView()
                     networkService.fetchWishlist { [weak self] result in
                         guard let self = self else { return }
                         
@@ -156,8 +164,10 @@ public class WishListViewController: UIViewController {
                                         
                                         // 호출 카운트 초기화
                                         try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .wishlist)
+                                        self.view.hideBlockingView()
                                     } catch {
                                         print("❌ 캐시 업데이트 또는 호출 카운트 초기화 실패: \(error.localizedDescription)")
+                                        self.view.hideBlockingView()
                                     }
                                 }
                                 

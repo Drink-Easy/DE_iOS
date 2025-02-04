@@ -28,8 +28,9 @@ public class EditWineColorViewController: UIViewController {
         colorView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         colorView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         colorView.infoView.kindContents.text = wineData.sort
-        colorView.infoView.typeContents.text = wineData.variety
+        colorView.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")
         selectedColor = tnManager.color
+        self.view.addSubview(indicator)
     }
     
     public override func viewDidLoad() {
@@ -87,7 +88,9 @@ public class EditWineColorViewController: UIViewController {
         let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
         Task {
             do {
+                self.view.showBlockingView()
                 try await networkService.patchNote(data: tnData)
+                self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             }
         }

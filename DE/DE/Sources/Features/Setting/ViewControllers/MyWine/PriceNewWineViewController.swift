@@ -20,6 +20,7 @@ class PriceNewWineViewController: UIViewController {
         setupUI()
         setupNavigationBar()
         setupActions()
+        hideKeyboardWhenTappedAround()
     }
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -64,12 +65,13 @@ class PriceNewWineViewController: UIViewController {
         callPostAPI()
         
         DispatchQueue.main.async {
-            self.navigationController?.popViewController(animated: true)
-            guard let navigationController = self.navigationController else { return }
-            if let targetIndex = navigationController.viewControllers.firstIndex(where: { $0 is MyOwnedWineViewController }) {
-                let newStack = Array(navigationController.viewControllers[...targetIndex])
-                navigationController.setViewControllers(newStack, animated: true)
-            }
+            self.navigationController?.popToRootViewController(animated: true)
+//            self.navigationController?.popViewController(animated: true)
+//            guard let navigationController = self.navigationController else { return }
+//            if let targetIndex = navigationController.viewControllers.firstIndex(where: { $0 is MyOwnedWineViewController }) {
+//                let newStack = Array(navigationController.viewControllers[...targetIndex])
+//                navigationController.setViewControllers(newStack, animated: true)
+//            }
         }
     }
     

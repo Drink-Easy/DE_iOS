@@ -9,7 +9,7 @@ import Cosmos
 
 public class VivinoRateView: UIView {
     
-    public var score = 4.0 {
+    public var score = 0.0 {
         didSet {
             updateScore()
         }
@@ -42,7 +42,7 @@ public class VivinoRateView: UIView {
                 let nsRange = NSRange(range, in: text)
                 attributedString.addAttributes(
                     [
-                        .foregroundColor: Constants.AppColor.purple100 ?? .purple,
+                        .foregroundColor: AppColor.purple100 ?? .purple,
                         .font: UIFont.ptdSemiBoldFont(ofSize: 18)
                     ],
                     range: nsRange
@@ -78,7 +78,7 @@ public class VivinoRateView: UIView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.AppColor.grayBG
+        backgroundColor = AppColor.grayBG
         self.addComponents()
         self.constraints()
     }

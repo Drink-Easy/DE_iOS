@@ -31,6 +31,7 @@ public class SimpleListView: UIView {
             for: .normal
         )
         $0.isHidden = true
+        $0.isEnabled = true
     }
     
     public var items: [(title: String, value: String)] = [] {
@@ -122,8 +123,8 @@ public class SimpleListView: UIView {
         }
         
         backView.snp.updateConstraints { make in
-            if items.count == 5 { //리스트 개수가 2일 때
-                make.height.greaterThanOrEqualTo(204)
+            if items.count == 4 { //리스트 개수가 2일 때
+                make.height.greaterThanOrEqualTo(164)
             } else { //리스트 개수가 2일 때
                 make.height.greaterThanOrEqualTo(84)
             }

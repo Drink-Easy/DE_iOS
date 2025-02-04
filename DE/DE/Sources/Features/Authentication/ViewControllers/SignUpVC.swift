@@ -15,22 +15,22 @@ class SignUpVC: UIViewController {
     let validationManager = ValidationManager()
     
     var isEmailDuplicate : Bool = true
-    
-    override func loadView() {
-        view = signUpView
-    }
+    var textFields: [UITextField] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-        
+        setupUI()
         setupActions()
         setupNavigationBar()
+        hideKeyboardWhenTappedAround()
+        view.addSubview(indicator)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        self.view.addSubview(indicator)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -47,34 +47,43 @@ class SignUpVC: UIViewController {
         )
     }
     
+    private func setupUI(){
+        view.addSubview(signUpView)
+        signUpView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
     private func setupActions() {
         signUpView.usernameField.textField.addTarget(self, action: #selector(usernameValidate), for: .editingChanged)
         signUpView.checkEmailButton.addTarget(self, action: #selector(checkEmailDuplicate), for: .touchUpInside)
         signUpView.passwordField.textField.addTarget(self, action: #selector(passwordValidate), for: .editingChanged)
         signUpView.confirmPasswordField.textField.addTarget(self, action: #selector(confirmPasswordValidate), for: .editingChanged)
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        view.addGestureRecognizer(tapGesture)
-        
         signUpView.signupButton.addTarget(self, action: #selector(signupButtonTapped), for: .touchUpInside)
-    }
-    
-    @objc private func dismissKeyboard() {
-        self.view.endEditing(true)
+        
+        textFields = [signUpView.usernameField.textField, signUpView.passwordField.textField, signUpView.confirmPasswordField.textField]
+        
+        for textField in textFields {
+            textField.delegate = self
+        }
     }
     
     //MARK: - Button Funcs
     @objc private func signupButtonTapped() {
+        self.view.showBlockingView()
         let signUpDTO = networkService.makeJoinDTO(username: signUpView.usernameField.text!, password: signUpView.passwordField.text!, rePassword: signUpView.confirmPasswordField.text!)
         
         networkService.join(data: signUpDTO) { [weak self] result in
             guard let self = self else { return }
-            
             switch result {
             case .success(_):
+                self.view.hideBlockingView()
                 self.goToLoginView()
             case .failure(let error):
                 print(error)
+                self.view.hideBlockingView()
+                //TODO: alert
             }
         }
     }
@@ -90,8 +99,15 @@ class SignUpVC: UIViewController {
             print("이메일이 없습니다")
             return
         }
-        
-        validationManager.checkEmailDuplicate(email: email, view: signUpView.usernameField)
+        self.view.showBlockingView()
+        validationManager.checkEmailDuplicate(email: email, view: signUpView.usernameField) { [weak self] success in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                self.view.hideBlockingView()  // ✅ 네트워크 요청 후 인디케이터 중지
+                self.validateInputs()  // ✅ UI 업데이트
+            }
+        }
         validateInputs()
     }
     
@@ -125,3 +141,13 @@ class SignUpVC: UIViewController {
     
 }
 
+extension SignUpVC: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let index = textFields.firstIndex(of: textField), index < textFields.count - 1 {
+            textFields[index + 1].becomeFirstResponder()
+        } else {
+            textField.resignFirstResponder()
+        }
+        return true
+    }
+}

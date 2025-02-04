@@ -20,17 +20,18 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.prefersLargeTitles = false
-        view.backgroundColor = Constants.AppColor.grayBG
+        view.backgroundColor = AppColor.grayBG
     
         addView()
         constraints()
-        callWineDetailAPI(wineId: self.wineId)
         setupNavigationBar()
+        callWineDetailAPI(wineId: self.wineId)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        self.view.addSubview(indicator)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -272,6 +273,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func callWineDetailAPI(wineId: Int) {
+        self.view.showColorBlockingView() 
         wineNetworkService.fetchWineInfo(wineId: wineId) { [weak self] result in
             guard let self = self else { return }
             
@@ -280,8 +282,10 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
                 if let data = responseData {
                     self.transformResponseData(data)
                 }
+                self.view.hideBlockingView()
             case .failure(let error) :
                 print("\(error)")
+                self.view.hideBlockingView()
             }
         }
     }
@@ -316,26 +320,32 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func callLikeAPI(wineId: Int) async {
+        self.view.showBlockingView()
         do {
             let responseData = try await likedNetworkService.postWishlist(wineId: wineId)
             print("✅ 좋아요 API 호출 성공: \(responseData)") // 이제 프린트가 확실히 출력됩니다.
             
             // 호출 카운터 증가
             await checkCallCounter(up: true)
+            self.view.hideBlockingView()
         } catch {
             print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")
+            self.view.hideBlockingView()
         }
     }
     
     func calldeleteLikedAPI(wineId: Int) async {
+        self.view.showBlockingView()
         do {
             let responseData = try await likedNetworkService.deleteWishlist(wineId: wineId)
             print("✅ 좋아요 API 호출 성공: \(responseData)") // 이제 프린트가 확실히 출력됩니다.
             
             // 호출 카운터 감소
             await checkCallCounter(up: false)
+            self.view.hideBlockingView()
         } catch {
             print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")
+            self.view.hideBlockingView()
         }
     }
     

@@ -14,7 +14,6 @@ class MyWineTableViewCell: UITableViewCell {
     }
     
     private lazy var image = UIImageView().then {
-//        $0.image = UIImage(named: "스파클링")
         $0.contentMode = .scaleAspectFit
         $0.layer.cornerRadius = 5
         $0.layer.masksToBounds = true
@@ -25,6 +24,7 @@ class MyWineTableViewCell: UITableViewCell {
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
         $0.numberOfLines = 2
         $0.lineBreakMode = .byTruncatingTail
+        $0.lineBreakStrategy = .standard
     }
     
     private lazy var price = UILabel().then {
@@ -93,8 +93,8 @@ class MyWineTableViewCell: UITableViewCell {
         name.snp.makeConstraints {
             $0.leading.equalTo(imageBackground.snp.trailing).offset(18)
             $0.top.equalTo(imageBackground.snp.top)
-            $0.trailing.lessThanOrEqualTo(buyDate.snp.leading).offset(-6)
-//            $0.width.lessThanOrEqualTo(Constants.superViewWidth * 0.55)
+            $0.trailing.lessThanOrEqualTo(buyDate.snp.leading).offset(-4)
+            $0.width.lessThanOrEqualTo(Constants.superViewWidth * 0.58)
         }
         
         price.snp.makeConstraints {
@@ -115,7 +115,7 @@ class MyWineTableViewCell: UITableViewCell {
         self.price.text = "구매가 \(priceString)원"
         
         if model.period >= 0 {
-            self.buyDate.text = "D+\(model.period)"
+            self.buyDate.text = "D+\(model.period + 1)"
         } else {
             self.buyDate.text = "D\(model.period)"
         }

@@ -34,6 +34,7 @@ public class NormalTextViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        self.view.addSubview(indicator)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -43,6 +44,7 @@ public class NormalTextViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.addSubview(indicator)
         view.backgroundColor = AppColor.bgGray
         
         let (varietyString, sortString) = calculateResult()
@@ -222,6 +224,7 @@ public class NormalTextViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
+        self.view.showBlockingView()
         callPatchAPI()
     }
     
@@ -244,7 +247,6 @@ public class NormalTextViewController: UIViewController {
             print("⚠️ userId가 UserDefaults에 없습니다.")
             return
         }
-        print(userMng.imageData ?? "이미지 없음")
         Task {
             do {
                 async let imageUpload: String? = {
@@ -269,7 +271,7 @@ public class NormalTextViewController: UIViewController {
                     let homeTabBarController = MainTabBarController()
                     homeTabBarController.userName = UserSurveyManager.shared.name
                     SelectLoginTypeVC.keychain.set(false, forKey: "isFirst")
-                    
+                    self.view.hideBlockingView()
                     if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                        let window = windowScene.windows.first {
                         window.rootViewController = homeTabBarController
@@ -278,6 +280,7 @@ public class NormalTextViewController: UIViewController {
                 }
             } catch {
                 print(error)
+                self.view.hideBlockingView()
             }
         }
     }

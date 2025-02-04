@@ -39,7 +39,6 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
-        
         setupUI()
         setupConstraints()
         setupNavigationBar()
@@ -77,7 +76,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     // MARK: UI Component 설정
     func setupUI() {
         view.addSubview(profileView)
-        
+        view.addSubview(indicator)
         guard let profileImg = self.profileImgURL,
               let usernameText = self.originUsername,
               let usercityText = self.originUserCity else { return }
@@ -128,10 +127,13 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     @objc private func editCompleteTapped() {
         Task {
             do {
+                self.view.showBlockingView()
                 try await callPatchAPI()
+                self.view.hideBlockingView()
                 self.navigationController?.popViewController(animated: true)
             } catch {
                 print("Error: \(error)")
+                self.view.hideBlockingView()
                 // Alert 표시 등 추가
             }
         }
@@ -170,20 +172,31 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     //MARK: - 위치 정보 불러오기 로직
     @objc func getMyLocation() {
+        self.view.showBlockingView()
         LocationManager.shared.requestLocationPermission { [weak self] address in
             DispatchQueue.main.async {
                 self?.profileView.myLocationTextField.textField.text = address ?? ""
+                self?.view.hideBlockingView()
             }
         }
     }
     
-    //MARK: - 닉네임 중복 검사 // TODO: 경고 떠있을 때 완료버튼 안눌리게 처리하기
+    //MARK: - 닉네임 중복 검사
     @objc func checkNicknameValidity(){
+        
         guard let nickname = profileView.nicknameTextField.text, !nickname.isEmpty, ValidationManager.isLengthValid else {
             print("닉네임이 없습니다")
             return
         }
-        ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField)
+        self.view.showBlockingView()
+        ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField) { [weak self] success in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                self.view.hideBlockingView()  // ✅ 네트워크 요청 후 인디케이터 중지
+                self.checkFormValidity()  // ✅ UI 업데이트
+            }
+        }
     }
     
     //MARK: - 폼 유효성 검사
@@ -199,10 +212,14 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     }
     
     @objc func checkFormValidity() {
-        let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true) && !ValidationManager.isNicknameCanUse && ValidationManager.isLengthValid
+        let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true) && ValidationManager.isNicknameCanUse && ValidationManager.isLengthValid
         let isLocationValid = !(profileView.myLocationTextField.textField.text?.isEmpty ?? true)
         let isImageSelected = profileView.profileImageView.image != nil
         let isFormValid = isNicknameValid && isLocationValid && isImageSelected
+        print("isNicknameValid == \(isNicknameValid)")
+        print("isLocationValid == \(isLocationValid)")
+        print("isImageSelected == \(isImageSelected)")
+        print("isFormValid == \(isFormValid)")
         navigationItem.rightBarButtonItem?.isEnabled = isFormValid
     }
 }

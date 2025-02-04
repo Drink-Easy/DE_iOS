@@ -15,7 +15,7 @@ class MoreRecomWineView: UIView {
     public lazy var moreWineTableView = UITableView().then {
         $0.register(MoreWineTableViewCell.self, forCellReuseIdentifier: "MoreWineTableViewCell")
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        $0.backgroundColor = Constants.AppColor.grayBG
+        $0.backgroundColor = AppColor.grayBG
         $0.showsVerticalScrollIndicator = false
     }
 

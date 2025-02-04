@@ -9,6 +9,8 @@ import Then
 import CoreModule
 import Network
 
+import SafariServices
+
 class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     private let navigationBarManager = NavigationBarManager()
     private let networkService = NoticeService()
@@ -17,7 +19,9 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private lazy var noticeListView = UITableView().then {
         $0.register(NoticeTableViewCell.self, forCellReuseIdentifier: NoticeTableViewCell.identifier)
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        $0.backgroundColor = Constants.AppColor.grayBG
+        $0.backgroundColor = AppColor.grayBG
+        $0.showsVerticalScrollIndicator = false
+        $0.separatorStyle = .singleLine
         $0.rowHeight = 50
         $0.estimatedRowHeight = 50
         $0.dataSource = self
@@ -34,7 +38,9 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        setNavBarAppearance(navigationController: self.navigationController)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -61,13 +67,14 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
         
         noticeListView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(35)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(36))
             $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
     func callNoticeAPI() {
+        self.view.showBlockingView()
         networkService.fetchAllNotices() { [weak self] result in
             guard let self = self else { return }
             
@@ -77,8 +84,10 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     self.noticeData = responseData!
                     self.noticeListView.reloadData()
                 }
+                self.view.hideBlockingView()
             case .failure(let error) :
                 print("\(error)")
+                self.view.hideBlockingView()
             }
         }
     }
@@ -101,10 +110,16 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let data = self.noticeData[indexPath.row]
         
-        guard let url = URL(string: data.contentUrl) else {
-            return
+        if let url = URL(string: data.contentUrl) {
+            let safariVC = SFSafariViewController(url: url)
+            present(safariVC, animated: true, completion: nil)
         }
         
-        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        /// 아예 앱 밖으로 나가기
+//        guard let url = URL(string: data.contentUrl) else {
+//            return
+//        }
+//        
+//        UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 }
