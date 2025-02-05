@@ -21,6 +21,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         self.navigationController?.isNavigationBarHidden = false
         view.backgroundColor = AppColor.grayBG
         self.view = searchHomeView
+        searchHomeView.noSearchResultLabel.isHidden = true
         self.view.addSubview(indicator)
         searchHomeView.searchResultTableView.dataSource = self
         searchHomeView.searchResultTableView.delegate = self
@@ -75,6 +76,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
             Task {
                 do {
                     try await callSearchAPI(query: query, startPage: 0)
+                    searchHomeView.noSearchResultLabel.isHidden = !wineResults.isEmpty
                     self.view.hideBlockingView()
                 } catch {
                     print(error)
