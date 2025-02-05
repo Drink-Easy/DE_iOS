@@ -26,7 +26,16 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        NoseManager.shared.collapseAllSections()
+        
+        if !NoseManager.shared.selectedScents.isEmpty {
+            topView.selectedCollectionView.reloadData()
+            topView.updateSelectedCollectionViewHeight()
+        }
+        
         topView.header.setTitleLabel(wineData.wineName)
+        
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
