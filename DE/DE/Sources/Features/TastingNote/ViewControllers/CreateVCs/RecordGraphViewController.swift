@@ -87,7 +87,7 @@ public class RecordGraphViewController: UIViewController, UIScrollViewDelegate {
         recordGraphView.snp.makeConstraints { make in
             make.top.equalTo(header.snp.bottom).offset(24)
             make.leading.trailing.equalToSuperview().inset(24)
-            make.height.equalTo(Constants.superViewHeight)
+            make.height.equalTo(Constants.superViewHeight * 0.5 + 460)
         }
         
         nextButton.snp.makeConstraints { make in

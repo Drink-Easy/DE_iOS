@@ -93,7 +93,7 @@ let project = Project(
         ),
         .target(
             name: "DRINKIG",
-            destinations: .iOS,
+            destinations: .init([.iPhone]),
             product: .app,
             bundleId: "\(bundleId).\(bundleMid).drinkig",
             deploymentTargets: .iOS("17.0"),
@@ -300,7 +300,7 @@ let project = Project(
             infoPlist: .default,
             sources: ["DE/Tests/**"],
             resources: ["DE/Resources/**"],
-            dependencies: [.target(name: "DRINKIG"),
+            dependencies: [
                            .target(name: "Network"),
             ]
         ),

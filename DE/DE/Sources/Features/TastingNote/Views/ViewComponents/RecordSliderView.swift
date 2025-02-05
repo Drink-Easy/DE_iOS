@@ -39,29 +39,29 @@ class RecordSliderView: UIView {
         }
         
         sweetnessView.snp.makeConstraints { make in
-            make.top.equalTo(propertyHeader.snp.bottom).offset(60)
+            make.top.equalTo(propertyHeader.snp.bottom)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(30)
+            make.height.equalTo(70)
         }
         alcoholView.snp.makeConstraints { make in
-            make.top.equalTo(sweetnessView.snp.bottom).offset(40)
+            make.top.equalTo(sweetnessView.snp.bottom)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(30)
+            make.height.equalTo(70)
         }
         tanninView.snp.makeConstraints { make in
-            make.top.equalTo(alcoholView.snp.bottom).offset(40)
+            make.top.equalTo(alcoholView.snp.bottom)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(30)
+            make.height.equalTo(70)
         }
         bodyView.snp.makeConstraints { make in
-            make.top.equalTo(tanninView.snp.bottom).offset(40)
+            make.top.equalTo(tanninView.snp.bottom)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(30)
+            make.height.equalTo(70)
         }
         acidityView.snp.makeConstraints { make in
-            make.top.equalTo(bodyView.snp.bottom).offset(40)
+            make.top.equalTo(bodyView.snp.bottom)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(30)
+            make.height.equalTo(70)
         }
     }
 

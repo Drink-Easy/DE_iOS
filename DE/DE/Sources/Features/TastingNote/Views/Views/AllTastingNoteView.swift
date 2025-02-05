@@ -87,7 +87,7 @@ class AllTastingNoteView: UIView {
         topDividerView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(8)
             $0.leading.trailing.equalToSuperview().inset(24)
-            $0.height.equalTo(2)
+            $0.height.equalTo(1)
         }
         wineImageStackView.snp.makeConstraints {
             $0.top.equalTo(topDividerView.snp.bottom)

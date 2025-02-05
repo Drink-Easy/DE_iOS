@@ -26,18 +26,12 @@ public class MainTabBarController: UITabBarController {
         let home = UIImage(systemName: "house.fill")
         let note = UIImage(systemName: "book.fill")
         let setting = UIImage(systemName: "person.fill")
-
+        
         nav1.tabBarItem = UITabBarItem(title: "홈", image: home, tag: 0)
         nav2.tabBarItem = UITabBarItem(title: "테이스팅 노트", image: note, tag: 1)
         nav3.tabBarItem = UITabBarItem(title: "마이", image: setting, tag: 2)
         
-        if traitCollection.userInterfaceStyle == .light {
-            UITabBar.clearShadow()
-            tabBar.layer.applyShadow(color: .gray, alpha: 0.3, x: 0, y: 0, blur: 15)
-        } else {
-            // 다크모드에서는 그림자 제거
-            tabBar.layer.shadowOpacity = 0
-        }
+        tabBar.layer.applyShadow(color: AppColor.black ?? .black, alpha: 0.1, x: 10, y: 0, blur: 20)
         
         tabBar.tintColor = .label
         tabBar.backgroundColor = AppColor.white

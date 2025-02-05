@@ -33,6 +33,9 @@ class LoginVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        DispatchQueue.main.async {
+            self.fillSavedId()
+        }
         self.view.addSubview(indicator)
     }
     
@@ -122,7 +125,9 @@ class LoginVC: UIViewController {
         Task {
             do {
                 let data = try await networkService.login(data: loginDTO)
-                SelectLoginTypeVC.keychain.set(usernameString, forKey: "savedUserEmail")
+                if isSavingId {
+                    SelectLoginTypeVC.keychain.set(usernameString, forKey: "savedUserEmail")
+                }
                 // userId 저장
                 saveUserId(userId: data.id) // 현재 로그인한 유저 정보
                 await UserDataManager.shared.createUser(userId: data.id)
@@ -163,13 +168,12 @@ class LoginVC: UIViewController {
     }
     
     func fillSavedId() {
-        if let id = SelectLoginTypeVC.keychain.get("savedUserId") {
-            loginView.usernameField.text = id
+        if let email = SelectLoginTypeVC.keychain.get("savedUserEmail") {
+            loginView.usernameField.text = email
         }
     }
     
     func saveUserId(userId : Int) {
-        // 로그아웃 시, 이 데이터 모두 삭제
         let userIdString = "\(userId)"
         SelectLoginTypeVC.keychain.set(userIdString, forKey: "userId")
         UserDefaults.standard.set(userId, forKey: "userId")
@@ -179,7 +183,7 @@ class LoginVC: UIViewController {
 
 extension LoginVC: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let index = textFields.firstIndex(of: textField), index < textFields.count - 1 {
+        if let index = textFields.firstIndex(of: textField), index + 1 < textFields.count {
             textFields[index + 1].becomeFirstResponder()
         } else {
             textField.resignFirstResponder()

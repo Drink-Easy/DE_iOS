@@ -49,7 +49,7 @@ public class WineInfoView: UIView {
     let chartHeaderView = PropertyTitleView(type: .palateGraph)
     let chartView = PolygonChartView()
     
-    //TODO: 컬러 뷰
+    // 컬러 뷰
     let colorStackView = UIStackView().then {
         $0.axis = .vertical
         $0.spacing = 16

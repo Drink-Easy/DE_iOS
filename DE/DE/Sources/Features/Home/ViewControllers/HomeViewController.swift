@@ -82,6 +82,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                     // get api 사용 시도 -> 캐시 데이터 업데이트
                     self.view.showBlockingView()
                     self.userName = try await memberService.getUserName()
+                    
                     try await PersonalDataManager.shared.updatePersonalData(for: userId, userName: self.userName)
                 } catch {
                     print(error.localizedDescription)
@@ -268,6 +269,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                 DispatchQueue.main.async {
                     self.adImage = bannerModels
                     self.adCollectionView.reloadData()
+                    self.pageControlNumberView.totalPages = self.adImage.count
                 }
             } catch {
                 print("⚠️ 캐시 데이터 없음 → 네트워크 요청 수행")

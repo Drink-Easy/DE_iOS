@@ -47,8 +47,8 @@ class RecomCollectionViewCell: UICollectionViewCell {
     }
 
     private func configureShadow() {
-        self.layer.shadowColor = UIColor(hex: "#9876A9")?.cgColor // 그림자 색상
-        self.layer.shadowOpacity = 0.2 // 그림자 투명도 (0.0 ~ 1.0)
+        self.layer.shadowColor = AppColor.black?.cgColor // 그림자 색상
+        self.layer.shadowOpacity = 0.1 // 그림자 투명도 (0.0 ~ 1.0)
         self.layer.shadowOffset = CGSize(width: 0, height: 2) // 그림자의 위치 (x, y)
         self.layer.shadowRadius = 4 // 그림자 흐림 정도
         self.layer.masksToBounds = false // 그림자가 보이도록 설정

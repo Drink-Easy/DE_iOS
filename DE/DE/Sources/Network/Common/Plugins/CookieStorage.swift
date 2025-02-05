@@ -3,103 +3,99 @@
 import Foundation
 
 public class CookieStorage {
-    public func extractTokensAndStore(from headers: [AnyHashable: Any]) {
-        guard let setCookieHeaders = headers["Set-Cookie"] as? [String] else {
-            print("⚠️ `Set-Cookie` 헤더 없음")
+    public func extractTokensAndStore(from response: HTTPURLResponse) {
+        guard let setCookieHeader = response.allHeaderFields["Set-Cookie"] as? String else {
+//            print("⚠️ `Set-Cookie` 헤더 없음")
             return
         }
-        
+
         var extractedAccessToken: String?
         var extractedRefreshToken: String?
         var accessTokenExpiry: Date?
         var refreshTokenExpiry: Date?
-        var path: String = "/" // 기본값
-        var isSecure: Bool = true
-        var isHttpOnly: Bool = true
-        var sameSite: String = "Strict" // 기본값
+
+        let cookies = setCookieHeader.components(separatedBy: ", ")
         
-        for cookieString in setCookieHeaders {
-            let cookieComponents = cookieString.components(separatedBy: ";").map { $0.trimmingCharacters(in: .whitespaces) }
-            
-            for component in cookieComponents {
+        var currentTokenType: String? // 현재 처리 중인 토큰 타입 (accessToken 또는 refreshToken)
+
+        for cookie in cookies {
+            let components = cookie.components(separatedBy: ";").map { $0.trimmingCharacters(in: .whitespaces) }
+
+            for component in components {
                 if component.starts(with: "accessToken=") {
                     extractedAccessToken = component.replacingOccurrences(of: "accessToken=", with: "")
+                    currentTokenType = "accessToken"
                 } else if component.starts(with: "refreshToken=") {
                     extractedRefreshToken = component.replacingOccurrences(of: "refreshToken=", with: "")
+                    currentTokenType = "refreshToken"
                 } else if component.starts(with: "Expires=") {
                     if let expiryDate = convertExpiresStringToDate(component.replacingOccurrences(of: "Expires=", with: "")) {
-                        if extractedAccessToken != nil {
+                        if currentTokenType == "accessToken" {
                             accessTokenExpiry = expiryDate
-                        } else if extractedRefreshToken != nil {
+                        } else if currentTokenType == "refreshToken" {
                             refreshTokenExpiry = expiryDate
                         }
                     }
                 } else if component.starts(with: "Max-Age=") {
                     if let maxAgeSeconds = Double(component.replacingOccurrences(of: "Max-Age=", with: "")) {
                         let expiryDate = Date().addingTimeInterval(maxAgeSeconds)
-                        if extractedAccessToken != nil {
+                        if currentTokenType == "accessToken" {
                             accessTokenExpiry = expiryDate
-                        } else if extractedRefreshToken != nil {
+                        } else if currentTokenType == "refreshToken" {
                             refreshTokenExpiry = expiryDate
                         }
                     }
-                } else if component.starts(with: "Path=") {
-                    path = component.replacingOccurrences(of: "Path=", with: "")
-                } else if component.starts(with: "Secure") {
-                    isSecure = true
-                } else if component.starts(with: "HttpOnly") {
-                    isHttpOnly = true
-                } else if component.starts(with: "SameSite=") {
-                    sameSite = component.replacingOccurrences(of: "SameSite=", with: "")
                 }
             }
         }
-        
-        let finalDomain = API.baseURL
-        
+
+        // ✅ 최종적으로 쿠키 저장
+        let domain = API.baseURL
+
         if let accessToken = extractedAccessToken {
-            let expiry = accessTokenExpiry ?? Date().addingTimeInterval(86400) // 기본 만료 기간: 24시간
-            updateHTTPCookies(with: accessToken, key: "accessToken", expiredIn: expiry, domain: finalDomain, path: path, isSecure: isSecure, isHttpOnly: isHttpOnly, sameSite: sameSite)
+            let expiry = accessTokenExpiry ?? Date().addingTimeInterval(3600)
+            updateHTTPCookies(with: accessToken, key: "accessToken", expiredIn: expiry, domain: domain)
         } else {
             print("⚠️ AccessToken을 찾을 수 없음")
         }
 
         if let refreshToken = extractedRefreshToken {
-            let expiry = refreshTokenExpiry ?? Date().addingTimeInterval(86400) // 기본 만료 기간: 24시간
-            updateHTTPCookies(with: refreshToken, key: "refreshToken", expiredIn: expiry, domain: finalDomain, path: path, isSecure: isSecure, isHttpOnly: isHttpOnly, sameSite: sameSite)
+            let expiry = refreshTokenExpiry ?? Date().addingTimeInterval(864000)
+            updateHTTPCookies(with: refreshToken, key: "refreshToken", expiredIn: expiry, domain: domain)
         } else {
             print("⚠️ RefreshToken을 찾을 수 없음")
         }
     }
-    
-    private func updateHTTPCookies(with newToken: String, key: String, expiredIn endTime: Date, domain: String, path: String, isSecure: Bool, isHttpOnly: Bool, sameSite: String) {
-        guard let url = URL(string: "https://\(domain)") else { return }
+
+    /// ✅ 쿠키 저장 함수
+    private func updateHTTPCookies(with newToken: String, key: String, expiredIn endTime: Date, domain: String) {
+        guard let url = URL(string: domain) else { return }
 
         let newCookie = HTTPCookie(properties: [
-            .domain: domain,
-            .path: path,
+            .domain: url.host!,
+            .path: "/",
             .name: key,
             .value: newToken,
-            .secure: isSecure ? "TRUE" : "FALSE",
             .expires: endTime,
-            .sameSitePolicy: sameSite
+            .secure: "TRUE"
         ])
 
         if let newCookie = newCookie {
             HTTPCookieStorage.shared.setCookie(newCookie)
+            print("✅ 새로운 \(key) 쿠키 저장 완료: \(newCookie.value)")
         } else {
             print("⚠️ 새로운 쿠키 생성 실패")
         }
 
-        // ✅ 저장된 쿠키 확인 (디버깅용)
-        if let updatedCookies = HTTPCookieStorage.shared.cookies {
-            print("🍪 현재 저장된 쿠키 목록:")
-            for cookie in updatedCookies {
-                print("🔹 \(cookie.name): \(cookie.value) | Expiry: \(cookie.expiresDate ?? Date()) | Domain: \(cookie.domain) | Path: \(cookie.path)")
-            }
-        }
+
+//        if let updatedCookies = HTTPCookieStorage.shared.cookies {
+//            print("🍪 현재 저장된 쿠키 목록:")
+//            for cookie in updatedCookies {
+//                print("🔹 \(cookie.name): \(cookie.value) | Expiry: \(cookie.expiresDate ?? Date())")
+//            }
+//        }
     }
-    
+
     /// ✅ `Expires="Wed, 05 Feb 2025 17:51:04 GMT"` 형식의 문자열을 `Date`로 변환하는 함수
     private func convertExpiresStringToDate(_ expiresString: String) -> Date? {
         let formatter = DateFormatter()
