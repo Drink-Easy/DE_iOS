@@ -83,6 +83,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                 do {
                     // get api 사용 시도 -> 캐시 데이터 업데이트
                     self.userName = try await memberService.getUserName()
+                    
                     try await PersonalDataManager.shared.updatePersonalData(for: userId, userName: self.userName)
                     
                     self.view.hideBlockingView()
