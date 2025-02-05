@@ -87,11 +87,11 @@ class InquiryViewController: UIViewController {
             view.addSubview($0)
         }
         inquiryLabel.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(8))
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(12))
             make.leading.equalTo(DynamicPadding.dynamicValue(24))
         }
         descriptionLabel.snp.makeConstraints { make in
-            make.top.equalTo(inquiryLabel.snp.bottom).offset(8)
+            make.top.equalTo(inquiryLabel.snp.bottom).offset(DynamicPadding.dynamicValue(8))
             make.leading.equalTo(inquiryLabel.snp.leading)
         }
     }
@@ -106,7 +106,7 @@ class InquiryViewController: UIViewController {
         
         view.addSubview(tableView)
         tableView.snp.makeConstraints { make in
-            make.top.equalTo(descriptionLabel.snp.bottom).offset(8)
+            make.top.equalTo(descriptionLabel.snp.bottom).offset(DynamicPadding.dynamicValue(16))
             make.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
             make.leading.equalToSuperview()
             make.bottom.equalToSuperview()
@@ -161,10 +161,10 @@ extension InquiryViewController: UITableViewDelegate, MFMailComposeViewControlle
                 
             let bodyString = """
                             - 아래 정보를 작성해 주세요
-                            1. 문의 내용 :
+                            1. 문의 내용 : 
                             
                             
-                            2. 드링키지 메일 계정 :
+                            2. 드링키지 메일 계정 : 
                             (마이페이지 - 계정 정보에서 확인 가능)
                             
                             문의 관련 스크린샷을 첨부하시면 더욱 빠른 처리가 가능합니다

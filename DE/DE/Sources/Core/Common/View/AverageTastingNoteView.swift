@@ -40,7 +40,7 @@ public class AverageTastingNoteView: UIView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = Constants.AppColor.grayBG
+        backgroundColor = AppColor.grayBG
         self.addComponents()
         self.constraints()
     }

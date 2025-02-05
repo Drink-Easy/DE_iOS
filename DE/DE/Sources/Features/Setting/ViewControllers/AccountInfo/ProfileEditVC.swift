@@ -66,7 +66,6 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         // 이미지 선택 후 동작 설정
         imagePickerManager.onImagePicked = { [weak self] image, fileName in
             guard let self = self else { return }
-            print("setupImagePicker")
             self.profileView.profileImageView.image = image
             self.profileImgFileName = fileName
             self.profileImg = image
@@ -110,6 +109,8 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     private func callPatchAPI() async throws {
         if let profileImg = self.profileImg {
             let imageResult = try await networkService.postImgAsync(image: profileImg)
+        } else {
+            let imageNil = try await networkService.deleteProfileImage()
         }
         
         guard let newUserName = self.profileView.nicknameTextField.text,
@@ -165,9 +166,35 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         view.endEditing(true)
     }
     
+    func showProfileActionSheet(in viewController: UIViewController) {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { _ in
+            // 삭제 로직 구현
+            self.profileImg = nil
+            self.profileView.profileImageView.image = UIImage(named: "profilePlaceholder")
+        }
+        
+        let editAction = UIAlertAction(title: "수정", style: .default) { _ in
+            self.imagePickerManager.presentImagePicker(from: self)
+        }
+        
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in
+            print("❌ 취소 버튼 눌림")
+        }
+        
+        // ✅ 액션 추가
+        actionSheet.addAction(deleteAction)
+        actionSheet.addAction(editAction)
+        actionSheet.addAction(cancelAction)
+
+        // ✅ 액션 시트 표시
+        viewController.present(actionSheet, animated: true, completion: nil)
+    }
+    
     // 프로필 이미지 선택
     @objc func selectProfileImage() {
-        imagePickerManager.presentImagePicker(from: self)
+        showProfileActionSheet(in: self)
     }
     
     //MARK: - 위치 정보 불러오기 로직
@@ -188,10 +215,9 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
             print("닉네임이 없습니다")
             return
         }
-        self.view.showBlockingView()
-        ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField) { [weak self] success in
-            guard let self = self else { return }
-            
+        view.showBlockingView()
+        Task {
+            await ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField)
             DispatchQueue.main.async {
                 self.view.hideBlockingView()  // ✅ 네트워크 요청 후 인디케이터 중지
                 self.checkFormValidity()  // ✅ UI 업데이트
@@ -216,10 +242,6 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         let isLocationValid = !(profileView.myLocationTextField.textField.text?.isEmpty ?? true)
         let isImageSelected = profileView.profileImageView.image != nil
         let isFormValid = isNicknameValid && isLocationValid && isImageSelected
-        print("isNicknameValid == \(isNicknameValid)")
-        print("isLocationValid == \(isLocationValid)")
-        print("isImageSelected == \(isImageSelected)")
-        print("isFormValid == \(isFormValid)")
         navigationItem.rightBarButtonItem?.isEnabled = isFormValid
     }
 }

@@ -4,6 +4,7 @@ import UIKit
 import CoreModule
 import Then
 import Network
+import SafariServices
 
 public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestureRecognizerDelegate {
     
@@ -16,13 +17,16 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     
     public var userName: String = "" {
         didSet {
-            updateLikeWineListView()
+            DispatchQueue.main.async {
+                self.updateLikeWineListView()
+            }
         }
     }
     
     private var homeTopView = HomeTopView()
     let networkService = WineService()
     let bannerNetworkService = NoticeService()
+    let memberService = MemberService()
     
     // View 세팅
     private lazy var scrollView: UIScrollView = {
@@ -63,17 +67,28 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
         $0.moreBtn.addTarget(self, action: #selector(goToMoreLikely), for: .touchUpInside)
     }
     
-    public func fetchName() { // TODO : 이름 호출 로직 수정하기
+    public func fetchName() {
         Task {
             guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
                 print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
             self.view.showBlockingView()
+            
             do {
+                // 캐시 데이터 사용 시도
                 self.userName = try await PersonalDataManager.shared.fetchUserName(for: userId)
                 self.view.hideBlockingView()
             } catch {
+                do {
+                    // get api 사용 시도 -> 캐시 데이터 업데이트
+                    self.userName = try await memberService.getUserName()
+                    try await PersonalDataManager.shared.updatePersonalData(for: userId, userName: self.userName)
+                    
+                    self.view.hideBlockingView()
+                } catch {
+                    print(error.localizedDescription)
+                }
                 print(error.localizedDescription)
                 self.view.hideBlockingView()
             }
@@ -114,10 +129,12 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
         self.navigationController?.isNavigationBarHidden = true
         self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         self.view.addSubview(indicator)
+        fetchName()
+        
         setAdBanner()
         fetchWines(isRecommend: true) // 추천 와인
         fetchWines(isRecommend: false) // 인기 와인
-        fetchName()
+        
     }
     
     private func addComponents() {
@@ -170,15 +187,17 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     
     // MARK: - 컬렉션뷰 업데이트 함수
     func updateCollectionView(isRecommend : Bool, with wines: [WineData]) {
-        let maxDisplayCount = 5
-        let homeWineModels = toHomeWineModels(Array(wines.prefix(maxDisplayCount)))
-        
-        if isRecommend {
-            recommendWineDataList = homeWineModels
-            likeWineListView.recomCollectionView.reloadData()
-        } else { // 인기 와인인 경우
-            popularWineDataList = homeWineModels
-            popularWineListView.recomCollectionView.reloadData()
+        DispatchQueue.main.async {
+            let maxDisplayCount = 5
+            let homeWineModels = self.toHomeWineModels(Array(wines.prefix(maxDisplayCount)))
+            
+            if isRecommend {
+                self.recommendWineDataList = homeWineModels
+                self.likeWineListView.recomCollectionView.reloadData()
+            } else { // 인기 와인인 경우
+                self.popularWineDataList = homeWineModels
+                self.popularWineListView.recomCollectionView.reloadData()
+            }
         }
     }
     
@@ -204,6 +223,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
             return
         }
         self.userId = userId
+        
         Task {
             do {
                 if isRecommend {
@@ -212,13 +232,17 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                     
                     if !cachedWines.isEmpty {
                         print("✅ 캐시된 추천와인 데이터 사용: \(cachedWines.count)개")
+                        updateCollectionView(isRecommend: isRecommend, with: cachedWines) // ✅ 추가
                         return
                     }
+                    
                     self.updateCollectionView(isRecommend: isRecommend, with: cachedWines)
                 } else { // 인기 와인은 따로 처리
                     let cachedWines = try PopularWineManager.shared.fetchWineDataList()
+                    
                     if !cachedWines.isEmpty {
-                        print("✅ 캐시된 인기와인 데이터 사용: \(cachedWines.count)개")
+                        print("✅ 캐시된 추천와인 데이터 사용: \(cachedWines.count)개")
+                        updateCollectionView(isRecommend: isRecommend, with: cachedWines) // ✅ 추가
                         return
                     }
                     self.updateCollectionView(isRecommend: isRecommend, with: cachedWines)
@@ -245,6 +269,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                 DispatchQueue.main.async {
                     self.adImage = bannerModels
                     self.adCollectionView.reloadData()
+                    self.pageControlNumberView.totalPages = self.adImage.count
                 }
 
             } catch {
@@ -282,31 +307,28 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     
     private func fetchWinesFromNetwork(_ isRecommend: Bool) async {
         self.view.showBlockingView()
-        let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
         
         if isRecommend {
-            fetchFunction = networkService.fetchRecommendWines
-        } else { // 인기 와인인 경우
-            fetchFunction = networkService.fetchPopularWines
-        }
-
-        await withCheckedContinuation { continuation in
-            fetchFunction { [weak self] result in
-                guard let self = self else { return }
-
-                switch result {
-                case .success(let responseData):
-                    Task {
-                        await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
-                        self.view.hideBlockingView()
-                        continuation.resume()
-                    }
-                    
-                case .failure(let error):
-                    print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
+            do {
+                let responseData = try await networkService.fetchRecommendWines()
+                await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
+                DispatchQueue.main.async {
                     self.view.hideBlockingView()
-                    continuation.resume()
                 }
+            } catch {
+                print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
+                self.view.hideBlockingView()
+            }
+        } else { // 인기 와인인 경우
+            do {
+                let responseData = try await networkService.fetchPopularWines()
+                await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
+                DispatchQueue.main.async {
+                    self.view.hideBlockingView()
+                }
+            } catch {
+                print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
+                self.view.hideBlockingView()
             }
         }
     }
@@ -454,10 +476,16 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         if collectionView.tag == 1 || collectionView.tag == 2 {
             let vc = WineDetailViewController()
             vc.wineId = (collectionView.tag == 1) ? recommendWineDataList[indexPath.row].wineId : popularWineDataList[indexPath.row].wineId
+            vc.wineName = (collectionView.tag == 1) ? recommendWineDataList[indexPath.row].wineName : popularWineDataList[indexPath.row].wineName
             navigationController?.pushViewController(vc, animated: true)
         } else if collectionView.tag == 0 {
-            // TODO : 웹페이지 뷰 띄우기
             print("\(adImage[indexPath.row].postUrl) : 이 주소로 이동하세요")
+            
+            // 사파리 뷰 띄우는거 주석 해제만 하면 됨! by dyk.
+//            if let url = URL(string: adImage[indexPath.row].postUrl) {
+//                let safariVC = SFSafariViewController(url: url)
+//                present(safariVC, animated: true, completion: nil)
+//            }
         }
     }
     

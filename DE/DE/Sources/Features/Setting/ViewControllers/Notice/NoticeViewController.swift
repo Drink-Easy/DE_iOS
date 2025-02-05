@@ -19,7 +19,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private lazy var noticeListView = UITableView().then {
         $0.register(NoticeTableViewCell.self, forCellReuseIdentifier: NoticeTableViewCell.identifier)
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        $0.backgroundColor = Constants.AppColor.grayBG
+        $0.backgroundColor = AppColor.grayBG
         $0.showsVerticalScrollIndicator = false
         $0.separatorStyle = .singleLine
         $0.rowHeight = 50
@@ -67,26 +67,23 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
         
         noticeListView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(36))
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(8))
             $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
     func callNoticeAPI() {
-        self.view.showBlockingView()
-        networkService.fetchAllNotices() { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let responseData) :
+        view.showBlockingView()
+        Task {
+            do {
+                let data = try await networkService.fetchAllNotices()
                 DispatchQueue.main.async {
-                    self.noticeData = responseData!
+                    self.noticeData = data
+                    self.view.hideBlockingView()
                     self.noticeListView.reloadData()
                 }
-                self.view.hideBlockingView()
-            case .failure(let error) :
-                print("\(error)")
+            } catch {
                 self.view.hideBlockingView()
             }
         }
@@ -114,12 +111,5 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
             let safariVC = SFSafariViewController(url: url)
             present(safariVC, animated: true, completion: nil)
         }
-        
-        /// 아예 앱 밖으로 나가기
-//        guard let url = URL(string: data.contentUrl) else {
-//            return
-//        }
-//        
-//        UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 }

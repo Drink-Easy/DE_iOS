@@ -22,6 +22,7 @@ public class CustomCheckSquareButton: UIButton {
             }
             titleLabel.snp.makeConstraints { make in
                 make.centerY.equalTo(imageView)
+                make.leading.equalTo(imageView.snp.trailing)
             }
         }
     }

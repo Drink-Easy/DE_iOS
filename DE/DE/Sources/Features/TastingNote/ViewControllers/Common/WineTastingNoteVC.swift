@@ -19,6 +19,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     let wineData = TNWineDataManager.shared
     
     public var noteId: Int = 0
+    var wineName: String = "Default Name"
     var wineInfo: TastingNoteResponsesDTO?
     
     //MARK: UI Elements
@@ -52,6 +53,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         self.view.addSubview(indicator)
+        self.callFetchApi()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -66,7 +68,6 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         setupUI()
         setupNavigationBar()
         setNavBarAppearance(navigationController: self.navigationController)
-        self.callFetchApi()
     }
     
     // MARK: - Setup Methods
@@ -82,7 +83,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         
         smallTitleLabel = navigationBarManager.setNReturnTitle(
             to: navigationItem,
-            title: wineData.wineName,
+            title: wineName,
             textColor: AppColor.black ?? .black
         )
         smallTitleLabel.isHidden = true
@@ -170,17 +171,12 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         Task {
             do {
                 try await CallTastingNote()
-                smallTitleLabel.text = wineData.wineName
-                
-                DispatchQueue.main.async {
-                    self.setupNavigationBar() // 제목 설정
-                }
                 setWineData()
                 self.view.hideBlockingView()
             } catch {
+                self.view.hideBlockingView()
                 print("Error: \(error)")
                 // Alert 표시 등 추가
-                self.view.hideBlockingView()
             }
         }
     }
@@ -214,7 +210,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     
     private func setWineData() {
         print(wineData.wineName)
-        wineInfoView.header.setTitleLabel(wineData.wineName)
+        wineInfoView.header.setTitleLabel(wineName)
         wineInfoView.header.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         wineInfoView.header.infoView.kindContents.text = "\(wineData.sort)"
         wineInfoView.header.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")

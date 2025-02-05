@@ -7,6 +7,7 @@ public enum NetworkError: Error {
     case decodingError
     case serverError(statusCode: Int, message: String)
     case unknown
+    case tokenExpiredError
 }
 
 extension NetworkError: LocalizedError {
@@ -20,6 +21,8 @@ extension NetworkError: LocalizedError {
             return "[오류 \(statusCode)] \(message)"
         case .unknown:
             return "알 수 없는 오류가 발생했습니다."
+        case .tokenExpiredError:
+            return "인증이 만료되었습니다. 다시 로그인해주세요."
         }
     }
 }

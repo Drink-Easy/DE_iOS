@@ -3,7 +3,7 @@
 import Foundation
 
 public struct MemberInfoResponse : Decodable {
-    public let imageUrl : String
+    public let imageUrl : String?
     public let username : String
     public let email : String
     public let city : String

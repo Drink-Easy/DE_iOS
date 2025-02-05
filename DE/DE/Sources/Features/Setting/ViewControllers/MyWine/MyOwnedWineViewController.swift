@@ -14,7 +14,7 @@ class MyOwnedWineViewController: UIViewController {
     private lazy var myWienTableView = UITableView().then {
         $0.register(MyWineTableViewCell.self, forCellReuseIdentifier: MyWineTableViewCell.identifier)
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        $0.backgroundColor = Constants.AppColor.grayBG
+        $0.backgroundColor = AppColor.grayBG
         $0.dataSource = self
         $0.delegate = self
     }
@@ -26,7 +26,6 @@ class MyOwnedWineViewController: UIViewController {
         $0.font = UIFont.ptdRegularFont(ofSize: 14)
         $0.textColor = AppColor.gray70
         $0.textAlignment = .center
-        $0.isHidden = true
     }
     
     override func viewDidLoad() {
@@ -41,6 +40,7 @@ class MyOwnedWineViewController: UIViewController {
         super.viewWillAppear(animated)
         CheckCacheData()
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        setNavBarAppearance(navigationController: self.navigationController)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -165,7 +165,7 @@ class MyOwnedWineViewController: UIViewController {
                 savedList.append(savingWine)
             }
             
-            
+            self.noWineLabel.isHidden = !savedList.isEmpty
 
             myWienTableView.reloadData()
 
@@ -195,7 +195,13 @@ class MyOwnedWineViewController: UIViewController {
             wineResults = data.map {
                 MyWineViewModel(myWineId: $0.myWineId, wineId: $0.wineId, wineName: $0.wineName, wineSort: $0.wineSort, wineCountry: $0.wineCountry, wineRegion: $0.wineRegion, wineVariety: $0.wineVariety, wineImageUrl: $0.imageURL, purchaseDate: $0.date, purchasePrice: $0.price, period: $0.Dday)
             }
-            
+            DispatchQueue.main.async {
+                if self.wineResults.isEmpty || self.wineResults.count == 0 {
+                    self.noWineLabel.isHidden = false
+                } else {
+                    self.noWineLabel.isHidden = true
+                }
+            }
             myWienTableView.reloadData()
         } catch {
             print("⚠️ 캐시 데이터 가져오기 실패: \(error)")

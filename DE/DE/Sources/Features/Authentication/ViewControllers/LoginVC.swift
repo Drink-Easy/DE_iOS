@@ -80,7 +80,16 @@ class LoginVC: UIViewController {
     }
     
     @objc private func backButtonTapped() {
-        navigationController?.popViewController(animated: true)
+        guard let navigationController = self.navigationController else {
+            return
+        }
+        
+        if let targetIndex = navigationController.viewControllers.firstIndex(where: { $0 is SelectLoginTypeVC }) {
+            let targetVC = navigationController.viewControllers[targetIndex]
+            navigationController.popToViewController(targetVC, animated: true)
+        } else {
+            navigationController.popToRootViewController(animated: true) // 못 찾으면 루트로 이동
+        }
     }
     
     @objc func usernameValidate() {
@@ -107,31 +116,26 @@ class LoginVC: UIViewController {
     }
     
     @objc private func loginButtonTapped() {
+        self.view.showBlockingView()
         let loginDTO = networkService.makeLoginDTO(username: loginView.usernameField.text!, password: loginView.passwordField.text!)
         usernameString = loginDTO.username
-        self.view.showBlockingView()
-        networkService.login(data: loginDTO) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let response):
+        Task {
+            do {
+                let data = try await networkService.login(data: loginDTO)
                 SelectLoginTypeVC.keychain.set(usernameString, forKey: "savedUserEmail")
                 // userId 저장
-                saveUserId(userId: response.id) // 현재 로그인한 유저 정보
-                Task {
-                    await UserDataManager.shared.createUser(userId: response.id)
-                }
+                saveUserId(userId: data.id) // 현재 로그인한 유저 정보
+                await UserDataManager.shared.createUser(userId: data.id)
                 self.view.hideBlockingView()
-                self.goToNextView(response.isFirst)
-            case .failure(let error):
-                print(error)
+                self.goToNextView(data.isFirst)
+            } catch {
+                print("Error: \(error)")
                 self.view.hideBlockingView()
                 self.loginView.loginButton.isEnabled = false
                 self.loginView.loginButton.isEnabled(isEnabled: false)
                 self.validationManager.showValidationError(loginView.usernameField, message: "")
                 self.validationManager.showValidationError(loginView.passwordField, message: "회원 정보를 다시 확인해 주세요")
             }
-            
         }
     }
     
@@ -175,7 +179,7 @@ class LoginVC: UIViewController {
 
 extension LoginVC: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let index = textFields.firstIndex(of: textField), index < textFields.count - 1 {
+        if let index = textFields.firstIndex(of: textField), index + 1 < textFields.count {
             textFields[index + 1].becomeFirstResponder()
         } else {
             textField.resignFirstResponder()

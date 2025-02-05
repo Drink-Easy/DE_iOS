@@ -18,7 +18,7 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
     let floatingButton = UIButton(type: .system).then {
         $0.setImage(UIImage(named: "pencil"), for: .normal)
         $0.tintColor = .white
-        $0.backgroundColor = AppColor.purple70
+        $0.backgroundColor = AppColor.purple100
         $0.layer.cornerRadius = DynamicPadding.dynamicValue(25.0)
         
         $0.layer.shadowColor = UIColor.black.cgColor
@@ -165,6 +165,7 @@ extension AllTastingNoteVC: UICollectionViewDataSource, UICollectionViewDelegate
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let vc = WineTastingNoteVC()
         vc.noteId = currentTastingNoteList[indexPath.row].noteId
+        vc.wineName = currentTastingNoteList[indexPath.row].wineName
         vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -179,16 +180,7 @@ extension AllTastingNoteVC: UICollectionViewDataSource, UICollectionViewDelegate
         }
         
         let tnItem = currentTastingNoteList[indexPath.row]
-        if let url = URL(string: tnItem.imageUrl) {
-            DispatchQueue.global().async {
-                if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        cell.image.image = image
-                    }
-                }
-            }
-        }
-        cell.name.text = tnItem.wineName
+        cell.configure(name: tnItem.wineName, imageURL: tnItem.imageUrl)
         return cell
     }
 }

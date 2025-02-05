@@ -5,7 +5,7 @@ import CoreModule
 
 // 향 선택 뷰컨
 
-public class NoseTestVC: UIViewController {
+public class NoseTestVC: UIViewController, UIScrollViewDelegate {
     
     let wineData = TNWineDataManager.shared
     let tnManager = NewTastingNoteManager.shared
@@ -21,7 +21,7 @@ public class NoseTestVC: UIViewController {
     
     let topView = NoseTopView() // 기본 상단 뷰
     let middleView = NoseBottomView(title: "다음", isEnabled: true) // 중간 뷰
-//    let middleView = OnlyScrollView()
+    private var smallTitleLabel = UILabel()
     let navigationBarManager = NavigationBarManager()
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -47,8 +47,11 @@ public class NoseTestVC: UIViewController {
     private func setupUI() {
         topView.propertyHeader.setName(eng: "Nose", kor: "향")
         view.addSubview(scrollView)
+        scrollView.delegate = self
         scrollView.addSubview(contentView)
         [middleView, topView].forEach { contentView.addSubview($0) }
+        
+        topView.header.setTitleLabel(wineData.wineName)
         
         scrollView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
@@ -103,6 +106,13 @@ public class NoseTestVC: UIViewController {
             target: self,
             action: #selector(prevVC)
         )
+        
+        smallTitleLabel = navigationBarManager.setNReturnTitle(
+            to: navigationItem,
+            title: wineData.wineName,
+            textColor: AppColor.black ?? .black
+        )
+        smallTitleLabel.isHidden = true
     }
     
     @objc func prevVC() {
@@ -116,6 +126,16 @@ public class NoseTestVC: UIViewController {
         tnManager.saveNose(scentNames)
         let nextVC = RecordGraphViewController()
         navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let largeTitleBottom = topView.header.frame.maxY + 10
+        
+        UIView.animate(withDuration: 0.1) {
+            self.topView.header.alpha = offsetY > largeTitleBottom ? 0 : 1
+            self.smallTitleLabel.isHidden = !(offsetY > largeTitleBottom)
+        }
     }
 }
 
@@ -283,4 +303,8 @@ extension NoseTestVC: UICollectionViewDelegateFlowLayout {
         }
         return CGSize(width: collectionView.frame.width, height: 52) // 기본 헤더 크기
     }
+}
+
+protocol NoseHeaderViewDelegate: AnyObject {
+    func toggleSection(_ section: Int) // 섹션 상태 토글을 위한 델리게이트 메서드
 }

@@ -54,49 +54,33 @@ class MoreLikelyWineViewController: UIViewController {
                     print("✅ 캐시된 데이터 사용: \(wineList.count)개")
                 } else {
                     print("⚠️ 캐시 데이터가 비어있음, 네트워크 요청 시작")
-                    await fetchWinesFromNetwork(true)
+                    await fetchWinesFromNetwork()
                     self.moreLikelyWineView.moreWineTableView.reloadData()
                 }
             } catch {
                 print("⚠️ 캐시 데이터 없음, 네트워크 요청 시작")
-                await fetchWinesFromNetwork(true)
+                await fetchWinesFromNetwork()
                 self.moreLikelyWineView.moreWineTableView.reloadData()
             }
         }
     }
     
     // MARK: - 네트워크 요청 처리
-    private func fetchWinesFromNetwork(_ isRecommend: Bool) async {
+    private func fetchWinesFromNetwork() async {
         self.view.showBlockingView()
-        let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
-        
-        if isRecommend {
-            fetchFunction = networkService.fetchRecommendWines
-        } else {
-            fetchFunction = networkService.fetchRecommendWines
-        }
-
-        await withCheckedContinuation { continuation in
-            fetchFunction { [weak self] result in
-                guard let self = self else { return }
-
-                switch result {
-                case .success(let responseData):
-                    Task {
-                        await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
-                        continuation.resume()
-                    }
-                    self.view.hideBlockingView()
-                case .failure(let error):
-                    print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
-                    continuation.resume()
-                    self.view.hideBlockingView()
-                }
+        do {
+            let responseData = try await networkService.fetchRecommendWines()
+            await self.processWineData(responseData: responseData.0, time: responseData.1 ?? 3600)
+            DispatchQueue.main.async {
+                self.view.hideBlockingView()
             }
+        } catch {
+            print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
+            self.view.hideBlockingView()
         }
     }
     
-    private func processWineData(_ isRecommend: Bool, responseData: [HomeWineDTO], time: TimeInterval) async {
+    private func processWineData(responseData: [HomeWineDTO], time: TimeInterval) async {
         let wines = responseData.map {
             WineData(wineId: $0.wineId,
                      imageUrl: $0.imageUrl,
@@ -166,6 +150,7 @@ extension MoreLikelyWineViewController: UITableViewDelegate, UITableViewDataSour
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = WineDetailViewController()
         vc.wineId = wineList[indexPath.row].wineId
+        vc.wineName = wineList[indexPath.row].wineName
         navigationController?.pushViewController(vc, animated: true)
     }
 }

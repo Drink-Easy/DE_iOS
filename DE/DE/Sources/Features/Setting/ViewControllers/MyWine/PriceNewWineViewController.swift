@@ -59,20 +59,33 @@ class PriceNewWineViewController: UIViewController {
     }
     
     @objc func nextVC() {
-        guard let price = self.priceNewWineView.priceTextField.text else { return }
+        guard let price = self.priceNewWineView.priceTextField.text, isValidInteger(price) else {
+            let alert = UIAlertController(title: "", message: "가격을 숫자로만 입력해주세요.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+            present(alert, animated: true, completion: nil)
+            return
+        }
         MyOwnedWineManager.shared.setPrice(price)
         
         callPostAPI()
         
         DispatchQueue.main.async {
-            self.navigationController?.popToRootViewController(animated: true)
-//            self.navigationController?.popViewController(animated: true)
-//            guard let navigationController = self.navigationController else { return }
-//            if let targetIndex = navigationController.viewControllers.firstIndex(where: { $0 is MyOwnedWineViewController }) {
-//                let newStack = Array(navigationController.viewControllers[...targetIndex])
-//                navigationController.setViewControllers(newStack, animated: true)
-//            }
+            guard let navigationController = self.navigationController else {
+                return
+            }
+            
+            // 🔹 네비게이션 스택에서 MyOwnedWineViewController 찾기
+            if let targetIndex = navigationController.viewControllers.firstIndex(where: { $0 is MyOwnedWineViewController }) {
+                let targetVC = navigationController.viewControllers[targetIndex]
+                navigationController.popToViewController(targetVC, animated: true)
+            } else {
+                navigationController.popToRootViewController(animated: true) // 못 찾으면 루트로 이동
+            }
         }
+    }
+
+    func isValidInteger(_ text: String) -> Bool {
+        return Int(text) != nil
     }
     
     private func callPostAPI() {

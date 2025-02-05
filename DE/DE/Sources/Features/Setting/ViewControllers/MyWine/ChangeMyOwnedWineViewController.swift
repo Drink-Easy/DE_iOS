@@ -9,12 +9,15 @@ import Then
 // 보유와인 정보 수정
 
 class ChangeMyOwnedWineViewController: UIViewController {
+    weak var delegate: ChildViewControllerDelegate?
+    
     let navigationBarManager = NavigationBarManager()
     lazy var editInfoView = ChangeMyOwnedWineView()
     
     let networkService = MyWineService()
     
     var registerWine: MyWineViewModel?
+    
     lazy var selectedDate: DateComponents = {
         guard let wine = registerWine else { return Calendar.current.dateComponents([.year, .month, .day], from: Date()) }
         
@@ -117,7 +120,7 @@ class ChangeMyOwnedWineViewController: UIViewController {
     
     @objc
     private func completeEdit() {
-        guard let wine = registerWine else {return}
+        guard let wine = registerWine else { return }
         callUpdateAPI(wineId: wine.myWineId, price: checkPrice(), buyDate: checkDate())
         DispatchQueue.main.async {
             self.navigationController?.popViewController(animated: true)
@@ -170,6 +173,8 @@ class ChangeMyOwnedWineViewController: UIViewController {
         Task {
             do {
                 _ = try await networkService.updateMyWine(myWineId: wineId, data: data)
+                delegate?.didUpdateData(true)
+                
                 try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
                 try await APICallCounterManager.shared.incrementPatch(for: userId, controllerName: .myWine)
             } catch {
