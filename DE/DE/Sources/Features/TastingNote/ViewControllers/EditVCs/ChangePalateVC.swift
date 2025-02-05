@@ -177,7 +177,7 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-        let largeTitleBottom = wineNameTitle.header.frame.maxY + 10
+        let largeTitleBottom = wineNameTitle.header.frame.maxY + 5
         
         UIView.animate(withDuration: 0.1) {
             self.wineNameTitle.header.alpha = offsetY > largeTitleBottom ? 0 : 1

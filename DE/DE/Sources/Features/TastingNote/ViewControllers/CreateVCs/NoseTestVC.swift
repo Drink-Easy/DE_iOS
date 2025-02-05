@@ -26,7 +26,16 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        NoseManager.shared.collapseAllSections()
+        
+        if !NoseManager.shared.selectedScents.isEmpty {
+            topView.selectedCollectionView.reloadData()
+            topView.updateSelectedCollectionViewHeight()
+        }
+        
         topView.header.setTitleLabel(wineData.wineName)
+        
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -42,6 +51,7 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate {
         setupCollectionView()
         setupActions()
         setupNavigationBar()
+        setNavBarAppearance(navigationController: self.navigationController)
     }
     
     private func setupUI() {
@@ -130,7 +140,7 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-        let largeTitleBottom = topView.header.frame.maxY + 10
+        let largeTitleBottom = topView.header.frame.maxY + 5
         
         UIView.animate(withDuration: 0.1) {
             self.topView.header.alpha = offsetY > largeTitleBottom ? 0 : 1

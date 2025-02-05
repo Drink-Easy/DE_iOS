@@ -19,6 +19,7 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
         self.navigationController?.isNavigationBarHidden = false
         view.backgroundColor = AppColor.grayBG
         self.view = searchHomeView
+        searchHomeView.noSearchResultLabel.isHidden = true
         self.view.addSubview(indicator)
         
         searchHomeView.searchResultTableView.dataSource = self
@@ -62,15 +63,18 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
             Task {
                 do {
                     try await callSearchAPI(query: query, startPage: 0)
+                    searchHomeView.noSearchResultLabel.isHidden = !wineResults.isEmpty
                     self.view.hideBlockingView()
                 } catch {
                     print(error)
                     self.view.hideBlockingView()
                 }
             }
+            textField.resignFirstResponder()
             return true
         } else {
             showCharacterLimitAlert()
+            textField.resignFirstResponder()
         }
         return true
     }

@@ -21,6 +21,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         self.navigationController?.isNavigationBarHidden = false
         view.backgroundColor = AppColor.grayBG
         self.view = searchHomeView
+        searchHomeView.noSearchResultLabel.isHidden = true
         self.view.addSubview(indicator)
         searchHomeView.searchResultTableView.dataSource = self
         searchHomeView.searchResultTableView.delegate = self
@@ -75,15 +76,18 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
             Task {
                 do {
                     try await callSearchAPI(query: query, startPage: 0)
+                    searchHomeView.noSearchResultLabel.isHidden = !wineResults.isEmpty
                     self.view.hideBlockingView()
                 } catch {
                     print(error)
                     self.view.hideBlockingView()
                 }
             }
+            textField.resignFirstResponder()
             return true
         } else {
             showCharacterLimitAlert()
+            textField.resignFirstResponder()
         }
         return true
     }
@@ -159,7 +163,6 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         let selectedWine = wineResults[indexPath.row]
         MyOwnedWineManager.shared.setWineId(selectedWine.wineId)
         MyOwnedWineManager.shared.setWineName(selectedWine.name)
-        vc.hidesBottomBarWhenPushed = true // 탭바 숨겨주기
         navigationController?.pushViewController(vc, animated: true)
     }
     
