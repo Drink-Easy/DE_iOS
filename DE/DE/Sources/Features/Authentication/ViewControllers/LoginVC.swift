@@ -170,6 +170,8 @@ class LoginVC: UIViewController {
     func fillSavedId() {
         if let email = SelectLoginTypeVC.keychain.get("savedUserEmail") {
             loginView.usernameField.text = email
+            validationManager.isEmailDuplicate = false
+            validationManager.isUsernameValid = true
         }
     }
     

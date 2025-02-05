@@ -69,7 +69,7 @@ class AllTastingNoteView: UIView {
     
     // MARK: - Setup Methods
     private func setupUI() {
-        [titleLabel, searchButton, topDividerView, wineImageStackView, tnLabel, TastingNoteCollectionView, noTastingNoteLabel].forEach {
+        [titleLabel, /*searchButton*/ topDividerView, wineImageStackView, tnLabel, TastingNoteCollectionView, noTastingNoteLabel].forEach {
             addSubview($0)
         }
     }
@@ -79,11 +79,11 @@ class AllTastingNoteView: UIView {
             $0.top.equalToSuperview()
             $0.leading.equalTo(safeAreaLayoutGuide).inset(24)
         }
-        searchButton.snp.makeConstraints {
-            $0.top.equalToSuperview()
-            $0.trailing.equalTo(safeAreaLayoutGuide).inset(24)
-            $0.size.equalTo(25)
-        }
+//        searchButton.snp.makeConstraints {
+//            $0.top.equalToSuperview()
+//            $0.trailing.equalTo(safeAreaLayoutGuide).inset(24)
+//            $0.size.equalTo(25)
+//        }
         topDividerView.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(8)
             $0.leading.trailing.equalToSuperview().inset(24)
