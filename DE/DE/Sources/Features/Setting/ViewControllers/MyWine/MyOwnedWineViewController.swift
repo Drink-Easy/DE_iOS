@@ -76,6 +76,7 @@ class MyOwnedWineViewController: UIViewController {
     
     @objc private func addNewWine() {
         let vc = AddNewWineViewController()
+        vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -229,7 +230,7 @@ extension MyOwnedWineViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let infoVC = MyOwnedWineInfoViewController()
         infoVC.registerWine = wineResults[indexPath.row]
-        
+        infoVC.hidesBottomBarWhenPushed = true
         self.navigationController?.pushViewController(infoVC, animated: true)
     }
     

@@ -163,7 +163,6 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         let selectedWine = wineResults[indexPath.row]
         MyOwnedWineManager.shared.setWineId(selectedWine.wineId)
         MyOwnedWineManager.shared.setWineName(selectedWine.name)
-        vc.hidesBottomBarWhenPushed = true // 탭바 숨겨주기
         navigationController?.pushViewController(vc, animated: true)
     }
     
