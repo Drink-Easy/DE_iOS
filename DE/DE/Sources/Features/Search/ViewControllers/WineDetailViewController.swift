@@ -144,7 +144,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     //largeTitle -> smallTitle
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-        let largeTitleBottom = largeTitleLabel.frame.maxY + 10
+        let largeTitleBottom = largeTitleLabel.frame.maxY + 5
         
         UIView.animate(withDuration: 0.1) {
             self.largeTitleLabel.alpha = offsetY > largeTitleBottom ? 0 : 1

@@ -156,7 +156,7 @@ public class RecordGraphViewController: UIViewController, UIScrollViewDelegate {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-        let largeTitleBottom = header.frame.maxY + 10
+        let largeTitleBottom = header.frame.maxY + 5
         
         UIView.animate(withDuration: 0.1) {
             self.header.alpha = offsetY > largeTitleBottom ? 0 : 1
