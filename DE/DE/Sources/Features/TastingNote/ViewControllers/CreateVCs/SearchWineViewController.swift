@@ -68,9 +68,11 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
                     self.view.hideBlockingView()
                 }
             }
+            textField.resignFirstResponder()
             return true
         } else {
             showCharacterLimitAlert()
+            textField.resignFirstResponder()
         }
         return true
     }

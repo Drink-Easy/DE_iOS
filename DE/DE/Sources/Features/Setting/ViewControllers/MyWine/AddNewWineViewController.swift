@@ -81,9 +81,11 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
                     self.view.hideBlockingView()
                 }
             }
+            textField.resignFirstResponder()
             return true
         } else {
             showCharacterLimitAlert()
+            textField.resignFirstResponder()
         }
         return true
     }

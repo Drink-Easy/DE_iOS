@@ -64,9 +64,11 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
                     indicator.stopAnimating()
                 }
             }
+            textField.resignFirstResponder()
             return true
         } else {
             showCharacterLimitAlert()
+            textField.resignFirstResponder()
         }
         return true
     }
