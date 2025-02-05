@@ -167,6 +167,10 @@ class MyOwnedWineViewController: UIViewController {
                 savedList.append(savingWine)
             }
             
+            // Dday(기간) 기준으로 오름차순 정렬
+            wineResults.sort { $0.period < $1.period }
+            savedList.sort { $0.Dday < $1.Dday }
+            
             self.noWineLabel.isHidden = !savedList.isEmpty
 
             myWienTableView.reloadData()
@@ -196,7 +200,8 @@ class MyOwnedWineViewController: UIViewController {
             // ✅ 데이터 변환 및 저장
             wineResults = data.map {
                 MyWineViewModel(myWineId: $0.myWineId, wineId: $0.wineId, wineName: $0.wineName, wineSort: $0.wineSort, wineCountry: $0.wineCountry, wineRegion: $0.wineRegion, wineVariety: $0.wineVariety, wineImageUrl: $0.imageURL, purchaseDate: $0.date, purchasePrice: $0.price, period: $0.Dday)
-            }
+            }.sorted { $0.period < $1.period }
+            
             DispatchQueue.main.async {
                 if self.wineResults.isEmpty || self.wineResults.count == 0 {
                     self.noWineLabel.isHidden = false
