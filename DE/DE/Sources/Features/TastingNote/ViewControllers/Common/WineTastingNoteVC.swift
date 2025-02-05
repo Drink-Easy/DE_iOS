@@ -39,7 +39,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-        let largeTitleBottom = wineInfoView.header.header.frame.maxY - DynamicPadding.dynamicValue(90)
+        let largeTitleBottom = wineInfoView.header.header.frame.maxY - 10
         
         UIView.animate(withDuration: 0.1) {
             self.wineInfoView.header.header.alpha = offsetY > largeTitleBottom ? 0 : 1
@@ -209,8 +209,8 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     }
     
     private func setWineData() {
-        print(wineData.wineName)
-        wineInfoView.header.setTitleLabel(wineName)
+        wineInfoView.header.header.setTitleLabel(wineName)
+        
         wineInfoView.header.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         wineInfoView.header.infoView.kindContents.text = "\(wineData.sort)"
         wineInfoView.header.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")

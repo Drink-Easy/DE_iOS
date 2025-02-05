@@ -45,7 +45,7 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     
     private func setWineData() {
         guard let currentWine = self.registerWine else { return }
-        header.setTitleLabel(currentWine.wineName)
+        header.header.setTitleLabel(currentWine.wineName)
         header.infoView.image.sd_setImage(with: URL(string: currentWine.wineImageUrl), placeholderImage: UIImage(named: "placeholder"))
         header.infoView.typeContents.text = "\(currentWine.wineCountry), \(currentWine.wineRegion)"
         header.infoView.countryContents.text = currentWine.wineVariety
