@@ -32,16 +32,18 @@ public class SearchBar: UITextField {
         self.textColor = AppColor.gray100
         self.tintColor = AppColor.purple100
         //self.font = UIFont.ptdSemiBoldFont(ofSize: 14)
+        self.autocapitalizationType = .none //자동 대문자
+        self.spellCheckingType = .no //맞춤법 검사
+        self.autocorrectionType = .no //자동완성
         
         let icon = UIImage(named: "searchBarIcon")?.withRenderingMode(.alwaysTemplate)
         imageView.image = icon
         imageView.tintColor = AppColor.gray70 ?? .gray
         imageView.contentMode = .scaleAspectFit
         
-        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: 40, height: 24))
-        imageView.frame = CGRect(x: 7.6, y: 0, width: 24, height: 24)
+        let containerView = UIView(frame: CGRect(x: 0, y: 0, width: DynamicPadding.dynamicValue(47), height: DynamicPadding.dynamicValue(24)))
+        imageView.frame = CGRect(x: DynamicPadding.dynamicValue(14.6), y: 0, width: DynamicPadding.dynamicValue(24), height: DynamicPadding.dynamicValue(24))
         containerView.addSubview(imageView)
-        
         self.leftView = containerView
         self.leftViewMode = .always
         

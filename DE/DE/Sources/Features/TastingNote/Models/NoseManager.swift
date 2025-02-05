@@ -24,6 +24,35 @@ class NoseManager {
             }
         }
     }
+    
+    public func resetAllScents() {
+        for sectionIndex in 0..<scentSections.count {
+            for scentIndex in 0..<scentSections[sectionIndex].scents.count {
+                scentSections[sectionIndex].scents[scentIndex].isSelected = false
+            }
+        }
+        print("🔄 모든 향 선택 해제 완료!")
+    }
+    
+    public func applySelectedScents(from selectedScentNames: [String]) {
+        resetAllScents()
+        
+        for sectionIndex in 0..<scentSections.count {
+            for scentIndex in 0..<scentSections[sectionIndex].scents.count {
+                let scent = scentSections[sectionIndex].scents[scentIndex]
+                if selectedScentNames.contains(scent.name) {
+                    scentSections[sectionIndex].scents[scentIndex].isSelected = true
+                }
+            }
+        }
+//        print("✅ 선택된 향 적용 완료: \(selectedScentNames)")
+    }
+    
+    func collapseAllSections() {
+        for sectionIndex in 0..<scentSections.count {
+            scentSections[sectionIndex].isExpand = false
+        }
+    }
 }
 
 struct Scent {
@@ -100,5 +129,16 @@ extension ScentSection {
             ScentSection(header: "동물", isExpand: false, scents: Scent.animals()),
             ScentSection(header: "탄 내", isExpand: false, scents: Scent.burns())
         ]
+    }
+}
+
+extension NoseManager {
+    /// ✅ 모든 선택된 향 초기화 (선택 해제)
+    func resetSelectedScents() {
+        for sectionIndex in 0..<scentSections.count {
+            for scentIndex in 0..<scentSections[sectionIndex].scents.count {
+                scentSections[sectionIndex].scents[scentIndex].isSelected = false
+            }
+        }
     }
 }

@@ -55,21 +55,19 @@ extension SelectLoginTypeVC: ASAuthorizationControllerDelegate {
                 return
             }
             
-            networkService.appleLogin(data: loginData) { [weak self] result in
-                guard let self = self else { return }
-                
-                switch result {
-                case .success(let response):
+            // TODO : 로딩 인디케이터 추가
+            Task {
+                do {
+                    let response = try await networkService.appleLogin(data: loginData)
                     saveUserId(userId: response.id)
-                    Task {
-                        await UserDataManager.shared.createUser(userId: response.id)
+                    await UserDataManager.shared.createUser(userId: response.id)
+                    DispatchQueue.main.async {
+                        self.goToNextView(response.isFirst)
                     }
-                    self.goToNextView(response.isFirst)
-                case .failure(let error):
+                } catch {
                     print(error)
                 }
             }
-
         default :
             break
         }
@@ -80,5 +78,4 @@ extension SelectLoginTypeVC: ASAuthorizationControllerPresentationContextProvidi
     public func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return self.view.window ?? UIWindow()
     }
-    
 }

@@ -47,18 +47,17 @@ public final class TastingNoteService: NetworkManager {
     /// 노트 수정DTO의 body을 위한 DTO 생성 함수
     /// 모든 항목이 optional임
     public func makeUpdateNoteBodyDTO(color : String? = nil,
-                           tastingDate : String? = nil,
-                           sugarContent : Int? = nil,
-                           acidity : Int? = nil,
-                           tannin : Int? = nil,
-                           body : Int? = nil,
-                           alcohol : Int? = nil,
-                           addNoseList : [String]? = nil,
-                           removeNoseList : [Int]? = nil,
-                           satisfaction : Double? = nil,
-                           review : String? = nil
+                                      tastingDate : String? = nil,
+                                      sugarContent : Int? = nil,
+                                      acidity : Int? = nil,
+                                      tannin : Int? = nil,
+                                      body : Int? = nil,
+                                      alcohol : Int? = nil,
+                                      updateNoseList : [String]? = nil,
+                                      satisfaction : Double? = nil,
+                                      review : String? = nil
     ) -> TastingNoteUpdateRequestDTO {
-        return TastingNoteUpdateRequestDTO(color: color, tastingDate: tastingDate, sugarContent: sugarContent, acidity: acidity, tannin: tannin, body: body, alcohol: alcohol, addNoseList: addNoseList, removeNoseList: removeNoseList, rating: satisfaction, review: review)
+        return TastingNoteUpdateRequestDTO(color: color, tastingDate: tastingDate, sugarContent: sugarContent, acidity: acidity, tannin: tannin, body: body, alcohol: alcohol, updateNoseList: updateNoseList, rating: satisfaction, review: review)
     }
     
     //MARK: - API funcs
@@ -83,9 +82,9 @@ public final class TastingNoteService: NetworkManager {
         try await requestAsync(target: .getNote(noteId: noteId), decodingType: TastingNoteResponsesDTO.self)
     }
     
-    /// 모든 노트 정보 조회 API
-    public func fetchAllNotes(sort: String) async throws -> AllTastingNoteResponseDTO {
-        try await requestAsync(target: .getAllNotes(sort: sort), decodingType: AllTastingNoteResponseDTO.self)
+    /// 모든 노트 정보 조회 API -> 기본이 0
+    public func fetchAllNotes(sort: String, page: Int = 0) async throws -> AllTastingNoteResponseDTO {
+        try await requestAsync(target: .getAllNotes(sort: sort, page: page), decodingType: AllTastingNoteResponseDTO.self)
     }
     
 }

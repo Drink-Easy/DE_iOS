@@ -14,7 +14,7 @@ public final class UserDataManager {
             container = try ModelContainer(
                 for: UserData.self, PersonalData.self, Wishlist.self,
                 TastingNoteList.self, TastingNote.self, MyWineList.self,
-                SavedWineDataModel.self, APIControllerCounter.self, APICounter.self, WineList.self, WineData.self
+                SavedWineDataModel.self, APIControllerCounter.self, APICounter.self, RecommendWineList.self, WineData.self
             )
             print("✅ UserData SwiftData 초기화 성공!")
         } catch {

@@ -14,7 +14,7 @@ public class SimpleListView: UIView {
     
     public lazy var backView = UIView().then {
         $0.backgroundColor = AppColor.white
-        $0.layer.cornerRadius = 16
+        $0.layer.cornerRadius = 14
         $0.layer.masksToBounds = true
     }
     
@@ -31,6 +31,7 @@ public class SimpleListView: UIView {
             for: .normal
         )
         $0.isHidden = true
+        $0.isEnabled = true
     }
     
     public var items: [(title: String, value: String)] = [] {
@@ -68,7 +69,7 @@ public class SimpleListView: UIView {
         }
         backView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(DynamicPadding.dynamicValue(8.0))
-            make.leading.trailing.equalToSuperview().inset(4)
+            make.leading.trailing.equalToSuperview()
         }
         editButton.snp.makeConstraints { make in
             make.centerY.equalTo(titleLabel)
@@ -122,8 +123,8 @@ public class SimpleListView: UIView {
         }
         
         backView.snp.updateConstraints { make in
-            if items.count == 5 { //리스트 개수가 2일 때
-                make.height.greaterThanOrEqualTo(204)
+            if items.count == 4 { //리스트 개수가 2일 때
+                make.height.greaterThanOrEqualTo(164)
             } else { //리스트 개수가 2일 때
                 make.height.greaterThanOrEqualTo(84)
             }

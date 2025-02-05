@@ -37,53 +37,46 @@ public final class MemberService : NetworkManager {
     }
     
     /// 닉네임 체크 API
-    public func checkNickname(name: String, completion: @escaping (Result<Bool, NetworkError>) -> Void) {
-        request(target: .checkNickname(nickname: name), decodingType: Bool.self, completion: completion)
+    public func checkNickname(name: String) async throws -> Bool {
+        return try await requestAsync(target: .checkNickname(nickname: name), decodingType: Bool.self)
     }
     
     /// 이미지 업로드 API
-    public func postImg(image: UIImage, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .postImage(image: image), decodingType: String.self, completion: completion)
-    }
-    
     public func postImgAsync(image: UIImage) async throws -> String {
         return try await requestAsync(target: .postImage(image: image), decodingType: String.self)
     }
     
     /// 개인정보 갱신 API(마이페이지)
-    public func patchUserInfo(body: MemberUpdateRequest, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .patchMemeberPersonalInfo(body: body), decodingType: String.self, completion: completion)
-    }
-    
     public func patchUserInfoAsync(body: MemberUpdateRequest) async throws -> String {
         return try await requestAsync(target: .patchMemeberPersonalInfo(body: body), decodingType: String.self)
     }
     
     /// 취향찾기 등록 API
-    public func postUserInfo(body: MemberRequestDTO, completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .patchMemberInfo(body: body), decodingType: String.self, completion: completion)
-    }
-    
     public func postUserInfoAsync(body: MemberRequestDTO) async throws -> String {
-        return try await requestAsync(target: .patchMemberInfo(body: body))
+        return try await requestAsync(target: .patchMemberInfo(body: body), decodingType: String.self)
     }
     
     /// 개인정보 불러오기 API
-    public func fetchUserInfo(completion: @escaping (Result<MemberInfoResponse, NetworkError>) -> Void) {
-        request(target: .getMemberInfo, decodingType: MemberInfoResponse.self, completion: completion)
+    public func fetchUserInfoAsync() async throws -> MemberInfoResponse {
+        return try await requestAsync(target: .getMemberInfo, decodingType: MemberInfoResponse.self)
     }
     
     public func getUserName() async throws -> String {
-        return try await requestAsync(target: .getNickname)
+        return try await requestAsync(target: .getNickname, decodingType: String.self)
     }
     
     /// 사용자 탈퇴 API
-    public func deleteUser(completion: @escaping (Result<String, NetworkError>) -> Void) {
-        request(target: .deleteMember, decodingType: String.self, completion: completion)
+    public func deleteUser() async throws -> String {
+        return try await requestAsync(target: .deleteMember, decodingType: String.self)
     }
     
     public func deleteAppleUser(body: AppleDeleteRequest) async throws -> String {
-        try await requestAsync(target: .deleteAppleUser(body: body))
+        return try await requestAsync(target: .deleteAppleUser(body: body))
+    }
+    
+    /// 사용자 프로필 이미지 삭제하기
+    public func deleteProfileImage() async throws -> String {
+        return try await requestAsync(target: .deleteImage)
     }
     
 }

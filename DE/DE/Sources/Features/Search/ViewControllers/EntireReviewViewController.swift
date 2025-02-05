@@ -20,15 +20,19 @@ class EntireReviewViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Constants.AppColor.grayBG
+        view.backgroundColor = AppColor.grayBG
 
         addView()
         constraints()
+        self.view.addSubview(indicator)
+        self.view.showColorBlockingView()
         Task {
             do {
                 try await callEntireReviewAPI(wineId: self.wineId, sortType: "최신순", page: 0)
+                self.view.hideBlockingView()
             } catch {
                 print(error)
+                self.view.hideBlockingView()
             }
         }
         setupDropdownAction()
@@ -59,10 +63,19 @@ class EntireReviewViewController: UIViewController {
     }
     
     private lazy var largeTitleLabel = UILabel().then {
-        $0.text = wineName
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        let text = wineName
         $0.numberOfLines = 0
-        $0.textColor = AppColor.black
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 2
+        
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.ptdSemiBoldFont(ofSize: 24),
+            .paragraphStyle: paragraphStyle,
+            .foregroundColor: AppColor.black!
+        ]
+        
+        $0.attributedText = NSAttributedString(string: text, attributes: attributes)
     }
 
     private lazy var entireReviewView = EntireReviewView().then {
@@ -99,6 +112,7 @@ class EntireReviewViewController: UIViewController {
             } else if selectedOption == "별점 낮은 순" {
                 currentType = "별점 낮은 순"
             }
+            self.view.showBlockingView()
             Task {
                 do {
                     try await self.callEntireReviewAPI(wineId: self.wineId, sortType: self.currentType, page: 0)
@@ -106,8 +120,10 @@ class EntireReviewViewController: UIViewController {
                         // 강제로 맨위로 올리기
                         self.entireReviewView.reviewCollectionView.setContentOffset(.zero, animated: true)
                     }
+                    self.view.hideBlockingView()
                 } catch {
                     print(error)
+                    self.view.hideBlockingView()
                 }
             }
         }
@@ -209,12 +225,14 @@ extension EntireReviewViewController: UICollectionViewDataSource, UICollectionVi
         if contentOffsetY > contentHeight - scrollViewHeight { // Trigger when arrive the bottom
             guard !isLoading, currentPage + 1 < totalPage else { return }
             isLoading = true
-            
+            self.view.showBlockingView()
             Task {
                 do {
                     try await callEntireReviewAPI(wineId: self.wineId, sortType: currentType, page: currentPage + 1)
+                    self.view.hideBlockingView()
                 } catch {
                     print("Failed to fetch next page: \(error)")
+                    self.view.hideBlockingView()
                 }
                 DispatchQueue.main.async {
                     self.entireReviewView.reviewCollectionView.reloadData()

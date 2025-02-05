@@ -12,12 +12,12 @@ public class SearchHomeView: UIView {
         let text = "검색하고 싶은\n와인을 입력해주세요"
         
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineHeightMultiple = 1.25 // 줄 간격 설정
+        paragraphStyle.lineSpacing = 2
         
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.ptdSemiBoldFont(ofSize: 24),
             .paragraphStyle: paragraphStyle,
-            .foregroundColor: Constants.AppColor.DGblack ?? .black
+            .foregroundColor: AppColor.DGblack ?? .black
         ]
         $0.attributedText = NSAttributedString(string: text, attributes: attributes)
     }
@@ -27,12 +27,12 @@ public class SearchHomeView: UIView {
     public lazy var searchResultTableView = UITableView().then {
         $0.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        $0.backgroundColor = Constants.AppColor.grayBG
+        $0.backgroundColor = AppColor.grayBG
     }
 
     public init(titleText: String, placeholder: String) {
         super.init(frame: .zero)
-        backgroundColor = Constants.AppColor.grayBG
+        backgroundColor = AppColor.grayBG
 
         title.text = titleText
         searchBar.placeholderText = placeholder

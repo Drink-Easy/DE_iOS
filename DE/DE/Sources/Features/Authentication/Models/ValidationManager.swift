@@ -42,25 +42,20 @@ final class ValidationManager {
         return true
     }
     
-    func checkEmailDuplicate(email: String, view: CustomLabelTextFieldView) {
+    func checkEmailDuplicate(email: String, view: CustomLabelTextFieldView) async {
         let emailCheckDTO = networkService.makeEmailCheckDTO(emailString: email)
-        
-        networkService.checkEmail(data: emailCheckDTO) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let response):
-                if response {
-                    self.showValidationError(view, message: "이미 사용 중인 이메일입니다.")
-                    self.isEmailDuplicate = true
-                } else {
-                    self.hideValidationError(view, message: "사용 가능한 이메일입니다.")
-                    self.isEmailDuplicate = false
-                }
-            case .failure(let error):
-                print("네트워크 요청 실패: \(error)")
-                self.showValidationError(view, message: "이메일 확인 중 오류가 발생했습니다.")
+
+        do {
+            let data = try await networkService.checkEmail(data: emailCheckDTO)
+            if data {
+                self.showValidationError(view, message: "이미 사용 중인 이메일입니다.")
+                self.isEmailDuplicate = true
+            } else {
+                self.hideValidationError(view, message: "사용 가능한 이메일입니다.")
+                self.isEmailDuplicate = false
             }
+        } catch {
+            self.showValidationError(view, message: "이메일 확인 중 오류가 발생했습니다.")
         }
     }
     
@@ -97,18 +92,23 @@ final class ValidationManager {
     
     // MARK: - UI 업데이트 메서드
     func showValidationError(_ view: CustomLabelTextFieldView, message: String) {
-        view.updateValidationText(message, isHidden: false, color: AppColor.red)
-        view.textField.layer.borderColor = AppColor.red?.cgColor
-        view.textField.backgroundColor = AppColor.red?.withAlphaComponent(0.1)
-        view.textField.textColor = AppColor.red
-        view.iconImageView.tintColor = AppColor.red
+        DispatchQueue.main.async {
+            view.updateValidationText(message, isHidden: false, color: AppColor.red)
+            view.textField.layer.borderColor = AppColor.red?.cgColor
+            view.textField.backgroundColor = AppColor.red?.withAlphaComponent(0.1)
+            view.textField.textColor = AppColor.red
+            view.iconImageView.tintColor = AppColor.red
+        }
     }
     
     func hideValidationError(_ view: CustomLabelTextFieldView, message: String) {
-        view.updateValidationText(message, isHidden: false, color: AppColor.purple100)
-        view.textField.layer.borderColor = AppColor.purple100?.cgColor
-        view.textField.backgroundColor = AppColor.purple10
-        view.textField.textColor = AppColor.purple100
-        view.iconImageView.tintColor = AppColor.purple100
+        DispatchQueue.main.async {
+            view.updateValidationText(message, isHidden: false, color: AppColor.purple100)
+            view.textField.layer.borderColor = AppColor.purple100?.cgColor
+            view.textField.backgroundColor = AppColor.purple10
+            view.textField.textColor = AppColor.purple100
+            view.iconImageView.tintColor = AppColor.purple100
+        }
+
     }
 }

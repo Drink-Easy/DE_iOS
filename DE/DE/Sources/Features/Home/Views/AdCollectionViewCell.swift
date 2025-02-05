@@ -3,14 +3,16 @@
 import UIKit
 import Then
 import SnapKit
+import CoreModule
+import SDWebImage
 
 class AdCollectionViewCell: UICollectionViewCell {
     
     static let identifier = "AdCollectionViewCell"
     
     private let image = UIImageView().then {
-        $0.image = UIImage(named: "ad4")
         $0.contentMode = .scaleAspectFill
+        $0.image = UIImage(named: "adPlaceholder")
     }
     
     override init(frame: CGRect) {
@@ -35,9 +37,9 @@ class AdCollectionViewCell: UICollectionViewCell {
     
     func configure(model: HomeBannerModel) {
         if let url = URL(string: model.imageUrl) {
-            image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
+            image.sd_setImage(with: url, placeholderImage: UIImage(named: "adPlaceholder"))
         } else {
-            image.image = UIImage(named: "placeholder")
+            image.image = UIImage(named: "adPlaceholder")
         }
     }
 }

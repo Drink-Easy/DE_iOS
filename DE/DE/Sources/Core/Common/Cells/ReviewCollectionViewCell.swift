@@ -12,12 +12,12 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
     public var onToggle: (() -> Void)?
     
     public lazy var nickname = UILabel().then {
-        $0.textColor = .black
+        $0.textColor = AppColor.black
         $0.font = UIFont.ptdMediumFont(ofSize: 16)
     }
     
     public lazy var score = UILabel().then {
-        $0.textColor = Constants.AppColor.purple100
+        $0.textColor = AppColor.purple100
         $0.font = UIFont.ptdMediumFont(ofSize: 14)
     }
     

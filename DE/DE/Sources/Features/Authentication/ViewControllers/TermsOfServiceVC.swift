@@ -19,10 +19,20 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
     
     // MARK: - UI Components
     private let subHeaderLabel = UILabel().then {
-        $0.text = "사용자의 더 특별한 경험을 위해\n약관 동의가 필요합니다."
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
-        $0.textAlignment = .left
         $0.numberOfLines = 0
+        let text = "사용자의 더 특별한 경험을 위해\n약관 동의가 필요합니다."
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 2
+        paragraphStyle.alignment = .left
+        
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.ptdSemiBoldFont(ofSize: 24),
+            .paragraphStyle: paragraphStyle,
+            .foregroundColor: AppColor.black!
+        ]
+        
+        $0.attributedText = NSAttributedString(string: text, attributes: attributes)
     }
     
     private let allTitleLabel = UILabel().then {

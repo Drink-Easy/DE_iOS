@@ -24,10 +24,21 @@ public class WelcomeVC: UIViewController {
     }
     
     private let subtitleLabel = UILabel().then {
-        $0.text = "어플을 더욱 알차게 사용하실 수 있게\n저희에게 몇 가지 정보를 알려주세요!"
-        $0.font = UIFont.ptdMediumFont(ofSize: 18)
-        $0.textColor = AppColor.gray70
-        $0.textAlignment = .center
+        let text = "어플을 더욱 알차게 사용하실 수 있게\n저희에게 몇 가지 정보를 알려주세요!"
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 4  // ✅ 행간 설정
+        paragraphStyle.alignment = .center  // ✅ 가운데 정렬
+
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.ptdMediumFont(ofSize: 18),
+            .foregroundColor: AppColor.gray70!,
+            .paragraphStyle: paragraphStyle
+        ]
+        
+        let attributedText = NSAttributedString(string: text, attributes: attributes)
+        
+        $0.attributedText = attributedText
         $0.numberOfLines = 0
     }
     
@@ -41,7 +52,6 @@ public class WelcomeVC: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupUI()
         setupConstraints()
     }

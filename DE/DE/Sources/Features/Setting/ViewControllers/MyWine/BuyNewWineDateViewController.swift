@@ -32,6 +32,14 @@ public class BuyNewWineDateViewController: UIViewController {
         setupNavigationBar()
     }
     
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        // ✅ UICalendarView가 리로드될 때 불필요한 크기 변경을 방지
+//        tastedDateView.calendarContainer.layoutIfNeeded()
+        tastedDateView.calender.invalidateIntrinsicContentSize()
+    }
+    
     func setupUI() {
         view.backgroundColor = AppColor.bgGray
         
@@ -46,8 +54,18 @@ public class BuyNewWineDateViewController: UIViewController {
     func setupActions() {
         tastedDateView.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
         
-        tastedDateView.calender.selectionBehavior = UICalendarSelectionSingleDate(delegate: self)
+        let singleDateSelection = UICalendarSelectionSingleDate(delegate: self)
+        
+        let today = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+        singleDateSelection.selectedDate = today
+        selectedDate = today
+        
+        tastedDateView.calender.selectionBehavior = singleDateSelection
         tastedDateView.calender.delegate = self
+        
+        tastedDateView.calender.reloadDecorations(forDateComponents: [today], animated: false)
+        
+        tastedDateView.nextButton.isEnabled(isEnabled: true)
     }
     
     private func setupNavigationBar() {
@@ -85,14 +103,30 @@ public class BuyNewWineDateViewController: UIViewController {
 }
 
 extension BuyNewWineDateViewController: UICalendarSelectionSingleDateDelegate {
+    
+    /// ✅ 날짜 선택 시 (미래 날짜면 선택 안됨, 아니라면 선택 적용)
     public func dateSelection(_ selection: UICalendarSelectionSingleDate, didSelectDate dateComponents: DateComponents?) {
-        guard let validDateComponents = dateComponents else {
-            return
-        }
-        selectedDate = validDateComponents
+        guard let validDateComponents = dateComponents else { return }
         
+        selectedDate = validDateComponents
         tastedDateView.calender.reloadDecorations(forDateComponents: [validDateComponents], animated: true)
+        
+        UIView.animate(withDuration: 0.2) {
+            self.tastedDateView.calendarContainer.layoutIfNeeded()
+        }
+        
         self.tastedDateView.nextButton.isEnabled(isEnabled: true)
+    }
+    
+    /// ✅ 미래 날짜 선택 차단 (미래 날짜 선택을 아예 못하게 막음)
+    public func dateSelection(_ selection: UICalendarSelectionSingleDate, canSelectDate dateComponents: DateComponents?) -> Bool {
+        guard let dateComponents = dateComponents,
+              let selectedDate = Calendar.current.date(from: dateComponents) else { return false }
+        
+        let today = Calendar.current.startOfDay(for: Date()) // 오늘 날짜 (00:00:00 기준)
+        
+        // ✅ 미래 날짜 선택 차단 (미래 날짜면 false 반환)
+        return selectedDate <= today
     }
 }
 
@@ -102,7 +136,7 @@ extension BuyNewWineDateViewController: UICalendarViewDelegate {
             return .customView {
                 let backgroundView = UIView()
                 backgroundView.backgroundColor = AppColor.purple100
-                backgroundView.layer.cornerRadius = 18 // 원형으로 만들기 위해 cornerRadius를 반지름으로 설정
+                backgroundView.layer.cornerRadius = 16 // 원형으로 만들기 위해 cornerRadius를 반지름으로 설정
                 backgroundView.layer.masksToBounds = true
                 
                 return backgroundView

@@ -11,6 +11,7 @@ public class NicknameValidateManager {
     public let networkService = MemberService()
     
     public var isNicknameValid = false
+    public var isLengthValid = false
     public var isNicknameCanUse = false //false 이면 닉네임 중복 상태
     
     // MARK: - Validation Methods
@@ -19,22 +20,70 @@ public class NicknameValidateManager {
         hideValidationError(view, message: "")
         return true
     }
-        
-        public func validateNickname(_ view: CustomTextFieldView) -> Bool {
+    
+    public func validateNickname(_ view: CustomTextFieldView) -> Bool {
         // 닉네임이 비어있는지 확인
         guard let username = view.text, !username.isEmpty else {
             showValidationError(view, message: "닉네임을 입력해 주세요")
             return false
         }
         
-        // 닉네임 길이 검증
-           if username.count < 2 {
-               showValidationError(view, message: "2자 이상의 닉네임을 입력해 주세요")
-               return false
-           } else if username.count > 10 {
-               showValidationError(view, message: "10자 이하의 닉네임만 가능해요")
-               return false
-           }
+        let koreanJamoRegex = "[ㄱ-ㅎㅏ-ㅣ]" // ✅ 한글 자모 포함 여부 검사
+        let koreanCompleteRegex = "[가-힣]" // ✅ 한글 완성형 포함 여부 검사
+        let englishRegex = "[A-Za-z]" // ✅ 영어 포함 여부 검사
+        let numberRegex = "[0-9]" // ✅ 숫자 포함 여부 검사
+        let specialCharRegex = "[^가-힣ㄱ-ㅎㅏ-ㅣA-Za-z0-9]" // ✅ 특수문자 포함 여부 검사
+        
+        // 한글 자모 포함 여부
+        let containsKoreanJamo = username.range(of: koreanJamoRegex, options: .regularExpression) != nil
+        // 한글 완성형 포함 여부
+        let containsKoreanComplete = username.range(of: koreanCompleteRegex, options: .regularExpression) != nil
+        // 영어 포함 여부
+        let containsEnglish = username.range(of: englishRegex, options: .regularExpression) != nil
+        // 숫자 포함 여부
+        let containsNumber = username.range(of: numberRegex, options: .regularExpression) != nil
+        // 특수문자 포함 여부
+        let containsSpecialChar = username.range(of: specialCharRegex, options: .regularExpression) != nil
+        
+        let length = username.count
+        
+        // **한글 자모만 포함 → 최대 6자**
+        if containsKoreanJamo && !containsKoreanComplete && !containsEnglish && !containsNumber && !containsSpecialChar {
+            if length > 6 {
+                showValidationError(view, message: "한글 자모만 포함된 닉네임은 6자 이하만 가능해요")
+                return false
+            }
+        }
+        // **한글 완성형만 포함 → 최대 6자**
+        else if containsKoreanComplete && !containsKoreanJamo && !containsEnglish && !containsNumber && !containsSpecialChar {
+            if length > 6 {
+                showValidationError(view, message: "한글 닉네임은 6자 이하만 가능해요")
+                return false
+            }
+        }
+        // **영어만 포함 → 최대 10자**
+        else if containsEnglish && !containsKoreanJamo && !containsKoreanComplete && !containsNumber && !containsSpecialChar {
+            if length > 10 {
+                showValidationError(view, message: "영어 닉네임은 10자 이하만 가능해요")
+                return false
+            }
+        }
+        // **숫자만 포함 → 최대 10자**
+        else if containsNumber && !containsKoreanJamo && !containsKoreanComplete && !containsEnglish && !containsSpecialChar {
+            if length > 10 {
+                showValidationError(view, message: "숫자만 포함된 닉네임은 10자 이하만 가능해요")
+                return false
+            }
+        }
+        // **한글(자모 또는 완성형) + 영어 + 숫자 + 특수문자 포함 → 최대 6자**
+        else {
+            if length > 6 {
+                showValidationError(view, message: "한글, 영어, 숫자, 특수문자가 포함된 닉네임은 6자 이하만 가능해요")
+                return false
+            }
+        }
+        
+        isLengthValid = true
         
         // 닉네임 중복 확인
         guard isNicknameCanUse else {
@@ -47,28 +96,19 @@ public class NicknameValidateManager {
         return true
     }
     
-    public func checkNicknameDuplicate(nickname: String, view: CustomTextFieldView, completion: (() -> Void)? = nil) {
-        networkService.checkNickname(name: nickname) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let response):
-                if response {
-                    self.hideValidationError(view, message: "사용 가능한 닉네임이에요")
-                    self.isNicknameCanUse = true
-                } else {
-                    self.showValidationError(view, message: "이미 사용 중인 닉네임이에요")
-                    self.isNicknameCanUse = false
-                }
-                
-            case .failure(let error):
-                print("네트워크 요청 실패: \(error)")
-                self.showValidationError(view, message: "네트워크 오류가 발생했습니다. 다시 시도해주세요.")
+    public func checkNicknameDuplicate(nickname: String, view: CustomTextFieldView) async {
+        do {
+            let data = try await networkService.checkNickname(name: nickname)
+            if data {
+                self.hideValidationError(view, message: "사용 가능한 닉네임이에요")
+                self.isNicknameCanUse = true
+            } else {
+                self.showValidationError(view, message: "이미 사용 중인 닉네임이에요")
                 self.isNicknameCanUse = false
             }
-            
-            // 응답 완료 후 completion 호출
-            completion?()
+        } catch {
+            self.showValidationError(view, message: "네트워크 오류가 발생했습니다. 다시 시도해주세요.")
+            self.isNicknameCanUse = false
         }
     }
     
@@ -81,16 +121,20 @@ public class NicknameValidateManager {
     
     // MARK: - UI 업데이트 메서드
     public func showValidationError(_ view: CustomTextFieldView, message: String) {
-        view.updateValidationText(message, isHidden: false, color: AppColor.red)
-        view.textField.layer.borderColor = AppColor.red?.cgColor
-        view.textField.backgroundColor = AppColor.red?.withAlphaComponent(0.1)
-        view.textField.textColor = AppColor.red
+        DispatchQueue.main.async {
+            view.updateValidationText(message, isHidden: false, color: AppColor.red)
+            view.textField.layer.borderColor = AppColor.red?.cgColor
+            view.textField.backgroundColor = AppColor.red?.withAlphaComponent(0.1)
+            view.textField.textColor = AppColor.red
+        }
     }
     
     public func hideValidationError(_ view: CustomTextFieldView, message: String) {
-        view.updateValidationText(message, isHidden: false, color: AppColor.purple100)
-        view.textField.layer.borderColor = AppColor.purple100?.cgColor
-        view.textField.backgroundColor = AppColor.purple10
-        view.textField.textColor = AppColor.purple100
+        DispatchQueue.main.async {
+            view.updateValidationText(message, isHidden: false, color: AppColor.purple100)
+            view.textField.layer.borderColor = AppColor.purple100?.cgColor
+            view.textField.backgroundColor = AppColor.purple10
+            view.textField.textColor = AppColor.purple100
+        }
     }
 }

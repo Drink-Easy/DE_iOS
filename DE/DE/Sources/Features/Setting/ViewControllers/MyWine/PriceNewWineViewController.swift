@@ -19,6 +19,8 @@ class PriceNewWineViewController: UIViewController {
 
         setupUI()
         setupNavigationBar()
+        setupActions()
+        hideKeyboardWhenTappedAround()
     }
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -31,6 +33,7 @@ class PriceNewWineViewController: UIViewController {
     }
     
     func setupUI() {
+        view.backgroundColor = AppColor.bgGray
         priceNewWineView.setWineName(MyOwnedWineManager.shared.getWineName())
         
         view.addSubview(priceNewWineView)
@@ -52,23 +55,37 @@ class PriceNewWineViewController: UIViewController {
     
     func setupActions() {
         priceNewWineView.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
-        priceNewWineView.priceTextField.textField.addTarget(self, action: #selector(checkEmpty), for: .editingChanged)
+        priceNewWineView.priceTextField.textField.addTarget(self, action: #selector(checkEmpty), for: .allEditingEvents)
     }
     
     @objc func nextVC() {
-        guard let price = self.priceNewWineView.priceTextField.text else { return }
+        guard let price = self.priceNewWineView.priceTextField.text, isValidInteger(price) else {
+            let alert = UIAlertController(title: "", message: "가격을 숫자로만 입력해주세요.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+            present(alert, animated: true, completion: nil)
+            return
+        }
         MyOwnedWineManager.shared.setPrice(price)
         
         callPostAPI()
         
         DispatchQueue.main.async {
-            self.navigationController?.popViewController(animated: true)
-            guard let navigationController = self.navigationController else { return }
+            guard let navigationController = self.navigationController else {
+                return
+            }
+            
+            // 🔹 네비게이션 스택에서 MyOwnedWineViewController 찾기
             if let targetIndex = navigationController.viewControllers.firstIndex(where: { $0 is MyOwnedWineViewController }) {
-                let newStack = Array(navigationController.viewControllers[...targetIndex])
-                navigationController.setViewControllers(newStack, animated: true)
+                let targetVC = navigationController.viewControllers[targetIndex]
+                navigationController.popToViewController(targetVC, animated: true)
+            } else {
+                navigationController.popToRootViewController(animated: true) // 못 찾으면 루트로 이동
             }
         }
+    }
+
+    func isValidInteger(_ text: String) -> Bool {
+        return Int(text) != nil
     }
     
     private func callPostAPI() {
@@ -98,11 +115,15 @@ class PriceNewWineViewController: UIViewController {
     }
     
     @objc func checkEmpty() {
-        if ((self.priceNewWineView.priceTextField.text?.isEmpty) != nil) || self.priceNewWineView.priceTextField.text == "" {
+        guard let text = self.priceNewWineView.priceTextField.text else {
+            priceNewWineView.nextButton.isEnabled(isEnabled: false)
+            return
+        }
+
+        if text.isEmpty || text == "" {
             priceNewWineView.nextButton.isEnabled(isEnabled: false)
         } else {
             priceNewWineView.nextButton.isEnabled(isEnabled: true)
         }
     }
-
 }

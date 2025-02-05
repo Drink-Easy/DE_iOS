@@ -10,6 +10,7 @@ import Network
 public class NormalTextViewController: UIViewController {
     
     let networkService = MemberService()
+    let userMng = UserSurveyManager.shared
     
     private let navigationBarManager = NavigationBarManager()
     
@@ -19,13 +20,13 @@ public class NormalTextViewController: UIViewController {
 
     
     private let firblurView = UIView().then {
-        $0.backgroundColor = AppColor.bgGray?.withAlphaComponent(0.9)
+        $0.backgroundColor = AppColor.bgGray?.withAlphaComponent(1)
     }
     private let secblurView = UIView().then {
-        $0.backgroundColor = AppColor.bgGray?.withAlphaComponent(0.9)
+        $0.backgroundColor = AppColor.bgGray?.withAlphaComponent(1)
     }
     private let thirdblurView = UIView().then {
-        $0.backgroundColor = AppColor.bgGray?.withAlphaComponent(0.9)
+        $0.backgroundColor = AppColor.bgGray?.withAlphaComponent(1)
     }
     
     lazy var nextButton = CustomButton(title: "추천 와인 확인하러 가기", isEnabled: true)
@@ -33,6 +34,7 @@ public class NormalTextViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        self.view.addSubview(indicator)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -42,29 +44,14 @@ public class NormalTextViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.addSubview(indicator)
         view.backgroundColor = AppColor.bgGray
         
-        var varietyString = ""
-        if UserSurveyManager.shared.getIntersectionVarietyData().count > 2 {
-            let varietyData = UserSurveyManager.shared.getIntersectionVarietyData()
-            varietyString = formatText(from: varietyData)
-        } else {
-            let varietyData = UserSurveyManager.shared.getUnionVarietyData()
-            varietyString = formatText(from: varietyData)
-        }
-        
-        var sortString = ""
-        if UserSurveyManager.shared.getIntersectionSortData().count > 2 {
-            let sortData = UserSurveyManager.shared.getIntersectionSortData()
-            sortString = formatText(from: sortData)
-        } else {
-            let sortData = UserSurveyManager.shared.getUnionSortData()
-            sortString = formatText(from: sortData)
-        }
+        let (varietyString, sortString) = calculateResult()
+
         
         // ✨ NSAttributedString 스타일 적용
         firstTextLabel.attributedText = setStyledText(
-//            mainText: "승주 ",
             mainText: "\(UserSurveyManager.shared.name) ",
             highlightText: "님께\n어울리는 와인은",
             mainFontSize: 34,
@@ -93,6 +80,27 @@ public class NormalTextViewController: UIViewController {
         
         startAlphaAnimationSequence()
     }
+    
+    func calculateResult() -> (String, String ){
+        var varietyString = ""
+        if UserSurveyManager.shared.getIntersectionVarietyData().count > 2 {
+            let varietyData = UserSurveyManager.shared.getIntersectionVarietyData()
+            varietyString = formatText(from: varietyData)
+        } else {
+            let varietyData = UserSurveyManager.shared.getUnionVarietyData()
+            varietyString = formatText(from: varietyData)
+        }
+        
+        var sortString = ""
+        if UserSurveyManager.shared.getIntersectionSortData().count > 2 {
+            let sortData = UserSurveyManager.shared.getIntersectionSortData()
+            sortString = formatText(from: sortData)
+        } else {
+            let sortData = UserSurveyManager.shared.getUnionSortData()
+            sortString = formatText(from: sortData)
+        }
+        return (varietyString, sortString)
+    }
 
     private func startAlphaAnimationSequence() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
@@ -115,29 +123,40 @@ public class NormalTextViewController: UIViewController {
         }
     }
     
-
-    
     private func animateAlphaChange(view: UIView) {
         UIView.animate(withDuration: 1.0, delay: 0, options: .curveEaseInOut) {
             view.alpha = 0.0
         }
     }
 
-    private func setStyledText(mainText: String, highlightText: String, mainFontSize: CGFloat, highlightFontSize: CGFloat) -> NSAttributedString {
-        let attributedString = NSMutableAttributedString(string: mainText + highlightText)
+    private func setStyledText(
+        mainText: String,
+        highlightText: String,
+        mainFontSize: CGFloat,
+        highlightFontSize: CGFloat,
+        lineSpacing: CGFloat = 2
+    ) -> NSAttributedString {
+        
+        let fullText = mainText + highlightText
+        let attributedString = NSMutableAttributedString(string: fullText)
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = lineSpacing // ✅ 행간 추가
         
         let mainAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.ptdSemiBoldFont(ofSize: mainFontSize),
-            .foregroundColor: AppColor.purple70!
+            .foregroundColor: AppColor.purple70!,
+            .paragraphStyle: paragraphStyle // ✅ 모든 텍스트에 행간 적용
         ]
         
         let highlightAttributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.ptdRegularFont(ofSize: highlightFontSize),
-            .foregroundColor: AppColor.black!
+            .foregroundColor: AppColor.black!,
+            .paragraphStyle: paragraphStyle // ✅ 모든 텍스트에 행간 적용
         ]
         
-        attributedString.addAttributes(mainAttributes, range: (mainText as NSString).range(of: mainText))
-        attributedString.addAttributes(highlightAttributes, range: (mainText + highlightText as NSString).range(of: highlightText))
+        attributedString.addAttributes(mainAttributes, range: (fullText as NSString).range(of: mainText))
+        attributedString.addAttributes(highlightAttributes, range: (fullText as NSString).range(of: highlightText))
         
         return attributedString
     }
@@ -154,7 +173,6 @@ public class NormalTextViewController: UIViewController {
             action: #selector(backButtonTapped)
         )
     }
-    
     /// ✨ 공통된 라벨 스타일 생성
     private func createLabel() -> UILabel {
         return UILabel().then {
@@ -165,6 +183,7 @@ public class NormalTextViewController: UIViewController {
     }
     
     func setUI() {
+        nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
         [firstTextLabel, varietyTextLabel, sortTextLabel, firblurView, secblurView, thirdblurView, nextButton].forEach { view.addSubview($0) }
         
         firstTextLabel.snp.makeConstraints { make in
@@ -205,6 +224,7 @@ public class NormalTextViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
+        self.view.showBlockingView()
         callPatchAPI()
     }
     
@@ -223,17 +243,23 @@ public class NormalTextViewController: UIViewController {
     }
     
     func callPatchAPI() {
-        let userMng = UserSurveyManager.shared
         guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
             print("⚠️ userId가 UserDefaults에 없습니다.")
             return
         }
-        
         Task {
             do {
-                // 데이터 전송
-                _ = try await networkService.postUserInfoAsync(body: setDTO())
-                _ = try await networkService.postImgAsync(image: userMng.imageData)
+                async let imageUpload: String? = {
+                    if let profileImage = userMng.imageData {
+                        return try await networkService.postImgAsync(image: profileImage)
+                    }
+                    return nil
+                }()
+                
+                async let userInfoUpdate = try networkService.postUserInfoAsync(body: setDTO())
+
+                // ✅ 두 개의 네트워크 요청이 모두 끝날 때까지 기다림
+                _ = try await (imageUpload, userInfoUpdate)
                 
                 // 로컬 데이터 업데이트
                 try await PersonalDataManager.shared.createPersonalData(for: userId, userName: userMng.name, userCity: userMng.region)
@@ -243,9 +269,8 @@ public class NormalTextViewController: UIViewController {
                 // UI 변경
                 DispatchQueue.main.async {
                     let homeTabBarController = MainTabBarController()
-                    homeTabBarController.userName = UserSurveyManager.shared.name
                     SelectLoginTypeVC.keychain.set(false, forKey: "isFirst")
-                    
+                    self.view.hideBlockingView()
                     if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                        let window = windowScene.windows.first {
                         window.rootViewController = homeTabBarController
@@ -254,6 +279,7 @@ public class NormalTextViewController: UIViewController {
                 }
             } catch {
                 print(error)
+                self.view.hideBlockingView()
             }
         }
     }

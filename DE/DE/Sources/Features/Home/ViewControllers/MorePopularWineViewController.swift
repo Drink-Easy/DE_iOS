@@ -25,6 +25,7 @@ class MorePopularWineViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        self.view.addSubview(indicator)
         fetchWineData()
     }
     
@@ -80,25 +81,16 @@ class MorePopularWineViewController: UIViewController {
     
     // MARK: - 네트워크 요청 처리
     private func fetchWinesFromNetwork() async {
-        let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
-        
-        fetchFunction = networkService.fetchPopularWines
-
-        await withCheckedContinuation { continuation in
-            fetchFunction { [weak self] result in
-                guard let self = self else { return }
-
-                switch result {
-                case .success(let responseData):
-                    Task {
-                        await self.processPopularWineData(responseData: responseData.0, time: responseData.1 ?? 3600)
-                        continuation.resume()
-                    }
-                case .failure(let error):
-                    print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
-                    continuation.resume()
-                }
+        self.view.showBlockingView()
+        do {
+            let responseData = try await networkService.fetchPopularWines()
+            await self.processPopularWineData(responseData: responseData.0, time: responseData.1 ?? 3600)
+            DispatchQueue.main.async {
+                self.view.hideBlockingView()
             }
+        } catch {
+            print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
+            self.view.hideBlockingView()
         }
     }
     
@@ -113,10 +105,6 @@ class MorePopularWineViewController: UIViewController {
         }
         
         do {
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("⚠️ userId가 UserDefaults에 없습니다.")
-                return
-            }
             try wineDataManger.saveWineData(wineData: wines, expirationInterval: time)
         } catch {
             print("❌ 데이터 저장 중 오류 발생: \(error)")
@@ -143,6 +131,7 @@ extension MorePopularWineViewController: UITableViewDelegate, UITableViewDataSou
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = WineDetailViewController()
         vc.wineId = wineList[indexPath.row].wineId
+        vc.wineName = wineList[indexPath.row].wineName
         navigationController?.pushViewController(vc, animated: true)
     }
 }

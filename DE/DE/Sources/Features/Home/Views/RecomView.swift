@@ -62,16 +62,16 @@ class RecomView: UIView {
     private func constraints() {
         title.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide)
-            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(24.0))
         }
         
         moreBtn.snp.makeConstraints {
             $0.centerY.equalTo(title)
-            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-22)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-DynamicPadding.dynamicValue(22.0))
         }
         
         recomCollectionView.snp.makeConstraints {
-            $0.top.equalTo(title.snp.bottom)
+            $0.top.equalTo(title.snp.bottom).offset(DynamicPadding.dynamicValue(16.0))
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
             $0.height.equalTo(220)
             $0.bottom.equalToSuperview()

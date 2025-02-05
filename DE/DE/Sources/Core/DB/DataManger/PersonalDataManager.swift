@@ -99,8 +99,10 @@ public final class PersonalDataManager {
         let context = UserDataManager.shared.container.mainContext
 
         let user = try UserDataManager.shared.fetchUser(userId: userId)
+        
         guard let personalData = user.userInfo else {
-            throw PersonalDataError.personalDataNotFound
+            try await createPersonalData(for: userId, userName: userName, userImageURL: userImageURL, userCity: userCity, authType: authType, email: email, adult: adult)
+            return
         }
 
         if let userName = userName { personalData.userName = userName }
@@ -178,7 +180,7 @@ public final class PersonalDataManager {
         let user = try UserDataManager.shared.fetchUser(userId: userId)
 
         guard let userName = user.userInfo?.userName, !userName.isEmpty else {
-            throw PersonalDataError.saveFailed(reason: "유저 이름이 설정되지 않았습니다.")
+            throw PersonalDataError.cannotFetchName
         }
 
         return userName
@@ -189,6 +191,7 @@ public final class PersonalDataManager {
 public enum PersonalDataError: Error {
     /// PersonalData가 존재하지 않음
     case personalDataNotFound
+    case cannotFetchName
     /// 데이터 저장 실패
     case saveFailed(reason: String)
 }
@@ -198,6 +201,8 @@ extension PersonalDataError: LocalizedError {
         switch self {
         case .personalDataNotFound:
             return "🚨 [오류] PersonalData를 찾을 수 없습니다."
+        case .cannotFetchName:
+            return "설정된 유저 이름이 없습니다."
         case .saveFailed(let reason):
             return "🚨 [오류] PersonalData 저장 실패. 원인: \(reason)"
         }

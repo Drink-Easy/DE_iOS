@@ -15,6 +15,7 @@ public class EntireReviewView: UIView {
         $0.minimumInteritemSpacing = 8
         $0.estimatedItemSize = .zero
     }).then {
+        $0.layer.cornerRadius = 10
         $0.register(ReviewCollectionViewCell.self, forCellWithReuseIdentifier: ReviewCollectionViewCell.identifier)
         $0.backgroundColor = .clear
         $0.isScrollEnabled = true
@@ -23,7 +24,7 @@ public class EntireReviewView: UIView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .white
+        backgroundColor = AppColor.bgGray
         self.addComponents()
         self.constraints()
     }
@@ -49,7 +50,7 @@ public class EntireReviewView: UIView {
         }
         
         reviewCollectionView.snp.makeConstraints {
-            $0.top.equalTo(title.snp.bottom).offset(37)
+            $0.top.equalTo(title.snp.bottom).offset(DynamicPadding.dynamicValue(20))
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(24)
             $0.bottom.equalToSuperview()
         }

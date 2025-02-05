@@ -17,9 +17,10 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = Constants.AppColor.grayBG
+        view.backgroundColor = AppColor.grayBG
         self.view = searchHomeView
         setupNavigationBar()
+        self.view.addSubview(indicator)
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -49,11 +50,18 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let query = searchHomeView.searchBar.text, query.count >= 2 {
+            indicator.startAnimating()
+            DispatchQueue.main.async {
+                // 강제로 맨위로 올리기
+                self.searchHomeView.searchResultTableView.setContentOffset(.zero, animated: true)
+            }
             Task {
                 do {
                     try await callSearchAPI(query: query, startPage: 0)
+                    indicator.stopAnimating()
                 } catch {
                     print(error)
+                    indicator.stopAnimating()
                 }
             }
             return true
@@ -64,7 +72,7 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     }
 
     private func showCharacterLimitAlert() {
-        let alert = UIAlertController(title: "경고", message: "최소 2자 이상 입력해 주세요.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "", message: "검색어를 2자 이상 입력해 주세요.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
@@ -143,6 +151,7 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = WineDetailViewController()
         vc.wineId = wineResults[indexPath.row].wineId
+        vc.wineName = wineResults[indexPath.row].name
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -161,12 +170,14 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
         if contentOffsetY > contentHeight - scrollViewHeight { // Trigger when arrive the bottom
             guard !isLoading, currentPage + 1 < totalPage else { return }
             isLoading = true
-            
+            indicator.startAnimating()
             Task {
                 do {
                     try await callSearchAPI(query: searchHomeView.searchBar.text ?? "", startPage: currentPage + 1)
+                    indicator.stopAnimating()
                 } catch {
                     print("Failed to fetch next page: \(error)")
+                    indicator.stopAnimating()
                 }
                 DispatchQueue.main.async {
                     self.searchHomeView.searchResultTableView.reloadData()

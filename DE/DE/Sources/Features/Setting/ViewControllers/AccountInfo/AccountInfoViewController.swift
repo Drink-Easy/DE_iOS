@@ -13,7 +13,7 @@ import SwiftyToaster
 /// 계정 정보 확인 페이지
 class AccountInfoViewController: UIViewController {
     
-    //MARK: - Variables
+    //MARK: - Variables 
     private let navigationBarManager = NavigationBarManager()
     let memberService = MemberService()
     private let authService = AuthService()
@@ -45,9 +45,8 @@ class AccountInfoViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        Task {
-            CheckCacheData()
-        }
+        CheckCacheData()
+        self.view.addSubview(indicator)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -67,7 +66,7 @@ class AccountInfoViewController: UIViewController {
     
     private func setupNavigationBar() {
         navigationBarManager.setTitle(to: navigationItem, title: "내 정보", textColor: AppColor.black!)
-        navigationBarManager.addLeftRightButtons(
+        navigationBarManager.addLeftRightButtonsWithWeight(
             to: navigationItem,
             leftIcon: "chevron.left",
             leftAction: #selector(backButtonTapped),
@@ -126,26 +125,29 @@ class AccountInfoViewController: UIViewController {
     }
     
     @objc private func logoutButtonTapped() {
-        authService.logout() { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(_):
+        self.view.showBlockingView()
+        Task {
+            do {
+                let result = try await authService.logout()
                 if userProfile?.authType == "kakao" {
                     self.kakaoAuthVM.kakaoLogout()
-                    Toaster.shared.makeToast("로그아웃")
+                    Toaster.shared.makeToast(result)
                 } else {
-                    Toaster.shared.makeToast("로그아웃")
+                    Toaster.shared.makeToast(result)
                 }
                 self.clearForLogout()
-                Task {
+                
+                DispatchQueue.main.async {
+                    self.view.hideBlockingView()
                     self.showSplashScreen()
                 }
-            case .failure(let error):
+            } catch {
                 print(error)
+                self.view.hideBlockingView()
             }
         }
     }
+
 
     @objc private func deleteButtonTapped() {
         let alert = UIAlertController(
@@ -169,36 +171,25 @@ class AccountInfoViewController: UIViewController {
     
     //MARK: - Funcs
     private func performUserDeletion() {
-        memberService.deleteUser() { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(_):
-                print("회원탈퇴 완료")
-                switch userProfile?.authType.lowercased() { // 무조건 소문자 처리
-                    case "kakao" :
-                        self.kakaoAuthVM.unlinkKakaoAccount { isSuccess in
-                            if isSuccess {
-                                print("✅ 카카오 계정 연동 해제 성공")
-                                Task {
-                                    await self.deleteUserInSwiftData() // 로컬 디비에서 유저 정보 삭제 후 splash 화면으로 이동
-                                    self.clearForQuit()
-                                    self.showSplashScreen()
-                                }
-                            } else {
-                                print("❌ 카카오 계정 연동 해제 실패")
-                            }
-                        }
-                default :
-                    Task {
-                        await self.deleteUserInSwiftData()
-                        self.clearForQuit()
-                        self.showSplashScreen()
+        view.showBlockingView()
+        Task {
+            do {
+                let result = try await memberService.deleteUser()
+                
+                if userProfile?.authType.lowercased() == "kakao" {
+                    if await !self.kakaoAuthVM.unlinkKakaoAccount() {
+                        view.hideBlockingView()
                     }
                 }
-                
-            case .failure(let error):
+                await self.deleteUserInSwiftData() // 로컬 디비에서 유저 정보 삭제 후 splash 화면으로 이동
+                DispatchQueue.main.async {
+                    self.clearForQuit()
+                    self.view.hideBlockingView()
+                    self.showSplashScreen()
+                }
+            } catch {
                 print("회원탈퇴 실패: \(error.localizedDescription)")
+                view.hideBlockingView()
             }
         }
     }
@@ -236,13 +227,14 @@ class AccountInfoViewController: UIViewController {
     
     private func clearForLogout() {
         SelectLoginTypeVC.keychain.delete("userId")
+        SelectLoginTypeVC.keychain.delete("isFirst")
         UserDefaults.standard.removeObject(forKey: "userId")
         clearCookie()
     }
-    
+
     func clearForQuit() {
         clearCookie()
-        ["userId", "isFirst", "AppleIDToken"].forEach {
+        ["userId", "isFirst", "AppleIDToken", "savedUserEmail"].forEach {
             SelectLoginTypeVC.keychain.delete($0)
         }
         UserDefaults.standard.removeObject(forKey: "userId")
@@ -260,25 +252,30 @@ class AccountInfoViewController: UIViewController {
         Task {
             do {
                 if try await isCacheDataValid(for: userId) {
-                    print("✅ 캐시 데이터 사용 가능")
                     await useCacheData(for: userId)
                 } else {
-                    fetchMemberInfo()
+                    await fetchMemberInfo()
                 }
             } catch {
-                print("⚠️ 캐시 데이터 검증 실패: \(error)")
-                fetchMemberInfo()
+                print("⚠️ 캐시 데이터 검증 중 오류 발생: \(error.localizedDescription)")
+                await fetchMemberInfo() // ❗️ 에러 발생 시에도 서버 데이터 호출
             }
         }
     }
     
     /// 캐시 데이터 검증
     private func isCacheDataValid(for userId: Int) async throws -> Bool {
-        let isCallCountZero = try await APICallCounterManager.shared.isCallCountZero(for: userId, controllerName: .member)
-        
-        // 전체 유저 프로필 데이터 nil 검증
-        let hasNilFields = try await PersonalDataManager.shared.checkPersonalDataHasNil(for: userId)
-        return isCallCountZero && !hasNilFields
+        do {
+            let isCallCountZero = try await APICallCounterManager.shared.isCallCountZero(for: userId, controllerName: .member)
+            
+            // 전체 유저 프로필 데이터 nil 검증
+            let hasNilFields = try await PersonalDataManager.shared.checkPersonalDataHasNil(for: userId)
+            return isCallCountZero && !hasNilFields
+        } catch {
+            print(error)
+            try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
+        }
+        return false
     }
     
     /// 캐시 데이터 사용
@@ -286,91 +283,80 @@ class AccountInfoViewController: UIViewController {
         do {
             let data = try await PersonalDataManager.shared.fetchPersonalData(for: userId)
             
-            if let username = data.userName, let imageURL = data.userImageURL, let email = data.email, let city = data.userCity, let authType = data.authType, let adult = data.adult {
-                self.userProfile = MemberInfoResponse(imageUrl: imageURL, username: username, email: email, city: city, authType: authType, adult: adult)
-                self.setUserData(
-                    imageURL: imageURL,
-                    username: username,
-                    email: email,
-                    city: city,
-                    authType: authType,
-                    adult: adult
-                )
-            } else {
-                print("⚠️ 캐시 데이터에 필요한 정보가 없습니다.")
+            guard let username = data.userName,
+                  let imageURL = data.userImageURL,
+                  let email = data.email,
+                  let city = data.userCity,
+                  let authType = data.authType,
+                  let adult = data.adult else {
+                print("⚠️ 여기 사실 들어올 일이 없음. 이미 검증해줘서.")
+                return
             }
+            
+            self.userProfile = MemberInfoResponse(imageUrl: imageURL, username: username, email: email, city: city, authType: authType, adult: adult)
+            self.setUserData(imageURL: imageURL, username: username, email: email, city: city, authType: authType, adult: adult)
         } catch {
-            print("⚠️ 캐시 데이터 가져오기 실패: \(error)")
+            print("⚠️ 캐시 데이터 가져오기 실패: \(error.localizedDescription)")
+            await fetchMemberInfo()
         }
     }
     
     /// 서버에서 데이터 가져오기
-    private func fetchMemberInfo() {
-        memberService.fetchUserInfo(completion: { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let data):
-                guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                    print("⚠️ userId가 UserDefaults에 없습니다.")
-                    return
-                }
-                Task {
-                    // 데이터 할당
-                    self.userProfile = MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
-                    self.setUserData(
-                        imageURL: data.imageUrl,
-                        username: data.username,
-                        email: data.email,
-                        city: data.city,
-                        authType: data.authType,
-                        adult: data.adult
-                    )
-                    // 로컬 캐시 데이터에 저장(덮어쓰기)
-                    await self.saveUserInfo(data: MemberInfoResponse(imageUrl: data.imageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult))
-                    do {
-                        // get api -> 모든 call counter 초기화
-                        try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
-                        return
-                    } catch {
-                        print("⚠️ API 호출 카운트 초기화 실패: \(error)")
-                    }
-                }
-            case .failure(let error ):
-                print("Error: \(error)")
-            }
-        })
+    private func fetchMemberInfo() async {
+        do {
+            self.view.showBlockingView()
+            let data = try await memberService.fetchUserInfoAsync()
+            
+            let safeImageUrl = data.imageUrl ?? "https://placehold.co/400x400"
+            
+            self.userProfile = MemberInfoResponse(imageUrl: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
+            self.setUserData(imageURL: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
+
+            await saveUserInfo(data: self.userProfile!)
+            self.view.hideBlockingView()
+        } catch {
+            print("❌ 서버에서 사용자 정보를 가져오지 못함: \(error.localizedDescription)")
+            self.view.hideBlockingView()
+        }
     }
     
     /// UI update
     private func setUserData(imageURL: String, username: String, email: String, city: String, authType: String, adult: Bool) {
-        // 데이터 처리
-        let profileImgURL = URL(string: imageURL)
-        self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
-        accountView.titleLabel.text = "내 정보"
-        let adultText = adult ? "인증 완료" : "인증 전"
-        accountView.items = [("닉네임", username),
-        ("내 동네", city),
-        ("이메일", email),
-        ("연동상태", authType),
-        ("성인인증", adultText)]
+        DispatchQueue.main.async {
+            let profileImgURL = URL(string: imageURL)
+            self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
+            self.accountView.titleLabel.text = "내 정보"
+            let adultText = adult ? "인증 완료" : "인증 전"
+            self.accountView.items = [("닉네임", username),
+            ("내 동네", city),
+            ("이메일", email),
+            ("연동상태", authType)
+    //        ("성인인증", adultText)
+            ]
+        }
     }
     
     /// 새로 받은 데이터 저장
     private func saveUserInfo(data: MemberInfoResponse) async {
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+            print("⚠️ userId가 UserDefaults에 없습니다.")
+            return
+        }
+        
         do {
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("⚠️ userId가 UserDefaults에 없습니다.")
-                return
-            }
             try await PersonalDataManager.shared.updatePersonalData(for: userId,
-                                                                    userName: data.username,
-                                                                    userImageURL: data.imageUrl,
-                                                                    userCity: data.city,
-                                                                    authType: data.authType,
-                                                                    email: data.email,
-                                                                    adult: data.adult)
+                userName: data.username,
+                userImageURL: data.imageUrl,
+                userCity: data.city,
+                authType: data.authType,
+                email: data.email,
+                adult: data.adult
+            )
+
+            try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
+            try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
         } catch {
-            print(error)
+            print("❌ 사용자 정보 저장 실패: \(error.localizedDescription)")
         }
     }
 }

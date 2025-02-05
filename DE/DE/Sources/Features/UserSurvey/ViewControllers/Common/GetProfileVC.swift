@@ -2,6 +2,7 @@
 
 import UIKit
 import PhotosUI
+import UniformTypeIdentifiers
 
 import SnapKit
 import Then
@@ -33,6 +34,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
         $0.textAlignment = .left
         $0.numberOfLines = 0
+        $0.textColor = AppColor.black
     }
     
     let nextButton = CustomButton(
@@ -76,12 +78,15 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     // MARK: - 이미지 피커 설정
     private func setupImagePicker() {
-        // 이미지 선택 후 동작 설정
         imagePickerManager.onImagePicked = { [weak self] image, fileName in
             guard let self = self else { return }
-            self.profileView.profileImageView.image = image
-            self.profileImgFileName = fileName
-            self.profileImg = image
+
+            DispatchQueue.main.async {
+                self.profileImgFileName = fileName
+                self.profileImg = image
+                self.profileView.profileImageView.image = image
+                self.profileView.profileImageView.setNeedsDisplay() // ✅ UI 강제 업데이트
+            }
         }
     }
     
@@ -125,8 +130,16 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     @objc func nextButtonTapped() {
         // 정보 저장
         guard let name = self.userName,
-              let addr = self.userRegion,
-              let profileImg = self.profileImg else { return }
+              let addr = self.userRegion else { return }
+        
+        if let placeholderImage = UIImage(named: "profilePlaceholder"),
+           let currentImageData = self.profileView.profileImageView.image?.pngData(),
+           let placeholderImageData = placeholderImage.pngData(),
+           currentImageData == placeholderImageData {
+            self.profileImgFileName = ""
+            self.profileImg = nil
+        }
+        
         UserSurveyManager.shared.setPersonalInfo(name: name, addr: addr, profileImg: profileImg)
         
         let vc = IsNewbieViewController()
@@ -134,26 +147,28 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     }
     
     func configureTapGestureForDismissingPicker() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissDatePicker))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissImagePicker))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
     }
     
-    @objc func dismissDatePicker() {
+    @objc func dismissImagePicker() {
         view.endEditing(true)
     }
     
     // 프로필 이미지 선택
     @objc func selectProfileImage() {
-        imagePickerManager.presentImagePicker(from: self)
+        imagePickerManager.requestPhotoLibraryPermission(from: self)
     }
     
     //MARK: - 위치 정보 불러오기 로직
     @objc func getMyLocation() {
+        self.view.showBlockingView()
         LocationManager.shared.requestLocationPermission { [weak self] address in
             DispatchQueue.main.async {
                 self?.profileView.myLocationTextField.textField.text = address ?? ""
                 self?.checkFormValidity()
+                self?.view.hideBlockingView()
             }
         }
     }
@@ -164,22 +179,27 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
             print("닉네임이 없습니다")
             return
         }
-        
-        ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField) {
-                self.checkFormValidity() // 네트워크 응답 후 호출
+        view.showBlockingView()
+        Task {
+            await ValidationManager.checkNicknameDuplicate(nickname: nickname, view: profileView.nicknameTextField)
+            DispatchQueue.main.async {
+                self.view.hideBlockingView()  // ✅ 네트워크 요청 후 인디케이터 중지
+                self.checkFormValidity()  // ✅ UI 업데이트
             }
+        }
     }
     
     //MARK: - 닉네임 유효성 검사
     @objc func validateNickname(){
         ValidationManager.isNicknameCanUse = false
+        ValidationManager.isLengthValid = false
         ValidationManager.validateNickname(profileView.nicknameTextField)
         checkFormValidity()
     }
     
     //MARK: - 폼 유효성 검사
     @objc func checkFormValidity() {
-        let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true) && ValidationManager.isNicknameCanUse
+        let isNicknameValid =  ValidationManager.isNicknameCanUse && ValidationManager.isLengthValid
         let isLocationValid = !(profileView.myLocationTextField.textField.text?.isEmpty ?? true)
         let isImageSelected = profileView.profileImageView.image != nil
         let isFormValid = isNicknameValid && isLocationValid && isImageSelected

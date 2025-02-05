@@ -24,17 +24,22 @@ public final class MyWineService : NetworkManager {
     
     /// 보유와인 추가 데이터 구조 생성
     public func makePostDTO(wineId: Int, buyDate: String, buyPrice: Int) -> MyWineRequest {
-        return MyWineRequest(wineId: wineId, purchaseData: buyDate, purchasePrice: buyPrice)
+        return MyWineRequest(wineId: wineId, purchaseDate: buyDate, purchasePrice: buyPrice)
     }
     
     /// 보유와인 업데이트 데이터 구조 생성
-    public func makeUpdateDTO(buyDate: String?, buyPrice: Int?) -> MyWineUpdateRequest {
-        return MyWineUpdateRequest(purchaseData: buyDate, purchasePrice: buyPrice)
+    public func makeUpdateDTO(buyDate: String? = nil, buyPrice: Int? = nil) -> MyWineUpdateRequest {
+        return MyWineUpdateRequest(purchaseDate: buyDate, purchasePrice: buyPrice)
     }
     
     /// 보유와인 가져오기 API
     public func fetchAllMyWines() async throws -> [MyWineResponse]? {
         return try await requestOptionalAsync(target: .getMyWines, decodingType: [MyWineResponse].self)
+    }
+    
+    /// 하나의 보유와인 가져오기 API
+    public func fetchMyWine(myWineId: Int) async throws -> MyWineResponse {
+        return try await requestAsync(target: .getOneMyWine(myWineId: myWineId), decodingType: MyWineResponse.self)
     }
     
     /// 새 보유와인 등록하기 API

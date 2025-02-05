@@ -2,13 +2,13 @@
 
 import UIKit
 
-import Moya
 import SnapKit
 
 import KeychainSwift
 import SwiftyToaster
 import AppTrackingTransparency
 import AdSupport
+import Then
 
 import Network
 import CoreModule
@@ -22,11 +22,9 @@ public class SplashVC : UIViewController {
     var refreshToken: String = ""
     var ExpiresAt: Date = Date()
     
-    private lazy var logoImage: UIImageView = {
-        let logoImage = UIImageView()
+    private lazy var logoImage = UIImageView().then { logoImage in
         logoImage.image = UIImage(named: "logo")
-        return logoImage
-    }()
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,27 +72,40 @@ public class SplashVC : UIViewController {
         
         //토큰 유효
         if Date() < ExpiresAt {
-            navigateToMainScreen()
+            checkIsFirst()
         } else {
-            networkService.reissueToken { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(_):
-                    navigateToMainScreen()
-//                    navigateToOnBoaringScreen()
-//                    print(response)
-                case .failure(let error):
-                    navigateToOnBoaringScreen()
-                    print(error)
+            Task {
+                do {
+                    let _ = try await networkService.reissueTokenAsync()
+                    checkIsFirst()
+                } catch {
+                    DispatchQueue.main.async {
+                        self.navigateToOnBoaringScreen()
+                    }
                 }
             }
         }
+    }
+    
+    func checkIsFirst() {
+        let isFirstString = SelectLoginTypeVC.keychain.getBool("isFirst")
+        if isFirstString == true || isFirstString == nil {
+            navigateToWelcomeScreen()
+        } else { navigateToMainScreen() }
     }
     
     func navigateToMainScreen() {
         let mainTabBarController = MainTabBarController()
         if let window = UIApplication.shared.windows.first {
             window.rootViewController = mainTabBarController
+            UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+        }
+    }
+    
+    func navigateToWelcomeScreen() {
+        let vc = TermsOfServiceVC()
+        if let window = UIApplication.shared.windows.first {
+            window.rootViewController = vc
             UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
         }
     }

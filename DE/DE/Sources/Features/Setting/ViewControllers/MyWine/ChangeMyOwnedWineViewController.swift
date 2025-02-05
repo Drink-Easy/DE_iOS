@@ -9,14 +9,19 @@ import Then
 // 보유와인 정보 수정
 
 class ChangeMyOwnedWineViewController: UIViewController {
+    weak var delegate: ChildViewControllerDelegate?
+    
     let navigationBarManager = NavigationBarManager()
     lazy var editInfoView = ChangeMyOwnedWineView()
     
     let networkService = MyWineService()
     
-    var registerWine: MyOwnedWine = MyOwnedWine()
+    var registerWine: MyWineViewModel?
+    
     lazy var selectedDate: DateComponents = {
-        guard let date = registerWine.getBuyDate() else {
+        guard let wine = registerWine else { return Calendar.current.dateComponents([.year, .month, .day], from: Date()) }
+        
+        guard let date = wine.getBuyDate() else {
             return Calendar.current.dateComponents([.year, .month, .day], from: Date())
         }
         return date
@@ -24,7 +29,6 @@ class ChangeMyOwnedWineViewController: UIViewController {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -35,7 +39,7 @@ class ChangeMyOwnedWineViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        view.backgroundColor = AppColor.bgGray
         setupUI()
         setupNavigationBar()
         setupActions()
@@ -47,7 +51,9 @@ class ChangeMyOwnedWineViewController: UIViewController {
     }
     
     func setupUI() {
-        editInfoView.setWinePrice(registerWine.price)
+        guard let wine = registerWine else {return}
+        
+        editInfoView.setWinePrice(wine.purchasePrice)
         
         view.addSubview(editInfoView)
         editInfoView.snp.makeConstraints { make in
@@ -91,17 +97,31 @@ class ChangeMyOwnedWineViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc
-    private func deleteNewWine() {
-        callDeleteAPI()
-        DispatchQueue.main.async {
-            self.navigationController?.popViewController(animated: true)
-        }
+    @objc private func deleteNewWine() {
+        guard let currentWine = self.registerWine else { return }
+        
+        let alert = UIAlertController(
+            title: "이 와인을 삭제하시겠습니까?",
+            message: "\(currentWine.wineName)",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        
+        alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { [weak self] _ in
+            self?.callDeleteAPI()
+            DispatchQueue.main.async {
+                self?.navigationController?.popViewController(animated: true)
+            }
+        }))
+        
+        present(alert, animated: true, completion: nil)
     }
     
     @objc
     private func completeEdit() {
-        callUpdateAPI(wineId: self.registerWine.wineId, price: checkPrice(), buyDate: checkDate())
+        guard let wine = registerWine else { return }
+        callUpdateAPI(wineId: wine.myWineId, price: checkPrice(), buyDate: checkDate())
         DispatchQueue.main.async {
             self.navigationController?.popViewController(animated: true)
         }
@@ -129,10 +149,11 @@ class ChangeMyOwnedWineViewController: UIViewController {
             print("⚠️ userId가 UserDefaults에 없습니다.")
             return
         }
+        guard let wine = registerWine else {return}
         
         Task {
             do {
-                _ = try await networkService.deleteMyWine(myWineId: registerWine.wineId)
+                _ = try await networkService.deleteMyWine(myWineId: wine.myWineId)
                 try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
                 try await APICallCounterManager.shared.incrementDelete(for: userId, controllerName: .myWine)
             } catch {
@@ -152,6 +173,8 @@ class ChangeMyOwnedWineViewController: UIViewController {
         Task {
             do {
                 _ = try await networkService.updateMyWine(myWineId: wineId, data: data)
+                delegate?.didUpdateData(true)
+                
                 try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
                 try await APICallCounterManager.shared.incrementPatch(for: userId, controllerName: .myWine)
             } catch {
@@ -167,6 +190,17 @@ extension ChangeMyOwnedWineViewController: UICalendarSelectionSingleDateDelegate
         
         selectedDate = validDateComponents
         editInfoView.calender.reloadDecorations(forDateComponents: [validDateComponents], animated: true)
+    }
+    
+    /// ✅ 미래 날짜 선택 차단 (미래 날짜 선택을 아예 못하게 막음)
+    public func dateSelection(_ selection: UICalendarSelectionSingleDate, canSelectDate dateComponents: DateComponents?) -> Bool {
+        guard let dateComponents = dateComponents,
+              let selectedDate = Calendar.current.date(from: dateComponents) else { return false }
+        
+        let today = Calendar.current.startOfDay(for: Date()) // 오늘 날짜 (00:00:00 기준)
+        
+        // ✅ 미래 날짜 선택 차단 (미래 날짜면 false 반환)
+        return selectedDate <= today
     }
 }
 
