@@ -17,6 +17,7 @@ class MyOwnedWineViewController: UIViewController {
         $0.backgroundColor = AppColor.grayBG
         $0.dataSource = self
         $0.delegate = self
+        $0.showsVerticalScrollIndicator = false
     }
     
     private lazy var noWineLabel = UILabel().then {
