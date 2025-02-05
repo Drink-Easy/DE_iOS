@@ -5,9 +5,9 @@ import SwiftData
 
 @Model
 public class AdBannerDataModel {
-    @Relationship(.unique) public var bannerId : Int
-    @Attribute public var imageUrl : String
-    @Attribute public var postUrl : String
+    @Attribute(.unique) public var bannerId : Int
+    public var imageUrl : String
+    public var postUrl : String
     
     public init(bannerId: Int, imageUrl: String, postUrl: String) {
         self.bannerId = bannerId

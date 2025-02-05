@@ -10,7 +10,7 @@ public final class UserDataManager {
     
     private init() {
         do {
-            let configuration = ModelConfiguration(isStoredInMemoryOnly: false)
+            _ = ModelConfiguration(isStoredInMemoryOnly: false)
             container = try ModelContainer(
                 for: UserData.self, PersonalData.self, Wishlist.self,
                 TastingNoteList.self, TastingNote.self, MyWineList.self,
