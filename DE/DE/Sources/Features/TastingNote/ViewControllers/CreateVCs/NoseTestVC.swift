@@ -42,6 +42,7 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate {
         setupCollectionView()
         setupActions()
         setupNavigationBar()
+        setNavBarAppearance(navigationController: self.navigationController)
     }
     
     private func setupUI() {

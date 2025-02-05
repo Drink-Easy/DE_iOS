@@ -31,6 +31,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         addView()
         constraints()
         setupNavigationBar()
+        setNavBarAppearance(navigationController: self.navigationController)
 //        callWineDetailAPI(wineId: self.wineId)
         showLiked()
     }
