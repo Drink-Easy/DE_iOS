@@ -138,11 +138,11 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
         Task {
             do {
                 try await CallAllTastingNote(sort: currentType, page: 0)
-                
-                tastingNoteView.noTastingNoteLabel.isHidden = !self.currentTastingNoteList.isEmpty
-                tastingNoteView.TastingNoteCollectionView.isHidden = self.currentTastingNoteList.isEmpty
-                
                 DispatchQueue.main.async {
+                    // ✅ UI 업데이트는 메인 스레드에서 실행
+                    self.tastingNoteView.noTastingNoteLabel.isHidden = !self.currentTastingNoteList.isEmpty
+                    self.tastingNoteView.TastingNoteCollectionView.isHidden = self.currentTastingNoteList.isEmpty
+                    // ✅ 목록을 맨 위로 스크롤
                     self.tastingNoteView.TastingNoteCollectionView.setContentOffset(.zero, animated: true)
                 }
                 self.view.hideBlockingView()
@@ -152,28 +152,6 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
             }
         }
     }
-
-
-//    private func filterPieces(for type: WineSortType) -> [TastingNotePreviewResponseDTO] {
-//        // `전체` 타입 선택 시 모든 데이터를 반환
-//        guard type != .all else { return allTastingNoteList }
-//        
-//        // 타입별로 필터링
-//        return allTastingNoteList.filter { item in
-//            switch type {
-//            case .red: return item.sort == "레드"
-//            case .white: return item.sort == "화이트"
-//            case .sparkling: return item.sort == "스파클링"
-//            case .rose: return item.sort == "로제"
-//            case .etc:
-//                        return item.sort != "레드" &&
-//                               item.sort != "화이트" &&
-//                               item.sort != "스파클링" &&
-//                               item.sort != "로제"
-//            default: return false
-//            }
-//        }
-//    }
     
     //MARK: Setup Actions
     @objc func newNoteTapped(){

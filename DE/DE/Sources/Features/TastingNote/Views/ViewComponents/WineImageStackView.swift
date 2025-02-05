@@ -92,19 +92,19 @@ class WineImageStackContainerView: UIView {
             contentView.backgroundColor = AppColor.white
             contentView.layer.masksToBounds = true
             backgroundView.addSubview(contentView)
-            
+
             let imageView = UIImageView(image: UIImage(named: imageName))
             imageView.contentMode = .scaleAspectFill
             imageView.layer.cornerRadius = 10
             imageView.layer.borderWidth = 2
-            imageView.layer.borderColor = UIColor.clear.cgColor
+            imageView.layer.borderColor = (selectedCategory == category) ? AppColor.purple100?.cgColor : UIColor.clear.cgColor
             imageView.clipsToBounds = true
             imageView.isUserInteractionEnabled = true
             imageView.accessibilityLabel = category
             
             let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
             imageView.addGestureRecognizer(tapGesture)
-            
+
             let label = UILabel()
             let count = counts[category] ?? 0
             let fullText = "\(category) \(count)"
@@ -124,7 +124,7 @@ class WineImageStackContainerView: UIView {
             
             label.attributedText = attributedString
             label.textAlignment = .center
-            
+
             let subStackView = UIStackView()
             subStackView.axis = .vertical
             subStackView.alignment = .center
@@ -132,7 +132,7 @@ class WineImageStackContainerView: UIView {
             contentView.addSubview(imageView)
             subStackView.addArrangedSubview(backgroundView)
             subStackView.addArrangedSubview(label)
-            
+
             backgroundView.snp.makeConstraints { make in
                 make.width.height.equalTo(60)
             }
@@ -147,28 +147,35 @@ class WineImageStackContainerView: UIView {
                 make.top.equalTo(backgroundView.snp.bottom).offset(8)
                 make.centerX.equalTo(backgroundView.snp.centerX)
             }
-            
+
             wineStackView.addArrangedSubview(subStackView)
+
+            if selectedCategory == category {
+                selectedImageView = imageView
+            }
         }
     }
     
     @objc private func handleTap(_ gesture: UITapGestureRecognizer) {
         guard let tappedImageView = gesture.view as? UIImageView,
               let category = tappedImageView.accessibilityLabel else { return }
-        
         if selectedCategory == category {
             // ✅ 선택 해제
             tappedImageView.layer.borderColor = UIColor.clear.cgColor
+            tappedImageView.layer.borderWidth = 0
             selectedCategory = nil
             selectedImageView = nil
             delegate?.didTapSortButton(for: .all)
         } else {
             // ✅ 기존 선택 해제 후 새 선택 적용
             selectedImageView?.layer.borderColor = UIColor.clear.cgColor
-            tappedImageView.layer.borderColor = AppColor.purple100?.cgColor
+                selectedImageView?.layer.borderWidth = 0 // 추가
+                
+                tappedImageView.layer.borderColor = AppColor.purple100?.cgColor
+                tappedImageView.layer.borderWidth = 2
             selectedCategory = category
             selectedImageView = tappedImageView
-            
+             
             let sortType = getWineSortType(from: category)
             delegate?.didTapSortButton(for: sortType)
         }
