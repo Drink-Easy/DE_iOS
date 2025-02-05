@@ -33,6 +33,9 @@ class LoginVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        DispatchQueue.main.async {
+            self.fillSavedId()
+        }
         self.view.addSubview(indicator)
     }
     
