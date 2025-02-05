@@ -25,8 +25,11 @@
                        "Then" : .framework,
                        "Cosmos" : .framework,
                        "AMPopTip" : .framework,
-                       "FirebaseCore" : .framework,
-                       "FirebaseAnalytics" : .framework
+                       "FirebaseCore" : .staticLibrary,
+                       "FirebaseAnalytics" : .staticLibrary,
+                       "FirebaseAuth" : .staticLibrary,
+                       "FirebaseMessaging" : .staticLibrary,
+                       "FirebaseFirestore" : .staticLibrary
                       ]
     )
 #endif
@@ -49,6 +52,17 @@ let package = Package(
         .package(url: "https://github.com/evgenyneu/Cosmos.git", from: "25.0.1"),
         .package(url: "https://github.com/andreamazz/AMPopTip", from: "4.12.0"),
         .package(url: "https://github.com/heestand-xyz/PolyKit.git", from: "2.0.0"),
-        .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "11.8.1")
+//        .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "11.7.0")
+        .package(url: "https://github.com/firebase/firebase-ios-sdk", from: "11.4.0")
+    ],
+    targets: [
+        .target(
+            name: "DE",
+            dependencies: [
+                .product(name: "FirebaseCore", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk"),
+                .product(name: "GoogleUtilities", package: "firebase-ios-sdk"), // 추가
+            ]
+        ),
     ]
 )

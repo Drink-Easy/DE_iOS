@@ -19,6 +19,11 @@ let bundleMid = "DRINKIG"
 
 let project = Project(
     name: "DE",
+    settings: .settings(
+        base: [
+            "OTHER_LDFLAGS": ["-ObjC"]
+        ]
+    ),
     targets: [
         .target(
             name: "DE",
@@ -28,7 +33,7 @@ let project = Project(
             deploymentTargets: .iOS("17.0"),
             infoPlist: .extendingDefault(
                 with: [
-//                    "UIUserInterfaceStyle" : "Light", // 다크모드 제거
+                    //                    "UIUserInterfaceStyle" : "Light", // 다크모드 제거
                     "UISupportedInterfaceOrientations" : ["UIInterfaceOrientationPortrait"], // 화면 방향 세로 고정
                     "UIApplicationSceneManifest": [ // Scene 설정
                         "UIApplicationSupportsMultipleScenes": false,
@@ -61,12 +66,12 @@ let project = Project(
                     "NSLocationWhenInUseUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 앱 활성 시에만 허용하시겠습니까?",
                     "NSLocationAlwaysUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 항상 허용하시겠습니까?",
                     "NSCameraUsageDescription" : "사용자 프로필 설정을 위한 카메라 사용 권한을 허용하시겠습니까?",
-//                    // 런치 스크린
-//                    "UILaunchScreen" : [
-//                        "UIColorName" : "LaunchScreenBGColor",
-//                        "UIImageName" : "LaunchLogo",
-//                        "UIImageRespectsSafeAreaInsets" : true
-//                    ],
+                    //                    // 런치 스크린
+                    //                    "UILaunchScreen" : [
+                    //                        "UIColorName" : "LaunchScreenBGColor",
+                    //                        "UIImageName" : "LaunchLogo",
+                    //                        "UIImageRespectsSafeAreaInsets" : true
+                    //                    ],
                     // 카카오 로그인 설정
                     "KAKAO_NATIVE_APP_KEY" : "180ebe6367eb8ee6eafe439aa551744a",
                     "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink", "kakaoplus"],
@@ -87,7 +92,7 @@ let project = Project(
             dependencies: [
                 .target(name: "Features"),
                 
-                .external(name: "KeychainSwift"),
+                    .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK")
             ]
         ),
@@ -110,7 +115,7 @@ let project = Project(
                                 ],
                             ]
                         ]
-                    ],
+                                                  ],
                     // 폰트 추가
                     "UIAppFonts": ["Pretendard-Black.otf",
                                    "Pretendard-Bold.otf",
@@ -157,7 +162,8 @@ let project = Project(
             scripts: [  ],
             dependencies: [
                 .target(name: "Features"),
-                
+                .external(name: "FirebaseCore"),
+                .external(name: "FirebaseAnalytics"),
                 .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK")
             ]
@@ -182,7 +188,7 @@ let project = Project(
                                     ],
                                 ]
                             ]
-                        ],
+                                                      ],
                         // 폰트 추가
                         "UIAppFonts": ["Pretendard-Black.otf",
                                        "Pretendard-Bold.otf",
@@ -219,6 +225,7 @@ let project = Project(
                                 "CFBundleURLSchemes" : ["kakao180ebe6367eb8ee6eafe439aa551744a"]
                             ],
                         ],
+                        "ITSAppUsesNonExemptEncryption" : false,
                         // 다른 설정은 여기에다가 추가
                     ]
                 ),
@@ -229,11 +236,11 @@ let project = Project(
                 dependencies: [
                     .target(name: "AuthModule"),
                     
-                    .external(name: "KeychainSwift"),
+                        .external(name: "KeychainSwift"),
                     .external(name: "KakaoSDK")
                 ]
             ),
-
+        
         // module
         .target(
             name: "AuthModule",
@@ -303,7 +310,7 @@ let project = Project(
             sources: ["DE/Tests/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
-                           .target(name: "Network"),
+                .target(name: "Network"),
             ]
         ),
     ],

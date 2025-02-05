@@ -8,6 +8,8 @@ import Then
 import CoreModule
 import Network
 
+import Firebase
+
 class LoginVC: UIViewController {
     // MARK: - Properties
     private let loginView = LoginView()
@@ -119,6 +121,16 @@ class LoginVC: UIViewController {
     }
     
     @objc private func loginButtonTapped() {
+        let event = "loginButton"
+          let parameters = [
+            "file": #file,
+            "function": #function
+          ]
+          
+          Analytics.setUserID("userID = \(1234)")
+          Analytics.setUserProperty("ko", forName: "country")
+          Analytics.logEvent(AnalyticsEventSelectItem, parameters: nil) // select_item으로 로깅
+          Analytics.logEvent(event, parameters: parameters)
         self.view.showBlockingView()
         let loginDTO = networkService.makeLoginDTO(username: loginView.usernameField.text!, password: loginView.passwordField.text!)
         usernameString = loginDTO.username
