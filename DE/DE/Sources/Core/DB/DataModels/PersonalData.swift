@@ -5,12 +5,12 @@ import SwiftData
 
 @Model
 public class PersonalData {
-    @Attribute public var userName: String?
-    @Attribute public var userImageURL: String?
-    @Attribute public var userCity: String?
-    @Attribute public var authType : String?
-    @Attribute public var email : String?
-    @Attribute public var adult : Bool?
+    @Attribute(.unique) public var userName: String?
+    public var userImageURL: String?
+    public var userCity: String?
+    public var authType : String?
+    @Attribute(.unique) public var email : String?
+    public var adult : Bool?
     
     @Relationship var user: UserData?
     

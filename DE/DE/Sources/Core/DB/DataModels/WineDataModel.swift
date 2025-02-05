@@ -7,7 +7,7 @@ import SwiftData
 @Model
 public class WineData {
     /// 와인 고유 ID
-    public var wineId: Int
+    @Attribute(.unique) public var wineId: Int
     /// 와인 이미지 URL
     public var imageUrl: String
     /// 와인 이름

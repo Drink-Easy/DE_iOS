@@ -33,7 +33,7 @@ public class APICounter {
 
 @Model
 public class APIControllerCounter {
-    @Attribute var name: String
+    @Attribute(.unique) var name: String
     @Relationship var counter: APICounter // APICounter와 연관 관계 설정
     @Relationship public var user: UserData? // 부모 관계 추가
 
