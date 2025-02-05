@@ -21,6 +21,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     lazy var profileImgFileName: String = ""
     lazy var profileImg: UIImage? = nil
+    lazy var imageDeleted: Bool = false
     
     public var profileImgURL: String?
     public var originUsername: String?
@@ -108,10 +109,10 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     private func callPatchAPI() async throws {
         if let profileImg = self.profileImg {
-            let imageResult = try await networkService.postImgAsync(image: profileImg)
-        } else {
-            let imageNil = try await networkService.deleteProfileImage()
-        }
+            let _ = try await networkService.postImgAsync(image: profileImg)
+        } else if imageDeleted == true {
+            let _ = try await networkService.deleteProfileImage()
+        } else { return }
         
         guard let newUserName = self.profileView.nicknameTextField.text,
               let newUserCity = self.profileView.myLocationTextField.text else { return }
@@ -119,7 +120,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         let data = networkService.makeMemberInfoUpdateRequestDTO(username: newUserName, city: newUserCity)
         
         // 병렬 처리
-        let dataResult = try await networkService.patchUserInfoAsync(body: data)
+        let _ = try await networkService.patchUserInfoAsync(body: data)
         
         // Call Count 업데이트
         await self.updateCallCount()
@@ -173,6 +174,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
             // 삭제 로직 구현
             self.profileImg = nil
             self.profileView.profileImageView.image = UIImage(named: "profilePlaceholder")
+            self.imageDeleted = true
         }
         
         let editAction = UIAlertAction(title: "수정", style: .default) { _ in
