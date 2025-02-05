@@ -9,8 +9,14 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     
     let navigationBarManager = NavigationBarManager()
     public var wineId: Int = 0
-    var wineName: String = "123"
-    var isLiked: Bool = false
+    var wineName: String = "Default Name"
+    var isLiked: Bool = false {
+        didSet {
+            DispatchQueue.main.async {
+                self.showLiked()
+            }
+        }
+    }
     var originalIsLiked: Bool = false
     let wineNetworkService = WineService()
     let likedNetworkService = WishlistService()
@@ -25,12 +31,14 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         addView()
         constraints()
         setupNavigationBar()
-        callWineDetailAPI(wineId: self.wineId)
+//        callWineDetailAPI(wineId: self.wineId)
+        showLiked()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        callWineDetailAPI(wineId: self.wineId)
         self.view.addSubview(indicator)
     }
     
@@ -73,10 +81,14 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
             action: #selector(tappedLiked),
             tintColor: AppColor.purple100!
         )
-        
-        if let rightButton = navigationItem.rightBarButtonItem?.customView as? UIButton {
-            rightButton.isSelected = isLiked
-            updateHeartButton(button: rightButton)  // 초기 좋아요 상태 반영
+    }
+    
+    private func showLiked() {
+        DispatchQueue.main.async {
+            if let rightButton = self.navigationItem.rightBarButtonItem?.customView as? UIButton {
+                rightButton.isSelected = self.isLiked
+                self.updateHeartButton(button: rightButton)
+            }
         }
     }
     
@@ -240,7 +252,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         let tastingNoteString = noseNotes.joined(separator: ", ")
         
         DispatchQueue.main.async {
-            self.setupNavigationBar() // 제목 및 좋아요 설정
+            //self.setupNavigationBar() // 제목 및 좋아요 설정
             self.updateReviewView()
         }
         
@@ -273,19 +285,19 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func callWineDetailAPI(wineId: Int) {
-        self.view.showColorBlockingView() 
-        wineNetworkService.fetchWineInfo(wineId: wineId) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let responseData) :
-                if let data = responseData {
-                    self.transformResponseData(data)
+        self.view.showColorBlockingView()
+        Task {
+            do {
+                let responseData = try await wineNetworkService.fetchWineInfo(wineId: wineId)
+                DispatchQueue.main.async {
+                    if let data = responseData {
+                        self.transformResponseData(data)
+                    }
+                    self.view.hideBlockingView()
                 }
+            } catch {
                 self.view.hideBlockingView()
-            case .failure(let error) :
-                print("\(error)")
-                self.view.hideBlockingView()
+                print(error.localizedDescription)
             }
         }
     }

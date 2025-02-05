@@ -8,7 +8,7 @@ import Then
 import CoreModule
 import Network
 
-public class MyOwnedWineInfoViewController: UIViewController {
+public class MyOwnedWineInfoViewController: UIViewController, ChildViewControllerDelegate {
     
     let navigationBarManager = NavigationBarManager()
     let networkService = MyWineService()
@@ -19,9 +19,13 @@ public class MyOwnedWineInfoViewController: UIViewController {
     public lazy var deleteButton = CustomButton(title: "다 마셨어요", isEnabled: true)
     
     var registerWine: MyWineViewModel?
+    var needUpdate: Bool = false
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        if needUpdate {
+            fetchMyWineAPI()
+        }
         self.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
@@ -97,6 +101,10 @@ public class MyOwnedWineInfoViewController: UIViewController {
         }
     }
     
+    public func didUpdateData(_ newData: Bool) {
+        self.needUpdate = newData
+    }
+    
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)
     }
@@ -105,6 +113,7 @@ public class MyOwnedWineInfoViewController: UIViewController {
         guard let currentWine = self.registerWine else { return }
         
         let nextVC = ChangeMyOwnedWineViewController()
+        nextVC.delegate = self
         nextVC.registerWine = currentWine
         
         nextVC.hidesBottomBarWhenPushed = true
@@ -140,11 +149,31 @@ public class MyOwnedWineInfoViewController: UIViewController {
         
         Task {
             do {
-                _ = try await networkService.deleteMyWine(myWineId: registerWine!.wineId)
+                _ = try await networkService.deleteMyWine(myWineId: registerWine!.myWineId)
                 try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
                 try await APICallCounterManager.shared.incrementDelete(for: userId, controllerName: .myWine)
             } catch {
-                print("\(error)\n 잠시후 다시 시도해주세요.")
+                print("\(error)")
+            }
+        }
+    }
+    
+    private func fetchMyWineAPI() {
+        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
+            print("⚠️ userId가 UserDefaults에 없습니다.")
+            return
+        }
+        
+        Task {
+            do {
+                let data = try await networkService.fetchMyWine(myWineId: registerWine!.myWineId)
+                DispatchQueue.main.async { [self] in
+                    self.registerWine = MyWineViewModel(myWineId: data.myWineId, wineId: data.wineId, wineName: data.wineName, wineSort: data.wineSort, wineCountry: data.wineCountry, wineRegion: data.wineRegion, wineVariety: data.wineVariety, wineImageUrl: data.wineImageUrl, purchaseDate: data.purchaseDate, purchasePrice: data.purchasePrice, period: data.period)
+                    self.setWineData()
+                    self.needUpdate = false
+                }
+            } catch {
+                print("\(error)")
             }
         }
     }

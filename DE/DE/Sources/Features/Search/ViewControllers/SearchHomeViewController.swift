@@ -51,6 +51,10 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let query = searchHomeView.searchBar.text, query.count >= 2 {
             indicator.startAnimating()
+            DispatchQueue.main.async {
+                // 강제로 맨위로 올리기
+                self.searchHomeView.searchResultTableView.setContentOffset(.zero, animated: true)
+            }
             Task {
                 do {
                     try await callSearchAPI(query: query, startPage: 0)
@@ -68,7 +72,7 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     }
 
     private func showCharacterLimitAlert() {
-        let alert = UIAlertController(title: "경고", message: "최소 2자 이상 입력해 주세요.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "", message: "검색어를 2자 이상 입력해 주세요.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
@@ -147,6 +151,7 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = WineDetailViewController()
         vc.wineId = wineResults[indexPath.row].wineId
+        vc.wineName = wineResults[indexPath.row].name
         navigationController?.pushViewController(vc, animated: true)
     }
     

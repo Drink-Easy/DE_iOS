@@ -55,6 +55,10 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let query = searchHomeView.searchBar.text, query.count >= 2 {
             self.view.showBlockingView()
+            DispatchQueue.main.async {
+                // 강제로 맨위로 올리기
+                self.searchHomeView.searchResultTableView.setContentOffset(.zero, animated: true)
+            }
             Task {
                 do {
                     try await callSearchAPI(query: query, startPage: 0)
@@ -72,7 +76,7 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
     }
 
     private func showCharacterLimitAlert() {
-        let alert = UIAlertController(title: "경고", message: "최소 2자 이상 입력해 주세요.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "", message: "검색어를 2자 이상 입력해 주세요.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }

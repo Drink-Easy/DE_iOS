@@ -93,7 +93,7 @@ let project = Project(
         ),
         .target(
             name: "DRINKIG",
-            destinations: .iOS,
+            destinations: .init([.iPhone]),
             product: .app,
             bundleId: "\(bundleId).\(bundleMid).drinkig",
             deploymentTargets: .iOS("17.0"),
@@ -131,6 +131,7 @@ let project = Project(
                     "NSLocationWhenInUseUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 앱 활성 시에만 허용하시겠습니까?",
                     "NSLocationAlwaysUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 항상 허용하시겠습니까?",
                     "NSCameraUsageDescription" : "사용자 프로필 설정을 위한 카메라 사용 권한을 허용하시겠습니까?",
+                    "NSPhotoLibraryUsageDescription" : "사용자 프로필 설정을 위한 갤러리 접근 권한을 허용하시겠습니까?",
                     // 런치 스크린
                     //                    "UILaunchScreen" : [
                     //                        "UIColorName" : "LaunchScreenBGColor",
@@ -144,7 +145,7 @@ let project = Project(
                         [
                             "CFBundleTypeRole" : "Editor",
                             "CFBundleURLName" : "kakaologin",
-                            "CFBundleURLSchemes" : ["kakao74177ce7b14b89614c47ac7d51464b95"]
+                            "CFBundleURLSchemes" : ["kakao180ebe6367eb8ee6eafe439aa551744a"]
                         ],
                     ],
                     // 다른 설정은 여기에다가 추가
@@ -215,7 +216,7 @@ let project = Project(
                             [
                                 "CFBundleTypeRole" : "Editor",
                                 "CFBundleURLName" : "kakaologin",
-                                "CFBundleURLSchemes" : ["kakao74177ce7b14b89614c47ac7d51464b95"]
+                                "CFBundleURLSchemes" : ["kakao180ebe6367eb8ee6eafe439aa551744a"]
                             ],
                         ],
                         // 다른 설정은 여기에다가 추가
@@ -299,7 +300,7 @@ let project = Project(
             infoPlist: .default,
             sources: ["DE/Tests/**"],
             resources: ["DE/Resources/**"],
-            dependencies: [.target(name: "DRINKIG"),
+            dependencies: [
                            .target(name: "Network"),
             ]
         ),

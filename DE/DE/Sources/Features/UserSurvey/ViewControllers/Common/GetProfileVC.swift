@@ -2,6 +2,7 @@
 
 import UIKit
 import PhotosUI
+import UniformTypeIdentifiers
 
 import SnapKit
 import Then
@@ -9,8 +10,6 @@ import Then
 import CoreModule
 import CoreLocation
 import Network
-
-// 기본 이미지를 어디서 설정하는지?
 
 public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
     
@@ -82,17 +81,11 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
         imagePickerManager.onImagePicked = { [weak self] image, fileName in
             guard let self = self else { return }
 
-            // ✅ 기본 이미지와 현재 이미지가 동일하면 nil 처리
-            if let placeholderImage = UIImage(named: "profilePlaceholder"),
-               let currentImageData = self.profileView.profileImageView.image?.pngData(),
-               let placeholderImageData = placeholderImage.pngData(),
-               currentImageData == placeholderImageData {
-                self.profileImgFileName = ""
-                self.profileImg = nil
-            } else {
+            DispatchQueue.main.async {
                 self.profileImgFileName = fileName
                 self.profileImg = image
-                self.profileView.profileImageView.image = self.profileImg
+                self.profileView.profileImageView.image = image
+                self.profileView.profileImageView.setNeedsDisplay() // ✅ UI 강제 업데이트
             }
         }
     }
@@ -165,7 +158,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     // 프로필 이미지 선택
     @objc func selectProfileImage() {
-        imagePickerManager.presentImagePicker(from: self)
+        imagePickerManager.requestPhotoLibraryPermission(from: self)
     }
     
     //MARK: - 위치 정보 불러오기 로직

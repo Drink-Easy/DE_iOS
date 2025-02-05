@@ -50,7 +50,12 @@ extension NetworkManager {
         guard (200...299).contains(response.statusCode) else {
             return try await handleErrorResponseRequired(response, target: target, decodingType: decodingType)
         }
-
+        
+        if let httpResponse = response.response {
+            let cookieStorage = CookieStorage()
+            cookieStorage.extractTokensAndStore(from: httpResponse) // 🔄 변경된 함수 사용
+        }
+        
         let decodedResponse = try JSONDecoder().decode(ApiResponse<T>.self, from: response.data)
         guard let result = decodedResponse.result else {
             throw NetworkError.decodingError
@@ -68,7 +73,12 @@ extension NetworkManager {
         guard (200...299).contains(response.statusCode) else {
             return try await handleErrorResponseOptional(response, target: target, decodingType: decodingType)
         }
-
+        
+        if let httpResponse = response.response {
+            let cookieStorage = CookieStorage()
+            cookieStorage.extractTokensAndStore(from: httpResponse) // 🔄 변경된 함수 사용
+        }
+        
         let decodedResponse = try JSONDecoder().decode(ApiResponse<T>.self, from: response.data)
         guard let result = decodedResponse.result else {
             throw NetworkError.decodingError
@@ -182,7 +192,7 @@ extension NetworkManager {
                 print("🔄 [토큰 만료] 토큰 재발급 시작...")
 
                 // ✅ 토큰 재발급 요청 (자동 저장됨)
-                _ = try await AuthService().reissueTokenAsync()
+                let response = try await AuthService().reissueTokenAsync()
 
                 return true // 🔄 토큰 재발급 성공
             }

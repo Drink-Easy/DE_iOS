@@ -100,10 +100,8 @@ class SignUpVC: UIViewController {
         view.showBlockingView()
         Task {
             await validationManager.checkEmailDuplicate(email: email, view: signUpView.usernameField)
-            DispatchQueue.main.async {
-                self.view.hideBlockingView()  // ✅ 네트워크 요청 후 인디케이터 중지
-                self.validateInputs()  // ✅ UI 업데이트
-            }
+            self.view.hideBlockingView()  // ✅ 네트워크 요청 후 인디케이터 중지
+            self.validateInputs()  // ✅ UI 업데이트
         }
     }
     
@@ -127,7 +125,16 @@ class SignUpVC: UIViewController {
     }
     
     @objc private func backButtonTapped() {
-        navigationController?.popViewController(animated: true)
+        guard let navigationController = self.navigationController else {
+            return
+        }
+        
+        if let targetIndex = navigationController.viewControllers.firstIndex(where: { $0 is SelectLoginTypeVC }) {
+            let targetVC = navigationController.viewControllers[targetIndex]
+            navigationController.popToViewController(targetVC, animated: true)
+        } else {
+            navigationController.popToRootViewController(animated: true) // 못 찾으면 루트로 이동
+        }
     }
     
     @objc private func goToLoginView() {

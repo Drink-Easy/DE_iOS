@@ -4,6 +4,7 @@ import UIKit
 import Then
 import SnapKit
 import CoreModule
+import SDWebImage
 
 class AdCollectionViewCell: UICollectionViewCell {
     
@@ -11,6 +12,7 @@ class AdCollectionViewCell: UICollectionViewCell {
     
     private let image = UIImageView().then {
         $0.contentMode = .scaleAspectFill
+        $0.image = UIImage(named: "adPlaceholder")
     }
     
     override init(frame: CGRect) {

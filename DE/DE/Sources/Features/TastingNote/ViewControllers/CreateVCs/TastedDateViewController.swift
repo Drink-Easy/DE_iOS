@@ -102,6 +102,17 @@ extension TastedDateViewController: UICalendarSelectionSingleDateDelegate {
         self.tastedDateView.nextButton.isEnabled(isEnabled: true)
     }
     
+    /// ✅ 미래 날짜 선택 차단 (미래 날짜 선택을 아예 못하게 막음)
+    public func dateSelection(_ selection: UICalendarSelectionSingleDate, canSelectDate dateComponents: DateComponents?) -> Bool {
+        guard let dateComponents = dateComponents,
+              let selectedDate = Calendar.current.date(from: dateComponents) else { return false }
+        
+        let today = Calendar.current.startOfDay(for: Date()) // 오늘 날짜 (00:00:00 기준)
+        
+        // ✅ 미래 날짜 선택 차단 (미래 날짜면 false 반환)
+        return selectedDate <= today
+    }
+    
     
 }
 

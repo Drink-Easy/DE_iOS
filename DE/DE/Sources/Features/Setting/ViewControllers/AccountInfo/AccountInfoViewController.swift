@@ -45,9 +45,7 @@ class AccountInfoViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        DispatchQueue.main.async {
-            self.CheckCacheData()
-        }
+        CheckCacheData()
         self.view.addSubview(indicator)
     }
     
@@ -233,10 +231,10 @@ class AccountInfoViewController: UIViewController {
         UserDefaults.standard.removeObject(forKey: "userId")
         clearCookie()
     }
-    
+
     func clearForQuit() {
         clearCookie()
-        ["userId", "isFirst", "AppleIDToken"].forEach {
+        ["userId", "isFirst", "AppleIDToken", "savedUserEmail"].forEach {
             SelectLoginTypeVC.keychain.delete($0)
         }
         UserDefaults.standard.removeObject(forKey: "userId")
@@ -246,7 +244,6 @@ class AccountInfoViewController: UIViewController {
     
     /// UI에 사용할 데이터 불러오기(캐시 or 서버)
     private func CheckCacheData() {
-//        print("캐시데이터 체크하려고 들어옴")
         guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
             print("⚠️ userId가 UserDefaults에 없습니다.")
             return
@@ -255,10 +252,8 @@ class AccountInfoViewController: UIViewController {
         Task {
             do {
                 if try await isCacheDataValid(for: userId) {
-//                    print("✅ 캐시 데이터 사용 가능")
                     await useCacheData(for: userId)
                 } else {
-//                    print("⚠️ 캐시 데이터 유효하지 않음, 서버에서 불러오기")
                     await fetchMemberInfo()
                 }
             } catch {
@@ -317,8 +312,8 @@ class AccountInfoViewController: UIViewController {
             self.userProfile = MemberInfoResponse(imageUrl: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
             self.setUserData(imageURL: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
 
-//            print("✅ 서버 데이터 성공적으로 가져옴: \(data.username)")
             await saveUserInfo(data: self.userProfile!)
+            self.view.hideBlockingView()
         } catch {
             print("❌ 서버에서 사용자 정보를 가져오지 못함: \(error.localizedDescription)")
             self.view.hideBlockingView()
@@ -327,18 +322,18 @@ class AccountInfoViewController: UIViewController {
     
     /// UI update
     private func setUserData(imageURL: String, username: String, email: String, city: String, authType: String, adult: Bool) {
-        // 데이터 처리
-        let profileImgURL = URL(string: imageURL)
-        self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
-        accountView.titleLabel.text = "내 정보"
-        let adultText = adult ? "인증 완료" : "인증 전"
-        accountView.items = [("닉네임", username),
-        ("내 동네", city),
-        ("이메일", email),
-        ("연동상태", authType)
-//        ("성인인증", adultText)
-        ]
-        
+        DispatchQueue.main.async {
+            let profileImgURL = URL(string: imageURL)
+            self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
+            self.accountView.titleLabel.text = "내 정보"
+            let adultText = adult ? "인증 완료" : "인증 전"
+            self.accountView.items = [("닉네임", username),
+            ("내 동네", city),
+            ("이메일", email),
+            ("연동상태", authType)
+    //        ("성인인증", adultText)
+            ]
+        }
     }
     
     /// 새로 받은 데이터 저장
@@ -360,11 +355,8 @@ class AccountInfoViewController: UIViewController {
 
             try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
             try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
-            self.view.hideBlockingView()
-//            print("✅ 사용자 정보가 성공적으로 캐시에 저장되었습니다.")
         } catch {
             print("❌ 사용자 정보 저장 실패: \(error.localizedDescription)")
-            self.view.hideBlockingView()
         }
     }
 }
