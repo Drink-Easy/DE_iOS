@@ -234,7 +234,6 @@ class AccountInfoViewController: UIViewController {
 
     func clearForQuit() {
         clearCookie()
-        // 저장된 아이디도 삭제
         ["userId", "isFirst", "AppleIDToken", "savedUserEmail"].forEach {
             SelectLoginTypeVC.keychain.delete($0)
         }
