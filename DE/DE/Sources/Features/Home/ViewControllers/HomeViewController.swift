@@ -73,24 +73,22 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                 print("⚠️ userId가 UserDefaults에 없습니다.")
                 return
             }
-            self.view.showBlockingView()
             
             do {
                 // 캐시 데이터 사용 시도
                 self.userName = try await PersonalDataManager.shared.fetchUserName(for: userId)
-                self.view.hideBlockingView()
             } catch {
                 do {
                     // get api 사용 시도 -> 캐시 데이터 업데이트
+                    self.view.showBlockingView()
                     self.userName = try await memberService.getUserName()
                     try await PersonalDataManager.shared.updatePersonalData(for: userId, userName: self.userName)
-                    
-                    self.view.hideBlockingView()
                 } catch {
                     print(error.localizedDescription)
+                    self.view.hideBlockingView()
                 }
                 print(error.localizedDescription)
-                self.view.hideBlockingView()
+                self.view.showBlockingView()
             }
         }
     }
@@ -253,6 +251,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
             
             // 2. 캐시 데이터가 없으면 네트워크 요청
             print("🌐 네트워크 요청 시작")
+            self.view.showBlockingView()
             await fetchWinesFromNetwork(isRecommend)
         }
     }
@@ -270,17 +269,15 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                     self.adImage = bannerModels
                     self.adCollectionView.reloadData()
                 }
-
             } catch {
                 print("⚠️ 캐시 데이터 없음 → 네트워크 요청 수행")
-                self.view.showBlockingView()
                 do {
+                    self.view.showBlockingView()
                     let newData = try await fetchHomeBanner()
                     try AdBannerListManager.shared.saveAdBannerList(
                         bannerData: newData.map { AdBannerDataModel(bannerId: $0.bannerId, imageUrl: $0.imageUrl, postUrl: $0.postUrl) },
                         expirationDate: Date()
                     )
-                    self.view.hideBlockingView()
                     
                 } catch {
                     print("❌ 네트워크 요청 실패: \(error)")
@@ -305,29 +302,22 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     }
     
     private func fetchWinesFromNetwork(_ isRecommend: Bool) async {
-        self.view.showBlockingView()
         
         if isRecommend {
             do {
                 let responseData = try await networkService.fetchRecommendWines()
                 await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
-                DispatchQueue.main.async {
-                    self.view.hideBlockingView()
-                }
             } catch {
-                print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
                 self.view.hideBlockingView()
+                print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
             }
         } else { // 인기 와인인 경우
             do {
                 let responseData = try await networkService.fetchPopularWines()
                 await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
-                DispatchQueue.main.async {
-                    self.view.hideBlockingView()
-                }
             } catch {
-                print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
                 self.view.hideBlockingView()
+                print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
             }
         }
     }
