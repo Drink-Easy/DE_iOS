@@ -112,7 +112,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
             let _ = try await networkService.postImgAsync(image: profileImg)
         } else if imageDeleted == true {
             let _ = try await networkService.deleteProfileImage()
-        } else { return }
+        }
         
         guard let newUserName = self.profileView.nicknameTextField.text,
               let newUserCity = self.profileView.myLocationTextField.text else { return }
