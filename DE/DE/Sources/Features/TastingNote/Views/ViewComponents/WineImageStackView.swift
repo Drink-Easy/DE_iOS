@@ -8,8 +8,13 @@ protocol WineSortDelegate: AnyObject {
     func didTapSortButton(for type: WineSortType)
 }
 
-enum WineSortType {
-    case all, red, white, sparkling, rose, etc
+enum WineSortType: String {
+    case all = "전체"
+    case red = "레드"
+    case white = "화이트"
+    case sparkling = "스파클링"
+    case rose = "로제"
+    case etc = "기타"
 }
 
 class WineImageStackContainerView: UIView {
