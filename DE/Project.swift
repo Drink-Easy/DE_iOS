@@ -264,7 +264,9 @@ let project = Project(
                 .external(name: "Cosmos"),
                 .external(name: "KakaoSDK"),
                 .target(name: "Network"),
-                .external(name: "AMPopTip")
+                .external(name: "AMPopTip"),
+                .external(name: "FirebaseCore"),
+                .external(name: "FirebaseAnalytics")
             ]
         ),
         .target(
