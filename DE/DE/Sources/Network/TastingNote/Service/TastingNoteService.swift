@@ -82,9 +82,9 @@ public final class TastingNoteService: NetworkManager {
         try await requestAsync(target: .getNote(noteId: noteId), decodingType: TastingNoteResponsesDTO.self)
     }
     
-    /// 모든 노트 정보 조회 API
-    public func fetchAllNotes(sort: String) async throws -> AllTastingNoteResponseDTO {
-        try await requestAsync(target: .getAllNotes(sort: sort), decodingType: AllTastingNoteResponseDTO.self)
+    /// 모든 노트 정보 조회 API -> 기본이 0
+    public func fetchAllNotes(sort: String, page: Int = 0) async throws -> AllTastingNoteResponseDTO {
+        try await requestAsync(target: .getAllNotes(sort: sort, page: page), decodingType: AllTastingNoteResponseDTO.self)
     }
     
 }
