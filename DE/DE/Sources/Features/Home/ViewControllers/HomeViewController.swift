@@ -89,7 +89,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                     self.view.hideBlockingView()
                 }
                 print(error.localizedDescription)
-                self.view.showBlockingView()
+                self.view.hideBlockingView()
             }
         }
     }
@@ -259,6 +259,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
 
     // MARK: - 네트워크 요청 처리
     func setAdBanner() {
+        self.view.showBlockingView()
         Task {
             do {
                 let cacheData = try AdBannerListManager.shared.fetchAdBannerList() // 내부에서 만료 체크함
@@ -271,15 +272,16 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                     self.adCollectionView.reloadData()
                     self.pageControlNumberView.totalPages = self.adImage.count
                 }
+                self.view.hideBlockingView()
             } catch {
                 print("⚠️ 캐시 데이터 없음 → 네트워크 요청 수행")
                 do {
-                    self.view.showBlockingView()
                     let newData = try await fetchHomeBanner()
                     try AdBannerListManager.shared.saveAdBannerList(
                         bannerData: newData.map { AdBannerDataModel(bannerId: $0.bannerId, imageUrl: $0.imageUrl, postUrl: $0.postUrl) },
                         expirationDate: Date()
                     )
+                    self.view.hideBlockingView()
                     
                 } catch {
                     print("❌ 네트워크 요청 실패: \(error)")
@@ -309,17 +311,19 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
             do {
                 let responseData = try await networkService.fetchRecommendWines()
                 await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
-            } catch {
                 self.view.hideBlockingView()
+            } catch {
                 print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
+                self.view.hideBlockingView()
             }
         } else { // 인기 와인인 경우
             do {
                 let responseData = try await networkService.fetchPopularWines()
                 await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
-            } catch {
                 self.view.hideBlockingView()
+            } catch {
                 print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
+                self.view.hideBlockingView()
             }
         }
     }
