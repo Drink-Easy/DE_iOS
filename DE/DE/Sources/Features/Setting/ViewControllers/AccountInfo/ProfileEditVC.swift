@@ -158,6 +158,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     }
     
     func showProfileActionSheet(in viewController: UIViewController) {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.startChangeProfileImgBtnTapped, fileName: #file)
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { _ in
@@ -174,6 +175,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         }
         
         let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in
+            self.logButtonClick(screenName: self.screenName, buttonName: Tracking.ButtonEvent.alertCancelBtnTapped, fileName: #file)
             print("❌ 취소 버튼 눌림")
         }
         
@@ -188,8 +190,6 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     // 프로필 이미지 선택
     @objc func selectProfileImage() {
-        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.profile, fileName: #file)
-        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.changeProfileImgBtnTapped, fileName: #file)
         showProfileActionSheet(in: self)
     }
     
@@ -208,7 +208,6 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     //MARK: - 닉네임 중복 검사
     @objc func checkNicknameValidity(){
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.checkDuplicateNicknameBtnTapped, fileName: #file)
-        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.moreBtnTapped, fileName: #file)
         guard let nickname = profileView.nicknameTextField.text, !nickname.isEmpty, ValidationManager.isLengthValid else {
             print("닉네임이 없습니다")
             return

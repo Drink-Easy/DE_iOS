@@ -165,9 +165,12 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
             preferredStyle: .alert
         )
         
-        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: { _ in self.logButtonClick(screenName: self.screenName, buttonName: Tracking.ButtonEvent.alertCancelBtnTapped, fileName: #file)}))
         
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { [weak self] _ in
+            self?.logButtonClick(screenName: self!.screenName,
+                                 buttonName: Tracking.ButtonEvent.alertAcceptBtnTapped,
+                           fileName: #file)
             if self?.userProfile?.authType.lowercased() == "apple" { // 애플인 경우에
                 self?.reAuthenticateWithApple()
             } else {
