@@ -128,9 +128,6 @@ class LoginVC: UIViewController {
                 if isSavingId {
                     SelectLoginTypeVC.keychain.set(usernameString, forKey: "savedUserEmail")
                 }
-                // userId 저장
-                saveUserId(userId: data.id) // 현재 로그인한 유저 정보
-                await UserDataManager.shared.createUser(userId: data.id)
                 self.view.hideBlockingView()
                 self.goToNextView(data.isFirst)
             } catch {
@@ -175,11 +172,11 @@ class LoginVC: UIViewController {
         }
     }
     
-    func saveUserId(userId : Int) {
-        let userIdString = "\(userId)"
-        SelectLoginTypeVC.keychain.set(userIdString, forKey: "userId")
-        UserDefaults.standard.set(userId, forKey: "userId")
-    }
+//    func saveUserId(userId : Int) {
+//        let userIdString = "\(userId)"
+//        SelectLoginTypeVC.keychain.set(userIdString, forKey: "userId")
+//        UserDefaults.standard.set(userId, forKey: "userId")
+//    }
     
 }
 

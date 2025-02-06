@@ -122,8 +122,6 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         // 병렬 처리
         let _ = try await networkService.patchUserInfoAsync(body: data)
         
-        // Call Count 업데이트
-        await self.updateCallCount()
     }
     
     @objc private func editCompleteTapped() {
@@ -138,22 +136,6 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
                 self.view.hideBlockingView()
                 // Alert 표시 등 추가
             }
-        }
-    }
-    
-    func updateCallCount() async {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-        Task {
-            // patch count + 1
-            do {
-                try await APICallCounterManager.shared.incrementPatch(for: userId, controllerName: .member)
-            } catch {
-                print(error)
-            }
-            
         }
     }
     
@@ -212,7 +194,6 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     //MARK: - 닉네임 중복 검사
     @objc func checkNicknameValidity(){
-        
         guard let nickname = profileView.nicknameTextField.text, !nickname.isEmpty, ValidationManager.isLengthValid else {
             print("닉네임이 없습니다")
             return
@@ -232,9 +213,9 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         ValidationManager.isNicknameCanUse = false
         ValidationManager.isLengthValid = false
         if originUsername == profileView.nicknameTextField.text {
-            ValidationManager.noNeedToCheck(profileView.nicknameTextField)
+            let _ = ValidationManager.noNeedToCheck(profileView.nicknameTextField)
         } else {
-            ValidationManager.validateNickname(profileView.nicknameTextField)
+            let _ = ValidationManager.validateNickname(profileView.nicknameTextField)
         }
         checkFormValidity()
     }
