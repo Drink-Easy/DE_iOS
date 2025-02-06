@@ -266,15 +266,10 @@ extension EditNoseViewController : UICollectionViewDelegate, UICollectionViewDat
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 0 { // noseCollectionView
+            logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.noseCellTapped, fileName: #file, cellID: NoseCollectionReusableView.identifier)
             // 데이터 직접 수정
             NoseManager.shared.scentSections[indexPath.section].scents[indexPath.row].isSelected.toggle()
         }
-//        else if collectionView.tag == 1 {
-//            if let cell = collectionView.cellForItem(at: indexPath) as? NoseCollectionViewCell {
-//                guard let name = cell.menuLabel.text else { return }
-//                NoseManager.shared.toggleScentSelection(name)
-//            }
-//        }
         
         collectionView.reloadItems(at: [indexPath])
         Task {

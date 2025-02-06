@@ -83,6 +83,7 @@ extension ManiaTypeViewController: UICollectionViewDelegateFlowLayout, UICollect
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.shortSurveyCellTapped, fileName: #file, cellID: SurveyKindCollectionViewCell.identifier)
         let selectedItem = cellData[indexPath.row]
         
         if selectedItems.contains(selectedItem) { //이미 selected된 cell
