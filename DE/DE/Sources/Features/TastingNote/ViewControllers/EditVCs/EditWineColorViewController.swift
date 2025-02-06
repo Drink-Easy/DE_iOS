@@ -57,7 +57,7 @@ public class EditWineColorViewController: UIViewController {
     }
     
     func setupActions() {
-        colorView.nextButton.addTarget(self, action: #selector(saveVC), for: .touchUpInside)
+        colorView.nextButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
     }
     
     private func setupNavigationBar() {
@@ -72,7 +72,7 @@ public class EditWineColorViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func saveVC() {
+    @objc func saveButtonTapped() {
         guard let selectedColor = self.selectedColor else {
             print("선택된 색상이 없습니다.")
             return

@@ -66,7 +66,7 @@ public class EditReviewViewController: UIViewController {
     }
     
     func setupActions() {
-        rView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        rView.saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         rView.reviewBody.delegate = self
     }
     
@@ -84,7 +84,7 @@ public class EditReviewViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func nextVC() {
+    @objc func saveButtonTapped() {
         // Call post api
         callUpdateAPI()
     }
