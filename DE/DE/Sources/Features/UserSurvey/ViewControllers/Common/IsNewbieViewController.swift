@@ -5,7 +5,9 @@ import CoreModule
 import Then
 import SnapKit
 
-public class IsNewbieViewController: UIViewController {
+public class IsNewbieViewController: UIViewController,FirebaseTrackable {
+    
+    public var screenName: String = Tracking.VC.IsNewbieVC
     
     private let navigationBarManager = NavigationBarManager()
     
@@ -28,6 +30,11 @@ public class IsNewbieViewController: UIViewController {
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private lazy var isNewbieView = IsNewbieView().then {

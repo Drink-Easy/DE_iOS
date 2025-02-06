@@ -8,7 +8,9 @@ import Then
 // 기기대응 완료
 // 보유와인 정보 수정
 
-class ChangeMyOwnedWineViewController: UIViewController {
+class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.updateMyWineVC
+    
     weak var delegate: ChildViewControllerDelegate?
     
     let navigationBarManager = NavigationBarManager()
@@ -37,12 +39,17 @@ class ChangeMyOwnedWineViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         setupUI()
         setupNavigationBar()
         setupActions()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupActions() {

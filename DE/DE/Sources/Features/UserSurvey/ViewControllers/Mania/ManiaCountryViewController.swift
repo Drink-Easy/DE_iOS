@@ -7,7 +7,8 @@ import CoreModule
 import SwiftyToaster
 import Network
 
-class ManiaCountryViewController: UIViewController {
+class ManiaCountryViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.ManiaCountryVC
     
     private let navigationBarManager = NavigationBarManager()
     let networkService = MemberService()
@@ -33,6 +34,11 @@ class ManiaCountryViewController: UIViewController {
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupNavigationBar() {

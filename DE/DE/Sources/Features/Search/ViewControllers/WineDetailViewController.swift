@@ -5,7 +5,8 @@ import Then
 import CoreModule
 import Network
 
-class WineDetailViewController: UIViewController, UIScrollViewDelegate {
+class WineDetailViewController: UIViewController, UIScrollViewDelegate, FirebaseTrackable {
+    var screenName: String = Tracking.VC.wineDetailVC
     
     let navigationBarManager = NavigationBarManager()
     public var wineId: Int = 0
@@ -55,6 +56,11 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
                 }
             }
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupNavigationBar() {

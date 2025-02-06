@@ -6,7 +6,8 @@ import CoreModule
 import Network
 
 //테이스팅노트 메인 노트 보관함 뷰
-public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureRecognizerDelegate {
+public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureRecognizerDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.allTastingNoteVC
     
     private let networkService = TastingNoteService()
     var isLoading = false
@@ -65,6 +66,11 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
         tastingNoteView.searchButton.addTarget(self, action: #selector(noteSearchTapped), for: .touchUpInside)
         floatingButton.addTarget(self, action: #selector(newNoteTapped), for: .touchUpInside)
         
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     // MARK: - Setup Methods

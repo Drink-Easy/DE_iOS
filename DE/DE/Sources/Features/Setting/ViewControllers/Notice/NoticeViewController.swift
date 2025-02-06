@@ -11,7 +11,9 @@ import Network
 
 import SafariServices
 
-class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FirebaseTrackable {
+    var screenName: String = Tracking.VC.noticeVC
+    
     private let navigationBarManager = NavigationBarManager()
     private let networkService = NoticeService()
     var noticeData : [NoticeResponse] = []
@@ -46,6 +48,11 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func setupNavigationBar() {

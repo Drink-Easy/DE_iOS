@@ -7,7 +7,9 @@ import SDWebImage
 
 // 색상 변경
 
-public class EditWineColorViewController: UIViewController {
+public class EditWineColorViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.editWineColorVC
+    
     let navigationBarManager = NavigationBarManager()
     
     lazy var colorView = EditColorView().then {
@@ -39,6 +41,11 @@ public class EditWineColorViewController: UIViewController {
         setConstraints()
         setupActions()
         setupNavigationBar()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupUI() {

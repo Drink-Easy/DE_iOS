@@ -4,7 +4,8 @@ import UIKit
 import CoreModule
 import Network
 
-public class EditReviewViewController: UIViewController {
+public class EditReviewViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.editReviewVC
     
     lazy var rView = OnlyReviewView()
     let navigationBarManager = NavigationBarManager()
@@ -41,6 +42,11 @@ public class EditReviewViewController: UIViewController {
         setupNavigationBar()
         //        addExtendedBackgroundView()
         hideKeyboardWhenTappedAround()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func addExtendedBackgroundView() {

@@ -4,7 +4,8 @@ import UIKit
 import CoreModule
 import Network
 
-class EditNoseViewController: UIViewController, UIScrollViewDelegate {
+class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTrackable {
+    var screenName: String = Tracking.VC.editNoseVC
 
     let wineData = TNWineDataManager.shared
     let tnManager = NewTastingNoteManager.shared
@@ -49,6 +50,11 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate {
         setupActions()
         setupNavigationBar()
         setNavBarAppearance(navigationController: self.navigationController)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     public override func viewDidLayoutSubviews() {

@@ -8,7 +8,8 @@ import Then
 import CoreModule
 import Network
 
-public class MyOwnedWineInfoViewController: UIViewController, ChildViewControllerDelegate {
+public class MyOwnedWineInfoViewController: UIViewController, ChildViewControllerDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.myWineDetailVC
     
     let navigationBarManager = NavigationBarManager()
     let networkService = MyWineService()
@@ -39,6 +40,11 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
         setupNavigationBar()
         setWineData()
         wineDetailView.setEditButton(showEditButton: true)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func setWineData() {

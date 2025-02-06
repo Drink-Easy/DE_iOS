@@ -5,7 +5,8 @@ import CoreModule
 
 // 향 선택 뷰컨
 
-public class NoseTestVC: UIViewController, UIScrollViewDelegate {
+public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.tnChooseNoseVC
     
     let wineData = TNWineDataManager.shared
     let tnManager = NewTastingNoteManager.shared
@@ -52,6 +53,11 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate {
         setupActions()
         setupNavigationBar()
         setNavBarAppearance(navigationController: self.navigationController)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func setupUI() {

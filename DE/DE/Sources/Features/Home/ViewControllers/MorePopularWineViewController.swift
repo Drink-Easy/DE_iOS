@@ -6,8 +6,9 @@ import CoreModule
 import Network
 import Then
 
-class MorePopularWineViewController: UIViewController {
-
+class MorePopularWineViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.morePopularWineVC
+    
     let navigationBarManager = NavigationBarManager()
     public var popularWineDataList: [HomeWineModel] = []
     
@@ -28,6 +29,11 @@ class MorePopularWineViewController: UIViewController {
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private lazy var morePopularWineView = MoreRecomWineView().then {
