@@ -3,7 +3,7 @@
 import Foundation
 
 extension Tracking {
-    public struct Network {
+    public struct NetworkEvent {
         private init() { }
         
         //MARK: - Settings
@@ -28,4 +28,27 @@ extension Tracking {
         
     }
     
+    public struct CellEvent {
+        private init() { }
+        
+        public static let shortSurveyCellTapped = "C1_US 짧은 셀 선택"
+        public static let longSurveyCellTapped = "C2_US 긴 셀 선택"
+        public static let emojiSurveyCellTapped = "C3_US 이모지 셀 선택"
+        
+        public static let adBannerCellTapped = "C4_광고 배너 선택"
+        public static let recomCellTapped = "C5_더보기 와인 선택"
+        public static let homeWineCellTapped = "C6_홈 와인 선택"
+        public static let searchWineCellTapped = "C7_검색 와인 선택"
+        
+        public static let noseCellTapped = "C8_TN 향 선택"
+        public static let colorCellTapped = "C9_TN 색상 선택"
+        public static let starCellTapped = "C10_TN 별점 선택"
+        public static let tnCellTapped = "C11_TN 노트 선택"
+        
+        public static let settingMenuCellTapped = "C12_단순 메뉴(Text + >) 선택"
+        public static let myWineCellTapped = "C13_보유와인 선택"
+        public static let noticeCellTapped = "C14_공지사항 선택"
+        public static let inquiryCellTapped = "C15_문의하기 선택"
+        
+    }
 }
