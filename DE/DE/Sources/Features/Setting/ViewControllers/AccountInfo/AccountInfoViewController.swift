@@ -226,97 +226,42 @@ class AccountInfoViewController: UIViewController {
     }
     
     private func clearForLogout() {
-        SelectLoginTypeVC.keychain.delete("userId")
+//        SelectLoginTypeVC.keychain.delete("userId")
         SelectLoginTypeVC.keychain.delete("isFirst")
-        UserDefaults.standard.removeObject(forKey: "userId")
+//        UserDefaults.standard.removeObject(forKey: "userId")
         clearCookie()
     }
 
     func clearForQuit() {
         clearCookie()
-        ["userId", "isFirst", "AppleIDToken", "savedUserEmail"].forEach {
+        ["isFirst", "AppleIDToken", "savedUserEmail"].forEach {
             SelectLoginTypeVC.keychain.delete($0)
         }
-        UserDefaults.standard.removeObject(forKey: "userId")
+//        UserDefaults.standard.removeObject(forKey: "userId")
     }
     
     //MARK: - SwiftDate Funcs
     
     /// UI에 사용할 데이터 불러오기(캐시 or 서버)
     private func CheckCacheData() {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-        
+        self.view.showBlockingView()
         Task {
-            do {
-                if try await isCacheDataValid(for: userId) {
-                    await useCacheData(for: userId)
-                } else {
-                    await fetchMemberInfo()
-                }
-            } catch {
-                print("⚠️ 캐시 데이터 검증 중 오류 발생: \(error.localizedDescription)")
-                await fetchMemberInfo() // ❗️ 에러 발생 시에도 서버 데이터 호출
-            }
+            await fetchMemberInfo() // ❗️ 에러 발생 시에도 서버 데이터 호출
+            self.view.hideBlockingView()
         }
     }
-    
-    /// 캐시 데이터 검증
-    private func isCacheDataValid(for userId: Int) async throws -> Bool {
-        do {
-            let isCallCountZero = try await APICallCounterManager.shared.isCallCountZero(for: userId, controllerName: .member)
-            
-            // 전체 유저 프로필 데이터 nil 검증
-            let hasNilFields = try await PersonalDataManager.shared.checkPersonalDataHasNil(for: userId)
-            return isCallCountZero && !hasNilFields
-        } catch {
-            print(error)
-            try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
-        }
-        return false
-    }
-    
-    /// 캐시 데이터 사용
-    private func useCacheData(for userId: Int) async {
-        do {
-            let data = try await PersonalDataManager.shared.fetchPersonalData(for: userId)
-            
-            guard let username = data.userName,
-                  let imageURL = data.userImageURL,
-                  let email = data.email,
-                  let city = data.userCity,
-                  let authType = data.authType,
-                  let adult = data.adult else {
-                print("⚠️ 여기 사실 들어올 일이 없음. 이미 검증해줘서.")
-                return
-            }
-            
-            self.userProfile = MemberInfoResponse(imageUrl: imageURL, username: username, email: email, city: city, authType: authType, adult: adult)
-            self.setUserData(imageURL: imageURL, username: username, email: email, city: city, authType: authType, adult: adult)
-        } catch {
-            print("⚠️ 캐시 데이터 가져오기 실패: \(error.localizedDescription)")
-            await fetchMemberInfo()
-        }
-    }
-    
+
     /// 서버에서 데이터 가져오기
     private func fetchMemberInfo() async {
         do {
-            self.view.showBlockingView()
             let data = try await memberService.fetchUserInfoAsync()
             
             let safeImageUrl = data.imageUrl ?? "https://placehold.co/400x400"
             
             self.userProfile = MemberInfoResponse(imageUrl: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
             self.setUserData(imageURL: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
-
-            await saveUserInfo(data: self.userProfile!)
-            self.view.hideBlockingView()
         } catch {
             print("❌ 서버에서 사용자 정보를 가져오지 못함: \(error.localizedDescription)")
-            self.view.hideBlockingView()
         }
     }
     
@@ -333,30 +278,6 @@ class AccountInfoViewController: UIViewController {
             ("연동상태", authType)
     //        ("성인인증", adultText)
             ]
-        }
-    }
-    
-    /// 새로 받은 데이터 저장
-    private func saveUserInfo(data: MemberInfoResponse) async {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-        
-        do {
-            try await PersonalDataManager.shared.updatePersonalData(for: userId,
-                userName: data.username,
-                userImageURL: data.imageUrl,
-                userCity: data.city,
-                authType: data.authType,
-                email: data.email,
-                adult: data.adult
-            )
-
-            try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
-            try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .member)
-        } catch {
-            print("❌ 사용자 정보 저장 실패: \(error.localizedDescription)")
         }
     }
 }

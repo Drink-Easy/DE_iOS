@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import Network
 import SnapKit
 import Then
 import SDWebImage
@@ -147,7 +148,7 @@ class MoreWineTableViewCell: UITableViewCell {
         }
     }
     
-    public func configure(model: WineData) {
+    public func configure(model: HomeWineModel) {
         if let url = URL(string: model.imageUrl) {
             image.sd_setImage(with: url, placeholderImage: UIImage(named: "placeholder"))
         } else {

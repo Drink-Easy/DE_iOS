@@ -86,9 +86,6 @@ public class SelectLoginTypeVC: UIViewController {
         Task {
             do {
                 let response = try await networkService.kakaoLogin(data: kakaoDTO)
-                saveUserId(userId: response.id)
-                await UserDataManager.shared.createUser(userId: response.id)
-                
                 DispatchQueue.main.async {
                     self.goToNextView(response.isFirst)
                 }
@@ -118,10 +115,4 @@ public class SelectLoginTypeVC: UIViewController {
         }
     }
     
-    func saveUserId(userId : Int) {
-        // 로그아웃 시, 이 데이터 모두 삭제
-        let userIdString = "\(userId)"
-        SelectLoginTypeVC.keychain.set(userIdString, forKey: "userId")
-        UserDefaults.standard.set(userId, forKey: "userId")
-    }
 }
