@@ -145,17 +145,11 @@ class ChangeMyOwnedWineViewController: UIViewController {
     }
     
     private func callDeleteAPI() {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
         guard let wine = registerWine else {return}
         
         Task {
             do {
                 _ = try await networkService.deleteMyWine(myWineId: wine.myWineId)
-                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
-                try await APICallCounterManager.shared.incrementDelete(for: userId, controllerName: .myWine)
             } catch {
                 print("\(error)\n 잠시후 다시 시도해주세요.")
             }
@@ -173,10 +167,7 @@ class ChangeMyOwnedWineViewController: UIViewController {
         Task {
             do {
                 _ = try await networkService.updateMyWine(myWineId: wineId, data: data)
-                delegate?.didUpdateData(true)
-                
-                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
-                try await APICallCounterManager.shared.incrementPatch(for: userId, controllerName: .myWine)
+//                delegate?.didUpdateData(true)
             } catch {
                 print("\(error)\n 잠시후 다시 시도해주세요.")
             }

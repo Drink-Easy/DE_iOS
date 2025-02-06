@@ -59,8 +59,6 @@ extension SelectLoginTypeVC: ASAuthorizationControllerDelegate {
             Task {
                 do {
                     let response = try await networkService.appleLogin(data: loginData)
-                    saveUserId(userId: response.id)
-                    await UserDataManager.shared.createUser(userId: response.id)
                     DispatchQueue.main.async {
                         self.goToNextView(response.isFirst)
                     }

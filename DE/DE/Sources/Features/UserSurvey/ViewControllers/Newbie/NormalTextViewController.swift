@@ -250,7 +250,7 @@ public class NormalTextViewController: UIViewController {
         Task {
             do {
                 async let imageUpload: String? = {
-                    if let profileImage = userMng.imageData {
+                    if let profileImage = await userMng.imageData {
                         return try await networkService.postImgAsync(image: profileImage)
                     }
                     return nil
@@ -260,12 +260,7 @@ public class NormalTextViewController: UIViewController {
 
                 // ✅ 두 개의 네트워크 요청이 모두 끝날 때까지 기다림
                 _ = try await (imageUpload, userInfoUpdate)
-                
-                // 로컬 데이터 업데이트
-                try await PersonalDataManager.shared.createPersonalData(for: userId, userName: userMng.name, userCity: userMng.region)
-                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
-                try await APICallCounterManager.shared.incrementPatch(for: userId, controllerName: .member)
-                
+
                 // UI 변경
                 DispatchQueue.main.async {
                     let homeTabBarController = MainTabBarController()

@@ -71,7 +71,7 @@ class ManiaCountryViewController: UIViewController {
         Task {
             do {
                 async let imageUpload: String? = {
-                    if let profileImage = userMng.imageData {
+                    if let profileImage = await userMng.imageData {
                         return try await networkService.postImgAsync(image: profileImage)
                     }
                     return nil
@@ -90,31 +90,14 @@ class ManiaCountryViewController: UIViewController {
     }
     
     func processData() {
-        Task {
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("⚠️ userId가 UserDefaults에 없습니다.")
-                return
-            }
+        DispatchQueue.main.async {
+            let homeTabBarController = MainTabBarController()
+            SelectLoginTypeVC.keychain.set(false, forKey: "isFirst")
             
-            do {
-                // 캐시데이터에 기본 유저 정보 저장
-                try await PersonalDataManager.shared.createPersonalData(for: userId, userName: userMng.name, userCity: userMng.region)
-                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
-                try await APICallCounterManager.shared.incrementPatch(for: userId, controllerName: .member)
-            } catch {
-                print(error)
-            }
-            
-            // UI 전환
-            await MainActor.run {
-                let homeTabBarController = MainTabBarController()
-                SelectLoginTypeVC.keychain.set(false, forKey: "isFirst")
-                
-                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                   let window = windowScene.windows.first {
-                    window.rootViewController = homeTabBarController
-                    UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
-                }
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first {
+                window.rootViewController = homeTabBarController
+                UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
             }
         }
     }
