@@ -88,8 +88,8 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
         let data = try await networkService.fetchAllNotes(sort: "전체")
         // Call Count 업데이트
         //        await self.updateCallCount()
-        allTastingNoteList = data.notePriviewList
-        currentTastingNoteList = data.notePriviewList
+        allTastingNoteList = data.pageResponse.content
+        currentTastingNoteList = data.pageResponse.content
         // 데이터 없을 때 콜렉션 뷰 숨기고 없음 라벨
         tastingNoteView.noTastingNoteLabel.isHidden = !self.allTastingNoteList.isEmpty
         tastingNoteView.TastingNoteCollectionView.isHidden = self.allTastingNoteList.isEmpty

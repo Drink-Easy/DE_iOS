@@ -17,9 +17,9 @@ public class TastingNoteList {
 @Model
 public class TastingNote {
     @Attribute(.unique) public var noteId : Int
-    @Attribute public var wineName : String
-    @Attribute public var imageURL : String
-    @Attribute public var sort : String
+    public var wineName : String
+    public var imageURL : String
+    public var sort : String
     
     
     public init(noteId: Int,
