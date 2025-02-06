@@ -131,6 +131,7 @@ extension NetworkManager {
         retryCount: Int = 1 // ✅ 재시도 횟수 제한 추가
     ) async throws -> T? {
         do {
+//            response.statusCode
             let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: response.data)
             
             if errorResponse.code == "ACCESS_TOKEN4002" {

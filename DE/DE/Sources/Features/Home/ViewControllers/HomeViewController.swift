@@ -225,8 +225,13 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                 let _ = try await fetchHomeBanner()
                 self.view.hideBlockingView()
             } catch {
-                print("❌ 네트워크 요청 실패: \(error)")
                 self.view.hideBlockingView()
+                if case NetworkError.tokenExpiredError = error {
+                    // 스플래시뷰로 보내기
+                } else {
+                    // 토스트메세지 처리?
+                    print("❌ 네트워크 요청 실패: \(error.localizedDescription)")
+                }
             }
         }
     }
