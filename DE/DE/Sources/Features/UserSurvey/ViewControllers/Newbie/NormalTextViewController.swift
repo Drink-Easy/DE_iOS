@@ -7,7 +7,8 @@ import CoreModule
 import SwiftyToaster
 import Network
 
-public class NormalTextViewController: UIViewController {
+public class NormalTextViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.NormalTextVC
     
     let networkService = MemberService()
     let userMng = UserSurveyManager.shared
@@ -40,6 +41,11 @@ public class NormalTextViewController: UIViewController {
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     public override func viewDidLoad() {

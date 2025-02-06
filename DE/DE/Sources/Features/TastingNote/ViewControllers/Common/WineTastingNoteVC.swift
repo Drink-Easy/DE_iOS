@@ -10,7 +10,8 @@ import CoreModule
 import Network
 
 // 테이스팅노트 상세 보기 뷰
-public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScrollViewDelegate {
+public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScrollViewDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.wineTastingNoteVC
     
     let navigationBarManager = NavigationBarManager()
     
@@ -68,6 +69,11 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         setupUI()
         setupNavigationBar()
         setNavBarAppearance(navigationController: self.navigationController)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     // MARK: - Setup Methods

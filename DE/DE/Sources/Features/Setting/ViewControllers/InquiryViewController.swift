@@ -9,7 +9,8 @@ import Then
 
 import CoreModule
 
-class InquiryViewController: UIViewController {
+class InquiryViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.inquiryVC
     
     private let navigationBarManager = NavigationBarManager()
     
@@ -66,6 +67,11 @@ class InquiryViewController: UIViewController {
         setupTableView()
         setupNavigationBar()
         setNavBarAppearance(navigationController: self.navigationController)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupNavigationBar() {

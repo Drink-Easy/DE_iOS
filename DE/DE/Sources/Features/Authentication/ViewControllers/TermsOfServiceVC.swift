@@ -7,8 +7,9 @@ import Then
 
 import CoreModule
 
-public class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegate {
-    
+public class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.termsOfServiceVC
+
     // MARK: - Properties
     let navigationBarManager = NavigationBarManager()
     
@@ -91,6 +92,11 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
         setupNavigationBar()
         setupUI()
         setupConstraints()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     // MARK: - UI Setup

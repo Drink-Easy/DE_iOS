@@ -5,7 +5,8 @@ import CoreModule
 import SnapKit
 import Then
 
-public class OnboardingVC: UIViewController, UICollectionViewDelegate {
+public class OnboardingVC: UIViewController, UICollectionViewDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.onboardingVC
     
     private var startImage: [String] = ["onboarding1", "onboarding2", "onboarding3"]
     private var titleText: [String] = ["쉽게 배우는 와인 지식", "함께 즐기는 와인", "나만의 테이스팅 노트"]
@@ -42,6 +43,11 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate {
         view.backgroundColor = AppColor.bgGray
         setupUI()
         
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func setupUI() {

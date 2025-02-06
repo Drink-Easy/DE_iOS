@@ -15,7 +15,8 @@ import CoreModule
 
 // SelectLoginTypeVC.keychain.getBool("isFirst")
 
-public class SplashVC : UIViewController {
+public class SplashVC : UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.splashVC
     
     let networkService = AuthService()
     
@@ -48,6 +49,11 @@ public class SplashVC : UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.checkAuthenticationStatus()
         }
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupViews() {

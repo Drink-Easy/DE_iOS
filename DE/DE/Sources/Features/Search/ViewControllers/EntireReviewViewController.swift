@@ -5,7 +5,8 @@ import Then
 import CoreModule
 import Network
 
-class EntireReviewViewController: UIViewController {
+class EntireReviewViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.entireReviewVC
     
     let navigationBarManager = NavigationBarManager()
     var wineId: Int = 0
@@ -47,6 +48,11 @@ class EntireReviewViewController: UIViewController {
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func setupNavigationBar() {

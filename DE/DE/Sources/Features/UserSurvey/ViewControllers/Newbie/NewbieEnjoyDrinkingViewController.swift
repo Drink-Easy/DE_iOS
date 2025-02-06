@@ -6,7 +6,8 @@ import Then
 import CoreModule
 import SwiftyToaster
 
-public class NewbieEnjoyDrinkingViewController: UIViewController {
+public class NewbieEnjoyDrinkingViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.NewbieEnjoyDrinkingVC
     
     private let navigationBarManager = NavigationBarManager()
     
@@ -30,6 +31,11 @@ public class NewbieEnjoyDrinkingViewController: UIViewController {
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupNavigationBar() {

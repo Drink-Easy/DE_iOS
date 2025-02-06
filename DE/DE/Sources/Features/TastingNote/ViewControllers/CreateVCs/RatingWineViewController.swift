@@ -6,7 +6,8 @@ import Network
 
 // 5번 선택 뷰컨 테이스팅 노트 : 레이팅, 리뷰
 
-public class RatingWineViewController: UIViewController {
+public class RatingWineViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.tnRatingWineVC
     
     lazy var rView = RatingWineView()
     private var ratingValue: Double = 2.5
@@ -48,6 +49,11 @@ public class RatingWineViewController: UIViewController {
         setupNavigationBar()
         addExtendedBackgroundView()
         hideKeyboardWhenTappedAround()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
 
     private func addExtendedBackgroundView() {

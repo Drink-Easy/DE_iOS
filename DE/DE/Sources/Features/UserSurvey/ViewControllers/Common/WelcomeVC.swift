@@ -7,7 +7,8 @@ import Then
 
 import CoreModule
 
-public class WelcomeVC: UIViewController {
+public class WelcomeVC: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.WelcomeVC
     
     // MARK: - UI Components
     private let logoImageView = UIImageView().then {
@@ -54,6 +55,11 @@ public class WelcomeVC: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupConstraints()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     // MARK: - UI Setup

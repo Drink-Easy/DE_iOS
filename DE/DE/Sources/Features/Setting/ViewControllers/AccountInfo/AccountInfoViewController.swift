@@ -11,7 +11,8 @@ import Network
 import SwiftyToaster
 
 /// 계정 정보 확인 페이지
-class AccountInfoViewController: UIViewController {
+class AccountInfoViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.accountInfoVC
     
     //MARK: - Variables 
     private let navigationBarManager = NavigationBarManager()
@@ -60,6 +61,11 @@ class AccountInfoViewController: UIViewController {
         setupNavigationBar()
         setupUI()
         setupAction()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     //MARK: - UI Funcs

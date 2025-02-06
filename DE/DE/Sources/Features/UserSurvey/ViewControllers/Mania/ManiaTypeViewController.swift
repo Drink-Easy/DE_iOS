@@ -6,8 +6,9 @@ import Then
 import CoreModule
 import SwiftyToaster
 
-class ManiaTypeViewController: UIViewController {
-
+class ManiaTypeViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.ManiaTypeVC
+    
     private let navigationBarManager = NavigationBarManager()
 
     let cellData = [DrinkVariety.카베르네소비뇽.rawValue, DrinkVariety.샤도네이.rawValue, DrinkVariety.메를로.rawValue, DrinkVariety.카베르네프랑.rawValue, DrinkVariety.피노누아.rawValue, DrinkVariety.쉬라즈.rawValue, DrinkVariety.쁘띠베르도.rawValue, DrinkVariety.소비뇽블랑.rawValue, DrinkVariety.그르나슈.rawValue, DrinkVariety.말벡.rawValue, DrinkVariety.산지오베제.rawValue, DrinkVariety.리슬링.rawValue, DrinkVariety.모스카토.rawValue, DrinkVariety.블렌드.rawValue, DrinkVariety.네비올로.rawValue, DrinkVariety.카르메네르.rawValue, DrinkVariety.무르베드르.rawValue, DrinkVariety.템프라니요.rawValue]
@@ -30,6 +31,11 @@ class ManiaTypeViewController: UIViewController {
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupNavigationBar() {

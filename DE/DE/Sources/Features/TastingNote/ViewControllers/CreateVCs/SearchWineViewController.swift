@@ -6,7 +6,9 @@ import Network
 import SnapKit
 import Then
 
-public class SearchWineViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+public class SearchWineViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.tnSearchWineVC
+    
     let navigationBarManager = NavigationBarManager()
     var wineResults: [SearchResultModel] = []
     let networkService = WineService()
@@ -30,6 +32,11 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
         )
         //searchHomeView.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         setupNavigationBar()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private lazy var searchHomeView = SearchHomeView(
