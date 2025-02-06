@@ -118,6 +118,7 @@ extension ChooseWineColorViewController: UICollectionViewDelegate, UICollectionV
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.colorCellTapped, fileName: #file, cellID: "WineColorCollectionViewCell")
         let selectedColorHexCode = colorDatas.colors[indexPath.row].colorHexCode
         selectedColor = selectedColorHexCode
         colorView.nextButton.isEnabled(isEnabled: true)
