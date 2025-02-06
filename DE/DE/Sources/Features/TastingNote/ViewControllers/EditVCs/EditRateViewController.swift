@@ -72,6 +72,7 @@ public class EditRateViewController: UIViewController, FirebaseTrackable {
     }
     
     private func updateRatingLabel(with rating: Double) {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.tnRateBtnTapped, fileName: #file)
         ratingValue = rating
         rView.setRate(rating)
     }

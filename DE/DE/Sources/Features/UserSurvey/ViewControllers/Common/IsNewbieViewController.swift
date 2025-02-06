@@ -81,6 +81,7 @@ extension IsNewbieViewController: UICollectionViewDelegateFlowLayout, UICollecti
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.emojiSurveyCellTapped, fileName: #file, cellID: IsNewbieCollectionViewCell.identifier)
         for cell in collectionView.visibleCells {
             if let cell = cell as? IsNewbieCollectionViewCell {
                 cell.updateSelectionState(isSelected: false)  // 모든 셀 선택 해제
