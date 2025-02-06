@@ -35,6 +35,7 @@ class MyWineTableViewCell: UITableViewCell {
     private lazy var buyDate = UILabel().then {
         $0.textColor = AppColor.purple100
         $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.textAlignment = .right
     }
     
     public override func awakeFromNib() {
@@ -88,13 +89,14 @@ class MyWineTableViewCell: UITableViewCell {
         buyDate.snp.makeConstraints {
             $0.trailing.equalToSuperview().offset(-6).priority(.required)
             $0.top.equalTo(name.snp.top)
+            $0.width.equalTo(Constants.superViewWidth * 0.15)
         }
         
         name.snp.makeConstraints {
             $0.leading.equalTo(imageBackground.snp.trailing).offset(18)
             $0.top.equalTo(imageBackground.snp.top)
             $0.trailing.lessThanOrEqualTo(buyDate.snp.leading).offset(-4)
-            $0.width.lessThanOrEqualTo(Constants.superViewWidth * 0.58)
+            $0.width.equalTo(Constants.superViewWidth * 0.56)
         }
         
         price.snp.makeConstraints {
@@ -115,7 +117,7 @@ class MyWineTableViewCell: UITableViewCell {
         self.price.text = "구매가 \(priceString)원"
         
         if model.period >= 0 {
-            self.buyDate.text = "D+\(model.period)"
+            self.buyDate.text = "D+\(model.period + 1)"
         } else {
             self.buyDate.text = "D\(model.period)"
         }

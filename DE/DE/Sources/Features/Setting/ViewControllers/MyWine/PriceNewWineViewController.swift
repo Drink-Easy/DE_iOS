@@ -8,7 +8,8 @@ import Network
 // 기기대응 완료
 // 보유와인 가격 입력
 
-class PriceNewWineViewController: UIViewController {
+class PriceNewWineViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.setMyWinePriceVC
 
     let priceNewWineView = MyWinePriceView()
     let navigationBarManager = NavigationBarManager()
@@ -30,6 +31,11 @@ class PriceNewWineViewController: UIViewController {
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupUI() {
@@ -59,40 +65,45 @@ class PriceNewWineViewController: UIViewController {
     }
     
     @objc func nextVC() {
-        guard let price = self.priceNewWineView.priceTextField.text else { return }
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.createNewWineBtnTapped, fileName: #file)
+        guard let price = self.priceNewWineView.priceTextField.text, isValidInteger(price) else {
+            let alert = UIAlertController(title: "", message: "가격을 숫자로만 입력해주세요.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+            present(alert, animated: true, completion: nil)
+            return
+        }
         MyOwnedWineManager.shared.setPrice(price)
-        
-        callPostAPI()
+        Task {
+            await callPostAPI()
+        }
         
         DispatchQueue.main.async {
-            self.navigationController?.popViewController(animated: true)
-            guard let navigationController = self.navigationController else { return }
+            guard let navigationController = self.navigationController else {
+                return
+            }
+            
+            // 🔹 네비게이션 스택에서 MyOwnedWineViewController 찾기
             if let targetIndex = navigationController.viewControllers.firstIndex(where: { $0 is MyOwnedWineViewController }) {
-                let newStack = Array(navigationController.viewControllers[...targetIndex])
-                navigationController.setViewControllers(newStack, animated: true)
+                let targetVC = navigationController.viewControllers[targetIndex]
+                navigationController.popToViewController(targetVC, animated: true)
+            } else {
+                navigationController.popToRootViewController(animated: true) // 못 찾으면 루트로 이동
             }
         }
     }
+
+    func isValidInteger(_ text: String) -> Bool {
+        return Int(text) != nil
+    }
     
-    private func callPostAPI() {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-        
+    private func callPostAPI() async {
         let wm = MyOwnedWineManager.shared
         let data = networkService.makePostDTO(wineId: wm.getWineId(), buyDate: wm.getBuyDate(), buyPrice: wm.getPrice())
-        Task {
-            do {
-                // 데이터 전송
-                _ = try await networkService.postMyWine(data: data)
-                
-                // 데이터 전송 성공 시, 보유와인 콜카운터 생성 및 post +1
-                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
-                try await APICallCounterManager.shared.incrementPost(for: userId, controllerName: .myWine)
-            } catch {
-                print("\(error)\n 잠시후 다시 시도해주세요.")
-            }
+        do {
+            // 데이터 전송
+            _ = try await networkService.postMyWine(data: data)
+        } catch {
+            print("\(error)\n 잠시후 다시 시도해주세요.")
         }
     }
     

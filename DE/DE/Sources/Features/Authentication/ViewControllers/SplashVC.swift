@@ -2,31 +2,30 @@
 
 import UIKit
 
-import Moya
 import SnapKit
 
 import KeychainSwift
 import SwiftyToaster
 import AppTrackingTransparency
 import AdSupport
+import Then
 
 import Network
 import CoreModule
 
 // SelectLoginTypeVC.keychain.getBool("isFirst")
 
-public class SplashVC : UIViewController {
+public class SplashVC : UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.splashVC
     
     let networkService = AuthService()
     
     var refreshToken: String = ""
     var ExpiresAt: Date = Date()
     
-    private lazy var logoImage: UIImageView = {
-        let logoImage = UIImageView()
+    private lazy var logoImage = UIImageView().then { logoImage in
         logoImage.image = UIImage(named: "logo")
-        return logoImage
-    }()
+    }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,6 +51,11 @@ public class SplashVC : UIViewController {
         }
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     func setupViews() {
         view.backgroundColor = AppColor.bgGray
         view.addSubview(logoImage)
@@ -64,7 +68,6 @@ public class SplashVC : UIViewController {
                 if cookie.name == "accessToken" {
                     if let expires = cookie.expiresDate {
                         ExpiresAt = expires
-                        print("\(ExpiresAt)")
                     }
                 }
                 if cookie.name == "refreshToken" {
@@ -77,14 +80,14 @@ public class SplashVC : UIViewController {
         if Date() < ExpiresAt {
             checkIsFirst()
         } else {
-            networkService.reissueToken { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(_):
+            Task {
+                do {
+                    let _ = try await networkService.reissueTokenAsync()
                     checkIsFirst()
-                case .failure(let error):
-                    navigateToOnBoaringScreen()
-                    print(error)
+                } catch {
+                    DispatchQueue.main.async {
+                        self.navigateToOnBoaringScreen()
+                    }
                 }
             }
         }
@@ -92,15 +95,15 @@ public class SplashVC : UIViewController {
     
     func checkIsFirst() {
         let isFirstString = SelectLoginTypeVC.keychain.getBool("isFirst")
-        print("isFirstString == \(isFirstString)")
-        if isFirstString == true {
+        if isFirstString == true || isFirstString == nil {
             navigateToWelcomeScreen()
         } else { navigateToMainScreen() }
     }
     
     func navigateToMainScreen() {
         let mainTabBarController = MainTabBarController()
-        if let window = UIApplication.shared.windows.first {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
             window.rootViewController = mainTabBarController
             UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
         }
@@ -108,10 +111,12 @@ public class SplashVC : UIViewController {
     
     func navigateToWelcomeScreen() {
         let vc = TermsOfServiceVC()
-        if let window = UIApplication.shared.windows.first {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
             window.rootViewController = vc
             UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
         }
+        
     }
     
     func navigateToOnBoaringScreen() {

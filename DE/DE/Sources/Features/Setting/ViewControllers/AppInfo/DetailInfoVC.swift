@@ -13,7 +13,7 @@ class DetailInfoVC: UIViewController {
     
     private let contentLabel = UILabel().then {
         $0.font = UIFont.ptdRegularFont(ofSize: 16)
-        $0.textColor = Constants.AppColor.gray100
+        $0.textColor = AppColor.gray100
         $0.textAlignment = .left
         $0.numberOfLines = 0
     }

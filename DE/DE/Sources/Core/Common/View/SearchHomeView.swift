@@ -17,7 +17,7 @@ public class SearchHomeView: UIView {
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.ptdSemiBoldFont(ofSize: 24),
             .paragraphStyle: paragraphStyle,
-            .foregroundColor: Constants.AppColor.DGblack ?? .black
+            .foregroundColor: AppColor.DGblack ?? .black
         ]
         $0.attributedText = NSAttributedString(string: text, attributes: attributes)
     }
@@ -27,12 +27,19 @@ public class SearchHomeView: UIView {
     public lazy var searchResultTableView = UITableView().then {
         $0.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        $0.backgroundColor = Constants.AppColor.grayBG
+        $0.backgroundColor = AppColor.grayBG
+    }
+    
+    public lazy var noSearchResultLabel = UILabel().then {
+        $0.text = "검색 결과가 없습니다."
+        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.textColor = AppColor.gray70
+        $0.textAlignment = .center
     }
 
     public init(titleText: String, placeholder: String) {
         super.init(frame: .zero)
-        backgroundColor = Constants.AppColor.grayBG
+        backgroundColor = AppColor.grayBG
 
         title.text = titleText
         searchBar.placeholderText = placeholder
@@ -46,7 +53,7 @@ public class SearchHomeView: UIView {
     }
 
     private func addComponents() {
-        [title, searchBar, searchResultTableView].forEach { self.addSubview($0) }
+        [title, searchBar, searchResultTableView, noSearchResultLabel].forEach { self.addSubview($0) }
     }
 
     private func setConstraints() {
@@ -65,6 +72,11 @@ public class SearchHomeView: UIView {
             make.top.equalTo(searchBar.snp.bottom).offset(DynamicPadding.dynamicValue(18.0))
             make.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(18.0))
             make.bottom.equalTo(safeAreaLayoutGuide)
+        }
+        
+        noSearchResultLabel.snp.makeConstraints { make in
+            make.top.equalTo(searchBar.snp.bottom).offset(DynamicPadding.dynamicValue(259.5))
+            make.centerX.equalTo(safeAreaLayoutGuide)
         }
     }
 }

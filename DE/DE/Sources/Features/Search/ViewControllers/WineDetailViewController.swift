@@ -5,12 +5,19 @@ import Then
 import CoreModule
 import Network
 
-class WineDetailViewController: UIViewController, UIScrollViewDelegate {
+class WineDetailViewController: UIViewController, UIScrollViewDelegate, FirebaseTrackable {
+    var screenName: String = Tracking.VC.wineDetailVC
     
     let navigationBarManager = NavigationBarManager()
     public var wineId: Int = 0
-    var wineName: String = "123"
-    var isLiked: Bool = false
+    var wineName: String = "Default Name"
+    var isLiked: Bool = false {
+        didSet {
+            DispatchQueue.main.async {
+                self.showLiked()
+            }
+        }
+    }
     var originalIsLiked: Bool = false
     let wineNetworkService = WineService()
     let likedNetworkService = WishlistService()
@@ -20,17 +27,20 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.prefersLargeTitles = false
-        view.backgroundColor = Constants.AppColor.grayBG
+        view.backgroundColor = AppColor.grayBG
     
         addView()
         constraints()
         setupNavigationBar()
-        callWineDetailAPI(wineId: self.wineId)
+        setNavBarAppearance(navigationController: self.navigationController)
+//        callWineDetailAPI(wineId: self.wineId)
+        showLiked()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        callWineDetailAPI(wineId: self.wineId)
         self.view.addSubview(indicator)
     }
     
@@ -44,12 +54,13 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
                 } else {
                     await callLikeAPI(wineId: wineId)
                 }
-                
-                if let previousVC = navigationController?.viewControllers.last as? WishListViewController {
-                    previousVC.shouldSkipWishlistUpdate = true
-                }
             }
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupNavigationBar() {
@@ -73,10 +84,14 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
             action: #selector(tappedLiked),
             tintColor: AppColor.purple100!
         )
-        
-        if let rightButton = navigationItem.rightBarButtonItem?.customView as? UIButton {
-            rightButton.isSelected = isLiked
-            updateHeartButton(button: rightButton)  // 초기 좋아요 상태 반영
+    }
+    
+    private func showLiked() {
+        DispatchQueue.main.async {
+            if let rightButton = self.navigationItem.rightBarButtonItem?.customView as? UIButton {
+                rightButton.isSelected = self.isLiked
+                self.updateHeartButton(button: rightButton)
+            }
         }
     }
     
@@ -85,6 +100,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     @objc func tappedLiked(_ sender: UIButton) {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.likeBtnTapped, fileName: #file)
         sender.isSelected.toggle()
         isLiked.toggle()
         updateHeartButton(button: sender)
@@ -131,7 +147,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     //largeTitle -> smallTitle
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-        let largeTitleBottom = largeTitleLabel.frame.maxY + 10
+        let largeTitleBottom = largeTitleLabel.frame.maxY + 5
         
         UIView.animate(withDuration: 0.1) {
             self.largeTitleLabel.alpha = offsetY > largeTitleBottom ? 0 : 1
@@ -153,6 +169,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     
     @objc
     private func goToEntireReview() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.moreBtnTapped, fileName: #file)
         let vc = EntireReviewViewController()
         vc.wineId = self.wineId
         vc.wineName = self.wineName
@@ -240,7 +257,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         let tastingNoteString = noseNotes.joined(separator: ", ")
         
         DispatchQueue.main.async {
-            self.setupNavigationBar() // 제목 및 좋아요 설정
+            //self.setupNavigationBar() // 제목 및 좋아요 설정
             self.updateReviewView()
         }
         
@@ -273,60 +290,28 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func callWineDetailAPI(wineId: Int) {
-        self.view.showColorBlockingView() 
-        wineNetworkService.fetchWineInfo(wineId: wineId) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let responseData) :
-                if let data = responseData {
-                    self.transformResponseData(data)
+        self.view.showColorBlockingView()
+        Task {
+            do {
+                let responseData = try await wineNetworkService.fetchWineInfo(wineId: wineId)
+                DispatchQueue.main.async {
+                    if let data = responseData {
+                        self.transformResponseData(data)
+                    }
+                    self.view.hideBlockingView()
                 }
+            } catch {
                 self.view.hideBlockingView()
-            case .failure(let error) :
-                print("\(error)")
-                self.view.hideBlockingView()
+                print(error.localizedDescription)
             }
         }
     }
     
-    func checkCallCounter(up: Bool) async {
-        Task {
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("❌ 유저 ID를 찾을 수 없습니다.")
-                return
-            }
-            
-            do {
-                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .wishlist)
-                print("✅ APICounter 생성 완료")
-            } catch {
-                print(error)
-            }
-            
-            do {
-                if up {
-                    try await APICallCounterManager.shared.incrementPost(for: userId, controllerName: .wishlist)
-                    print("✅ 호출 카운트 증가 완료")
-                } else {
-                    try await APICallCounterManager.shared.incrementDelete(for: userId, controllerName: .wishlist)
-                    print("✅ 호출 카운트 증가 완료")
-                }
-                
-            } catch {
-                print("❌ 호출 카운트 증가 실패: \(error.localizedDescription)")
-            }
-        }
-    }
     
     func callLikeAPI(wineId: Int) async {
         self.view.showBlockingView()
         do {
-            let responseData = try await likedNetworkService.postWishlist(wineId: wineId)
-            print("✅ 좋아요 API 호출 성공: \(responseData)") // 이제 프린트가 확실히 출력됩니다.
-            
-            // 호출 카운터 증가
-            await checkCallCounter(up: true)
+            let _ = try await likedNetworkService.postWishlist(wineId: wineId)
             self.view.hideBlockingView()
         } catch {
             print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")
@@ -337,11 +322,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     func calldeleteLikedAPI(wineId: Int) async {
         self.view.showBlockingView()
         do {
-            let responseData = try await likedNetworkService.deleteWishlist(wineId: wineId)
-            print("✅ 좋아요 API 호출 성공: \(responseData)") // 이제 프린트가 확실히 출력됩니다.
-            
-            // 호출 카운터 감소
-            await checkCallCounter(up: false)
+            let _ = try await likedNetworkService.deleteWishlist(wineId: wineId)
             self.view.hideBlockingView()
         } catch {
             print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")

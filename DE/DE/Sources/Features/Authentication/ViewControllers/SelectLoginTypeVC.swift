@@ -13,7 +13,8 @@ import AuthenticationServices
 import KakaoSDKUser
 
 
-public class SelectLoginTypeVC: UIViewController {
+public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.selectLoginTypeVC
     
     public static let keychain = KeychainSwift()
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
@@ -38,16 +39,22 @@ public class SelectLoginTypeVC: UIViewController {
         setupActions()
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     // MARK: - Setup Methods
     private func setupActions() {
         mainView.kakaoButton.addTarget(self, action: #selector(kakaoButtonTapped), for: .touchUpInside)
         mainView.appleButton.addTarget(self, action: #selector(appleButtonTapped), for: .touchUpInside)
-        mainView.loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+        mainView.loginButton.addTarget(self, action: #selector(goToLoginVC), for: .touchUpInside)
         mainView.joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
     }
     
     // MARK: - Actions
     @objc private func kakaoButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.kakaoBtnTapped, fileName: #file)
         self.kakaoAuthVM.kakaoLogin { success in
             if success {
                 UserApi.shared.me { (user, error) in
@@ -78,30 +85,25 @@ public class SelectLoginTypeVC: UIViewController {
     }
     
     @objc private func appleButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.appleBtnTapped, fileName: #file)
         startAppleLoginProcess()
     }
     
     private func kakaoLoginProceed(_ userIDString: String, userEmail: String) {
         let kakaoDTO = self.networkService.makeKakaoDTO(username: userIDString, email: userEmail)
-        self.networkService.kakaoLogin(data: kakaoDTO) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let response):
-                print("카카오 로그인 성공")
-                saveUserId(userId: response.id)
-                Task {
-                    // userID저장
-                    await UserDataManager.shared.createUser(userId: response.id)
+        Task {
+            do {
+                let response = try await networkService.kakaoLogin(data: kakaoDTO)
+                DispatchQueue.main.async {
+                    self.goToNextView(response.isFirst)
                 }
-                self.goToNextView(response.isFirst)
-            case .failure(let error):
-                print(error)
+            } catch {
+                print(error.localizedDescription)
             }
         }
     }
     
-    @objc private func loginButtonTapped() {
+    @objc private func goToLoginVC() {
         let loginViewController = LoginVC()
         navigationController?.pushViewController(loginViewController, animated: true)
     }
@@ -121,10 +123,4 @@ public class SelectLoginTypeVC: UIViewController {
         }
     }
     
-    func saveUserId(userId : Int) {
-        // 로그아웃 시, 이 데이터 모두 삭제
-        let userIdString = "\(userId)"
-        SelectLoginTypeVC.keychain.set(userIdString, forKey: "userId")
-        UserDefaults.standard.set(userId, forKey: "userId")
-    }
 }

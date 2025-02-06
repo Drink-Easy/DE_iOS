@@ -5,13 +5,14 @@ import CoreModule
 import SnapKit
 import Then
 
-public class OnboardingVC: UIViewController, UICollectionViewDelegate {
+public class OnboardingVC: UIViewController, UICollectionViewDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.onboardingVC
     
     private var startImage: [String] = ["onboarding1", "onboarding2", "onboarding3"]
     private var titleText: [String] = ["쉽게 배우는 와인 지식", "함께 즐기는 와인", "나만의 테이스팅 노트"]
     private var descriptionText: [String] = ["드링키지, 와인의 진입장벽을 낮추다.", "더 즐거운 시간을 공유해 보세요.", "다양한 테이스팅 노트를 기록하며\n나의 취향에 대해 알아 보세요."]
     
-    lazy var pageControl = CustomPageControl(indicatorColor: .white, currentIndicatorColor: .white).then {
+    lazy var pageControl = CustomPageControl(indicatorColor: .white, currentIndicatorColor: AppColor.purple50!).then {
         $0.numberOfPages = startImage.count
         $0.currentPage = 0
     }
@@ -19,7 +20,7 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate {
     private let startButton = CustomBlurButton(
         title: "시작하기",
         titleColor: .white,
-        blurStyle: .light
+        blurStyle: .systemUltraThinMaterial
     ).then {
         $0.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
     }
@@ -42,6 +43,11 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate {
         view.backgroundColor = AppColor.bgGray
         setupUI()
         
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func setupUI() {
@@ -68,6 +74,8 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate {
     }
     
     @objc private func startButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.startBtnTapped, fileName: #file)
+        
         let selectLoginViewController = SelectLoginTypeVC()
         navigationController?.pushViewController(selectLoginViewController, animated: true)
     }

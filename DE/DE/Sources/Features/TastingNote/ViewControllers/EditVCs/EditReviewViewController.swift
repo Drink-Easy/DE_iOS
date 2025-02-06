@@ -4,7 +4,8 @@ import UIKit
 import CoreModule
 import Network
 
-public class EditReviewViewController: UIViewController {
+public class EditReviewViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.editReviewVC
     
     lazy var rView = OnlyReviewView()
     let navigationBarManager = NavigationBarManager()
@@ -24,6 +25,7 @@ public class EditReviewViewController: UIViewController {
         rView.infoView.kindContents.text = wineData.sort
         rView.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")
         rView.reviewBody.text = tnManager.review
+        self.view.addSubview(indicator)
     }
     
     //    public override func viewWillDisappear(_ animated: Bool) {
@@ -31,10 +33,8 @@ public class EditReviewViewController: UIViewController {
     //        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
     //        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     //    }
-    
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.addSubview(indicator)
         view.backgroundColor = AppColor.bgGray
         setConstraints()
         setupActions()
@@ -42,6 +42,11 @@ public class EditReviewViewController: UIViewController {
         setupNavigationBar()
         //        addExtendedBackgroundView()
         hideKeyboardWhenTappedAround()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func addExtendedBackgroundView() {
@@ -67,7 +72,7 @@ public class EditReviewViewController: UIViewController {
     }
     
     func setupActions() {
-        rView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        rView.saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         rView.reviewBody.delegate = self
     }
     
@@ -85,8 +90,10 @@ public class EditReviewViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func nextVC() {
-        // Call post api
+    @objc func saveButtonTapped() {
+        logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.saveBtnTapped,
+                       fileName: #file)
         callUpdateAPI()
     }
     
@@ -97,7 +104,7 @@ public class EditReviewViewController: UIViewController {
         Task {
             do {
                 self.view.showBlockingView()
-                try await networkService.patchNote(data: tnData)
+                let _ = try await networkService.patchNote(data: tnData)
                 self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             }

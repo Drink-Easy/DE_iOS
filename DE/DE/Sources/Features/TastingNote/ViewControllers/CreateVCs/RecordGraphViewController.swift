@@ -8,7 +8,8 @@ import CoreModule
 
 // 4번 선택 뷰컨 테이스팅 노트 : 팔레트 선택
 
-public class RecordGraphViewController: UIViewController {
+public class RecordGraphViewController: UIViewController, UIScrollViewDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.tnRecordGraphVC
     
     let navigationBarManager = NavigationBarManager()
     let wineData = TNWineDataManager.shared
@@ -25,6 +26,7 @@ public class RecordGraphViewController: UIViewController {
     }
     
     let header = TopView(currentPage: 4, entirePage: 5)
+    private var smallTitleLabel = UILabel()
     
     private let recordGraphView = RecordGraphView()
     
@@ -55,15 +57,23 @@ public class RecordGraphViewController: UIViewController {
         saveSliderValues()
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     private func setupUI() {
         view.backgroundColor = AppColor.bgGray
         view.addSubview(scrollView)
+        scrollView.delegate = self
         
         
         contentView.addSubview(header)
         contentView.addSubview(recordGraphView)
         contentView.addSubview(nextButton)
         scrollView.addSubview(contentView)
+        
+        header.setTitleLabel(wineData.wineName)
         
         scrollView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -83,7 +93,7 @@ public class RecordGraphViewController: UIViewController {
         recordGraphView.snp.makeConstraints { make in
             make.top.equalTo(header.snp.bottom).offset(24)
             make.leading.trailing.equalToSuperview().inset(24)
-            make.height.equalTo(Constants.superViewHeight)
+            make.height.equalTo(Constants.superViewHeight * 0.5 + 460)
         }
         
         nextButton.snp.makeConstraints { make in
@@ -107,6 +117,13 @@ public class RecordGraphViewController: UIViewController {
             target: self,
             action: #selector(prevVC)
         )
+        
+        smallTitleLabel = navigationBarManager.setNReturnTitle(
+            to: navigationItem,
+            title: wineData.wineName,
+            textColor: AppColor.black ?? .black
+        )
+        smallTitleLabel.isHidden = true
     }
     
     @objc private func prevVC() {
@@ -114,7 +131,9 @@ public class RecordGraphViewController: UIViewController {
     }
     
     @objc private func nextVC() {
-        print("nextVC Tapped")
+        self.logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.nextBtnTapped,
+                       fileName: #file)
         saveSliderValues()
         let nextVC = RatingWineViewController()
         navigationController?.pushViewController(nextVC, animated: true)
@@ -141,5 +160,15 @@ public class RecordGraphViewController: UIViewController {
             break
         }
         recordGraphView.chartView.viewModel.loadSliderValues(from: sliderValues)
+    }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let largeTitleBottom = header.frame.maxY + 5
+        
+        UIView.animate(withDuration: 0.1) {
+            self.header.alpha = offsetY > largeTitleBottom ? 0 : 1
+            self.smallTitleLabel.isHidden = !(offsetY > largeTitleBottom)
+        }
     }
 }

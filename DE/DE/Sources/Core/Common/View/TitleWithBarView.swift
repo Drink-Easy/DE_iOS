@@ -16,12 +16,12 @@ public class TitleWithBarView: UIView {
     }
 
     private let separatorView = UIView().then {
-        $0.backgroundColor = Constants.AppColor.purple50
+        $0.backgroundColor = AppColor.purple50
     }
 
     public init(title: String, subTitle: String) {
         super.init(frame: .zero)
-        backgroundColor = Constants.AppColor.grayBG
+        backgroundColor = AppColor.grayBG
         setupView()
         setupConstraints()
 

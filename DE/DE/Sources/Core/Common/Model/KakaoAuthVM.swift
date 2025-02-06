@@ -29,22 +29,22 @@ public class KakaoAuthVM: ObservableObject {
     @MainActor
     public func kakaoLogin(completion: @escaping (Bool) -> Void) {
         if UserApi.isKakaoTalkLoginAvailable() {
-            UserApi.shared.loginWithKakaoTalk { [weak self] (oauthToken, error) in
+            UserApi.shared.loginWithKakaoTalk { (oauthToken, error) in
                 if let error = error {
                     print("카카오톡 로그인 실패: \(error.localizedDescription)")
                     completion(false)
-                } else if let oauthToken = oauthToken {
+                } else if oauthToken != nil {
 //                    AccountSettingsVC.hasKakaoTokens = true
                     print("카카오톡 로그인 성공")
                     completion(true)
                 }
             }
         } else {
-            UserApi.shared.loginWithKakaoAccount { [weak self] (oauthToken, error) in
+            UserApi.shared.loginWithKakaoAccount { (oauthToken, error) in
                 if let error = error {
                     print("카카오 계정 로그인 실패: \(error.localizedDescription)")
                     completion(false)
-                } else if let oauthToken = oauthToken {
+                } else if oauthToken != nil {
 //                    AccountSettingsVC.hasKakaoTokens = true
                     print("카카오 계정 로그인 성공")
                     completion(true)
@@ -85,6 +85,20 @@ public class KakaoAuthVM: ObservableObject {
             }
             print("🟢 카카오 계정 연동 해제 성공")
             completion(true)
+        }
+    }
+    
+    public func unlinkKakaoAccount() async -> Bool {
+        await withCheckedContinuation { continuation in
+            UserApi.shared.unlink { error in
+                if let error = error {
+                    print("🔴 카카오 계정 연동 해제 실패: \(error.localizedDescription)")
+                    continuation.resume(returning: false) // 실패 시 false 반환
+                } else {
+                    print("🟢 카카오 계정 연동 해제 성공")
+                    continuation.resume(returning: true) // 성공 시 true 반환
+                }
+            }
         }
     }
 }

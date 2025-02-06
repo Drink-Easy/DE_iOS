@@ -6,7 +6,8 @@ import Network
 // 기기대응 완료
 // 보유와인 날짜 선택
 
-public class BuyNewWineDateViewController: UIViewController {
+public class BuyNewWineDateViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.setMyWineDateVC
     
     let tastedDateView = MyWineDateView()
     var selectedDate: DateComponents?
@@ -30,6 +31,11 @@ public class BuyNewWineDateViewController: UIViewController {
         setupUI()
         setupActions()
         setupNavigationBar()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     public override func viewDidLayoutSubviews() {
@@ -81,6 +87,7 @@ public class BuyNewWineDateViewController: UIViewController {
     }
     
     @objc func nextVC() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         guard let selectedDate = selectedDate else {
             print("선택된 날짜가 없습니다.")
             return
@@ -100,16 +107,6 @@ public class BuyNewWineDateViewController: UIViewController {
         }
         
     }
-    
-//    private func showAlert() {
-//        let alert = UIAlertController(
-//            title: "잘못된 날짜 선택",
-//            message: "미래 날짜는 선택할 수 없습니다.",
-//            preferredStyle: .alert
-//        )
-//        alert.addAction(UIAlertAction(title: "확인", style: .default))
-//        present(alert, animated: true, completion: nil)
-//    }
 }
 
 extension BuyNewWineDateViewController: UICalendarSelectionSingleDateDelegate {

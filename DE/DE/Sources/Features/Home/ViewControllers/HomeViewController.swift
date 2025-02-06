@@ -4,25 +4,33 @@ import UIKit
 import CoreModule
 import Then
 import Network
+import SafariServices
 
-public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestureRecognizerDelegate {
+public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestureRecognizerDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.homeViewController
     
     private var adImage: [HomeBannerModel] = []
     var recommendWineDataList: [HomeWineModel] = []
     var popularWineDataList: [HomeWineModel] = []
+    
+    var allRecommendWineDataList: [HomeWineModel] = []
+    var allPopularWineDataList: [HomeWineModel] = []
     
     private let maxShowWineCount = 5
     public var userId : Int?
     
     public var userName: String = "" {
         didSet {
-            updateLikeWineListView()
+            DispatchQueue.main.async {
+                self.updateLikeWineListView()
+            }
         }
     }
     
     private var homeTopView = HomeTopView()
     let networkService = WineService()
     let bannerNetworkService = NoticeService()
+    let memberService = MemberService()
     
     // View 세팅
     private lazy var scrollView: UIScrollView = {
@@ -63,15 +71,11 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
         $0.moreBtn.addTarget(self, action: #selector(goToMoreLikely), for: .touchUpInside)
     }
     
-    public func fetchName() { // TODO : 이름 호출 로직 수정하기
-        self.view.showBlockingView()
+    public func fetchName() {
         Task {
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("⚠️ userId가 UserDefaults에 없습니다.")
-                return
-            }
+            self.view.showBlockingView()
             do {
-                self.userName = try await PersonalDataManager.shared.fetchUserName(for: userId)
+                self.userName = try await memberService.getUserName()
                 self.view.hideBlockingView()
             } catch {
                 print(error.localizedDescription)
@@ -82,8 +86,10 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     
     @objc
     private func goToMoreLikely() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.moreBtnTapped, fileName: #file)
         let vc = MoreLikelyWineViewController()
         vc.userName = self.userName
+        vc.recommendWineDataList = self.allRecommendWineDataList
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -96,7 +102,9 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     }
     
     @objc private func goToMorePopular() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.moreBtnTapped, fileName: #file)
         let vc = MorePopularWineViewController()
+        vc.popularWineDataList = self.allPopularWineDataList
         navigationController?.pushViewController(vc, animated: true)
     }
 
@@ -114,10 +122,17 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
         self.navigationController?.isNavigationBarHidden = true
         self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         self.view.addSubview(indicator)
-        setAdBanner()
-        fetchWines(isRecommend: true) // 추천 와인
-        fetchWines(isRecommend: false) // 인기 와인
         fetchName()
+        
+        setAdBanner()
+        setWines(isRecommend: true) // 추천 와인
+        setWines(isRecommend: false) // 인기 와인
+        
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func addComponents() {
@@ -169,21 +184,25 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     }
     
     // MARK: - 컬렉션뷰 업데이트 함수
-    func updateCollectionView(isRecommend : Bool, with wines: [WineData]) {
-        let maxDisplayCount = 5
-        let homeWineModels = toHomeWineModels(Array(wines.prefix(maxDisplayCount)))
-        
-        if isRecommend {
-            recommendWineDataList = homeWineModels
-            likeWineListView.recomCollectionView.reloadData()
-        } else { // 인기 와인인 경우
-            popularWineDataList = homeWineModels
-            popularWineListView.recomCollectionView.reloadData()
+    func updateCollectionView(isRecommend : Bool, with wines: [HomeWineDTO]) {
+        DispatchQueue.main.async {
+            let maxDisplayCount = 5
+            let homeWineModels = self.toHomeWineModels(Array(wines.prefix(maxDisplayCount)))
+            
+            if isRecommend {
+                self.recommendWineDataList = homeWineModels
+                self.likeWineListView.recomCollectionView.reloadData()
+                self.allRecommendWineDataList = self.toHomeWineModels(wines)
+            } else { // 인기 와인인 경우
+                self.popularWineDataList = homeWineModels
+                self.popularWineListView.recomCollectionView.reloadData()
+                self.allPopularWineDataList = self.toHomeWineModels(wines)
+            }
         }
     }
     
     // MARK: - WineData → HomeWineModel 변환
-    func toHomeWineModel(_ wine: WineData) -> HomeWineModel {
+    func toHomeWineModel(_ wine: HomeWineDTO) -> HomeWineModel {
         return HomeWineModel(
             wineId: wine.wineId,
             imageUrl: wine.imageUrl,
@@ -194,75 +213,20 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
         )
     }
     
-    func toHomeWineModels(_ wines: [WineData]) -> [HomeWineModel] {
+    func toHomeWineModels(_ wines: [HomeWineDTO]) -> [HomeWineModel] {
         return wines.map { toHomeWineModel($0) }
-    }
-    
-    func fetchWines(isRecommend : Bool) {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-        self.userId = userId
-        Task {
-            do {
-                if isRecommend {
-                    // 1. 캐시 데이터 우선 사용
-                    let cachedWines = try WineDataManager.shared.fetchWineDataList(userId: userId)
-                    
-                    if !cachedWines.isEmpty {
-                        print("✅ 캐시된 추천와인 데이터 사용: \(cachedWines.count)개")
-                        return
-                    }
-                    self.updateCollectionView(isRecommend: isRecommend, with: cachedWines)
-                } else { // 인기 와인은 따로 처리
-                    let cachedWines = try PopularWineManager.shared.fetchWineDataList()
-                    if !cachedWines.isEmpty {
-                        print("✅ 캐시된 인기와인 데이터 사용: \(cachedWines.count)개")
-                        return
-                    }
-                    self.updateCollectionView(isRecommend: isRecommend, with: cachedWines)
-                }
-            } catch {
-                print("⚠️ 캐시된 데이터 없음")
-            }
-            
-            // 2. 캐시 데이터가 없으면 네트워크 요청
-            self.view.showBlockingView()
-            print("🌐 네트워크 요청 시작")
-            await fetchWinesFromNetwork(isRecommend)
-            self.view.hideBlockingView()
-        }
     }
 
     // MARK: - 네트워크 요청 처리
     func setAdBanner() {
+        self.view.showBlockingView()
         Task {
             do {
-                let cacheData = try AdBannerListManager.shared.fetchAdBannerList() // 내부에서 만료 체크함
-                print("✅ 캐시 데이터 사용!")
-                
-                let bannerModels = cacheData.map { HomeBannerModel(imageUrl: $0.imageUrl, postUrl: $0.postUrl) }
-                
-                DispatchQueue.main.async {
-                    self.adImage = bannerModels
-                    self.adCollectionView.reloadData()
-                }
-
+                let _ = try await fetchHomeBanner()
+                self.view.hideBlockingView()
             } catch {
-                print("⚠️ 캐시 데이터 없음 → 네트워크 요청 수행")
-                self.view.showBlockingView()
-                do {
-                    let newData = try await fetchHomeBanner()
-                    try AdBannerListManager.shared.saveAdBannerList(
-                        bannerData: newData.map { AdBannerDataModel(bannerId: $0.bannerId, imageUrl: $0.imageUrl, postUrl: $0.postUrl) },
-                        expirationDate: Date()
-                    )
-                    self.view.hideBlockingView()
-                } catch {
-                    print("❌ 네트워크 요청 실패: \(error)")
-                    self.view.hideBlockingView()
-                }
+                print("❌ 네트워크 요청 실패: \(error)")
+                self.view.hideBlockingView()
             }
         }
     }
@@ -270,7 +234,6 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     private func fetchHomeBanner() async throws -> [BannerResponse] {
         let response = try await bannerNetworkService.fetchHomeBanner()
 
-        //UI 업데이트는 메인 스레드에서 수행
         DispatchQueue.main.async {
             self.adImage = response.bannerResponseList.map {
                 HomeBannerModel(imageUrl: $0.imageUrl, postUrl: $0.postUrl)
@@ -278,63 +241,29 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
             self.pageControlNumberView.totalPages = self.adImage.count
             self.adCollectionView.reloadData()
         }
-
         return response.bannerResponseList
     }
     
-    private func fetchWinesFromNetwork(_ isRecommend: Bool) async {
-        let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
-        
-        if isRecommend {
-            fetchFunction = networkService.fetchRecommendWines
-        } else { // 인기 와인인 경우
-            fetchFunction = networkService.fetchPopularWines
-        }
-
-        await withCheckedContinuation { continuation in
-            fetchFunction { [weak self] result in
-                guard let self = self else { return }
-
-                switch result {
-                case .success(let responseData):
-                    Task {
-                        await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
-                        continuation.resume()
-                    }
-                case .failure(let error):
-                    print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
-                    continuation.resume()
-                }
+    func setWines(isRecommend : Bool) {
+        Task {
+            do {
+                let data = try await fetchWinesFromNetwork(isRecommend) // 데이터 요청
+                updateCollectionView(isRecommend: isRecommend, with: data) // UI update(내부에서 처리)
+                self.view.hideBlockingView()
+            } catch {
+                print("❌ 네트워크 요청 실패: \(error)")
+                self.view.hideBlockingView()
             }
         }
     }
     
-    private func processWineData(_ isRecommend: Bool, responseData: [HomeWineDTO], time: TimeInterval) async {
-        let wines = responseData.map {
-            WineData(wineId: $0.wineId,
-                     imageUrl: $0.imageUrl,
-                     wineName: $0.wineName,
-                     sort: $0.sort,
-                     price: $0.price,
-                     vivinoRating: $0.vivinoRating)
-        }
-        
-        do {
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("⚠️ userId가 UserDefaults에 없습니다.")
-                return
-            }
-            if isRecommend {
-                try WineDataManager.shared.saveWineData(userId: userId, wineData: wines, expirationInterval: time)
-                print("✅ 추천 와인 저장 완료: \(wines.count)개")
-                
-            } else { // 인기 와인은 다른 데이터 매니저 사용
-                try PopularWineManager.shared.saveWineData(wineData: wines, expirationInterval: time)
-                print("인기 와인 저장 완료: \(wines.count)개")
-            }
-            updateCollectionView(isRecommend: isRecommend, with: wines)
-        } catch {
-            print("❌ 데이터 저장 중 오류 발생: \(error)")
+    private func fetchWinesFromNetwork(_ isRecommend: Bool) async throws -> [HomeWineDTO] {
+        if isRecommend {
+            let responseData = try await networkService.fetchRecommendWines()
+            return responseData.0
+        } else { // 인기 와인인 경우
+            let responseData = try await networkService.fetchPopularWines()
+            return responseData.0
         }
     }
     
@@ -349,6 +278,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     }
     
     func didTapSearchButton() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.searchBtnTapped, fileName: #file)
         let searchVC = SearchHomeViewController()
         navigationController?.pushViewController(searchVC, animated: true)
     }
@@ -450,12 +380,21 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 1 || collectionView.tag == 2 {
+            logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.homeWineCellTapped, fileName: #file, cellID: RecomCollectionViewCell.identifier)
+            
             let vc = WineDetailViewController()
             vc.wineId = (collectionView.tag == 1) ? recommendWineDataList[indexPath.row].wineId : popularWineDataList[indexPath.row].wineId
+            vc.wineName = (collectionView.tag == 1) ? recommendWineDataList[indexPath.row].wineName : popularWineDataList[indexPath.row].wineName
             navigationController?.pushViewController(vc, animated: true)
         } else if collectionView.tag == 0 {
-            // TODO : 웹페이지 뷰 띄우기
+            logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.adBannerCellTapped, fileName: #file, cellID: AdCollectionViewCell.identifier)
             print("\(adImage[indexPath.row].postUrl) : 이 주소로 이동하세요")
+            
+            // 사파리 뷰 띄우는거 주석 해제만 하면 됨! by dyk.
+//            if let url = URL(string: adImage[indexPath.row].postUrl) {
+//                let safariVC = SFSafariViewController(url: url)
+//                present(safariVC, animated: true, completion: nil)
+//            }
         }
     }
     

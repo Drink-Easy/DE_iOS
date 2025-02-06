@@ -6,7 +6,8 @@ import Network
 
 // 5번 선택 뷰컨 테이스팅 노트 : 레이팅, 리뷰
 
-public class RatingWineViewController: UIViewController {
+public class RatingWineViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.tnRatingWineVC
     
     lazy var rView = RatingWineView()
     private var ratingValue: Double = 2.5
@@ -49,6 +50,11 @@ public class RatingWineViewController: UIViewController {
         addExtendedBackgroundView()
         hideKeyboardWhenTappedAround()
     }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
 
     private func addExtendedBackgroundView() {
         // 네비게이션 바와 Safe Area를 포함한 배경 뷰 추가
@@ -73,7 +79,7 @@ public class RatingWineViewController: UIViewController {
     }
     
     func setupActions() {
-        rView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        rView.saveButton.addTarget(self, action: #selector(createTN), for: .touchUpInside)
         
         rView.ratingButton.didFinishTouchingCosmos = { [weak self] rating in
             guard let self = self else { return }
@@ -94,6 +100,7 @@ public class RatingWineViewController: UIViewController {
     }
     
     private func updateRatingLabel(with rating: Double) {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.tnRateBtnTapped, fileName: #file)
         ratingValue = rating
         rView.setRate(rating)
     }
@@ -102,7 +109,10 @@ public class RatingWineViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func nextVC() {
+    @objc func createTN() {
+        self.logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.createBtnTapped,
+                       fileName: #file)
         guard let reviewString = rView.reviewBody.text else {
             print("작성된 리뷰가 없습니다.")
             return
@@ -113,6 +123,7 @@ public class RatingWineViewController: UIViewController {
         Task {
             do {
                 try await postCreateTastingNote()
+                NoseManager.shared.resetAllScents()
                 self.view.hideBlockingView()
                 navigationController?.popToRootViewController(animated: true)
             } catch {
@@ -126,7 +137,7 @@ public class RatingWineViewController: UIViewController {
     private func postCreateTastingNote() async throws {
         let createNoteDTO = networkService.makePostNoteDTO(wineId: wineData.wineId, color: tnManager.color, tasteDate: tnManager.tasteDate, sugarContent: tnManager.sugarContent, acidity: tnManager.acidity, tannin: tnManager.tannin, body: tnManager.body, alcohol: tnManager.alcohol, nose: tnManager.nose, rating: tnManager.rating, review: tnManager.review)
         
-        let data = try await networkService.postNote(data: createNoteDTO)
+        let _ = try await networkService.postNote(data: createNoteDTO)
     }
     
     @objc func keyboardDown() {

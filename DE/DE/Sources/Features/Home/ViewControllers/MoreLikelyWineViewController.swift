@@ -6,11 +6,10 @@ import CoreModule
 import Network
 import Then
 
-class MoreLikelyWineViewController: UIViewController {
+class MoreLikelyWineViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.moreLikelyWineVC
 
     let navigationBarManager = NavigationBarManager()
-    let userDataManager = UserDataManager.shared
-    let wineDataManger = WineDataManager.shared
     let networkService = WineService()
     
     public var userName: String = "" {
@@ -19,7 +18,7 @@ class MoreLikelyWineViewController: UIViewController {
         }
     }
     
-    private var wineList: [WineData] = []
+    public var recommendWineDataList: [HomeWineModel] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +32,6 @@ class MoreLikelyWineViewController: UIViewController {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         self.view.addSubview(indicator)
-        fetchWineData()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -41,83 +39,13 @@ class MoreLikelyWineViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
-    private func fetchWineData() {
-        Task {
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("⚠️ userId가 UserDefaults에 없습니다.")
-                return
-            }
-            do {
-                wineList = try WineDataManager.shared.fetchWineDataList(userId: userId)
-                self.moreLikelyWineView.moreWineTableView.reloadData()
-                if !wineList.isEmpty {
-                    print("✅ 캐시된 데이터 사용: \(wineList.count)개")
-                } else {
-                    print("⚠️ 캐시 데이터가 비어있음, 네트워크 요청 시작")
-                    await fetchWinesFromNetwork(true)
-                    self.moreLikelyWineView.moreWineTableView.reloadData()
-                }
-            } catch {
-                print("⚠️ 캐시 데이터 없음, 네트워크 요청 시작")
-                await fetchWinesFromNetwork(true)
-                self.moreLikelyWineView.moreWineTableView.reloadData()
-            }
-        }
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
+    
     
     // MARK: - 네트워크 요청 처리
-    private func fetchWinesFromNetwork(_ isRecommend: Bool) async {
-        self.view.showBlockingView()
-        let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
-        
-        if isRecommend {
-            fetchFunction = networkService.fetchRecommendWines
-        } else {
-            fetchFunction = networkService.fetchRecommendWines
-        }
-
-        await withCheckedContinuation { continuation in
-            fetchFunction { [weak self] result in
-                guard let self = self else { return }
-
-                switch result {
-                case .success(let responseData):
-                    Task {
-                        await self.processWineData(isRecommend, responseData: responseData.0, time: responseData.1 ?? 3600)
-                        continuation.resume()
-                    }
-                    self.view.hideBlockingView()
-                case .failure(let error):
-                    print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
-                    continuation.resume()
-                    self.view.hideBlockingView()
-                }
-            }
-        }
-    }
-    
-    private func processWineData(_ isRecommend: Bool, responseData: [HomeWineDTO], time: TimeInterval) async {
-        let wines = responseData.map {
-            WineData(wineId: $0.wineId,
-                     imageUrl: $0.imageUrl,
-                     wineName: $0.wineName,
-                     sort: $0.sort,
-                     price: $0.price,
-                     vivinoRating: $0.vivinoRating)
-        }
-        self.wineList = wines
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-        
-        do {
-            try WineDataManager.shared.saveWineData(userId: userId, wineData: wines, expirationInterval: time)
-        } catch {
-            print("❌ 데이터 저장 중 오류 발생: \(error)")
-        }
-    }
-    
     private lazy var moreLikelyWineView = MoreRecomWineView().then {
         $0.title.text = "\(userName)님을 위한 추천 와인"
         $0.moreWineTableView.dataSource = self
@@ -149,7 +77,7 @@ class MoreLikelyWineViewController: UIViewController {
 
 extension MoreLikelyWineViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return wineList.count
+        return recommendWineDataList.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -157,15 +85,17 @@ extension MoreLikelyWineViewController: UITableViewDelegate, UITableViewDataSour
             return UITableViewCell()
         }
         
-        let wine = wineList[indexPath.row]
+        let wine = recommendWineDataList[indexPath.row]
         cell.configure(model: wine)
         
         return cell
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.recomCellTapped, fileName: #file, cellID: "MoreWineTableViewCell")
         let vc = WineDetailViewController()
-        vc.wineId = wineList[indexPath.row].wineId
+        vc.wineId = recommendWineDataList[indexPath.row].wineId
+        vc.wineName = recommendWineDataList[indexPath.row].wineName
         navigationController?.pushViewController(vc, animated: true)
     }
 }

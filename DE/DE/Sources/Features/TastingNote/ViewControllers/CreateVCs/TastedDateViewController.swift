@@ -6,7 +6,8 @@ import Network
 
 // 와인 시음 날짜 선택 1번
 
-public class TastedDateViewController: UIViewController {
+public class TastedDateViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.tnTastedDateVC
     lazy var tastedDateView = TastedDateView()
     let tnManger = NewTastingNoteManager.shared
     let wineData = TNWineDataManager.shared
@@ -25,12 +26,17 @@ public class TastedDateViewController: UIViewController {
         setupNavigationBar()
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     func setupUI() {
         view.backgroundColor = AppColor.bgGray
         
         view.addSubview(tastedDateView)
         tastedDateView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10))
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(5))
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
             make.bottom.equalToSuperview()
         }
@@ -64,6 +70,9 @@ public class TastedDateViewController: UIViewController {
     }
     
     @objc func nextVC() {
+        self.logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.nextBtnTapped,
+                       fileName: #file)
         guard let selectedDate = selectedDate else {
             print("선택된 날짜가 없습니다.")
             return
@@ -100,6 +109,17 @@ extension TastedDateViewController: UICalendarSelectionSingleDateDelegate {
         }
         
         self.tastedDateView.nextButton.isEnabled(isEnabled: true)
+    }
+    
+    /// ✅ 미래 날짜 선택 차단 (미래 날짜 선택을 아예 못하게 막음)
+    public func dateSelection(_ selection: UICalendarSelectionSingleDate, canSelectDate dateComponents: DateComponents?) -> Bool {
+        guard let dateComponents = dateComponents,
+              let selectedDate = Calendar.current.date(from: dateComponents) else { return false }
+        
+        let today = Calendar.current.startOfDay(for: Date()) // 오늘 날짜 (00:00:00 기준)
+        
+        // ✅ 미래 날짜 선택 차단 (미래 날짜면 false 반환)
+        return selectedDate <= today
     }
     
     

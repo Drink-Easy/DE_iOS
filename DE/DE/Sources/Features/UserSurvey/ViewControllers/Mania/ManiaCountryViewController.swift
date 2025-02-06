@@ -7,10 +7,12 @@ import CoreModule
 import SwiftyToaster
 import Network
 
-class ManiaCountryViewController: UIViewController {
+class ManiaCountryViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.ManiaCountryVC
     
     private let navigationBarManager = NavigationBarManager()
     let networkService = MemberService()
+    let userMng = UserSurveyManager.shared
     
     let cellData = ["프랑스", "이탈리아", "미국", "스페인", "아르헨티나", "독일", "호주", "포르투갈", "캐나다", "뉴질랜드", "슬로베니아", "헝가리", "오스트리아", "대한민국", "그리스", "칠레"]
     
@@ -34,6 +36,11 @@ class ManiaCountryViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     func setupNavigationBar() {
         navigationBarManager.addBackButton(
             to: navigationItem,
@@ -54,12 +61,12 @@ class ManiaCountryViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         UserSurveyManager.shared.setArea(selectedItems)
         callPatchAPI()
     }
     
     private func callPatchAPI() {
-        let userMng = UserSurveyManager.shared
         let bodyData = networkService.makeMemberInfoRequestDTO(name: userMng.name,
                                                                isNewbie: userMng.isNewbie,
                                                                monthPrice: userMng.monthPrice,
@@ -67,56 +74,40 @@ class ManiaCountryViewController: UIViewController {
                                                                wineArea: userMng.wineArea,
                                                                wineVariety: userMng.wineVariety,
                                                                region: userMng.region)
-        
-        networkService.postUserInfo(body: bodyData) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let response):
-                print(response)
-                networkService.postImg(image: userMng.imageData) { [weak self] result in
-                    guard let self = self else { return }
-                    switch result {
-                    case .success (let response):
-                        
-                        Task {
-                            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                                print("⚠️ userId가 UserDefaults에 없습니다.")
-                                return
-                            }
-                            
-                            do {
-                                // 캐시데이터에 기본 유저 정보 저장
-                                try await PersonalDataManager.shared.createPersonalData(for: userId, userName: userMng.name, userCity: userMng.region)
-                                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
-                                try await APICallCounterManager.shared.incrementPatch(for: userId, controllerName: .member)
-                            } catch {
-                                print(error)
-                            }
-                            
-                            // UI 전환
-                            await MainActor.run {
-                                let homeTabBarController = MainTabBarController()
-                                homeTabBarController.userName = userMng.name
-                                SelectLoginTypeVC.keychain.set(false, forKey: "isFirst")
-                                
-                                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                                   let window = windowScene.windows.first {
-                                    window.rootViewController = homeTabBarController
-                                    UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
-                                }
-                            }
-                        }
-                    case .failure(let error) :
-                        print(error)
+        print(userMng.imageData ?? "이미지 없음")
+        Task {
+            do {
+                async let imageUpload: String? = {
+                    if let profileImage = await userMng.imageData {
+                        return try await networkService.postImgAsync(image: profileImage)
                     }
-                }
-            case .failure(let error) :
+                    return nil
+                }()
+                
+                async let userInfoUpdate = try networkService.postUserInfoAsync(body: bodyData)
+
+                // ✅ 두 개의 네트워크 요청이 모두 끝날 때까지 기다림
+                _ = try await (imageUpload, userInfoUpdate)
+                processData()
+            } catch {
                 print(error)
             }
         }
+        
     }
     
-    
+    func processData() {
+        DispatchQueue.main.async {
+            let homeTabBarController = MainTabBarController()
+            SelectLoginTypeVC.keychain.set(false, forKey: "isFirst")
+            
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first {
+                window.rootViewController = homeTabBarController
+                UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+            }
+        }
+    }
     
 }
 
@@ -138,6 +129,7 @@ extension ManiaCountryViewController: UICollectionViewDelegateFlowLayout, UIColl
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.shortSurveyCellTapped, fileName: #file, cellID: SurveyKindCollectionViewCell.identifier)
         let selectedItem = cellData[indexPath.row]
         
         if selectedItems.contains(selectedItem) { //이미 selected된 cell
@@ -163,7 +155,7 @@ extension ManiaCountryViewController: UICollectionViewDelegateFlowLayout, UIColl
         let font = UIFont.ptdMediumFont(ofSize: 16)
         let size = title.size(withAttributes: [.font: font])
         
-        let padding: CGFloat = DynamicPadding.dynamicValue(44.0)
+        let padding: CGFloat = DynamicPadding.dynamicValue(40.0)
         let cellWidth = size.width + padding
         
         return CGSize(width: cellWidth, height: DynamicPadding.dynamicValue(49.0))

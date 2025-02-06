@@ -1,7 +1,9 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+import KakaoSDKAuth
 import KakaoSDKCommon
+import Firebase
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -11,6 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let kakaoAPIkey = Bundle.main.object(forInfoDictionaryKey: "KAKAO_NATIVE_APP_KEY") as? String {
             KakaoSDK.initSDK(appKey: "\(kakaoAPIkey)")
         }
+        FirebaseApp.configure()
         return true
     }
 
@@ -27,7 +30,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
-
-
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        if AuthApi.isKakaoTalkLoginUrl(url) {
+            return AuthController.handleOpenUrl(url: url)
+        }
+        return false
+    }
 }
 

@@ -8,7 +8,10 @@ import Then
 import CoreModule
 import Network
 
-class LoginVC: UIViewController {
+class LoginVC: UIViewController, FirebaseTrackable {
+    // struct 사용
+    var screenName: String = Tracking.VC.loginVC
+    
     // MARK: - Properties
     private let loginView = LoginView()
     
@@ -30,9 +33,17 @@ class LoginVC: UIViewController {
         hideKeyboardWhenTappedAround()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        DispatchQueue.main.async {
+            self.fillSavedId()
+        }
         self.view.addSubview(indicator)
     }
     
@@ -80,7 +91,16 @@ class LoginVC: UIViewController {
     }
     
     @objc private func backButtonTapped() {
-        navigationController?.popViewController(animated: true)
+        guard let navigationController = self.navigationController else {
+            return
+        }
+        
+        if let targetIndex = navigationController.viewControllers.firstIndex(where: { $0 is SelectLoginTypeVC }) {
+            let targetVC = navigationController.viewControllers[targetIndex]
+            navigationController.popToViewController(targetVC, animated: true)
+        } else {
+            navigationController.popToRootViewController(animated: true) // 못 찾으면 루트로 이동
+        }
     }
     
     @objc func usernameValidate() {
@@ -102,51 +122,52 @@ class LoginVC: UIViewController {
     }
     
     @objc private func idSaveCheckBoxTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.toggleBtnTapped, fileName: #file)
         loginView.idSaveCheckBox.isSelected.toggle()
         isSavingId = loginView.idSaveCheckBox.isSelected
     }
     
     @objc private func loginButtonTapped() {
+//        Analytics.setUserID("userID = \(1234)") -> 로그인성공하고 설정해도 될까..? 되겟지.. userid 서버에서 오는거 저장하면될듯
+        
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.loginBtnTapped, fileName: #file)
+        
+        self.view.showBlockingView()
         let loginDTO = networkService.makeLoginDTO(username: loginView.usernameField.text!, password: loginView.passwordField.text!)
         usernameString = loginDTO.username
-        self.view.showBlockingView()
-        networkService.login(data: loginDTO) { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            case .success(let response):
-                SelectLoginTypeVC.keychain.set(usernameString, forKey: "savedUserEmail")
-                // userId 저장
-                saveUserId(userId: response.id) // 현재 로그인한 유저 정보
-                Task {
-                    await UserDataManager.shared.createUser(userId: response.id)
+        Task {
+            do {
+                let data = try await networkService.login(data: loginDTO)
+                if isSavingId {
+                    SelectLoginTypeVC.keychain.set(usernameString, forKey: "savedUserEmail")
                 }
                 self.view.hideBlockingView()
-                self.goToNextView(response.isFirst)
-            case .failure(let error):
-                print(error)
+                self.goToNextView(data.isFirst)
+            } catch {
+                print("Error: \(error)")
                 self.view.hideBlockingView()
                 self.loginView.loginButton.isEnabled = false
                 self.loginView.loginButton.isEnabled(isEnabled: false)
                 self.validationManager.showValidationError(loginView.usernameField, message: "")
                 self.validationManager.showValidationError(loginView.passwordField, message: "회원 정보를 다시 확인해 주세요")
             }
-            
         }
     }
     
     private func goToNextView(_ isFirstLogin: Bool) {
         if isFirstLogin {
             SelectLoginTypeVC.keychain.set(true, forKey: "isFirst")
-            let enterTasteTestViewController = TermsOfServiceVC()
-            if let window = UIApplication.shared.windows.first {
-                window.rootViewController = enterTasteTestViewController
+            let termsOfServiceVC = TermsOfServiceVC()
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first {
+                window.rootViewController = termsOfServiceVC
                 UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
             }
         } else {
             SelectLoginTypeVC.keychain.set(false, forKey: "isFirst")
             let homeViewController = MainTabBarController()
-            if let window = UIApplication.shared.windows.first {
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first {
                 window.rootViewController = homeViewController
                 UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
             }
@@ -159,23 +180,24 @@ class LoginVC: UIViewController {
     }
     
     func fillSavedId() {
-        if let id = SelectLoginTypeVC.keychain.get("savedUserId") {
-            loginView.usernameField.text = id
+        if let email = SelectLoginTypeVC.keychain.get("savedUserEmail") {
+            loginView.usernameField.text = email
+            validationManager.isEmailDuplicate = false
+            validationManager.isUsernameValid = true
         }
     }
     
-    func saveUserId(userId : Int) {
-        // 로그아웃 시, 이 데이터 모두 삭제
-        let userIdString = "\(userId)"
-        SelectLoginTypeVC.keychain.set(userIdString, forKey: "userId")
-        UserDefaults.standard.set(userId, forKey: "userId")
-    }
+//    func saveUserId(userId : Int) {
+//        let userIdString = "\(userId)"
+//        SelectLoginTypeVC.keychain.set(userIdString, forKey: "userId")
+//        UserDefaults.standard.set(userId, forKey: "userId")
+//    }
     
 }
 
 extension LoginVC: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let index = textFields.firstIndex(of: textField), index < textFields.count - 1 {
+        if let index = textFields.firstIndex(of: textField), index + 1 < textFields.count {
             textFields[index + 1].becomeFirstResponder()
         } else {
             textField.resignFirstResponder()

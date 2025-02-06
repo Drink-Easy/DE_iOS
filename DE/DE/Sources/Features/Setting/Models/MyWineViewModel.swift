@@ -14,4 +14,19 @@ public struct MyWineViewModel {
     public let purchaseDate : String
     public let purchasePrice : Int
     public let period : Int
+    
+    public func getBuyDate() -> DateComponents? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.locale = Locale(identifier: "ko_KR") // 한국 시간대 설정
+        
+        guard let date = dateFormatter.date(from: purchaseDate) else {
+            print("변환할 수 없는 날짜 형식입니다: \(purchaseDate)")
+            return nil
+        }
+        
+        // Date를 DateComponents로 변환
+        let components = Calendar.current.dateComponents([.year, .month, .day], from: date)
+        return components
+    }
 }

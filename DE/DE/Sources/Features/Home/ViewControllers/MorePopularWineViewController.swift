@@ -6,13 +6,11 @@ import CoreModule
 import Network
 import Then
 
-class MorePopularWineViewController: UIViewController {
-
-    let navigationBarManager = NavigationBarManager()
-    let wineDataManger = PopularWineManager.shared
-    let networkService = WineService()
+class MorePopularWineViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.morePopularWineVC
     
-    private var wineList: [WineData] = []
+    let navigationBarManager = NavigationBarManager()
+    public var popularWineDataList: [HomeWineModel] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,12 +24,16 @@ class MorePopularWineViewController: UIViewController {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         self.view.addSubview(indicator)
-        fetchWineData()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private lazy var morePopularWineView = MoreRecomWineView().then {
@@ -52,81 +54,11 @@ class MorePopularWineViewController: UIViewController {
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)
     }
-    
-    private func fetchWineData() {
-        Task {
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("⚠️ userId가 UserDefaults에 없습니다.")
-                return
-            }
-            do {
-                // 1. 캐시 데이터 우선 사용
-                wineList = try wineDataManger.fetchWineDataList()
-                if !wineList.isEmpty {
-                    print("✅ 캐시된 데이터 사용: \(wineList.count)개")
-                    self.morePopularWineView.moreWineTableView.reloadData()
-                    return
-                }
-            } catch {
-                print("⚠️ 캐시된 데이터 없음")
-            }
-            
-            // 2. 캐시 데이터가 없으면 네트워크 요청
-            print("🌐 네트워크 요청 시작")
-            await fetchWinesFromNetwork()
-            self.morePopularWineView.moreWineTableView.reloadData()
-        }
-        
-    }
-    
-    // MARK: - 네트워크 요청 처리
-    private func fetchWinesFromNetwork() async {
-        self.view.showBlockingView()
-        let fetchFunction: (@escaping (Result<([HomeWineDTO], TimeInterval?), NetworkError>) -> Void) -> Void
-        
-        fetchFunction = networkService.fetchPopularWines
-
-        await withCheckedContinuation { continuation in
-            fetchFunction { [weak self] result in
-                guard let self = self else { return }
-
-                switch result {
-                case .success(let responseData):
-                    Task {
-                        await self.processPopularWineData(responseData: responseData.0, time: responseData.1 ?? 3600)
-                        continuation.resume()
-                    }
-                    self.view.hideBlockingView()
-                case .failure(let error):
-                    print("❌ 네트워크 오류 발생: \(error.localizedDescription)")
-                    continuation.resume()
-                    self.view.hideBlockingView()
-                }
-            }
-        }
-    }
-    
-    private func processPopularWineData(responseData: [HomeWineDTO], time: TimeInterval) async {
-        let wines = responseData.map {
-            WineData(wineId: $0.wineId,
-                     imageUrl: $0.imageUrl,
-                     wineName: $0.wineName,
-                     sort: $0.sort,
-                     price: $0.price,
-                     vivinoRating: $0.vivinoRating)
-        }
-        
-        do {
-            try wineDataManger.saveWineData(wineData: wines, expirationInterval: time)
-        } catch {
-            print("❌ 데이터 저장 중 오류 발생: \(error)")
-        }
-    }
 }
 
 extension MorePopularWineViewController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return wineList.count
+        return popularWineDataList.count
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -134,15 +66,17 @@ extension MorePopularWineViewController: UITableViewDelegate, UITableViewDataSou
             return UITableViewCell()
         }
         
-        let wine = wineList[indexPath.row]
+        let wine = popularWineDataList[indexPath.row]
         cell.configure(model: wine)
         
         return cell
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.recomCellTapped, fileName: #file, cellID: "MoreWineTableViewCell")
         let vc = WineDetailViewController()
-        vc.wineId = wineList[indexPath.row].wineId
+        vc.wineId = popularWineDataList[indexPath.row].wineId
+        vc.wineName = popularWineDataList[indexPath.row].wineName
         navigationController?.pushViewController(vc, animated: true)
     }
 }

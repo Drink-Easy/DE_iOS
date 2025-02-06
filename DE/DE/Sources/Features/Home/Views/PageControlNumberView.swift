@@ -8,13 +8,17 @@ class PageControlNumberView: UIView {
     
     var currentPage: Int = 1 {
         didSet {
-            updatePageLabel()
+            DispatchQueue.main.async {
+                self.updatePageLabel()
+            }
         }
     }
 
-    var totalPages: Int = 0 {
+    var totalPages: Int = 1 {
         didSet {
-            updatePageLabel()
+            DispatchQueue.main.async {
+                self.updatePageLabel()
+            }
         }
     }
     

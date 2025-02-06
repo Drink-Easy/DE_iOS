@@ -9,6 +9,7 @@ public class ProfileView: UIView {
     
     public let profileImageView = UIImageView().then {
         $0.image = UIImage(named: "profilePlaceholder")
+        $0.backgroundColor = AppColor.gray70
         $0.contentMode = .scaleAspectFill
         $0.layer.cornerRadius = 50
         $0.clipsToBounds = true

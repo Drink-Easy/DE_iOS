@@ -10,7 +10,8 @@ import CoreModule
 import Network
 
 // 테이스팅노트 상세 보기 뷰
-public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScrollViewDelegate {
+public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScrollViewDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.wineTastingNoteVC
     
     let navigationBarManager = NavigationBarManager()
     
@@ -19,6 +20,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     let wineData = TNWineDataManager.shared
     
     public var noteId: Int = 0
+    var wineName: String = "Default Name"
     var wineInfo: TastingNoteResponsesDTO?
     
     //MARK: UI Elements
@@ -38,7 +40,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-        let largeTitleBottom = wineInfoView.header.header.frame.maxY - DynamicPadding.dynamicValue(90)
+        let largeTitleBottom = wineInfoView.header.header.frame.maxY - 10
         
         UIView.animate(withDuration: 0.1) {
             self.wineInfoView.header.header.alpha = offsetY > largeTitleBottom ? 0 : 1
@@ -52,6 +54,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         self.view.addSubview(indicator)
+        self.callFetchApi()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -66,7 +69,11 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         setupUI()
         setupNavigationBar()
         setNavBarAppearance(navigationController: self.navigationController)
-        self.callFetchApi()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     // MARK: - Setup Methods
@@ -82,7 +89,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         
         smallTitleLabel = navigationBarManager.setNReturnTitle(
             to: navigationItem,
-            title: wineData.wineName,
+            title: wineName,
             textColor: AppColor.black ?? .black
         )
         smallTitleLabel.isHidden = true
@@ -111,10 +118,10 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     }
     
     func didTapEditButton(for type: PropertyType) {
+        self.logButtonClick(screenName: self.screenName, buttonName: Tracking.ButtonEvent.editBtnTapped, fileName: #file) //TODO: 수정
             var viewController: UIViewController
             switch type {
                 
-            //TODO: 수정 뷰컨 연결
             case .palateGraph:
                 viewController = ChangePalateVC()
             case .color:
@@ -137,16 +144,24 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     }
     
     @objc func deleteTapped(){
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.deleteBtnTapped, fileName: #file)
         let alert = UIAlertController(
             title: "테이스팅 노트 삭제",
             message: "정말 삭제하시겠습니까?",
             preferredStyle: .alert
         )
         
-        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: { _ in
+            self.logButtonClick(screenName: self.screenName,
+                                buttonName: Tracking.ButtonEvent.alertCancelBtnTapped,
+                           fileName: #file)
+        }))
         
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { [weak self] _ in
             self?.noteDelete()
+            self?.logButtonClick(screenName: self!.screenName,
+                                 buttonName: Tracking.ButtonEvent.alertAcceptBtnTapped,
+                           fileName: #file)
         }))
         
         present(alert, animated: true, completion: nil)
@@ -170,17 +185,12 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         Task {
             do {
                 try await CallTastingNote()
-                smallTitleLabel.text = wineData.wineName
-                
-                DispatchQueue.main.async {
-                    self.setupNavigationBar() // 제목 설정
-                }
                 setWineData()
                 self.view.hideBlockingView()
             } catch {
+                self.view.hideBlockingView()
                 print("Error: \(error)")
                 // Alert 표시 등 추가
-                self.view.hideBlockingView()
             }
         }
     }
@@ -213,8 +223,8 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     }
     
     private func setWineData() {
-        print(wineData.wineName)
-        wineInfoView.header.setTitleLabel(wineData.wineName)
+        wineInfoView.header.header.setTitleLabel(wineName)
+        
         wineInfoView.header.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         wineInfoView.header.infoView.kindContents.text = "\(wineData.sort)"
         wineInfoView.header.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")

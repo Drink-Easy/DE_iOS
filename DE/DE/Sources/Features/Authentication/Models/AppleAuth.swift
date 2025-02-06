@@ -24,7 +24,7 @@ extension SelectLoginTypeVC: ASAuthorizationControllerDelegate {
     public func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
-            let userIdentifier = appleIDCredential.user
+            let _ = appleIDCredential.user
 
             // 1. identityToken 존재 여부 확인
             if let authCode = appleIDCredential.authorizationCode,
@@ -55,21 +55,17 @@ extension SelectLoginTypeVC: ASAuthorizationControllerDelegate {
                 return
             }
             
-            networkService.appleLogin(data: loginData) { [weak self] result in
-                guard let self = self else { return }
-                
-                switch result {
-                case .success(let response):
-                    saveUserId(userId: response.id)
-                    Task {
-                        await UserDataManager.shared.createUser(userId: response.id)
+            // TODO : 로딩 인디케이터 추가
+            Task {
+                do {
+                    let response = try await networkService.appleLogin(data: loginData)
+                    DispatchQueue.main.async {
+                        self.goToNextView(response.isFirst)
                     }
-                    self.goToNextView(response.isFirst)
-                case .failure(let error):
+                } catch {
                     print(error)
                 }
             }
-
         default :
             break
         }
@@ -80,5 +76,4 @@ extension SelectLoginTypeVC: ASAuthorizationControllerPresentationContextProvidi
     public func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return self.view.window ?? UIWindow()
     }
-    
 }
