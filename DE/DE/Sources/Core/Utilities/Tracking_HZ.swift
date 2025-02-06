@@ -61,9 +61,7 @@ public struct Tracking {
         public static let settingMainVC = "S1_세팅 메인"
         public static let accountInfoVC = "S2_계정 정보"
         public static let profileEditVC = "S3_프로필 수정"
-        
-        public static let wishListVC = "S4_위시리스트 목록"
-        
+        public static let wishlistVC = "S4_위시리스트 목록"
         public static let myWineVC = "S5_보유와인 목록"
         public static let myWineDetailVC = "S6_보유와인 상세"
         public static let createMyWineVC = "S7_보유와인 생성"
