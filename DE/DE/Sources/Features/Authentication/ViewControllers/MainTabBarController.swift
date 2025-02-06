@@ -3,6 +3,8 @@
 import UIKit
 import CoreModule
 
+import Firebase
+
 public class MainTabBarController: UITabBarController {
     
     public override func viewDidLoad() {
@@ -47,6 +49,10 @@ public class MainTabBarController: UITabBarController {
 // MARK: - UITabBarControllerDelegate
 extension MainTabBarController: UITabBarControllerDelegate {
     public func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        let screenName = NSStringFromClass(type(of: viewController))
+        Analytics.logEvent("tab_changed", parameters: [
+                    "selected_tab": screenName
+                ])
         // 현재 선택된 탭이 다시 선택되었을 때만 처리
         guard let navController = viewController as? UINavigationController else { return }
         

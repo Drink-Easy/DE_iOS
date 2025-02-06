@@ -91,7 +91,9 @@ public class EditReviewViewController: UIViewController, FirebaseTrackable {
     }
     
     @objc func saveButtonTapped() {
-        // Call post api
+        logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.saveBtnTapped,
+                       fileName: #file)
         callUpdateAPI()
     }
     

@@ -109,6 +109,9 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
     }
     
     @objc func createTN() {
+        self.logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.createBtnTapped,
+                       fileName: #file)
         guard let reviewString = rView.reviewBody.text else {
             print("작성된 리뷰가 없습니다.")
             return

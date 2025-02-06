@@ -29,25 +29,27 @@ extension Tracking {
         public static let nextBtnTapped = "B17_다음"
         public static let saveBtnTapped = "B18_저장하기"
         public static let deleteBtnTapped = "B19_삭제하기"
+        public static let editBtnTapped = "B20_수정하기"
         
-        public static let tooltipBtnTapped = "B20_툴팁 보기"
-
-        public static let editProfileBtnTapped = "B21_프로필 수정 시작"
-        public static let changeProfileImgBtnTapped = "B22_프사 수정 옵션"
-        public static let deleteProfileImgBtnTapped = "B23_프사 삭제 옵션"
-        public static let completeProfileUpdateBtnTapped = "B24_프로필 수정 완료"
+        public static let tooltipBtnTapped = "B21_툴팁 보기"
+        public static let dropdownBtnTapped = "B22_드롭다운"
         
-        public static let createNewWineBtnTapped = "B25_보유와인 생성"
-        public static let updatemyWineBtnTapped = "B26_보유와인 수정"
+        public static let editProfileBtnTapped = "B23_프로필 수정 시작"
+        public static let changeProfileImgBtnTapped = "B24_프사 수정 옵션"
+        public static let deleteProfileImgBtnTapped = "B25_프사 삭제 옵션"
+        public static let completeProfileUpdateBtnTapped = "B26_프로필 수정 완료"
         
-        public static let instaBtnTapped = "B27_인스타그램 바로가기"
+        public static let createNewWineBtnTapped = "B27_보유와인 생성"
+        public static let updatemyWineBtnTapped = "B28_보유와인 수정"
         
-        public static let logoutBtnTapped = "B28_로그아웃"
-        public static let quitBtnTapped = "B29_탈퇴하기"
+        public static let instaBtnTapped = "B29_인스타그램 바로가기"
         
-        public static let alertCancelBtnTapped = "B30_얼럿 취소"
-        public static let alertAcceptBtnTapped = "B31_얼럿 확인"
-        public static let dropdownBtnTapped = "B32_드롭다운"
+        public static let logoutBtnTapped = "B30_로그아웃"
+        public static let quitBtnTapped = "B31_탈퇴하기"
+        
+        public static let alertCancelBtnTapped = "B32_얼럿 취소"
+        public static let alertAcceptBtnTapped = "B33_얼럿 확인"
+        
         
     }
 }

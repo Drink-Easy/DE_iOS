@@ -118,10 +118,10 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     }
     
     func didTapEditButton(for type: PropertyType) {
+        self.logButtonClick(screenName: self.screenName, buttonName: Tracking.ButtonEvent.editBtnTapped, fileName: #file) //TODO: 수정
             var viewController: UIViewController
             switch type {
                 
-            //TODO: 수정 뷰컨 연결
             case .palateGraph:
                 viewController = ChangePalateVC()
             case .color:
@@ -144,16 +144,24 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     }
     
     @objc func deleteTapped(){
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.deleteBtnTapped, fileName: #file)
         let alert = UIAlertController(
             title: "테이스팅 노트 삭제",
             message: "정말 삭제하시겠습니까?",
             preferredStyle: .alert
         )
         
-        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: { _ in
+            self.logButtonClick(screenName: self.screenName,
+                                buttonName: Tracking.ButtonEvent.alertCancelBtnTapped,
+                           fileName: #file)
+        }))
         
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { [weak self] _ in
             self?.noteDelete()
+            self?.logButtonClick(screenName: self!.screenName,
+                                 buttonName: Tracking.ButtonEvent.alertAcceptBtnTapped,
+                           fileName: #file)
         }))
         
         present(alert, animated: true, completion: nil)

@@ -9,7 +9,7 @@ import CoreModule
 
 public class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegate, FirebaseTrackable {
     public var screenName: String = Tracking.VC.termsOfServiceVC
-
+    
     // MARK: - Properties
     let navigationBarManager = NavigationBarManager()
     
@@ -199,6 +199,7 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
     }
     
     @objc private func startButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.startBtnTapped, fileName: #file)
         let vc = WelcomeVC()
         navigationController?.pushViewController(vc, animated: true)
     }

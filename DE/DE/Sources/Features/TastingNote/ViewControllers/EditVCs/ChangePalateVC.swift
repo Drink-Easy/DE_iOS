@@ -133,6 +133,9 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
     }
     
     @objc private func saveButtonTapped() {
+        logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.saveBtnTapped,
+                       fileName: #file)
         callUpdateAPI()
         
         // popViewController

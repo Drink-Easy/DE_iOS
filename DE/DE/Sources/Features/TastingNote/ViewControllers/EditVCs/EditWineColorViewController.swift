@@ -80,6 +80,10 @@ public class EditWineColorViewController: UIViewController, FirebaseTrackable {
     }
     
     @objc func saveButtonTapped() {
+        logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.saveBtnTapped,
+                       fileName: #file)
+        
         guard let selectedColor = self.selectedColor else {
             print("선택된 색상이 없습니다.")
             return

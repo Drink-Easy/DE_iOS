@@ -149,6 +149,9 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
     }
     
     @objc func saveButtonTapped() {
+        logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.saveBtnTapped,
+                       fileName: #file)
         let scents = NoseManager.shared.selectedScents
 
         scentNames = scents.map { $0.name }

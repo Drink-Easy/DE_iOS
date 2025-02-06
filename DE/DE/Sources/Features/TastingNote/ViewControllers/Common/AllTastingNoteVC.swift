@@ -139,6 +139,7 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
     
     //와인 이미지 스택 뷰 필터
     func didTapSortButton(for type: WineSortType) {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.sortingBtnTapped, fileName: #file)
         currentType = type.rawValue
         self.view.showBlockingView()
         Task {
@@ -175,6 +176,7 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegate
 extension AllTastingNoteVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.tnCellTapped, fileName: #file, cellID: "TastingNoteCollectionViewCell")
         let vc = WineTastingNoteVC()
         vc.noteId = currentTastingNoteList[indexPath.row].noteId
         vc.wineName = currentTastingNoteList[indexPath.row].wineName

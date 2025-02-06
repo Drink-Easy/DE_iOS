@@ -54,6 +54,7 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
     
     // MARK: - Actions
     @objc private func kakaoButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.kakaoBtnTapped, fileName: #file)
         self.kakaoAuthVM.kakaoLogin { success in
             if success {
                 UserApi.shared.me { (user, error) in
@@ -84,6 +85,7 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
     }
     
     @objc private func appleButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.appleBtnTapped, fileName: #file)
         startAppleLoginProcess()
     }
     

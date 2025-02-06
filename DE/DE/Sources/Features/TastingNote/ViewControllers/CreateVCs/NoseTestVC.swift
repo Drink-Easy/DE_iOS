@@ -136,6 +136,9 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackab
     }
     
     @objc func nextVC() {
+        self.logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.nextBtnTapped,
+                       fileName: #file)
         let scents = NoseManager.shared.selectedScents
 
         let scentNames = scents.map { $0.name }

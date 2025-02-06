@@ -131,7 +131,9 @@ public class RecordGraphViewController: UIViewController, UIScrollViewDelegate, 
     }
     
     @objc private func nextVC() {
-        print("nextVC Tapped")
+        self.logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.nextBtnTapped,
+                       fileName: #file)
         saveSliderValues()
         let nextVC = RatingWineViewController()
         navigationController?.pushViewController(nextVC, animated: true)

@@ -78,6 +78,7 @@ class SignUpVC: UIViewController, FirebaseTrackable {
     
     //MARK: - Button Funcs
     @objc private func signupButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.signupBtnTapped, fileName: #file)
         self.view.showBlockingView()
         let signUpDTO = networkService.makeJoinDTO(username: signUpView.usernameField.text!, password: signUpView.passwordField.text!, rePassword: signUpView.confirmPasswordField.text!)
         

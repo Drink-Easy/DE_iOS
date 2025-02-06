@@ -74,6 +74,8 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate, FirebaseT
     }
     
     @objc private func startButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.startBtnTapped, fileName: #file)
+        
         let selectLoginViewController = SelectLoginTypeVC()
         navigationController?.pushViewController(selectLoginViewController, animated: true)
     }

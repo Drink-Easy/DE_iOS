@@ -8,8 +8,6 @@ import Then
 import CoreModule
 import Network
 
-import Firebase
-
 class LoginVC: UIViewController, FirebaseTrackable {
     // struct 사용
     var screenName: String = Tracking.VC.loginVC
@@ -124,6 +122,7 @@ class LoginVC: UIViewController, FirebaseTrackable {
     }
     
     @objc private func idSaveCheckBoxTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.toggleBtnTapped, fileName: #file)
         loginView.idSaveCheckBox.isSelected.toggle()
         isSavingId = loginView.idSaveCheckBox.isSelected
     }
@@ -131,7 +130,7 @@ class LoginVC: UIViewController, FirebaseTrackable {
     @objc private func loginButtonTapped() {
 //        Analytics.setUserID("userID = \(1234)") -> 로그인성공하고 설정해도 될까..? 되겟지.. userid 서버에서 오는거 저장하면될듯
         
-//        logButtonClick(screenName: screenName, buttonName: Tracking.Event.example, fileName: #file)
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.loginBtnTapped, fileName: #file)
         
         self.view.showBlockingView()
         let loginDTO = networkService.makeLoginDTO(username: loginView.usernameField.text!, password: loginView.passwordField.text!)
