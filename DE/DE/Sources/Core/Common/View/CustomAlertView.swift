@@ -5,7 +5,7 @@ import UIKit
 import SnapKit
 import Then
 
-class CustomAlertView: UIView {
+public class CustomAlertView: UIView {
     var onDismiss: (() -> Void)?
     
     // MARK: - UI Elements
@@ -44,43 +44,27 @@ class CustomAlertView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupUI()
+        setupConstraints()
     }
     
     // MARK: - Setup UI
     private func setupUI() {
+        backgroundColor = AppColor.black?.withAlphaComponent(0.3)
         addSubview(containerView)
-        containerView.frame = CGRect(x: 50, y: 100, width: 300, height: 200)
-        addGradientBackground(to: containerView)
         containerView.addSubview(titleLabel)
         containerView.addSubview(messageTextView)
         containerView.addSubview(confirmButton)
         
-        setupConstraints()
-        
         confirmButton.addTarget(self, action: #selector(didTapConfirmButton), for: .touchUpInside)
     }
     
-    func addGradientBackground(to view: UIView) {
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.colors = [
-            AppColor.white?.cgColor as Any, // 100% 불투명
-            AppColor.purple30?.withAlphaComponent(0.2).cgColor as Any // 20% 투명도
-        ]
-        gradientLayer.locations = [0.0, 1.0] // 시작(0%) → 끝(100%)
-        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.0) // 위쪽 중앙
-        gradientLayer.endPoint = CGPoint(x: 0.5, y: 1.0) // 아래쪽 중앙
-        gradientLayer.frame = view.bounds
-        gradientLayer.cornerRadius = view.layer.cornerRadius
-        
-        view.layer.insertSublayer(gradientLayer, at: 0) // ✅ 최하단에 추가
-    }
-    
-    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+    public override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         // containerView 외부는 터치 이벤트를 무시
         if !containerView.frame.contains(point) {
             return false
@@ -95,27 +79,27 @@ class CustomAlertView: UIView {
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(containerView).offset(24)
-            make.leading.equalTo(containerView).offset(16)
-            make.trailing.equalTo(containerView).offset(-16)
+            make.top.equalToSuperview().offset(24)
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
         }
         
         messageTextView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(16)
-            make.leading.equalTo(containerView).offset(16)
-            make.trailing.equalTo(containerView).offset(-16)
+            make.leading.equalToSuperview().offset(16)
+            make.trailing.equalToSuperview().offset(-16)
             make.height.lessThanOrEqualTo(160) // 최대 높이 제한
         }
         
         confirmButton.snp.makeConstraints { make in
             make.top.equalTo(messageTextView.snp.bottom).offset(24)
-            make.bottom.equalTo(containerView).offset(-16)
-            make.centerX.equalTo(containerView)
+            make.bottom.equalToSuperview().offset(-16)
+            make.centerX.equalToSuperview()
         }
     }
     
     // MARK: - Public Configuration Method
-    func configure(title: String, message: String) {
+    public func configure(title: String, message: String) {
         titleLabel.text = title
         messageTextView.text = message
 
