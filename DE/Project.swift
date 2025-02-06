@@ -96,6 +96,8 @@ let project = Project(
                 .target(name: "Features"),
                 .external(name: "FirebaseCore"),
                 .external(name: "FirebaseAnalytics"),
+                .external(name: "FirebaseRemoteConfig"),
+                .external(name: "FirebaseAnalyticsWithoutAdIdSupport"),
                 .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK")
             ],
