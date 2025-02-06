@@ -37,8 +37,8 @@ extension Tracking {
         public static let deleteProfileImgBtnTapped = "B23_프사 삭제 옵션"
         public static let completeProfileUpdateBtnTapped = "B24_프로필 수정 완료"
         
-        public static let createNewWineBtnTapped = "B25_보유와인 생성"
-        public static let updatemyWineBtnTapped = "B26_보유와인 수정"
+        public static let createNewWineBtnTapped = "B25_보유와인 생성완료"
+        public static let updatemyWineBtnTapped = "B26_보유와인 수정완료"
         
         public static let instaBtnTapped = "B27_인스타그램 바로가기"
         

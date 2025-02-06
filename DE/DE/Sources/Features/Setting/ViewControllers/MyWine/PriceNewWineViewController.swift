@@ -65,6 +65,7 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
     }
     
     @objc func nextVC() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.createNewWineBtnTapped, fileName: #file)
         guard let price = self.priceNewWineView.priceTextField.text, isValidInteger(price) else {
             let alert = UIAlertController(title: "", message: "가격을 숫자로만 입력해주세요.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
