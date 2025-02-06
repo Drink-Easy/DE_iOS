@@ -29,22 +29,22 @@ public class KakaoAuthVM: ObservableObject {
     @MainActor
     public func kakaoLogin(completion: @escaping (Bool) -> Void) {
         if UserApi.isKakaoTalkLoginAvailable() {
-            UserApi.shared.loginWithKakaoTalk { [weak self] (oauthToken, error) in
+            UserApi.shared.loginWithKakaoTalk { (oauthToken, error) in
                 if let error = error {
                     print("카카오톡 로그인 실패: \(error.localizedDescription)")
                     completion(false)
-                } else if let oauthToken = oauthToken {
+                } else if oauthToken != nil {
 //                    AccountSettingsVC.hasKakaoTokens = true
                     print("카카오톡 로그인 성공")
                     completion(true)
                 }
             }
         } else {
-            UserApi.shared.loginWithKakaoAccount { [weak self] (oauthToken, error) in
+            UserApi.shared.loginWithKakaoAccount { (oauthToken, error) in
                 if let error = error {
                     print("카카오 계정 로그인 실패: \(error.localizedDescription)")
                     completion(false)
-                } else if let oauthToken = oauthToken {
+                } else if oauthToken != nil {
 //                    AccountSettingsVC.hasKakaoTokens = true
                     print("카카오 계정 로그인 성공")
                     completion(true)

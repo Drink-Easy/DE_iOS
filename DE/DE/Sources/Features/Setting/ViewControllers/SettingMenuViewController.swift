@@ -95,8 +95,6 @@ public final class SettingMenuViewController : UIViewController, UIGestureRecogn
                 
                 self.profileData = SimpleProfileInfoData(name: data.username, imageURL: safeImageUrl)
                 
-                let userData = MemberInfoResponse(imageUrl: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
-                
                 self.setUserData(userName: data.username, imageURL: safeImageUrl)
             } catch {
                 print("❌ 서버에서 사용자 정보를 가져오지 못함: \(error.localizedDescription)")

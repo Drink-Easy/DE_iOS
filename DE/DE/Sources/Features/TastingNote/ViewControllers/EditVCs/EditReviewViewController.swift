@@ -104,7 +104,7 @@ public class EditReviewViewController: UIViewController, FirebaseTrackable {
         Task {
             do {
                 self.view.showBlockingView()
-                try await networkService.patchNote(data: tnData)
+                let _ = try await networkService.patchNote(data: tnData)
                 self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             }

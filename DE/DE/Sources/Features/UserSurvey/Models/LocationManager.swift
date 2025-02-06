@@ -20,7 +20,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
     // 위치 요청 메서드
     func requestLocationPermission(completion: @escaping (String?) -> Void) {
         self.completion = completion
-        let status = CLLocationManager.authorizationStatus()
+        let status = locationManager.authorizationStatus
         switch status {
         case .notDetermined:
             locationManager.requestWhenInUseAuthorization()

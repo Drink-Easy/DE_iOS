@@ -203,7 +203,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     @objc func validateNickname(){
         ValidationManager.isNicknameCanUse = false
         ValidationManager.isLengthValid = false
-        ValidationManager.validateNickname(profileView.nicknameTextField)
+        let _ = ValidationManager.validateNickname(profileView.nicknameTextField)
         checkFormValidity()
     }
     

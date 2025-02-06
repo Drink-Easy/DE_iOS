@@ -311,7 +311,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     func callLikeAPI(wineId: Int) async {
         self.view.showBlockingView()
         do {
-            let responseData = try await likedNetworkService.postWishlist(wineId: wineId)
+            let _ = try await likedNetworkService.postWishlist(wineId: wineId)
             self.view.hideBlockingView()
         } catch {
             print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")
@@ -322,7 +322,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     func calldeleteLikedAPI(wineId: Int) async {
         self.view.showBlockingView()
         do {
-            let responseData = try await likedNetworkService.deleteWishlist(wineId: wineId)
+            let _ = try await likedNetworkService.deleteWishlist(wineId: wineId)
             self.view.hideBlockingView()
         } catch {
             print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")

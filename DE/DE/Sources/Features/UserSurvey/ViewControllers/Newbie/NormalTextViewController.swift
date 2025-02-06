@@ -250,10 +250,6 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
     }
     
     func callPatchAPI() {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
         Task {
             do {
                 async let imageUpload: String? = {

@@ -186,7 +186,7 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
         view.showBlockingView()
         Task {
             do {
-                let result = try await memberService.deleteUser()
+                let _ = try await memberService.deleteUser()
                 
                 if userProfile?.authType.lowercased() == "kakao" {
                     if await !self.kakaoAuthVM.unlinkKakaoAccount() {
@@ -282,7 +282,7 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
             let profileImgURL = URL(string: imageURL)
             self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
             self.accountView.titleLabel.text = "내 정보"
-            let adultText = adult ? "인증 완료" : "인증 전"
+//            let adultText = adult ? "인증 완료" : "인증 전"
             self.accountView.items = [("닉네임", username),
             ("내 동네", city),
             ("이메일", email),

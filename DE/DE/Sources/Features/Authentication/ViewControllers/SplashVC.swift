@@ -102,7 +102,8 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     
     func navigateToMainScreen() {
         let mainTabBarController = MainTabBarController()
-        if let window = UIApplication.shared.windows.first {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
             window.rootViewController = mainTabBarController
             UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
         }
@@ -110,10 +111,12 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     
     func navigateToWelcomeScreen() {
         let vc = TermsOfServiceVC()
-        if let window = UIApplication.shared.windows.first {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
             window.rootViewController = vc
             UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
         }
+        
     }
     
     func navigateToOnBoaringScreen() {

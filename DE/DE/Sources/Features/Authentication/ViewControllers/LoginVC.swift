@@ -157,15 +157,17 @@ class LoginVC: UIViewController, FirebaseTrackable {
     private func goToNextView(_ isFirstLogin: Bool) {
         if isFirstLogin {
             SelectLoginTypeVC.keychain.set(true, forKey: "isFirst")
-            let enterTasteTestViewController = TermsOfServiceVC()
-            if let window = UIApplication.shared.windows.first {
-                window.rootViewController = enterTasteTestViewController
+            let termsOfServiceVC = TermsOfServiceVC()
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first {
+                window.rootViewController = termsOfServiceVC
                 UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
             }
         } else {
             SelectLoginTypeVC.keychain.set(false, forKey: "isFirst")
             let homeViewController = MainTabBarController()
-            if let window = UIApplication.shared.windows.first {
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first {
                 window.rootViewController = homeViewController
                 UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
             }

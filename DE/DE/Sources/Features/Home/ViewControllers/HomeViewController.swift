@@ -222,7 +222,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
         self.view.showBlockingView()
         Task {
             do {
-                let newData = try await fetchHomeBanner()
+                let _ = try await fetchHomeBanner()
                 self.view.hideBlockingView()
             } catch {
                 print("❌ 네트워크 요청 실패: \(error)")

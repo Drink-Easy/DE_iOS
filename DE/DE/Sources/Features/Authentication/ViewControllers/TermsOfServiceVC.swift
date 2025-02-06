@@ -88,6 +88,8 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
             UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
         }
         
+        self.view.window?.rootViewController = HomeViewController()
+        
         
         setupNavigationBar()
         setupUI()

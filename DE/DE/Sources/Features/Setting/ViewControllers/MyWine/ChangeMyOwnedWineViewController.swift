@@ -169,11 +169,6 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
     }
     
     private func callUpdateAPI(wineId: Int, price: Int?, buyDate: String?) {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-        
         let data = networkService.makeUpdateDTO(buyDate: buyDate, buyPrice: price)
         
         Task {

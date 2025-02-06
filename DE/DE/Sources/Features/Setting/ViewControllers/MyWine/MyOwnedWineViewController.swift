@@ -186,10 +186,6 @@ extension MyOwnedWineViewController: UITableViewDelegate, UITableViewDataSource 
         
         let deleteAction = UIContextualAction(style: .destructive, title: "") { (action, view, completionHandler) in
             let alert = UIAlertController(title: "이 와인을 삭제하시겠습니까?", message: wineName, preferredStyle: .alert)
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("⚠️ userId가 UserDefaults에 없습니다.")
-                return
-            }
             let deleteConfirmAction = UIAlertAction(title: "삭제", style: .destructive) { _ in
                 Task {
                     do {

@@ -222,7 +222,7 @@ extension EntireReviewViewController: UICollectionViewDataSource, UICollectionVi
             scrollView.contentOffset.y = 0 // 위쪽 바운스 막기
         }
         
-        guard let collectionView = scrollView as? UICollectionView else { return }
+        guard scrollView is UICollectionView else { return }
         
         let contentOffsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height

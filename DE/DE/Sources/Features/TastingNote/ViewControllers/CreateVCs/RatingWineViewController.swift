@@ -137,7 +137,7 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
     private func postCreateTastingNote() async throws {
         let createNoteDTO = networkService.makePostNoteDTO(wineId: wineData.wineId, color: tnManager.color, tasteDate: tnManager.tasteDate, sugarContent: tnManager.sugarContent, acidity: tnManager.acidity, tannin: tnManager.tannin, body: tnManager.body, alcohol: tnManager.alcohol, nose: tnManager.nose, rating: tnManager.rating, review: tnManager.review)
         
-        let data = try await networkService.postNote(data: createNoteDTO)
+        let _ = try await networkService.postNote(data: createNoteDTO)
     }
     
     @objc func keyboardDown() {

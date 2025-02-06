@@ -192,7 +192,7 @@ extension NetworkManager {
                 print("🔄 [토큰 만료] 토큰 재발급 시작...")
 
                 // ✅ 토큰 재발급 요청 (자동 저장됨)
-                let response = try await AuthService().reissueTokenAsync()
+                let _ = try await AuthService().reissueTokenAsync()
 
                 return true // 🔄 토큰 재발급 성공
             }
