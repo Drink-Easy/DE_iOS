@@ -47,6 +47,7 @@ extension Tracking {
         
         public static let alertCancelBtnTapped = "B30_얼럿 취소"
         public static let alertAcceptBtnTapped = "B31_얼럿 확인"
+        public static let dropdownBtnTapped = "B32_드롭다운"
         
     }
 }

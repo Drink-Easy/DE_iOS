@@ -100,6 +100,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     }
     
     @objc func tappedLiked(_ sender: UIButton) {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.likeBtnTapped, fileName: #file)
         sender.isSelected.toggle()
         isLiked.toggle()
         updateHeartButton(button: sender)
@@ -168,6 +169,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     
     @objc
     private func goToEntireReview() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.moreBtnTapped, fileName: #file)
         let vc = EntireReviewViewController()
         vc.wineId = self.wineId
         vc.wineName = self.wineName

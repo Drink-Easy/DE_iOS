@@ -86,6 +86,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     
     @objc
     private func goToMoreLikely() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.moreBtnTapped, fileName: #file)
         let vc = MoreLikelyWineViewController()
         vc.userName = self.userName
         vc.recommendWineDataList = self.allRecommendWineDataList
@@ -101,6 +102,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     }
     
     @objc private func goToMorePopular() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.moreBtnTapped, fileName: #file)
         let vc = MorePopularWineViewController()
         vc.popularWineDataList = self.allPopularWineDataList
         navigationController?.pushViewController(vc, animated: true)
@@ -276,6 +278,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     }
     
     func didTapSearchButton() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.searchBtnTapped, fileName: #file)
         let searchVC = SearchHomeViewController()
         navigationController?.pushViewController(searchVC, animated: true)
     }

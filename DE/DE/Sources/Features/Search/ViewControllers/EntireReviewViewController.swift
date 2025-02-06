@@ -107,6 +107,7 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
     }
     
     private func setupDropdownAction() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.dropdownBtnTapped, fileName: #file)
         entireReviewView.dropdownView.onOptionSelected = { [weak self] selectedOption in
             guard let self = self else { return }
             if selectedOption == "최신 순" {

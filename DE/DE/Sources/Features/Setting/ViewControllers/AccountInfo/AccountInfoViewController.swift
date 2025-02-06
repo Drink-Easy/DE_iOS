@@ -123,6 +123,7 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
     }
     
     @objc private func goToProfileEditView() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.editProfileBtnTapped, fileName: #file)
         let vc = ProfileEditVC()
         vc.profileImgURL = userProfile?.imageUrl
         vc.originUsername = userProfile?.username
@@ -131,6 +132,7 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
     }
     
     @objc private func logoutButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.logoutBtnTapped, fileName: #file)
         self.view.showBlockingView()
         Task {
             do {
@@ -156,6 +158,7 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
 
 
     @objc private func deleteButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.quitBtnTapped, fileName: #file)
         let alert = UIAlertController(
             title: "계정 삭제",
             message: "계정을 정말 삭제하시겠습니까?",

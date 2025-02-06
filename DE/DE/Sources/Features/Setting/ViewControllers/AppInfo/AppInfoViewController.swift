@@ -105,6 +105,7 @@ class AppInfoViewController : UIViewController, FirebaseTrackable {
     }
     
     @objc private func openInstagram() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.instaBtnTapped, fileName: #file)
         if let url = URL(string: "https://www.instagram.com/drinki.g") {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }

@@ -132,6 +132,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     }
     
     @objc private func editCompleteTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.completeProfileUpdateBtnTapped, fileName: #file)
         Task {
             do {
                 self.view.showBlockingView()
@@ -161,12 +162,14 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         
         let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { _ in
             // 삭제 로직 구현
+            self.logButtonClick(screenName: self.screenName, buttonName: Tracking.ButtonEvent.deleteProfileImgBtnTapped, fileName: #file)
             self.profileImg = nil
             self.profileView.profileImageView.image = UIImage(named: "profilePlaceholder")
             self.imageDeleted = true
         }
         
         let editAction = UIAlertAction(title: "수정", style: .default) { _ in
+            self.logButtonClick(screenName: self.screenName, buttonName: Tracking.ButtonEvent.changeProfileImgBtnTapped, fileName: #file)
             self.imagePickerManager.presentImagePicker(from: self)
         }
         
@@ -185,11 +188,14 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     // 프로필 이미지 선택
     @objc func selectProfileImage() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.profile, fileName: #file)
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.changeProfileImgBtnTapped, fileName: #file)
         showProfileActionSheet(in: self)
     }
     
     //MARK: - 위치 정보 불러오기 로직
     @objc func getMyLocation() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.fetchLocationBtnTapped, fileName: #file)
         self.view.showBlockingView()
         LocationManager.shared.requestLocationPermission { [weak self] address in
             DispatchQueue.main.async {
@@ -201,6 +207,8 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     //MARK: - 닉네임 중복 검사
     @objc func checkNicknameValidity(){
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.checkDuplicateNicknameBtnTapped, fileName: #file)
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.moreBtnTapped, fileName: #file)
         guard let nickname = profileView.nicknameTextField.text, !nickname.isEmpty, ValidationManager.isLengthValid else {
             print("닉네임이 없습니다")
             return
