@@ -61,6 +61,7 @@ class ManiaCountryViewController: UIViewController, FirebaseTrackable {
     }
     
     @objc func nextButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         UserSurveyManager.shared.setArea(selectedItems)
         callPatchAPI()
     }

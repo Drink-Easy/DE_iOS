@@ -63,6 +63,7 @@ class ManiaConsumeViewController: UIViewController, FirebaseTrackable {
     }
     
     @objc func nextButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         // 정보 저장
         guard let price = self.selectedItem else {return}
         UserSurveyManager.shared.setPrice(Int(price))

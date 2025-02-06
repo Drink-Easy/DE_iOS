@@ -59,6 +59,7 @@ class NewbieFoodViewController: UIViewController, FirebaseTrackable {
     }
     
     @objc func nextButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         UserSurveyManager.shared.calculateFoodType(selectedItems)
         let vc = NewbieConsumeViewController()
         navigationController?.pushViewController(vc, animated: true)
