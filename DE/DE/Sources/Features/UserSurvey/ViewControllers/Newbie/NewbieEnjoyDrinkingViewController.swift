@@ -58,6 +58,7 @@ public class NewbieEnjoyDrinkingViewController: UIViewController, FirebaseTracka
     }
     
     @objc func nextButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         UserSurveyManager.shared.calculateDrinkType(selectedItems)
         let vc = NewbieFoodViewController()
         navigationController?.pushViewController(vc, animated: true)

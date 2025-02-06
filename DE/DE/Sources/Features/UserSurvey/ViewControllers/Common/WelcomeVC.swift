@@ -99,6 +99,7 @@ public class WelcomeVC: UIViewController, FirebaseTrackable {
     
     // MARK: - Actions
     @objc private func startButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.startBtnTapped, fileName: #file)
         let getProfileController = GetProfileVC()
         navigationController?.pushViewController(getProfileController, animated: true)
     }

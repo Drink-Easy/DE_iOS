@@ -58,6 +58,7 @@ class ManiaKindViewController: UIViewController, FirebaseTrackable {
     }
     
     @objc func nextButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         UserSurveyManager.shared.setSort(selectedItems)
         let vc = ManiaTypeViewController()
         navigationController?.pushViewController(vc, animated: true)

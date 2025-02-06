@@ -230,6 +230,7 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
     }
     
     @objc func nextButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.goToHomeBtnTapped, fileName: #file)
         self.view.showBlockingView()
         callPatchAPI()
     }
