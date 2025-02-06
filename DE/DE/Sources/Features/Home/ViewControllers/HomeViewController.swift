@@ -377,11 +377,14 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 1 || collectionView.tag == 2 {
+            logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.homeWineCellTapped, fileName: #file, cellID: RecomCollectionViewCell.identifier)
+            
             let vc = WineDetailViewController()
             vc.wineId = (collectionView.tag == 1) ? recommendWineDataList[indexPath.row].wineId : popularWineDataList[indexPath.row].wineId
             vc.wineName = (collectionView.tag == 1) ? recommendWineDataList[indexPath.row].wineName : popularWineDataList[indexPath.row].wineName
             navigationController?.pushViewController(vc, animated: true)
         } else if collectionView.tag == 0 {
+            logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.adBannerCellTapped, fileName: #file, cellID: AdCollectionViewCell.identifier)
             print("\(adImage[indexPath.row].postUrl) : 이 주소로 이동하세요")
             
             // 사파리 뷰 띄우는거 주석 해제만 하면 됨! by dyk.

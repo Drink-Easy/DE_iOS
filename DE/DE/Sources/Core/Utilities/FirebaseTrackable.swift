@@ -16,12 +16,12 @@ extension FirebaseTrackable where Self: UIViewController {
     
     /// 🔥 화면 방문 이벤트 자동 로깅 (viewDidAppear에서 호출)
     public func logScreenView(fileName: String) {
-        Analytics.logEvent("화면 진입(screen_view)", parameters: [
+        Analytics.logEvent("DRINKIG_viewController_viewDidAppear", parameters: [
             "screen_name": screenName,
             "screen_class": screenName,
             "file_name" : fileName
         ])
-        print("✅ Firebase Analytics - 화면 방문 기록: \(screenName)")
+//        print("✅ Firebase Analytics - 화면 방문 기록: \(screenName)")
     }
 }
 
@@ -33,7 +33,7 @@ extension FirebaseTrackable {
 
     /// 🔥 테이블뷰/콜렉션뷰 셀 클릭 이벤트 로깅
     public func logCellClick(screenName: String, indexPath: IndexPath, cellName: String, fileName: String, cellID: String) {
-        Analytics.logEvent("셀 선택(cell_click)", parameters: [
+        Analytics.logEvent("DRINKIG_cell_click", parameters: [
             "screen_name": screenName,
             "cell_name": cellName,
             "section": indexPath.section,
@@ -45,7 +45,7 @@ extension FirebaseTrackable {
 
     /// 🔥 버튼 클릭 이벤트 로깅
     public func logButtonClick(screenName: String, buttonName: String, fileName: String) {
-        Analytics.logEvent("버튼 클릭(button_clicked)", parameters: [
+        Analytics.logEvent("DRINKIG_button_clicked", parameters: [
             "screen_name": screenName,
             "button_name": buttonName,
             "file_name" : fileName
