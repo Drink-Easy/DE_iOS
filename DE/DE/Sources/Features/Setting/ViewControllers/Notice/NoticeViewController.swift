@@ -112,6 +112,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.noticeCellTapped, fileName: #file, cellID: NoticeTableViewCell.identifier)
         let data = self.noticeData[indexPath.row]
         
         if let url = URL(string: data.contentUrl) {

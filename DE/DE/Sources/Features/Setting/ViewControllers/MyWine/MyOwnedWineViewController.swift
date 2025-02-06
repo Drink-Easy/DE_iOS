@@ -153,6 +153,7 @@ extension MyOwnedWineViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.myWineCellTapped, fileName: #file, cellID: MyWineTableViewCell.identifier)
         let infoVC = MyOwnedWineInfoViewController()
         infoVC.registerWine = wineResults[indexPath.row]
         infoVC.hidesBottomBarWhenPushed = true

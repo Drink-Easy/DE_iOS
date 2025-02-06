@@ -73,6 +73,7 @@ extension MorePopularWineViewController: UITableViewDelegate, UITableViewDataSou
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.recomCellTapped, fileName: #file, cellID: "MoreWineTableViewCell")
         let vc = WineDetailViewController()
         vc.wineId = popularWineDataList[indexPath.row].wineId
         vc.wineName = popularWineDataList[indexPath.row].wineName

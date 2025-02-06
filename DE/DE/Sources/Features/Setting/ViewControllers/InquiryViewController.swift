@@ -144,6 +144,7 @@ extension InquiryViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension InquiryViewController: UITableViewDelegate, MFMailComposeViewControllerDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.inquiryCellTapped, fileName: #file, cellID: InquiryMenuViewCell.identifier)
         let selectedItem = InquiryMenuItems[indexPath.row].title
         
         switch selectedItem {

@@ -156,6 +156,7 @@ extension SettingMenuViewController: UITableViewDataSource {
 
 extension SettingMenuViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.settingMenuCellTapped, fileName: #file, cellID: SettingMenuViewCell.identifier)
         let selectedItem = settingMenuItems[indexPath.row]
         let vc = selectedItem.viewControllerType.init() // 해당 뷰컨트롤러 생성
         navigationController?.pushViewController(vc, animated: true)

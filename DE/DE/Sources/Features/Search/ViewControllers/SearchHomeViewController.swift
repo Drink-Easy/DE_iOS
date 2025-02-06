@@ -159,6 +159,7 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.searchWineCellTapped, fileName: #file, cellID: "SearchResultTableViewCell")
         let vc = WineDetailViewController()
         vc.wineId = wineResults[indexPath.row].wineId
         vc.wineName = wineResults[indexPath.row].name
