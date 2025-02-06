@@ -15,7 +15,7 @@ import CoreModule
 
 // SelectLoginTypeVC.keychain.getBool("isFirst")
 
-public class SplashVC : UIViewController, FirebaseTrackable {
+public class TestVC : UIViewController, FirebaseTrackable {
     public var screenName: String = Tracking.VC.splashVC
     
     let networkService = AuthService()
@@ -45,18 +45,12 @@ public class SplashVC : UIViewController, FirebaseTrackable {
                 UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
             }
         }
-        let isNeedUpdate = UserDefaults.standard.bool(forKey: "isNeedUpdate")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            if isNeedUpdate {
-                print("⚠️ 강제 업데이트 필요")
-                self.setNewTitle()
-            } else {
-                print("✅ 강제 업데이트 없음")
-                self.checkAuthenticationStatus()
-            }
-            
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+            self.setNewTitle()
         }
     }
+    
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
