@@ -6,7 +6,8 @@ import SnapKit
 import Then
 import Network
 
-public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
+public class SearchHomeViewController : UIViewController, UITextFieldDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.searchHomeVC
     
     let navigationBarManager = NavigationBarManager()
     var wineResults: [SearchResultModel] = []
@@ -42,6 +43,11 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -153,6 +159,7 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.searchWineCellTapped, fileName: #file, cellID: "SearchResultTableViewCell")
         let vc = WineDetailViewController()
         vc.wineId = wineResults[indexPath.row].wineId
         vc.wineName = wineResults[indexPath.row].name
@@ -164,7 +171,7 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
             scrollView.contentOffset.y = 0 // 위쪽 바운스 막기
         }
         
-        guard let tableView = scrollView as? UITableView else { return }
+        guard scrollView is UITableView else { return }
         
         let contentOffsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height

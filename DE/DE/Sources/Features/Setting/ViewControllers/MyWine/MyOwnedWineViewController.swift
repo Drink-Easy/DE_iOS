@@ -4,7 +4,9 @@ import UIKit
 import CoreModule
 import Network
 
-class MyOwnedWineViewController: UIViewController {
+class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.myWineVC
+    
     private let navigationBarManager = NavigationBarManager()
     private let networkService = MyWineService()
     var wineResults: [MyWineViewModel] = []
@@ -47,6 +49,13 @@ class MyOwnedWineViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.view.addSubview(indicator)
+        logScreenView(fileName: #file)
+        callGetAPI()
+    }
+    
     func setupNavigationBar() {
         navigationBarManager.addBackButton(
             to: navigationItem,
@@ -74,6 +83,7 @@ class MyOwnedWineViewController: UIViewController {
     }
     
     @objc private func addNewWine() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.createBtnTapped, fileName: #file)
         let vc = AddNewWineViewController()
         vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: true)
@@ -99,6 +109,7 @@ class MyOwnedWineViewController: UIViewController {
     //MARK: - API calls
     /// API 호출
     func callGetAPI() {
+        view.showBlockingView()
         Task {
             do {
                 let data = try await networkService.fetchAllMyWines()
@@ -113,9 +124,11 @@ class MyOwnedWineViewController: UIViewController {
                 }
                 DispatchQueue.main.async {
                     self.updateUI()
+                    self.view.hideBlockingView()
                 }
             } catch {
                 print("❌ API 호출 실패: \(error.localizedDescription)")
+                self.view.hideBlockingView()
             }
         }
     }
@@ -146,6 +159,7 @@ extension MyOwnedWineViewController: UITableViewDelegate, UITableViewDataSource 
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.myWineCellTapped, fileName: #file, cellID: MyWineTableViewCell.identifier)
         let infoVC = MyOwnedWineInfoViewController()
         infoVC.registerWine = wineResults[indexPath.row]
         infoVC.hidesBottomBarWhenPushed = true
@@ -173,10 +187,6 @@ extension MyOwnedWineViewController: UITableViewDelegate, UITableViewDataSource 
         
         let deleteAction = UIContextualAction(style: .destructive, title: "") { (action, view, completionHandler) in
             let alert = UIAlertController(title: "이 와인을 삭제하시겠습니까?", message: wineName, preferredStyle: .alert)
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("⚠️ userId가 UserDefaults에 없습니다.")
-                return
-            }
             let deleteConfirmAction = UIAlertAction(title: "삭제", style: .destructive) { _ in
                 Task {
                     do {

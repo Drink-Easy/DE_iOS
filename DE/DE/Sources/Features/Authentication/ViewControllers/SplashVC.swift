@@ -15,7 +15,8 @@ import CoreModule
 
 // SelectLoginTypeVC.keychain.getBool("isFirst")
 
-public class SplashVC : UIViewController {
+public class SplashVC : UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.splashVC
     
     let networkService = AuthService()
     
@@ -48,6 +49,11 @@ public class SplashVC : UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.checkAuthenticationStatus()
         }
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupViews() {
@@ -96,7 +102,8 @@ public class SplashVC : UIViewController {
     
     func navigateToMainScreen() {
         let mainTabBarController = MainTabBarController()
-        if let window = UIApplication.shared.windows.first {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
             window.rootViewController = mainTabBarController
             UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
         }
@@ -104,10 +111,12 @@ public class SplashVC : UIViewController {
     
     func navigateToWelcomeScreen() {
         let vc = TermsOfServiceVC()
-        if let window = UIApplication.shared.windows.first {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
             window.rootViewController = vc
             UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
         }
+        
     }
     
     func navigateToOnBoaringScreen() {

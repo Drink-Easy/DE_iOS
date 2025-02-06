@@ -9,7 +9,8 @@ import SDWebImage
 import CoreModule
 import Network
 
-class AppInfoViewController : UIViewController {
+class AppInfoViewController : UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.appInfoVC
     
     let navigationBarManager = NavigationBarManager()
     
@@ -57,6 +58,11 @@ class AppInfoViewController : UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
@@ -99,6 +105,7 @@ class AppInfoViewController : UIViewController {
     }
     
     @objc private func openInstagram() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.instaBtnTapped, fileName: #file)
         if let url = URL(string: "https://www.instagram.com/drinki.g") {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
@@ -123,6 +130,7 @@ extension AppInfoViewController: UITableViewDataSource {
 
 extension AppInfoViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.settingMenuCellTapped, fileName: #file, cellID: SettingMenuViewCell.identifier)
         let selectedItem = appInfoItems[indexPath.row] // 선택된 항목의 이름
         var content: String
         

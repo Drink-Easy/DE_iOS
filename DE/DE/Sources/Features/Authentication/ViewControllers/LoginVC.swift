@@ -8,7 +8,10 @@ import Then
 import CoreModule
 import Network
 
-class LoginVC: UIViewController {
+class LoginVC: UIViewController, FirebaseTrackable {
+    // struct 사용
+    var screenName: String = Tracking.VC.loginVC
+    
     // MARK: - Properties
     private let loginView = LoginView()
     
@@ -28,6 +31,11 @@ class LoginVC: UIViewController {
         setupActions()
         setupNavigationBar()
         hideKeyboardWhenTappedAround()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -114,11 +122,16 @@ class LoginVC: UIViewController {
     }
     
     @objc private func idSaveCheckBoxTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.toggleBtnTapped, fileName: #file)
         loginView.idSaveCheckBox.isSelected.toggle()
         isSavingId = loginView.idSaveCheckBox.isSelected
     }
     
     @objc private func loginButtonTapped() {
+//        Analytics.setUserID("userID = \(1234)") -> 로그인성공하고 설정해도 될까..? 되겟지.. userid 서버에서 오는거 저장하면될듯
+        
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.loginBtnTapped, fileName: #file)
+        
         self.view.showBlockingView()
         let loginDTO = networkService.makeLoginDTO(username: loginView.usernameField.text!, password: loginView.passwordField.text!)
         usernameString = loginDTO.username
@@ -144,15 +157,17 @@ class LoginVC: UIViewController {
     private func goToNextView(_ isFirstLogin: Bool) {
         if isFirstLogin {
             SelectLoginTypeVC.keychain.set(true, forKey: "isFirst")
-            let enterTasteTestViewController = TermsOfServiceVC()
-            if let window = UIApplication.shared.windows.first {
-                window.rootViewController = enterTasteTestViewController
+            let termsOfServiceVC = TermsOfServiceVC()
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first {
+                window.rootViewController = termsOfServiceVC
                 UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
             }
         } else {
             SelectLoginTypeVC.keychain.set(false, forKey: "isFirst")
             let homeViewController = MainTabBarController()
-            if let window = UIApplication.shared.windows.first {
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first {
                 window.rootViewController = homeViewController
                 UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
             }

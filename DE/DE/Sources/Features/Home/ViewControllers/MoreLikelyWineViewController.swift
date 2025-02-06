@@ -6,7 +6,8 @@ import CoreModule
 import Network
 import Then
 
-class MoreLikelyWineViewController: UIViewController {
+class MoreLikelyWineViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.moreLikelyWineVC
 
     let navigationBarManager = NavigationBarManager()
     let networkService = WineService()
@@ -36,6 +37,11 @@ class MoreLikelyWineViewController: UIViewController {
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     
@@ -86,6 +92,7 @@ extension MoreLikelyWineViewController: UITableViewDelegate, UITableViewDataSour
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.recomCellTapped, fileName: #file, cellID: "MoreWineTableViewCell")
         let vc = WineDetailViewController()
         vc.wineId = recommendWineDataList[indexPath.row].wineId
         vc.wineName = recommendWineDataList[indexPath.row].wineName

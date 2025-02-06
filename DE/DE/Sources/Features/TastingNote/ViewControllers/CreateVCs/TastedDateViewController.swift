@@ -6,7 +6,8 @@ import Network
 
 // 와인 시음 날짜 선택 1번
 
-public class TastedDateViewController: UIViewController {
+public class TastedDateViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.tnTastedDateVC
     lazy var tastedDateView = TastedDateView()
     let tnManger = NewTastingNoteManager.shared
     let wineData = TNWineDataManager.shared
@@ -23,6 +24,11 @@ public class TastedDateViewController: UIViewController {
         setupUI()
         setupActions()
         setupNavigationBar()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupUI() {
@@ -64,6 +70,9 @@ public class TastedDateViewController: UIViewController {
     }
     
     @objc func nextVC() {
+        self.logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.nextBtnTapped,
+                       fileName: #file)
         guard let selectedDate = selectedDate else {
             print("선택된 날짜가 없습니다.")
             return

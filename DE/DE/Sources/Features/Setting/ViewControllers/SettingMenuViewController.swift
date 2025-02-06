@@ -9,7 +9,8 @@ import SDWebImage
 import CoreModule
 import Network
 
-public final class SettingMenuViewController : UIViewController, UIGestureRecognizerDelegate {
+public final class SettingMenuViewController : UIViewController, UIGestureRecognizerDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.settingMainVC
     
     private let networkService = MemberService()
     private var profileData: SimpleProfileInfoData?
@@ -62,6 +63,11 @@ public final class SettingMenuViewController : UIViewController, UIGestureRecogn
         self.navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
@@ -88,8 +94,6 @@ public final class SettingMenuViewController : UIViewController, UIGestureRecogn
                 let safeImageUrl = data.imageUrl ?? "https://placehold.co/400x400"
                 
                 self.profileData = SimpleProfileInfoData(name: data.username, imageURL: safeImageUrl)
-                
-                let userData = MemberInfoResponse(imageUrl: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
                 
                 self.setUserData(userName: data.username, imageURL: safeImageUrl)
             } catch {
@@ -150,6 +154,7 @@ extension SettingMenuViewController: UITableViewDataSource {
 
 extension SettingMenuViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.settingMenuCellTapped, fileName: #file, cellID: SettingMenuViewCell.identifier)
         let selectedItem = settingMenuItems[indexPath.row]
         let vc = selectedItem.viewControllerType.init() // 해당 뷰컨트롤러 생성
         navigationController?.pushViewController(vc, animated: true)

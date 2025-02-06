@@ -13,7 +13,8 @@ import AuthenticationServices
 import KakaoSDKUser
 
 
-public class SelectLoginTypeVC: UIViewController {
+public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.selectLoginTypeVC
     
     public static let keychain = KeychainSwift()
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
@@ -38,16 +39,22 @@ public class SelectLoginTypeVC: UIViewController {
         setupActions()
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     // MARK: - Setup Methods
     private func setupActions() {
         mainView.kakaoButton.addTarget(self, action: #selector(kakaoButtonTapped), for: .touchUpInside)
         mainView.appleButton.addTarget(self, action: #selector(appleButtonTapped), for: .touchUpInside)
-        mainView.loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+        mainView.loginButton.addTarget(self, action: #selector(goToLoginVC), for: .touchUpInside)
         mainView.joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
     }
     
     // MARK: - Actions
     @objc private func kakaoButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.kakaoBtnTapped, fileName: #file)
         self.kakaoAuthVM.kakaoLogin { success in
             if success {
                 UserApi.shared.me { (user, error) in
@@ -78,6 +85,7 @@ public class SelectLoginTypeVC: UIViewController {
     }
     
     @objc private func appleButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.appleBtnTapped, fileName: #file)
         startAppleLoginProcess()
     }
     
@@ -95,7 +103,7 @@ public class SelectLoginTypeVC: UIViewController {
         }
     }
     
-    @objc private func loginButtonTapped() {
+    @objc private func goToLoginVC() {
         let loginViewController = LoginVC()
         navigationController?.pushViewController(loginViewController, animated: true)
     }

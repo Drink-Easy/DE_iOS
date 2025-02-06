@@ -30,7 +30,7 @@ extension AccountInfoViewController: ASAuthorizationControllerDelegate {
                 let data = memberService.makeDeleteAppleUserRequest(AuthCode: authorizationCode)
                 Task {
                     do {
-                        let result = try await memberService.deleteAppleUser(body: data) // 서버에 삭제 요청
+                        let _ = try await memberService.deleteAppleUser(body: data) // 서버에 삭제 요청
                         DispatchQueue.main.async {
                             self.clearForQuit()
                             self.showSplashScreen()

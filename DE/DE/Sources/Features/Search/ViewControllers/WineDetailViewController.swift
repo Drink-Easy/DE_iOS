@@ -5,7 +5,8 @@ import Then
 import CoreModule
 import Network
 
-class WineDetailViewController: UIViewController, UIScrollViewDelegate {
+class WineDetailViewController: UIViewController, UIScrollViewDelegate, FirebaseTrackable {
+    var screenName: String = Tracking.VC.wineDetailVC
     
     let navigationBarManager = NavigationBarManager()
     public var wineId: Int = 0
@@ -57,6 +58,11 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         }
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     func setupNavigationBar() {
         navigationBarManager.addBackButton(
             to: navigationItem,
@@ -94,6 +100,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     @objc func tappedLiked(_ sender: UIButton) {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.likeBtnTapped, fileName: #file)
         sender.isSelected.toggle()
         isLiked.toggle()
         updateHeartButton(button: sender)
@@ -162,6 +169,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     
     @objc
     private func goToEntireReview() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.moreBtnTapped, fileName: #file)
         let vc = EntireReviewViewController()
         vc.wineId = self.wineId
         vc.wineName = self.wineName
@@ -303,7 +311,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     func callLikeAPI(wineId: Int) async {
         self.view.showBlockingView()
         do {
-            let responseData = try await likedNetworkService.postWishlist(wineId: wineId)
+            let _ = try await likedNetworkService.postWishlist(wineId: wineId)
             self.view.hideBlockingView()
         } catch {
             print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")
@@ -314,7 +322,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     func calldeleteLikedAPI(wineId: Int) async {
         self.view.showBlockingView()
         do {
-            let responseData = try await likedNetworkService.deleteWishlist(wineId: wineId)
+            let _ = try await likedNetworkService.deleteWishlist(wineId: wineId)
             self.view.hideBlockingView()
         } catch {
             print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")

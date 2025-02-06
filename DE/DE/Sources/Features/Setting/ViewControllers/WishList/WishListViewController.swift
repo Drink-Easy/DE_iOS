@@ -6,7 +6,8 @@ import Then
 import CoreModule
 import Network
 
-public class WishListViewController: UIViewController {
+public class WishListViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.wishlistVC
     
     private let navigationBarManager = NavigationBarManager()
     var wineResults: [WishResultModel] = []
@@ -32,19 +33,24 @@ public class WishListViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.addSubview(indicator)
         view.backgroundColor = AppColor.bgGray
-        self.view.addSubview(indicator)
         setupNavigationBar()
         addComponents()
         setConstraints()
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.view.addSubview(indicator)
+        logScreenView(fileName: #file)
+        callFetchAPI()
+    }
+    
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        callFetchAPI()
         setNavBarAppearance(navigationController: self.navigationController)
+        self.view.showBlockingView()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -88,6 +94,7 @@ public class WishListViewController: UIViewController {
     }
     
     func callFetchAPI() {
+        
         Task {
             do {
                 let responseData = try await networkService.fetchWishlist()
@@ -96,7 +103,7 @@ public class WishListViewController: UIViewController {
                 }
             } catch {
                 print(error.localizedDescription)
-                self.view.hideBlockingView()
+                view.hideBlockingView()
             }
         }
     }
@@ -130,6 +137,7 @@ extension WishListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.searchWineCellTapped, fileName: #file, cellID: "SearchResultTableViewCell")
         let vc = WineDetailViewController()
         vc.wineId = wineResults[indexPath.row].wineId
         vc.wineName = wineResults[indexPath.row].wineName

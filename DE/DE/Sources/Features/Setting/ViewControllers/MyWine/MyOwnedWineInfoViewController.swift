@@ -8,7 +8,8 @@ import Then
 import CoreModule
 import Network
 
-public class MyOwnedWineInfoViewController: UIViewController, ChildViewControllerDelegate {
+public class MyOwnedWineInfoViewController: UIViewController, ChildViewControllerDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.myWineDetailVC
     
     let navigationBarManager = NavigationBarManager()
     let networkService = MyWineService()
@@ -23,7 +24,6 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchMyWineAPI()
         self.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
@@ -39,6 +39,12 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
         setupNavigationBar()
         setWineData()
         wineDetailView.setEditButton(showEditButton: true)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+        fetchMyWineAPI()
     }
     
     private func setWineData() {
@@ -108,6 +114,7 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     }
     
     @objc func editButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.editBtnTapped, fileName: #file)
         guard let currentWine = self.registerWine else { return }
         
         let nextVC = ChangeMyOwnedWineViewController()
@@ -130,9 +137,11 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { [weak self] _ in
-            self?.callDeleteAPI()
+            guard let self = self else { return }
+            self.logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.deleteBtnTapped, fileName: #file)
+            self.callDeleteAPI()
             DispatchQueue.main.async {
-                self?.navigationController?.popViewController(animated: true)
+                self.navigationController?.popViewController(animated: true)
             }
         }))
         

@@ -5,7 +5,8 @@ import CoreModule
 
 // 향 선택 뷰컨
 
-public class NoseTestVC: UIViewController, UIScrollViewDelegate {
+public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.tnChooseNoseVC
     
     let wineData = TNWineDataManager.shared
     let tnManager = NewTastingNoteManager.shared
@@ -52,6 +53,11 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate {
         setupActions()
         setupNavigationBar()
         setNavBarAppearance(navigationController: self.navigationController)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func setupUI() {
@@ -130,6 +136,9 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate {
     }
     
     @objc func nextVC() {
+        self.logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.nextBtnTapped,
+                       fileName: #file)
         let scents = NoseManager.shared.selectedScents
 
         let scentNames = scents.map { $0.name }
@@ -229,6 +238,7 @@ extension NoseTestVC : UICollectionViewDelegate, UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 0 { // noseCollectionView
             // 데이터 직접 수정
+            logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.noseCellTapped, fileName: #file, cellID: NoseCollectionReusableView.identifier)
             NoseManager.shared.scentSections[indexPath.section].scents[indexPath.row].isSelected.toggle()
         }
 

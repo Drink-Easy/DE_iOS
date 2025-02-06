@@ -6,7 +6,8 @@ import CoreModule
 import Network
 
 //테이스팅노트 메인 노트 보관함 뷰
-public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureRecognizerDelegate {
+public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureRecognizerDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.allTastingNoteVC
     
     private let networkService = TastingNoteService()
     var isLoading = false
@@ -65,6 +66,11 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
         tastingNoteView.searchButton.addTarget(self, action: #selector(noteSearchTapped), for: .touchUpInside)
         floatingButton.addTarget(self, action: #selector(newNoteTapped), for: .touchUpInside)
         
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     // MARK: - Setup Methods
@@ -133,6 +139,7 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
     
     //와인 이미지 스택 뷰 필터
     func didTapSortButton(for type: WineSortType) {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.sortingBtnTapped, fileName: #file)
         currentType = type.rawValue
         self.view.showBlockingView()
         Task {
@@ -169,6 +176,7 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegate
 extension AllTastingNoteVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.tnCellTapped, fileName: #file, cellID: "TastingNoteCollectionViewCell")
         let vc = WineTastingNoteVC()
         vc.noteId = currentTastingNoteList[indexPath.row].noteId
         vc.wineName = currentTastingNoteList[indexPath.row].wineName
@@ -195,7 +203,7 @@ extension AllTastingNoteVC: UICollectionViewDataSource, UICollectionViewDelegate
             scrollView.contentOffset.y = 0 // 위쪽 바운스 막기
         }
         
-        guard let collectionView = scrollView as? UICollectionView else { return }
+        guard scrollView is UICollectionView else { return }
         
         let contentOffsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height

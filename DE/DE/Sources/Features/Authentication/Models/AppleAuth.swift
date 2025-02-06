@@ -24,7 +24,7 @@ extension SelectLoginTypeVC: ASAuthorizationControllerDelegate {
     public func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
-            let userIdentifier = appleIDCredential.user
+            let _ = appleIDCredential.user
 
             // 1. identityToken 존재 여부 확인
             if let authCode = appleIDCredential.authorizationCode,

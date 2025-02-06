@@ -8,7 +8,8 @@ import Network
 // 기기대응 완료
 // 보유와인 가격 입력
 
-class PriceNewWineViewController: UIViewController {
+class PriceNewWineViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.setMyWinePriceVC
 
     let priceNewWineView = MyWinePriceView()
     let navigationBarManager = NavigationBarManager()
@@ -30,6 +31,11 @@ class PriceNewWineViewController: UIViewController {
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupUI() {
@@ -59,6 +65,7 @@ class PriceNewWineViewController: UIViewController {
     }
     
     @objc func nextVC() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.createNewWineBtnTapped, fileName: #file)
         guard let price = self.priceNewWineView.priceTextField.text, isValidInteger(price) else {
             let alert = UIAlertController(title: "", message: "가격을 숫자로만 입력해주세요.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))

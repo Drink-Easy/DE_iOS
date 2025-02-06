@@ -11,7 +11,9 @@ import CoreModule
 import CoreLocation
 import Network
 
-public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
+public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate, FirebaseTrackable {
+    
+    public var screenName: String = Tracking.VC.GetProfileVC
     
     private let navigationBarManager = NavigationBarManager()
     private let imagePickerManager = ImagePickerManager()
@@ -65,6 +67,11 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
         setupImagePicker()
         setupActions()
         configureTapGestureForDismissingPicker()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     // MARK: - 네비게이션 바 설정
@@ -128,7 +135,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     }
     
     @objc func nextButtonTapped() {
-        // 정보 저장
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         guard let name = self.userName,
               let addr = self.userRegion else { return }
         
@@ -158,11 +165,13 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     // 프로필 이미지 선택
     @objc func selectProfileImage() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.editProfileBtnTapped, fileName: #file)
         imagePickerManager.requestPhotoLibraryPermission(from: self)
     }
     
     //MARK: - 위치 정보 불러오기 로직
     @objc func getMyLocation() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.fetchLocationBtnTapped, fileName: #file)
         self.view.showBlockingView()
         LocationManager.shared.requestLocationPermission { [weak self] address in
             DispatchQueue.main.async {
@@ -175,6 +184,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     //MARK: - 닉네임 중복 검사
     @objc func checkNicknameValidity(){
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.checkDuplicateNicknameBtnTapped, fileName: #file)
         guard let nickname = profileView.nicknameTextField.text, !nickname.isEmpty else {
             print("닉네임이 없습니다")
             return
@@ -193,7 +203,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     @objc func validateNickname(){
         ValidationManager.isNicknameCanUse = false
         ValidationManager.isLengthValid = false
-        ValidationManager.validateNickname(profileView.nicknameTextField)
+        let _ = ValidationManager.validateNickname(profileView.nicknameTextField)
         checkFormValidity()
     }
     

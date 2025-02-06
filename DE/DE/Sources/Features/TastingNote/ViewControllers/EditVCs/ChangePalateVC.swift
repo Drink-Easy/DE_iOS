@@ -8,7 +8,8 @@ import CoreModule
 import Network
 
 //// 테이스팅 노트 palate 수정
-public class ChangePalateVC: UIViewController, UIScrollViewDelegate {
+public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.editPalateVC
     
     let navigationBarManager = NavigationBarManager()
     let networkService = TastingNoteService()
@@ -61,6 +62,11 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate {
         setupActions()
         setupNavigationBar()
         initializeSliderValues()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func setupUI() {
@@ -127,6 +133,9 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate {
     }
     
     @objc private func saveButtonTapped() {
+        logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.saveBtnTapped,
+                       fileName: #file)
         callUpdateAPI()
         
         // popViewController
@@ -140,7 +149,7 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate {
         Task {
             do {
                 self.view.showBlockingView()
-                try await networkService.patchNote(data: tnData)
+                let _ = try await networkService.patchNote(data: tnData)
                 self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             }

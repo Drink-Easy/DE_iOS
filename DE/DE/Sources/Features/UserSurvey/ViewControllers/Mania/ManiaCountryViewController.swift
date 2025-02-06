@@ -7,7 +7,8 @@ import CoreModule
 import SwiftyToaster
 import Network
 
-class ManiaCountryViewController: UIViewController {
+class ManiaCountryViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.ManiaCountryVC
     
     private let navigationBarManager = NavigationBarManager()
     let networkService = MemberService()
@@ -35,6 +36,11 @@ class ManiaCountryViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     func setupNavigationBar() {
         navigationBarManager.addBackButton(
             to: navigationItem,
@@ -55,6 +61,7 @@ class ManiaCountryViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         UserSurveyManager.shared.setArea(selectedItems)
         callPatchAPI()
     }
@@ -122,6 +129,7 @@ extension ManiaCountryViewController: UICollectionViewDelegateFlowLayout, UIColl
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.shortSurveyCellTapped, fileName: #file, cellID: SurveyKindCollectionViewCell.identifier)
         let selectedItem = cellData[indexPath.row]
         
         if selectedItems.contains(selectedItem) { //이미 selected된 cell

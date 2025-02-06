@@ -11,7 +11,8 @@ import Network
 import SwiftyToaster
 
 /// 계정 정보 확인 페이지
-class AccountInfoViewController: UIViewController {
+class AccountInfoViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.accountInfoVC
     
     //MARK: - Variables 
     private let navigationBarManager = NavigationBarManager()
@@ -60,6 +61,11 @@ class AccountInfoViewController: UIViewController {
         setupNavigationBar()
         setupUI()
         setupAction()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     //MARK: - UI Funcs
@@ -117,6 +123,7 @@ class AccountInfoViewController: UIViewController {
     }
     
     @objc private func goToProfileEditView() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.editProfileBtnTapped, fileName: #file)
         let vc = ProfileEditVC()
         vc.profileImgURL = userProfile?.imageUrl
         vc.originUsername = userProfile?.username
@@ -125,6 +132,7 @@ class AccountInfoViewController: UIViewController {
     }
     
     @objc private func logoutButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.logoutBtnTapped, fileName: #file)
         self.view.showBlockingView()
         Task {
             do {
@@ -150,15 +158,19 @@ class AccountInfoViewController: UIViewController {
 
 
     @objc private func deleteButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.quitBtnTapped, fileName: #file)
         let alert = UIAlertController(
             title: "계정 삭제",
             message: "계정을 정말 삭제하시겠습니까?",
             preferredStyle: .alert
         )
         
-        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: { _ in self.logButtonClick(screenName: self.screenName, buttonName: Tracking.ButtonEvent.alertCancelBtnTapped, fileName: #file)}))
         
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { [weak self] _ in
+            self?.logButtonClick(screenName: self!.screenName,
+                                 buttonName: Tracking.ButtonEvent.alertAcceptBtnTapped,
+                           fileName: #file)
             if self?.userProfile?.authType.lowercased() == "apple" { // 애플인 경우에
                 self?.reAuthenticateWithApple()
             } else {
@@ -174,7 +186,7 @@ class AccountInfoViewController: UIViewController {
         view.showBlockingView()
         Task {
             do {
-                let result = try await memberService.deleteUser()
+                let _ = try await memberService.deleteUser()
                 
                 if userProfile?.authType.lowercased() == "kakao" {
                     if await !self.kakaoAuthVM.unlinkKakaoAccount() {
@@ -270,7 +282,7 @@ class AccountInfoViewController: UIViewController {
             let profileImgURL = URL(string: imageURL)
             self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
             self.accountView.titleLabel.text = "내 정보"
-            let adultText = adult ? "인증 완료" : "인증 전"
+//            let adultText = adult ? "인증 완료" : "인증 전"
             self.accountView.items = [("닉네임", username),
             ("내 동네", city),
             ("이메일", email),
