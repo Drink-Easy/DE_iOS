@@ -87,6 +87,7 @@ public class BuyNewWineDateViewController: UIViewController, FirebaseTrackable {
     }
     
     @objc func nextVC() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         guard let selectedDate = selectedDate else {
             print("선택된 날짜가 없습니다.")
             return

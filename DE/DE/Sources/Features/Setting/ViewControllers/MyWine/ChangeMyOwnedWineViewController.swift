@@ -105,6 +105,7 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
     }
     
     @objc private func deleteNewWine() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.deleteBtnTapped, fileName: #file)
         guard let currentWine = self.registerWine else { return }
         
         let alert = UIAlertController(
@@ -127,6 +128,7 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
     
     @objc
     private func completeEdit() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.updatemyWineBtnTapped, fileName: #file)
         guard let wine = registerWine else { return }
         callUpdateAPI(wineId: wine.myWineId, price: checkPrice(), buyDate: checkDate())
         DispatchQueue.main.async {

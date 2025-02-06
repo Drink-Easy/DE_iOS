@@ -81,6 +81,7 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
     }
     
     @objc private func addNewWine() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.createBtnTapped, fileName: #file)
         let vc = AddNewWineViewController()
         vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: true)
