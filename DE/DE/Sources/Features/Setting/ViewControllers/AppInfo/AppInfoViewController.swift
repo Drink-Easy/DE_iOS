@@ -9,7 +9,8 @@ import SDWebImage
 import CoreModule
 import Network
 
-class AppInfoViewController : UIViewController {
+class AppInfoViewController : UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.appInfoVC
     
     let navigationBarManager = NavigationBarManager()
     
@@ -55,6 +56,11 @@ class AppInfoViewController : UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: false)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func setupTableView() {

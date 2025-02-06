@@ -6,7 +6,8 @@ import Then
 import Network
 import SafariServices
 
-public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestureRecognizerDelegate {
+public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestureRecognizerDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.homeViewController
     
     private var adImage: [HomeBannerModel] = []
     var recommendWineDataList: [HomeWineModel] = []
@@ -125,6 +126,11 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
         setWines(isRecommend: true) // 추천 와인
         setWines(isRecommend: false) // 인기 와인
         
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func addComponents() {

@@ -4,7 +4,9 @@ import UIKit
 import CoreModule
 import Network
 
-class MyOwnedWineViewController: UIViewController {
+class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.myWineVC
+    
     private let navigationBarManager = NavigationBarManager()
     private let networkService = MyWineService()
     var wineResults: [MyWineViewModel] = []
@@ -45,6 +47,11 @@ class MyOwnedWineViewController: UIViewController {
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupNavigationBar() {

@@ -10,7 +10,9 @@ import CoreModule
 import CoreLocation
 import Network
 
-class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
+class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate, FirebaseTrackable {
+    var screenName: String = Tracking.VC.profileEditVC
+    
     private let navigationBarManager = NavigationBarManager()
     private let imagePickerManager = ImagePickerManager()
     
@@ -46,6 +48,11 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         setupImagePicker()
         setupActions()
         configureTapGestureForDismissingPicker()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     // MARK: - 네비게이션 바 설정

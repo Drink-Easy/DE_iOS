@@ -4,7 +4,8 @@ import UIKit
 import CoreModule
 import Network
 
-public class EditRateViewController: UIViewController {
+public class EditRateViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.editRateVC
     
     lazy var rView = OnlyRateView()
     public var ratingValue: Double = 2.5
@@ -35,6 +36,11 @@ public class EditRateViewController: UIViewController {
         setupActions()
         setupNavigationBar()
         hideKeyboardWhenTappedAround()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setConstraints() {

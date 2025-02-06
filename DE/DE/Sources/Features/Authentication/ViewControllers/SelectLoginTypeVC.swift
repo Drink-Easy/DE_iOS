@@ -13,7 +13,8 @@ import AuthenticationServices
 import KakaoSDKUser
 
 
-public class SelectLoginTypeVC: UIViewController {
+public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.selectLoginTypeVC
     
     public static let keychain = KeychainSwift()
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
@@ -36,6 +37,11 @@ public class SelectLoginTypeVC: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         setupActions()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     // MARK: - Setup Methods
