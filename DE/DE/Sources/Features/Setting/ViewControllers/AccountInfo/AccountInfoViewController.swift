@@ -181,7 +181,6 @@ class AccountInfoViewController: UIViewController {
                         view.hideBlockingView()
                     }
                 }
-                await self.deleteUserInSwiftData() // 로컬 디비에서 유저 정보 삭제 후 splash 화면으로 이동
                 DispatchQueue.main.async {
                     self.clearForQuit()
                     self.view.hideBlockingView()

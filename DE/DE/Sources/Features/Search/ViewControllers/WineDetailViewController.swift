@@ -53,10 +53,6 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
                 } else {
                     await callLikeAPI(wineId: wineId)
                 }
-                
-                if let previousVC = navigationController?.viewControllers.last as? WishListViewController {
-                    previousVC.shouldSkipWishlistUpdate = true
-                }
             }
         }
     }
@@ -303,43 +299,11 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    func checkCallCounter(up: Bool) async {
-        Task {
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("❌ 유저 ID를 찾을 수 없습니다.")
-                return
-            }
-            
-            do {
-                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .wishlist)
-                print("✅ APICounter 생성 완료")
-            } catch {
-                print(error)
-            }
-            
-            do {
-                if up {
-                    try await APICallCounterManager.shared.incrementPost(for: userId, controllerName: .wishlist)
-                    print("✅ 호출 카운트 증가 완료")
-                } else {
-                    try await APICallCounterManager.shared.incrementDelete(for: userId, controllerName: .wishlist)
-                    print("✅ 호출 카운트 증가 완료")
-                }
-                
-            } catch {
-                print("❌ 호출 카운트 증가 실패: \(error.localizedDescription)")
-            }
-        }
-    }
     
     func callLikeAPI(wineId: Int) async {
         self.view.showBlockingView()
         do {
             let responseData = try await likedNetworkService.postWishlist(wineId: wineId)
-            print("✅ 좋아요 API 호출 성공: \(responseData)") // 이제 프린트가 확실히 출력됩니다.
-            
-            // 호출 카운터 증가
-            await checkCallCounter(up: true)
             self.view.hideBlockingView()
         } catch {
             print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")
@@ -351,10 +315,6 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         self.view.showBlockingView()
         do {
             let responseData = try await likedNetworkService.deleteWishlist(wineId: wineId)
-            print("✅ 좋아요 API 호출 성공: \(responseData)") // 이제 프린트가 확실히 출력됩니다.
-            
-            // 호출 카운터 감소
-            await checkCallCounter(up: false)
             self.view.hideBlockingView()
         } catch {
             print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")

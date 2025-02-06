@@ -90,20 +90,11 @@ class PriceNewWineViewController: UIViewController {
     }
     
     private func callPostAPI() async {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-        
         let wm = MyOwnedWineManager.shared
         let data = networkService.makePostDTO(wineId: wm.getWineId(), buyDate: wm.getBuyDate(), buyPrice: wm.getPrice())
         do {
             // 데이터 전송
             _ = try await networkService.postMyWine(data: data)
-            
-            // 데이터 전송 성공 시, 보유와인 콜카운터 생성 및 post +1
-            try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
-            try await APICallCounterManager.shared.incrementPost(for: userId, controllerName: .myWine)
         } catch {
             print("\(error)\n 잠시후 다시 시도해주세요.")
         }

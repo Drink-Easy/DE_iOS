@@ -211,24 +211,4 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
         nextButton.isEnabled = isFormValid
         nextButton.isEnabled(isEnabled: isFormValid)
     }
-    
-    // 캐시 데이터 검증
-    func MakePersonalDataInDB() async {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-        guard let nickName = userNickName else {
-            print("⚠️ 닉네임 설정 안됨.")
-            return
-        }
-        Task {
-            do {
-                try await PersonalDataManager.shared.createPersonalData(for: userId, userName: nickName)
-                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
-            } catch {
-                print(error)
-            }
-        }
-    }
 }

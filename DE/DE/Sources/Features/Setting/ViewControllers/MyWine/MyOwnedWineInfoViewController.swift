@@ -23,9 +23,7 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if needUpdate {
-            fetchMyWineAPI()
-        }
+        fetchMyWineAPI()
         self.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
@@ -142,16 +140,9 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     }
     
     private func callDeleteAPI() {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-        
         Task {
             do {
                 _ = try await networkService.deleteMyWine(myWineId: registerWine!.myWineId)
-                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
-                try await APICallCounterManager.shared.incrementDelete(for: userId, controllerName: .myWine)
             } catch {
                 print("\(error)")
             }
@@ -159,18 +150,13 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     }
     
     private func fetchMyWineAPI() {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-        
         Task {
             do {
                 let data = try await networkService.fetchMyWine(myWineId: registerWine!.myWineId)
                 DispatchQueue.main.async { [self] in
                     self.registerWine = MyWineViewModel(myWineId: data.myWineId, wineId: data.wineId, wineName: data.wineName, wineSort: data.wineSort, wineCountry: data.wineCountry, wineRegion: data.wineRegion, wineVariety: data.wineVariety, wineImageUrl: data.wineImageUrl, purchaseDate: data.purchaseDate, purchasePrice: data.purchasePrice, period: data.period)
                     self.setWineData()
-                    self.needUpdate = false
+//                    self.needUpdate = false
                 }
             } catch {
                 print("\(error)")
