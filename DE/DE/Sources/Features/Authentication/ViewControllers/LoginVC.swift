@@ -10,7 +10,10 @@ import Network
 
 import Firebase
 
-class LoginVC: UIViewController {
+class LoginVC: UIViewController, FirebaseTrackable {
+    // struct 사용
+    var screenName: String = Tracking.VC.loginVC
+    
     // MARK: - Properties
     private let loginView = LoginView()
     
@@ -30,6 +33,11 @@ class LoginVC: UIViewController {
         setupActions()
         setupNavigationBar()
         hideKeyboardWhenTappedAround()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -121,16 +129,10 @@ class LoginVC: UIViewController {
     }
     
     @objc private func loginButtonTapped() {
-        let event = "loginButton"
-        let parameters = [
-            "file": #file,
-            "function": #function
-        ]
+//        Analytics.setUserID("userID = \(1234)") -> 로그인성공하고 설정해도 될까..? 되겟지.. userid 서버에서 오는거 저장하면될듯
         
-        Analytics.setUserID("userID = \(1234)")
-        Analytics.setUserProperty("ko", forName: "country")
-        Analytics.logEvent(AnalyticsEventSelectItem, parameters: nil) // select_item으로 로깅
-        Analytics.logEvent(event, parameters: parameters)
+//        logButtonClick(screenName: screenName, buttonName: Tracking.Event.example, fileName: #file)
+        
         self.view.showBlockingView()
         let loginDTO = networkService.makeLoginDTO(username: loginView.usernameField.text!, password: loginView.passwordField.text!)
         usernameString = loginDTO.username
