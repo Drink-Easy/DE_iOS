@@ -105,7 +105,7 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
     }
     
     @objc private func deleteNewWine() {
-        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.deleteBtnTapped, fileName: #file)
+
         guard let currentWine = self.registerWine else { return }
         
         let alert = UIAlertController(
@@ -117,9 +117,12 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { [weak self] _ in
-            self?.callDeleteAPI()
+            guard let self = self else { return }
+            self.logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.deleteBtnTapped, fileName: #file)
+            
+            self.callDeleteAPI()
             DispatchQueue.main.async {
-                self?.navigationController?.popViewController(animated: true)
+                self.navigationController?.popViewController(animated: true)
             }
         }))
         

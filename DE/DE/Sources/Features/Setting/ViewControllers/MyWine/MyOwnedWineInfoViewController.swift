@@ -114,6 +114,7 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     }
     
     @objc func editButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.editBtnTapped, fileName: #file)
         guard let currentWine = self.registerWine else { return }
         
         let nextVC = ChangeMyOwnedWineViewController()
@@ -136,9 +137,11 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { [weak self] _ in
-            self?.callDeleteAPI()
+            guard let self = self else { return }
+            self.logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.deleteBtnTapped, fileName: #file)
+            self.callDeleteAPI()
             DispatchQueue.main.async {
-                self?.navigationController?.popViewController(animated: true)
+                self.navigationController?.popViewController(animated: true)
             }
         }))
         
