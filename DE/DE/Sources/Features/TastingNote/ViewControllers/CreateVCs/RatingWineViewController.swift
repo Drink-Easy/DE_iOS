@@ -73,7 +73,7 @@ public class RatingWineViewController: UIViewController {
     }
     
     func setupActions() {
-        rView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        rView.saveButton.addTarget(self, action: #selector(createTN), for: .touchUpInside)
         
         rView.ratingButton.didFinishTouchingCosmos = { [weak self] rating in
             guard let self = self else { return }
@@ -102,7 +102,7 @@ public class RatingWineViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func nextVC() {
+    @objc func createTN() {
         guard let reviewString = rView.reviewBody.text else {
             print("작성된 리뷰가 없습니다.")
             return

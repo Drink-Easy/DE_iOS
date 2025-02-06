@@ -42,7 +42,7 @@ public class SelectLoginTypeVC: UIViewController {
     private func setupActions() {
         mainView.kakaoButton.addTarget(self, action: #selector(kakaoButtonTapped), for: .touchUpInside)
         mainView.appleButton.addTarget(self, action: #selector(appleButtonTapped), for: .touchUpInside)
-        mainView.loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
+        mainView.loginButton.addTarget(self, action: #selector(goToLoginVC), for: .touchUpInside)
         mainView.joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
     }
     
@@ -95,7 +95,7 @@ public class SelectLoginTypeVC: UIViewController {
         }
     }
     
-    @objc private func loginButtonTapped() {
+    @objc private func goToLoginVC() {
         let loginViewController = LoginVC()
         navigationController?.pushViewController(loginViewController, animated: true)
     }
