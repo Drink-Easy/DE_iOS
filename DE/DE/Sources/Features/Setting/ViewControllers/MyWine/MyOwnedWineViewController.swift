@@ -41,7 +41,6 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         setNavBarAppearance(navigationController: self.navigationController)
-        callGetAPI()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -51,7 +50,9 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        self.view.addSubview(indicator)
         logScreenView(fileName: #file)
+        callGetAPI()
     }
     
     func setupNavigationBar() {
@@ -107,6 +108,7 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
     //MARK: - API calls
     /// API 호출
     func callGetAPI() {
+        view.showBlockingView()
         Task {
             do {
                 let data = try await networkService.fetchAllMyWines()
@@ -121,9 +123,11 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
                 }
                 DispatchQueue.main.async {
                     self.updateUI()
+                    self.view.hideBlockingView()
                 }
             } catch {
                 print("❌ API 호출 실패: \(error.localizedDescription)")
+                self.view.hideBlockingView()
             }
         }
     }

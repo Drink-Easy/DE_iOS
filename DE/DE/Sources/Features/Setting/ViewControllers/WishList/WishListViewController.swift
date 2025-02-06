@@ -33,19 +33,24 @@ public class WishListViewController: UIViewController, FirebaseTrackable {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.addSubview(indicator)
         view.backgroundColor = AppColor.bgGray
-        self.view.addSubview(indicator)
         setupNavigationBar()
         addComponents()
         setConstraints()
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.view.addSubview(indicator)
+        logScreenView(fileName: #file)
+        callFetchAPI()
+    }
+    
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        callFetchAPI()
         setNavBarAppearance(navigationController: self.navigationController)
+        self.view.showBlockingView()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -89,6 +94,7 @@ public class WishListViewController: UIViewController, FirebaseTrackable {
     }
     
     func callFetchAPI() {
+        
         Task {
             do {
                 let responseData = try await networkService.fetchWishlist()
@@ -97,7 +103,7 @@ public class WishListViewController: UIViewController, FirebaseTrackable {
                 }
             } catch {
                 print(error.localizedDescription)
-                self.view.hideBlockingView()
+                view.hideBlockingView()
             }
         }
     }

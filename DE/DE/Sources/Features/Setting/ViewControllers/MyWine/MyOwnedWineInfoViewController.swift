@@ -24,7 +24,6 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        fetchMyWineAPI()
         self.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
@@ -45,6 +44,7 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         logScreenView(fileName: #file)
+        fetchMyWineAPI()
     }
     
     private func setWineData() {

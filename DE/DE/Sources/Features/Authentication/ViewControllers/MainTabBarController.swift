@@ -37,9 +37,6 @@ public class MainTabBarController: UITabBarController {
         
         tabBar.tintColor = .label
         tabBar.backgroundColor = AppColor.white
-        tabBar.layer.cornerRadius = 20
-        tabBar.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMinYCorner, .layerMaxXMinYCorner)
-        tabBar.layer.masksToBounds = true
         
         tabBar.tintColor = AppColor.purple100
         tabBar.unselectedItemTintColor = AppColor.gray50
