@@ -46,15 +46,13 @@ public class SplashVC : UIViewController, FirebaseTrackable {
             }
         }
         let isNeedUpdate = UserDefaults.standard.bool(forKey: "isNeedUpdate")
+        let showStopSign = UserDefaults.standard.bool(forKey: "showStopSign")
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            if isNeedUpdate {
-                print("⚠️ 강제 업데이트 필요")
-                self.setNewTitle()
+            if showStopSign || isNeedUpdate{
+                self.presentAlertView()
             } else {
-                print("✅ 강제 업데이트 없음")
                 self.checkAuthenticationStatus()
             }
-            
         }
     }
     
@@ -72,6 +70,23 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     func setNewTitle() {
         print("업데이트가 필요합니다!")
         self.view.hideBlockingView()
+    }
+    
+    func presentAlertView() {
+        let title = UserDefaults.standard.string(forKey: "signMessage")
+        let date = UserDefaults.standard.string(forKey: "signDate")
+        
+        let alert = UIAlertController(
+            title: title,
+            message: date,
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: { _ in
+            UIControl().sendAction(#selector(NSXPCConnection.suspend), to: UIApplication.shared, for: nil)
+        }))
+        
+        present(alert, animated: true, completion: nil)
     }
     
     func checkAuthenticationStatus() {
