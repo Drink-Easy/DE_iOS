@@ -12,7 +12,7 @@ public final class WishlistDataManager {
     
     /// ✅ 위시리스트가 없으면 새로 생성하는 메서드
     @MainActor
-    public func createWishlistIfNeeded(for userId: Int, with newWines: [WineData]) async throws {
+    public func createWishlistIfNeeded(for userId: Int, with newWines: [WishResultModel]) async throws {
         let context = UserDataManager.shared.container.mainContext
         
         // 1. 사용자 확인
@@ -25,7 +25,14 @@ public final class WishlistDataManager {
         }
 
         // 3. 위시리스트 생성
-        let newWishlist = Wishlist(wishlishWines: newWines, user: user)
+        let newWishlist = Wishlist(wishlishWines: [], user: user)
+        if !newWines.isEmpty {
+            for data in newWines {
+                let newWine = WineData(wineId: data.wineId, imageUrl: data.imageUrl, wineName: data.wineName, sort: data.sort, price: data.price, vivinoRating: data.vivinoRating)
+                context.insert(newWine)
+                newWishlist.wishlishWines.append(newWine)
+            }
+        }
         user.wishlist = newWishlist // 유저와 연결
 
         // 4. 저장
@@ -67,7 +74,9 @@ public final class WishlistDataManager {
         }
 
         // 3. 업데이트
-        wishlist.wishlishWines = newWines
+        if !newWines.isEmpty {
+            wishlist.wishlishWines = newWines
+        }
 
         // 4. 저장
         do {

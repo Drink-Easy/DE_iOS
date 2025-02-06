@@ -232,7 +232,6 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                     let cachedWines = try WineDataManager.shared.fetchWineDataList(userId: userId)
                     
                     if !cachedWines.isEmpty {
-                        print("✅ 캐시된 추천와인 데이터 사용: \(cachedWines.count)개")
                         updateCollectionView(isRecommend: isRecommend, with: cachedWines) // ✅ 추가
                         return
                     }

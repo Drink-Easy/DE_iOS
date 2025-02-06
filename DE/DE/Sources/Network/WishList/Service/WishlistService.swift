@@ -23,7 +23,7 @@ public final class WishlistService: NetworkManager {
     //MARK: - API funcs
     
     /// 위시리스트 조회 API
-    public func fetchWishlist() async throws-> [WinePreviewResponse]?{
+    public func fetchWishlist() async throws-> [WinePreviewResponse]? {
         return try await requestOptionalAsync(target: .getWishList, decodingType: [WinePreviewResponse].self)
     }
     

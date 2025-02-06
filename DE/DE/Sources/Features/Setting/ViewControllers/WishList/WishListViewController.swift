@@ -106,8 +106,8 @@ public class WishListViewController: UIViewController {
                     self.wineResults = responseData.map { data in
                         WishResultModel(wineId: data.wineId, imageUrl: data.imageUrl, wineName: data.name, sort: data.sort, price: data.price, vivinoRating: data.vivinoRating)
                     }
+                    self.saveInCacheDB(userId: userId, wishlist: self.wineResults)
                 }
-                self.saveInCacheDB(userId: userId)
             }
             DispatchQueue.main.async {
                 self.view.hideBlockingView()
@@ -120,30 +120,11 @@ public class WishListViewController: UIViewController {
         }
     }
     
-    func saveInCacheDB(userId: Int) {
+    func saveInCacheDB(userId: Int, wishlist : [WishResultModel]) {
         Task {
             do {
-                try await WishlistDataManager.shared.createWishlistIfNeeded(for: userId, with: self.wineResults.map { wine in
-                    WineData(wineId: wine.wineId,
-                             imageUrl: wine.imageUrl,
-                             wineName: wine.wineName,
-                             sort: wine.sort,
-                             price: wine.price,
-                             vivinoRating: wine.vivinoRating
-                    )
-                })
-                try await WishlistDataManager.shared.updateWishlist(
-                    for: userId,
-                    with: self.wineResults.map { wine in
-                        WineData(wineId: wine.wineId,
-                                 imageUrl: wine.imageUrl,
-                                 wineName: wine.wineName,
-                                 sort: wine.sort,
-                                 price: wine.price,
-                                 vivinoRating: wine.vivinoRating
-                        )
-                    }
-                )
+                try await WishlistDataManager.shared.createWishlistIfNeeded(for: userId, with: wishlist)
+//                try await WishlistDataManager.shared.updateWishlist(for: userId, with: wishlist)
                 
                 // 호출 카운트 초기화
                 try await APICallCounterManager.shared.resetCallCount(for: userId, controllerName: .wishlist)
