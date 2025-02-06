@@ -307,7 +307,7 @@ extension InquiryViewController: UITableViewDelegate, MFMailComposeViewControlle
         }
     }
     
-    private func openKakao() {
+    @objc func openKakao() {
         if let url = URL(string: "http://pf.kakao.com/_esxcKn/chat") {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }

@@ -120,7 +120,7 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate {
     }
     
     private func setupActions() {
-        middleView.nextButton.addTarget(self, action: #selector(saveVC), for: .touchUpInside)
+        middleView.nextButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
     }
     
     private func setupNavigationBar() {
@@ -142,7 +142,7 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func saveVC() {
+    @objc func saveButtonTapped() {
         let scents = NoseManager.shared.selectedScents
 
         scentNames = scents.map { $0.name }

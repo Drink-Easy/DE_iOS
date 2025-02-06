@@ -47,7 +47,7 @@ public class EditRateViewController: UIViewController {
     }
     
     func setupActions() {
-        rView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        rView.saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         
         rView.ratingButton.didFinishTouchingCosmos = { [weak self] rating in
             guard let self = self else { return }
@@ -74,7 +74,7 @@ public class EditRateViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func nextVC() {
+    @objc func saveButtonTapped() {
         // Call post api
         callUpdateAPI()
     }
