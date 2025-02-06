@@ -41,6 +41,7 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         setNavBarAppearance(navigationController: self.navigationController)
+        callGetAPI()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
