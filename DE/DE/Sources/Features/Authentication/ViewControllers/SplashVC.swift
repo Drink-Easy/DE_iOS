@@ -23,8 +23,6 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     var refreshToken: String = ""
     var ExpiresAt: Date = Date()
     
-    public static var isTrackingOn : Bool?
-    
     private lazy var logoImage = UIImageView().then { logoImage in
         logoImage.image = UIImage(named: "logo")
     }
@@ -121,25 +119,6 @@ public class SplashVC : UIViewController, FirebaseTrackable {
                         self.navigateToOnBoaringScreen()
                     }
                 }
-            }
-        }
-    }
-    
-    
-    // 맞춤 광고 서비스 권한 요청 함수
-    func requestTrackingPermission() {
-        ATTrackingManager.requestTrackingAuthorization { status in
-            switch status {
-            case .authorized:
-                SplashVC.isTrackingOn = true
-            case .denied:
-                SplashVC.isTrackingOn = false
-            case .notDetermined:
-                print("Tracking 권한 요청 전 상태")
-            case .restricted:
-                print("Tracking 권한 제한됨")
-            @unknown default:
-                print("알 수 없는 상태")
             }
         }
     }

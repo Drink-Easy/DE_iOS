@@ -5,9 +5,12 @@ import CoreModule
 import Then
 import Network
 import SafariServices
+import AppTrackingTransparency
 
 public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestureRecognizerDelegate, FirebaseTrackable {
     public var screenName: String = Tracking.VC.homeViewController
+    
+    public static var isTrackingOn : Bool?
     
     private var adImage: [HomeBannerModel] = []
     var recommendWineDataList: [HomeWineModel] = []
@@ -180,6 +183,24 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
             $0.top.equalTo(likeWineListView.snp.bottom).offset(DynamicPadding.dynamicValue(40))
             $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalToSuperview()
+        }
+    }
+    
+    // MARK: - 맞춤 광고 서비스 권한 요청 함수
+    func requestTrackingPermission() {
+        ATTrackingManager.requestTrackingAuthorization { status in
+            switch status {
+            case .authorized:
+                HomeViewController.isTrackingOn = true
+            case .denied:
+                HomeViewController.isTrackingOn = false
+            case .notDetermined:
+                print("Tracking 권한 요청 전 상태")
+            case .restricted:
+                print("Tracking 권한 제한됨")
+            @unknown default:
+                print("알 수 없는 상태")
+            }
         }
     }
     
