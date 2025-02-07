@@ -36,7 +36,7 @@ public class CustomAlertView: UIView {
     private let confirmButton = UIButton().then { button in
         button.setTitle("확인", for: .normal)
         button.setTitleColor(AppColor.purple100, for: .normal)
-        button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 18)
+        button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 20)
     }
     
     
@@ -75,7 +75,8 @@ public class CustomAlertView: UIView {
     private func setupConstraints() {
         containerView.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.width.equalTo(300)
+            make.width.equalTo(Constants.superViewWidth * 0.7)
+            make.height.equalTo(Constants.superViewHeight * 0.3)
         }
         
         titleLabel.snp.makeConstraints { make in
@@ -93,8 +94,9 @@ public class CustomAlertView: UIView {
         
         confirmButton.snp.makeConstraints { make in
             make.top.equalTo(messageTextView.snp.bottom).offset(24)
-            make.bottom.equalToSuperview().offset(-16)
             make.centerX.equalToSuperview()
+            make.height.equalTo(44) // ✅ 버튼 크기 고정
+            make.bottom.lessThanOrEqualToSuperview().offset(-16) // ✅ 최소 여백 유지
         }
     }
     
@@ -109,8 +111,8 @@ public class CustomAlertView: UIView {
     
     // MARK: - Actions
     @objc private func didTapConfirmButton() {
-        // 팝업 닫기
-        self.removeFromSuperview()
-        onDismiss?()
+        UIControl().sendAction(#selector(NSXPCConnection.suspend), to: UIApplication.shared, for: nil)
+//        self.removeFromSuperview()
+//        onDismiss?()
     }
 }
