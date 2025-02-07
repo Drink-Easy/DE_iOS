@@ -30,7 +30,7 @@ final class ToasterToastMessageView: UIView {
 private extension ToasterToastMessageView {
     func setupStyle() {
         self.backgroundColor = AppColor.gray90
-        self.layer.cornerRadius = 18
+        self.layer.cornerRadius = DynamicPadding.dynamicValue(18)
         self.layer.masksToBounds = true
     }
     
