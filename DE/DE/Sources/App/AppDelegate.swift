@@ -48,6 +48,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             UserDefaults.standard.synchronize()
                         } else {
                             print("✅ 점검 중이 아닙니다.")
+                            UserDefaults.standard.set(data.showStopSign, forKey: "showStopSign")
+                            UserDefaults.standard.synchronize()
                         }
                     } catch {
                         fatalError("❌ JSON 디코딩 실패: \(error.localizedDescription)")
