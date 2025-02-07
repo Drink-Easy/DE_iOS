@@ -11,7 +11,7 @@ class AdCollectionViewCell: UICollectionViewCell {
     static let identifier = "AdCollectionViewCell"
     
     private let image = UIImageView().then {
-        $0.contentMode = .scaleAspectFill
+        $0.contentMode = .scaleAspectFit
         $0.image = UIImage(named: "adPlaceholder")
     }
     
