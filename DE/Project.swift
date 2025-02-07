@@ -1,17 +1,5 @@
 import ProjectDescription
-
-//let swiftLintScript = TargetScript.pre(
-//    script: """
-//    export PATH="$PATH:/opt/homebrew/bin"
-//    if which swiftlint >/dev/null; then
-//        swiftlint
-//    else
-//        echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
-//    fi
-//    """,
-//    name: "SwiftLint",
-//    basedOnDependencyAnalysis: false
-//)
+import Foundation
 
 let bundleId = "io"
 let bundleMid = "DRINKIG"
@@ -20,11 +8,32 @@ let minimunTarget = "17.0"
 let projectName = "DE"
 let releaseTargetName = "DRINKIG"
 
+//let crashlyticsScript = TargetScript.post(
+//    script: """
+//    ROOT_DIR=\(ProcessInfo.processInfo.environment["TUIST_ROOT_DIR"] ?? "")
+//    "${ROOT_DIR}/Tuist/.build/checkouts/firebase-ios-sdk/Crashlytics/run"
+//    """,
+//    name: "Firebase Crashlytics",
+//    inputPaths: [
+//        "$(DWARF_DSYM_FOLDER_PATH)/$(DWARF_DSYM_FILE_NAME)/Contents/Resources/DWARF/$(TARGET_NAME)",
+//        "$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)"
+//    ], basedOnDependencyAnalysis: true
+//)
+
 let project = Project(
     name: "\(projectName)",
     settings: .settings(
         base: [
-            "OTHER_LDFLAGS": ["-ObjC"]
+            "OTHER_LDFLAGS": ["-ObjC"],
+            "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym"
+        ],
+        configurations: [
+            .debug(name: "Debug", settings: [
+                "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym" // Debug 설정
+            ]),
+            .release(name: "Release", settings: [
+                "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym" // Release 설정
+            ])
         ]
     ),
     targets: [
@@ -64,11 +73,12 @@ let project = Project(
                         "NSAllowsArbitraryLoads" : true
                     ],
                     "UILaunchStoryboardName": "",
+                    "NSUserTrackingUsageDescription" : "드링키지에서 사용자 맞춤 정보 제공 및 서비스 개선을 위해 데이터를 사용하려고 합니다.",
                     "NSLocationAlwaysAndWhenInUseUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 항상 혹은 앱 활성 시에만 허용하시겠습니까?",
                     "NSLocationWhenInUseUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 앱 활성 시에만 허용하시겠습니까?",
                     "NSLocationAlwaysUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 항상 허용하시겠습니까?",
-                    "NSCameraUsageDescription" : "사용자 프로필 설정을 위한 카메라 사용 권한을 허용하시겠습니까?",
-                    "NSPhotoLibraryUsageDescription" : "사용자 프로필 설정을 위한 갤러리 접근 권한을 허용하시겠습니까?",
+                    "NSCameraUsageDescription" : "사용자 프로필 이미지 설정을 위한 카메라 사용 권한을 허용하시겠습니까?",
+                    "NSPhotoLibraryUsageDescription" : "사용자 프로필 이미지 설정을 위한 갤러리 접근 권한을 허용하시겠습니까?",
                     // 런치 스크린
                     //                    "UILaunchScreen" : [
                     //                        "UIColorName" : "LaunchScreenBGColor",
@@ -91,13 +101,29 @@ let project = Project(
             sources: ["DE/Sources/App/**"],
             resources: ["DE/Resources/**"],
             entitlements: "DE/DE.entitlements",
-            scripts: [  ],
+            scripts: [
+                .post(
+                    script: """
+                    ROOT_DIR=${TUIST_ROOT_DIR:-$(pwd)}
+                    "${ROOT_DIR}/Tuist/.build/checkouts/firebase-ios-sdk/Crashlytics/run"
+                    """,
+                    name: "Firebase Crashlytics",
+                    inputPaths: [
+                        "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+                        "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
+                        "${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
+                        "$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
+                        "$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)"
+                    ], basedOnDependencyAnalysis: true
+                )
+            ],
             dependencies: [
                 .target(name: "Features"),
                 .external(name: "FirebaseCore"),
                 .external(name: "FirebaseAnalytics"),
                 .external(name: "FirebaseRemoteConfig"),
                 .external(name: "FirebaseAnalyticsWithoutAdIdSupport"),
+                .external(name: "FirebaseCrashlytics"),
                 .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK")
             ],
@@ -136,7 +162,8 @@ let project = Project(
             dependencies: [
                 .external(name: "Moya"),
                 .external(name: "FirebaseCore"),
-                .external(name: "FirebaseAnalytics")
+                .external(name: "FirebaseAnalytics"),
+                .external(name: "FirebaseCrashlytics")
             ]
         ),
         .target(

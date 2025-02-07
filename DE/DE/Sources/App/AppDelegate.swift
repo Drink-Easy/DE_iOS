@@ -5,6 +5,7 @@ import KakaoSDKAuth
 import KakaoSDKCommon
 import FirebaseRemoteConfig
 import Firebase
+import FirebaseCrashlytics
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -34,16 +35,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     UserDefaults.standard.set(isNeedUpdate, forKey: "isNeedUpdate")
                     UserDefaults.standard.synchronize()
                     
-                    print("✅ 강제 업데이트 필요 여부: \(isNeedUpdate)")
                     let jsonString = remoteConfig["jsonTest"].stringValue
-                    print(jsonString)
                     let jsonData = jsonString.data(using: .utf8)!
+                    print(jsonData)
                     // ✅ JSON 디코딩
                     do {
                         let data = try JSONDecoder().decode(jsontest.self, from: jsonData)
                         if data.showStopSign {
-                            print("🚨 \(data.message)")
-                            print("🕒 점검 시간: \(data.startDate) ~ \(data.endDate)")
+                            UserDefaults.standard.set(data.showStopSign, forKey: "showStopSign")
+                            UserDefaults.standard.set("🚨 \(data.message)", forKey: "signMessage")
+                            UserDefaults.standard.set("🕒 점검 시간: \(data.startDate) ~ \(data.endDate)", forKey: "signDate")
+                            UserDefaults.standard.synchronize()
                         } else {
                             print("✅ 점검 중이 아닙니다.")
                         }

@@ -21,7 +21,6 @@ extension FirebaseTrackable where Self: UIViewController {
             "screen_class": screenName,
             "file_name" : fileName
         ])
-//        print("✅ Firebase Analytics - 화면 방문 기록: \(screenName)")
     }
 }
 
