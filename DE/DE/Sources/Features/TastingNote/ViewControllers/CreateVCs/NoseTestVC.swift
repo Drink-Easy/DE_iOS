@@ -30,11 +30,15 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackab
         
         NoseManager.shared.collapseAllSections()
         
-        if !NoseManager.shared.selectedScents.isEmpty {
-            topView.selectedCollectionView.reloadData()
-            topView.updateSelectedCollectionViewHeight()
+
+        DispatchQueue.main.async {
+            if !NoseManager.shared.selectedScents.isEmpty {
+                self.topView.selectedCollectionView.reloadData()
+                self.topView.updateSelectedCollectionViewHeight()
+            }
+            self.middleView.noseCollectionView.reloadData()
+            self.middleView.setAllFoldNoseCollectionView()
         }
-        
         topView.header.setTitleLabel(wineData.wineName)
         
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
