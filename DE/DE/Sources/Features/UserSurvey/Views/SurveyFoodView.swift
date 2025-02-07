@@ -19,6 +19,7 @@ class SurveyFoodView: UIView {
         $0.isScrollEnabled = true
         $0.showsVerticalScrollIndicator = false
         $0.allowsMultipleSelection = true
+        $0.layer.cornerRadius = 10
     }
     
     public var nextButton: CustomButton
@@ -53,7 +54,7 @@ class SurveyFoodView: UIView {
         surveyFoodCollectionView.snp.makeConstraints {
             $0.top.equalTo(surveyTopView.snp.bottom).offset(DynamicPadding.dynamicValue(40.0))
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(24.0))
-            $0.bottom.equalTo(nextButton.snp.top)
+            $0.bottom.equalTo(nextButton.snp.top).offset(-12)
         }
         
         nextButton.snp.makeConstraints {
