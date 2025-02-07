@@ -45,15 +45,17 @@ public class SplashVC : UIViewController, FirebaseTrackable {
                 UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
             }
         }
-        let isNeedUpdate = UserDefaults.standard.bool(forKey: "isNeedUpdate")
-        let showStopSign = UserDefaults.standard.bool(forKey: "showStopSign")
+        
+//        let isNeedUpdate = UserDefaults.standard.bool(forKey: "isNeedUpdate")
+//        let showStopSign = UserDefaults.standard.bool(forKey: "showStopSign")
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            if showStopSign || isNeedUpdate{
-//                self.presentAlertView()
-                self.checkAuthenticationStatus()
-            } else {
-                self.checkAuthenticationStatus()
-            }
+            self.checkAuthenticationStatus()
+//            if showStopSign || isNeedUpdate{
+////                self.presentAlertView()
+//                self.checkAuthenticationStatus()
+//            } else {
+//                
+//            }
         }
     }
     
