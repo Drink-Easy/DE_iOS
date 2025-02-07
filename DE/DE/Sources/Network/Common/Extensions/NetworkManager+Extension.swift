@@ -2,6 +2,7 @@
 
 import Moya
 import UIKit
+import FirebaseAnalytics
 
 extension NetworkManager {
     //MARK: - Concurrency로 모두 리팩토링
@@ -96,6 +97,12 @@ extension NetworkManager {
         do {
             let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: response.data)
             
+            Analytics.logEvent("DRINKIG_NETWORK_ERROR",
+                               parameters: ["statusCode": response.statusCode,
+                                            "serverCode" : errorResponse.code,
+                                            "message" : errorResponse.message
+                                           ])
+            
             if errorResponse.code == "ACCESS_TOKEN4002" {
                 print("🔄 [토큰 만료] 토큰 재발급 시작...")
 
@@ -132,6 +139,12 @@ extension NetworkManager {
     ) async throws -> T? {
         do {
             let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: response.data)
+            
+            Analytics.logEvent("DRINKIG_NETWORK_ERROR",
+                               parameters: ["statusCode": response.statusCode,
+                                            "serverCode" : errorResponse.code,
+                                            "message" : errorResponse.message
+                                           ])
             
             if errorResponse.code == "ACCESS_TOKEN4002" {
                 print("🔄 [토큰 만료] 토큰 재발급 시작...")
@@ -179,28 +192,5 @@ extension NetworkManager {
         
         print("⚠️ Cache-Control 헤더에서 max-age를 찾을 수 없습니다.")
         return nil
-    }
-    
-    /// ✅ 토큰 관련 에러를 검증하고, 필요하면 재발급 요청 -> Concurrency
-    private func checkTokenErrorAndReissueAsync(
-        response: Response
-    ) async throws -> Bool { // ✅ 성공 여부 반환
-        do {
-            let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: response.data)
-
-            if errorResponse.code == "ACCESS_TOKEN4002" {
-                print("🔄 [토큰 만료] 토큰 재발급 시작...")
-
-                // ✅ 토큰 재발급 요청 (자동 저장됨)
-                let _ = try await AuthService().reissueTokenAsync()
-
-                return true // 🔄 토큰 재발급 성공
-            }
-        } catch {
-            print("⚠️ [에러 응답 디코딩 실패] \(error.localizedDescription)")
-            throw error
-        }
-        
-        return false // ❌ 토큰 만료와 무관한 오류
     }
 }

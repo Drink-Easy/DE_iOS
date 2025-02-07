@@ -2,6 +2,7 @@
 
 import Moya
 import Foundation
+import FirebaseAnalytics
 
 protocol NetworkManager {
     associatedtype Endpoint: TargetType
