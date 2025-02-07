@@ -47,12 +47,11 @@ public class SplashVC : UIViewController, FirebaseTrackable {
         }
         let isNeedUpdate = UserDefaults.standard.bool(forKey: "isNeedUpdate")
         let showStopSign = UserDefaults.standard.bool(forKey: "showStopSign")
-        print("\(isNeedUpdate)")
-        print("\(showStopSign)")
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             if showStopSign || isNeedUpdate {
                 self.view.hideBlockingView()
-                self.showAlertView(title: "드링키지 점검 안내", message: "보다 안정적인 서비스 제공을 위해\n아래와 같이 시스템 점검을 진행합니다.\n[점검 시간]\n2025.2.6 월 00:00 ~ 08:00")
+//                self.showAlertView(title: "드링키지 점검 안내", message: "보다 안정적인 서비스 제공을 위해\n아래와 같이 시스템 점검을 진행합니다.\n[점검 시간]\n2025.2.6 월 00:00 ~ 08:00")
+                self.checkAuthenticationStatus()
             } else {
                 self.checkAuthenticationStatus()
             }
