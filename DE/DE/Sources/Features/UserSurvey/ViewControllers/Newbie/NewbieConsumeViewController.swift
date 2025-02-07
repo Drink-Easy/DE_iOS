@@ -5,14 +5,14 @@ import CoreModule
 import SnapKit
 import Then
 
-class NewbieConsumeViewController: UIViewController, FirebaseTrackable {
-    var screenName: String = Tracking.VC.NewbieConsumeVC
+public class NewbieConsumeViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.NewbieConsumeVC
     
     private let navigationBarManager = NavigationBarManager()
     
     private var selectedItem: Float? = 15
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         self.view = surveySliderView

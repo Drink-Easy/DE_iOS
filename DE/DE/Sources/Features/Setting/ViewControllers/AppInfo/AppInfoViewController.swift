@@ -131,6 +131,9 @@ extension AppInfoViewController: UITableViewDataSource {
 extension AppInfoViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.settingMenuCellTapped, fileName: #file, cellID: SettingMenuViewCell.identifier)
+        DispatchQueue.main.async {
+            self.view.showBlockingView()
+        }
         let selectedItem = appInfoItems[indexPath.row] // 선택된 항목의 이름
         var content: String
         
@@ -146,6 +149,9 @@ extension AppInfoViewController: UITableViewDelegate {
             content = Constants.Policy.openSource
         default:
             content = "정보를 찾을 수 없습니다."
+        }
+        DispatchQueue.main.async {
+            self.view.hideBlockingView()
         }
         
         let detailVC = DetailInfoVC(title: selectedItem, content: content)

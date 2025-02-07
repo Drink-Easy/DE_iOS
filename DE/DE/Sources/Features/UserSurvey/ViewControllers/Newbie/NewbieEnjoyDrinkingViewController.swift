@@ -90,7 +90,7 @@ extension NewbieEnjoyDrinkingViewController: UICollectionViewDelegateFlowLayout,
             selectedItems.removeAll { $0 == selectedItem }
         } else {
             if selectedItems.count >= maxSelectionCount { // 이미 2개 선택
-                Toaster.shared.makeToast("선택할 수 있는 갯수를 초과했습니다.", .short)
+                showToastMessage(message: "선택할 수 있는 갯수를 초과했습니다.", yPosition: view.frame.height * 0.75)
                 return
             }
             // 새 아이템 선택
@@ -115,3 +115,4 @@ extension NewbieEnjoyDrinkingViewController: UICollectionViewDelegateFlowLayout,
         return CGSize(width: cellWidth, height: DynamicPadding.dynamicValue(49.0))
     }
 }
+

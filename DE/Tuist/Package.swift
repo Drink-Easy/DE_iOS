@@ -27,9 +27,13 @@
                        "AMPopTip" : .framework,
                        "FirebaseCore" : .staticLibrary,
                        "FirebaseAnalytics" : .staticLibrary,
-                       "FirebaseAuth" : .staticLibrary,
+                       "FirebaseCrashlytics" : .staticLibrary,
+                       "FirebaseAnalyticsSwift" : .staticLibrary,
+                       "FirebaseAnalyticsWithoutAdIdSupport" : .staticLibrary,
                        "FirebaseMessaging" : .staticLibrary,
-                       "FirebaseFirestore" : .staticLibrary
+                       "FirebaseFirestore" : .staticLibrary,
+                       "FirebaseRemoteConfig" : .staticLibrary,
+                       "FirebaseAppCheck" : .staticLibrary
                       ]
     )
 #endif
@@ -61,7 +65,11 @@ let package = Package(
             dependencies: [
                 .product(name: "FirebaseCore", package: "firebase-ios-sdk"),
                 .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseCrashlytics", package: "firebase-ios-sdk"),
                 .product(name: "GoogleUtilities", package: "firebase-ios-sdk"), // 추가
+                .product(name: "FirebaseRemoteConfig", package: "firebase-ios-sdk"), // 추가
+                .product(name: "FirebaseAnalyticsWithoutAdIdSupport", package: "firebase-ios-sdk"), // 추가
+                .product(name: "FirebaseAuth", package: "firebase-ios-sdk"), // 추가
             ]
         ),
     ]

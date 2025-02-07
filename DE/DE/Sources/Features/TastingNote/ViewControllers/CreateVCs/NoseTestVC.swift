@@ -76,7 +76,7 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackab
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.width.equalTo(scrollView.snp.width)
-            make.bottom.equalTo(middleView.snp.bottom).offset(DynamicPadding.dynamicValue(30.0)) // 콘텐츠 끝까지 확장
+            make.bottom.equalTo(middleView.snp.bottom).offset(DynamicPadding.dynamicValue(30.0))
         }
         
         topView.snp.makeConstraints { make in

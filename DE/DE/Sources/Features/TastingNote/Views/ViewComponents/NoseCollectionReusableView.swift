@@ -46,7 +46,7 @@ class NoseCollectionReusableView: UICollectionReusableView {
         [titleLabel, iconImageView, separatorView].forEach{ self.addSubview($0) }
         
         titleLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(16)
+            make.leading.equalToSuperview()
             make.centerY.equalToSuperview()
         }
         
@@ -58,7 +58,7 @@ class NoseCollectionReusableView: UICollectionReusableView {
         
         separatorView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(12)
-            make.leading.equalTo(titleLabel.snp.leading).offset(-5)
+            make.leading.equalTo(titleLabel.snp.leading)
             make.centerX.equalToSuperview()
             make.height.equalTo(1)
         }

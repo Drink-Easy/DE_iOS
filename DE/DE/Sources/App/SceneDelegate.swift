@@ -7,6 +7,9 @@ import Network
 import KakaoSDKAuth
 import KakaoSDKUser
 
+import FirebaseRemoteConfig
+import Firebase
+
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?

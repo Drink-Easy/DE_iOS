@@ -682,7 +682,21 @@ public struct DynamicPadding {
         UIScreen.main.bounds.height
     }
     
+    private static var superViewWidth: CGFloat {
+        UIScreen.main.bounds.width
+    }
+    
+    public static var widthScaleFactor : CGFloat {
+        get {
+            return DynamicPadding.superViewWidth / 390
+        }
+    }
+    
     public static func dynamicValue(_ baseValue: CGFloat) -> CGFloat {
         return baseValue * (superViewHeight / 844)
+    }
+    
+    public static func dynamicValuebyWidth(_ baseValue: CGFloat) -> CGFloat {
+        return baseValue * (superViewWidth / 390)
     }
 }

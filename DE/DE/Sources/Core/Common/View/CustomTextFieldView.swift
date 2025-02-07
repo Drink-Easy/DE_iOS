@@ -10,7 +10,7 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
     public let textField: PaddedTextField
     let validationLabel: UILabel
     
-    public var inputLimit : Int = 10
+    public var inputLimit : Int = 15
     
     public var text: String? {
         get {
@@ -26,7 +26,7 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
     public init(descriptionLabelText: String,
                 textFieldPlaceholder: String,
                 validationText: String,
-                limitCount : Int = 10) {
+                limitCount : Int = 15) {
         // 초기화
         self.textField = PaddedTextField(padding: UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16))
         self.descriptionLabel = UILabel()
@@ -47,7 +47,7 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
     
     // MARK: - UI 세팅
     private func setupUI(descriptionLabelText: String,
-                         textFieldPlaceholder: String, validationText: String, limitCount : Int = 10) {
+                         textFieldPlaceholder: String, validationText: String, limitCount : Int) {
         
         self.inputLimit = limitCount
         
@@ -129,7 +129,7 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
             return true
         }
         
-        //특정 글자수(기본 10) 이상 입력 받지 않음
+        //특정 글자수(기본 9) 이상 입력 받지 않음
         if updatedText.count > inputLimit {
             return false
         }

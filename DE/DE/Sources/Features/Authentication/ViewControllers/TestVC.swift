@@ -15,7 +15,7 @@ import CoreModule
 
 // SelectLoginTypeVC.keychain.getBool("isFirst")
 
-public class SplashVC : UIViewController, FirebaseTrackable {
+public class TestVC : UIViewController, FirebaseTrackable {
     public var screenName: String = Tracking.VC.splashVC
     
     let networkService = AuthService()
@@ -46,18 +46,11 @@ public class SplashVC : UIViewController, FirebaseTrackable {
             }
         }
         
-//        let isNeedUpdate = UserDefaults.standard.bool(forKey: "isNeedUpdate")
-//        let showStopSign = UserDefaults.standard.bool(forKey: "showStopSign")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            self.checkAuthenticationStatus()
-//            if showStopSign || isNeedUpdate{
-////                self.presentAlertView()
-//                self.checkAuthenticationStatus()
-//            } else {
-//                
-//            }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+            self.setNewTitle()
         }
     }
+    
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -73,23 +66,6 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     func setNewTitle() {
         print("업데이트가 필요합니다!")
         self.view.hideBlockingView()
-    }
-    
-    func presentAlertView() {
-        let title = UserDefaults.standard.string(forKey: "signMessage")
-        let date = UserDefaults.standard.string(forKey: "signDate")
-        
-        let alert = UIAlertController(
-            title: title,
-            message: date,
-            preferredStyle: .alert
-        )
-        
-        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: { _ in
-            UIControl().sendAction(#selector(NSXPCConnection.suspend), to: UIApplication.shared, for: nil)
-        }))
-        
-        present(alert, animated: true, completion: nil)
     }
     
     func checkAuthenticationStatus() {
@@ -132,7 +108,6 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     }
     
     func navigateToMainScreen() {
-        self.view.hideBlockingView()
         let mainTabBarController = MainTabBarController()
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let window = windowScene.windows.first {
@@ -142,7 +117,6 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     }
     
     func navigateToWelcomeScreen() {
-        self.view.hideBlockingView()
         let vc = TermsOfServiceVC()
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let window = windowScene.windows.first {
@@ -153,7 +127,6 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     }
     
     func navigateToOnBoaringScreen() {
-        self.view.hideBlockingView()
         let onboardingVC = OnboardingVC()
         self.navigationController?.pushViewController(onboardingVC, animated: true)
     }

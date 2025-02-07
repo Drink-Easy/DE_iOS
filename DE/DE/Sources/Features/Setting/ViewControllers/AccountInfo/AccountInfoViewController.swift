@@ -139,9 +139,9 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
                 let result = try await authService.logout()
                 if userProfile?.authType == "kakao" {
                     self.kakaoAuthVM.kakaoLogout()
-                    Toaster.shared.makeToast(result)
+                    showToastMessage(message: result, yPosition: view.frame.height * 0.7)
                 } else {
-                    Toaster.shared.makeToast(result)
+                    showToastMessage(message: result, yPosition: view.frame.height * 0.7)
                 }
                 self.clearForLogout()
                 

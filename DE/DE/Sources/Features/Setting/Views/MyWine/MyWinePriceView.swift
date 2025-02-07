@@ -12,7 +12,8 @@ class MyWinePriceView: UIView {
     public let priceTextField = CustomTextFieldView(
         descriptionLabelText: "구매 가격",
         textFieldPlaceholder: "가격을 입력해주세요",
-        validationText: ""
+        validationText: "",
+        limitCount: 9
     ).then { t in
         t.textField.keyboardType = .numberPad
     }

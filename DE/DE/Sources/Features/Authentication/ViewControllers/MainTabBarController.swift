@@ -11,6 +11,12 @@ public class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         
         self.delegate = self
+//        configureTabs()
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         configureTabs()
     }
     
@@ -33,7 +39,7 @@ public class MainTabBarController: UITabBarController {
         nav2.tabBarItem = UITabBarItem(title: "테이스팅 노트", image: note, tag: 1)
         nav3.tabBarItem = UITabBarItem(title: "마이", image: setting, tag: 2)
         
-        tabBar.layer.applyShadow(color: AppColor.black ?? .black, alpha: 0.1, x: 10, y: 0, blur: 20)
+        tabBar.layer.applyShadow(color: .black, alpha: 0.1, x: 10, y: 0, blur: 20)
         
         tabBar.tintColor = .label
         tabBar.backgroundColor = AppColor.white
