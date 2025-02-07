@@ -4,7 +4,8 @@ import UIKit
 import CoreModule
 import Network
 
-class EditNoseViewController: UIViewController {
+class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTrackable {
+    var screenName: String = Tracking.VC.editNoseVC
 
     let wineData = TNWineDataManager.shared
     let tnManager = NewTastingNoteManager.shared
@@ -24,6 +25,7 @@ class EditNoseViewController: UIViewController {
     let navigationBarManager = NavigationBarManager()
     let networkService = TastingNoteService()
     var scentNames: [String] = []
+    private var smallTitleLabel = UILabel()
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -47,6 +49,12 @@ class EditNoseViewController: UIViewController {
         setupCollectionView()
         setupActions()
         setupNavigationBar()
+        setNavBarAppearance(navigationController: self.navigationController)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     public override func viewDidLayoutSubviews() {
@@ -68,7 +76,10 @@ class EditNoseViewController: UIViewController {
         topView.propertyHeader.setName(eng: "Nose", kor: "향")
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
+        scrollView.delegate = self
         [middleView, topView].forEach { contentView.addSubview($0) }
+        
+        topView.header.setTitleLabel(wineData.wineName)
         
         scrollView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
@@ -115,7 +126,7 @@ class EditNoseViewController: UIViewController {
     }
     
     private func setupActions() {
-        middleView.nextButton.addTarget(self, action: #selector(saveVC), for: .touchUpInside)
+        middleView.nextButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
     }
     
     private func setupNavigationBar() {
@@ -124,13 +135,23 @@ class EditNoseViewController: UIViewController {
             target: self,
             action: #selector(prevVC)
         )
+        
+        smallTitleLabel = navigationBarManager.setNReturnTitle(
+            to: navigationItem,
+            title: wineData.wineName,
+            textColor: AppColor.black ?? .black
+        )
+        smallTitleLabel.isHidden = true
     }
     
     @objc func prevVC() {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func saveVC() {
+    @objc func saveButtonTapped() {
+        logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.saveBtnTapped,
+                       fileName: #file)
         let scents = NoseManager.shared.selectedScents
 
         scentNames = scents.map { $0.name }
@@ -150,6 +171,16 @@ class EditNoseViewController: UIViewController {
                 self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             }
+        }
+    }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let largeTitleBottom = topView.header.frame.maxY + 5
+        
+        UIView.animate(withDuration: 0.1) {
+            self.topView.header.alpha = offsetY > largeTitleBottom ? 0 : 1
+            self.smallTitleLabel.isHidden = !(offsetY > largeTitleBottom)
         }
     }
 }
@@ -235,15 +266,10 @@ extension EditNoseViewController : UICollectionViewDelegate, UICollectionViewDat
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 0 { // noseCollectionView
+            logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.noseCellTapped, fileName: #file, cellID: NoseCollectionReusableView.identifier)
             // 데이터 직접 수정
             NoseManager.shared.scentSections[indexPath.section].scents[indexPath.row].isSelected.toggle()
         }
-//        else if collectionView.tag == 1 {
-//            if let cell = collectionView.cellForItem(at: indexPath) as? NoseCollectionViewCell {
-//                guard let name = cell.menuLabel.text else { return }
-//                NoseManager.shared.toggleScentSelection(name)
-//            }
-//        }
         
         collectionView.reloadItems(at: [indexPath])
         Task {

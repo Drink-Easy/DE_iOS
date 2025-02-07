@@ -11,7 +11,9 @@ import CoreModule
 import CoreLocation
 import Network
 
-public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
+public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate, FirebaseTrackable {
+    
+    public var screenName: String = Tracking.VC.GetProfileVC
     
     private let navigationBarManager = NavigationBarManager()
     private let imagePickerManager = ImagePickerManager()
@@ -67,6 +69,11 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
         configureTapGestureForDismissingPicker()
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     // MARK: - 네비게이션 바 설정
     func setupNavigationBar() {
         navigationBarManager.addBackButton(
@@ -81,17 +88,11 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
         imagePickerManager.onImagePicked = { [weak self] image, fileName in
             guard let self = self else { return }
 
-            // ✅ 기본 이미지와 현재 이미지가 동일하면 nil 처리
-            if let placeholderImage = UIImage(named: "profilePlaceholder"),
-               let currentImageData = self.profileView.profileImageView.image?.pngData(),
-               let placeholderImageData = placeholderImage.pngData(),
-               currentImageData == placeholderImageData {
-                self.profileImgFileName = ""
-                self.profileImg = nil
-            } else {
+            DispatchQueue.main.async {
                 self.profileImgFileName = fileName
                 self.profileImg = image
-                self.profileView.profileImageView.image = self.profileImg
+                self.profileView.profileImageView.image = image
+                self.profileView.profileImageView.setNeedsDisplay() // ✅ UI 강제 업데이트
             }
         }
     }
@@ -134,7 +135,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     }
     
     @objc func nextButtonTapped() {
-        // 정보 저장
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         guard let name = self.userName,
               let addr = self.userRegion else { return }
         
@@ -164,11 +165,13 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     // 프로필 이미지 선택
     @objc func selectProfileImage() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.editProfileBtnTapped, fileName: #file)
         imagePickerManager.requestPhotoLibraryPermission(from: self)
     }
     
     //MARK: - 위치 정보 불러오기 로직
     @objc func getMyLocation() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.fetchLocationBtnTapped, fileName: #file)
         self.view.showBlockingView()
         LocationManager.shared.requestLocationPermission { [weak self] address in
             DispatchQueue.main.async {
@@ -181,6 +184,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     //MARK: - 닉네임 중복 검사
     @objc func checkNicknameValidity(){
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.checkDuplicateNicknameBtnTapped, fileName: #file)
         guard let nickname = profileView.nicknameTextField.text, !nickname.isEmpty else {
             print("닉네임이 없습니다")
             return
@@ -199,7 +203,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     @objc func validateNickname(){
         ValidationManager.isNicknameCanUse = false
         ValidationManager.isLengthValid = false
-        ValidationManager.validateNickname(profileView.nicknameTextField)
+        let _ = ValidationManager.validateNickname(profileView.nicknameTextField)
         checkFormValidity()
     }
     
@@ -216,25 +220,5 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
         
         nextButton.isEnabled = isFormValid
         nextButton.isEnabled(isEnabled: isFormValid)
-    }
-    
-    // 캐시 데이터 검증
-    func MakePersonalDataInDB() async {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-        guard let nickName = userNickName else {
-            print("⚠️ 닉네임 설정 안됨.")
-            return
-        }
-        Task {
-            do {
-                try await PersonalDataManager.shared.createPersonalData(for: userId, userName: nickName)
-                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
-            } catch {
-                print(error)
-            }
-        }
     }
 }

@@ -11,7 +11,9 @@ import Network
 
 import SafariServices
 
-class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, FirebaseTrackable {
+    var screenName: String = Tracking.VC.noticeVC
+    
     private let navigationBarManager = NavigationBarManager()
     private let networkService = NoticeService()
     var noticeData : [NoticeResponse] = []
@@ -48,6 +50,11 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     private func setupNavigationBar() {
         navigationBarManager.setTitle(to: navigationItem, title: "공지사항", textColor: AppColor.black!)
         navigationBarManager.addBackButton(
@@ -67,7 +74,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
         
         noticeListView.snp.makeConstraints {
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(36))
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(8))
             $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
@@ -105,6 +112,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.noticeCellTapped, fileName: #file, cellID: NoticeTableViewCell.identifier)
         let data = self.noticeData[indexPath.row]
         
         if let url = URL(string: data.contentUrl) {

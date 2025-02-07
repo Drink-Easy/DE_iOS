@@ -5,7 +5,8 @@ import CoreModule
 
 // 향 선택 뷰컨
 
-public class NoseTestVC: UIViewController {
+public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.tnChooseNoseVC
     
     let wineData = TNWineDataManager.shared
     let tnManager = NewTastingNoteManager.shared
@@ -21,12 +22,21 @@ public class NoseTestVC: UIViewController {
     
     let topView = NoseTopView() // 기본 상단 뷰
     let middleView = NoseBottomView(title: "다음", isEnabled: true) // 중간 뷰
-//    let middleView = OnlyScrollView()
+    private var smallTitleLabel = UILabel()
     let navigationBarManager = NavigationBarManager()
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        NoseManager.shared.collapseAllSections()
+        
+        if !NoseManager.shared.selectedScents.isEmpty {
+            topView.selectedCollectionView.reloadData()
+            topView.updateSelectedCollectionViewHeight()
+        }
+        
         topView.header.setTitleLabel(wineData.wineName)
+        
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -42,13 +52,22 @@ public class NoseTestVC: UIViewController {
         setupCollectionView()
         setupActions()
         setupNavigationBar()
+        setNavBarAppearance(navigationController: self.navigationController)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func setupUI() {
         topView.propertyHeader.setName(eng: "Nose", kor: "향")
         view.addSubview(scrollView)
+        scrollView.delegate = self
         scrollView.addSubview(contentView)
         [middleView, topView].forEach { contentView.addSubview($0) }
+        
+        topView.header.setTitleLabel(wineData.wineName)
         
         scrollView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
@@ -57,7 +76,7 @@ public class NoseTestVC: UIViewController {
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.width.equalTo(scrollView.snp.width)
-            make.bottom.equalTo(middleView.snp.bottom).offset(DynamicPadding.dynamicValue(30.0)) // 콘텐츠 끝까지 확장
+            make.bottom.equalTo(middleView.snp.bottom).offset(DynamicPadding.dynamicValue(30.0))
         }
         
         topView.snp.makeConstraints { make in
@@ -103,6 +122,13 @@ public class NoseTestVC: UIViewController {
             target: self,
             action: #selector(prevVC)
         )
+        
+        smallTitleLabel = navigationBarManager.setNReturnTitle(
+            to: navigationItem,
+            title: wineData.wineName,
+            textColor: AppColor.black ?? .black
+        )
+        smallTitleLabel.isHidden = true
     }
     
     @objc func prevVC() {
@@ -110,12 +136,25 @@ public class NoseTestVC: UIViewController {
     }
     
     @objc func nextVC() {
+        self.logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.nextBtnTapped,
+                       fileName: #file)
         let scents = NoseManager.shared.selectedScents
 
         let scentNames = scents.map { $0.name }
         tnManager.saveNose(scentNames)
         let nextVC = RecordGraphViewController()
         navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let largeTitleBottom = topView.header.frame.maxY + 5
+        
+        UIView.animate(withDuration: 0.1) {
+            self.topView.header.alpha = offsetY > largeTitleBottom ? 0 : 1
+            self.smallTitleLabel.isHidden = !(offsetY > largeTitleBottom)
+        }
     }
 }
 
@@ -199,6 +238,7 @@ extension NoseTestVC : UICollectionViewDelegate, UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 0 { // noseCollectionView
             // 데이터 직접 수정
+            logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.noseCellTapped, fileName: #file, cellID: NoseCollectionReusableView.identifier)
             NoseManager.shared.scentSections[indexPath.section].scents[indexPath.row].isSelected.toggle()
         }
 

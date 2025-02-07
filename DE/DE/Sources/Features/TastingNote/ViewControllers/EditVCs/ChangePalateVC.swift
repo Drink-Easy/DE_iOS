@@ -8,7 +8,8 @@ import CoreModule
 import Network
 
 //// 테이스팅 노트 palate 수정
-public class ChangePalateVC: UIViewController {
+public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.editPalateVC
     
     let navigationBarManager = NavigationBarManager()
     let networkService = TastingNoteService()
@@ -33,6 +34,7 @@ public class ChangePalateVC: UIViewController {
         titleColor: .white,
         isEnabled: true
     )
+    private var smallTitleLabel = UILabel()
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -62,6 +64,11 @@ public class ChangePalateVC: UIViewController {
         initializeSliderValues()
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     private func setupUI() {
         view.backgroundColor = AppColor.bgGray
         view.addSubview(scrollView)
@@ -70,6 +77,9 @@ public class ChangePalateVC: UIViewController {
         contentView.addSubview(recordGraphView)
         contentView.addSubview(nextButton)
         scrollView.addSubview(contentView)
+        
+        scrollView.delegate = self
+        wineNameTitle.header.text = wineData.wineName
         
         scrollView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -109,6 +119,13 @@ public class ChangePalateVC: UIViewController {
             target: self,
             action: #selector(prevVC)
         )
+        
+        smallTitleLabel = navigationBarManager.setNReturnTitle(
+            to: navigationItem,
+            title: wineData.wineName,
+            textColor: AppColor.black ?? .black
+        )
+        smallTitleLabel.isHidden = true
     }
     
     @objc private func prevVC() {
@@ -116,6 +133,9 @@ public class ChangePalateVC: UIViewController {
     }
     
     @objc private func saveButtonTapped() {
+        logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.saveBtnTapped,
+                       fileName: #file)
         callUpdateAPI()
         
         // popViewController
@@ -129,7 +149,7 @@ public class ChangePalateVC: UIViewController {
         Task {
             do {
                 self.view.showBlockingView()
-                try await networkService.patchNote(data: tnData)
+                let _ = try await networkService.patchNote(data: tnData)
                 self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             }
@@ -162,5 +182,15 @@ public class ChangePalateVC: UIViewController {
         sliderValues["Acidity"] = Int(palateInfo[4])
         
         recordGraphView.chartView.viewModel.loadSliderValues(from: sliderValues)
+    }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let largeTitleBottom = wineNameTitle.header.frame.maxY + 5
+        
+        UIView.animate(withDuration: 0.1) {
+            self.wineNameTitle.header.alpha = offsetY > largeTitleBottom ? 0 : 1
+            self.smallTitleLabel.isHidden = !(offsetY > largeTitleBottom)
+        }
     }
 }

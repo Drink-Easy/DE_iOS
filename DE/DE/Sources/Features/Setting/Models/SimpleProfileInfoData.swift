@@ -4,12 +4,10 @@ import Foundation
 
 public struct SimpleProfileInfoData {
     public let name: String
-    public let imageURL: String
-    public let uniqueUserId: Int
+    public let imageURL: String?
     
-    public init(name: String, imageURL: String, uniqueUserId: Int) {
+    public init(name: String, imageURL: String? = nil) {
         self.name = name
         self.imageURL = imageURL
-        self.uniqueUserId = uniqueUserId
     }
 }

@@ -10,7 +10,9 @@ import CoreModule
 import CoreLocation
 import Network
 
-class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate {
+class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate, FirebaseTrackable {
+    var screenName: String = Tracking.VC.profileEditVC
+    
     private let navigationBarManager = NavigationBarManager()
     private let imagePickerManager = ImagePickerManager()
     
@@ -21,6 +23,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     lazy var profileImgFileName: String = ""
     lazy var profileImg: UIImage? = nil
+    lazy var imageDeleted: Bool = false
     
     public var profileImgURL: String?
     public var originUsername: String?
@@ -45,6 +48,11 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         setupImagePicker()
         setupActions()
         configureTapGestureForDismissingPicker()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     // MARK: - 네비게이션 바 설정
@@ -108,9 +116,9 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     private func callPatchAPI() async throws {
         if let profileImg = self.profileImg {
-            let imageResult = try await networkService.postImgAsync(image: profileImg)
-        } else {
-            let imageNil = try await networkService.deleteProfileImage()
+            let _ = try await networkService.postImgAsync(image: profileImg)
+        } else if imageDeleted == true {
+            let _ = try await networkService.deleteProfileImage()
         }
         
         guard let newUserName = self.profileView.nicknameTextField.text,
@@ -119,13 +127,12 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         let data = networkService.makeMemberInfoUpdateRequestDTO(username: newUserName, city: newUserCity)
         
         // 병렬 처리
-        let dataResult = try await networkService.patchUserInfoAsync(body: data)
+        let _ = try await networkService.patchUserInfoAsync(body: data)
         
-        // Call Count 업데이트
-        await self.updateCallCount()
     }
     
     @objc private func editCompleteTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.completeProfileUpdateBtnTapped, fileName: #file)
         Task {
             do {
                 self.view.showBlockingView()
@@ -140,22 +147,6 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         }
     }
     
-    func updateCallCount() async {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-        Task {
-            // patch count + 1
-            do {
-                try await APICallCounterManager.shared.incrementPatch(for: userId, controllerName: .member)
-            } catch {
-                print(error)
-            }
-            
-        }
-    }
-    
     func configureTapGestureForDismissingPicker() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissDatePicker))
         tapGesture.cancelsTouchesInView = false
@@ -167,19 +158,24 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     }
     
     func showProfileActionSheet(in viewController: UIViewController) {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.startChangeProfileImgBtnTapped, fileName: #file)
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
         let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { _ in
             // 삭제 로직 구현
+            self.logButtonClick(screenName: self.screenName, buttonName: Tracking.ButtonEvent.deleteProfileImgBtnTapped, fileName: #file)
             self.profileImg = nil
             self.profileView.profileImageView.image = UIImage(named: "profilePlaceholder")
+            self.imageDeleted = true
         }
         
         let editAction = UIAlertAction(title: "수정", style: .default) { _ in
+            self.logButtonClick(screenName: self.screenName, buttonName: Tracking.ButtonEvent.changeProfileImgBtnTapped, fileName: #file)
             self.imagePickerManager.presentImagePicker(from: self)
         }
         
         let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in
+            self.logButtonClick(screenName: self.screenName, buttonName: Tracking.ButtonEvent.alertCancelBtnTapped, fileName: #file)
             print("❌ 취소 버튼 눌림")
         }
         
@@ -199,6 +195,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     //MARK: - 위치 정보 불러오기 로직
     @objc func getMyLocation() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.fetchLocationBtnTapped, fileName: #file)
         self.view.showBlockingView()
         LocationManager.shared.requestLocationPermission { [weak self] address in
             DispatchQueue.main.async {
@@ -210,7 +207,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     //MARK: - 닉네임 중복 검사
     @objc func checkNicknameValidity(){
-        
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.checkDuplicateNicknameBtnTapped, fileName: #file)
         guard let nickname = profileView.nicknameTextField.text, !nickname.isEmpty, ValidationManager.isLengthValid else {
             print("닉네임이 없습니다")
             return
@@ -230,9 +227,9 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         ValidationManager.isNicknameCanUse = false
         ValidationManager.isLengthValid = false
         if originUsername == profileView.nicknameTextField.text {
-            ValidationManager.noNeedToCheck(profileView.nicknameTextField)
+            let _ = ValidationManager.noNeedToCheck(profileView.nicknameTextField)
         } else {
-            ValidationManager.validateNickname(profileView.nicknameTextField)
+            let _ = ValidationManager.validateNickname(profileView.nicknameTextField)
         }
         checkFormValidity()
     }

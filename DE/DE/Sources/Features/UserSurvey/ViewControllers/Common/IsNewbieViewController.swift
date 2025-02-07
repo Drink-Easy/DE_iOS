@@ -5,7 +5,9 @@ import CoreModule
 import Then
 import SnapKit
 
-public class IsNewbieViewController: UIViewController {
+public class IsNewbieViewController: UIViewController,FirebaseTrackable {
+    
+    public var screenName: String = Tracking.VC.IsNewbieVC
     
     private let navigationBarManager = NavigationBarManager()
     
@@ -30,6 +32,11 @@ public class IsNewbieViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     private lazy var isNewbieView = IsNewbieView().then {
         $0.isNewbieCollectionView.delegate = self
         $0.isNewbieCollectionView.dataSource = self
@@ -38,6 +45,7 @@ public class IsNewbieViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         // 정보 저장
         guard let isnewbie = self.isNewbie else { return }
         UserSurveyManager.shared.setUserType(isNewbie: isnewbie)
@@ -73,6 +81,7 @@ extension IsNewbieViewController: UICollectionViewDelegateFlowLayout, UICollecti
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.emojiSurveyCellTapped, fileName: #file, cellID: IsNewbieCollectionViewCell.identifier)
         for cell in collectionView.visibleCells {
             if let cell = cell as? IsNewbieCollectionViewCell {
                 cell.updateSelectionState(isSelected: false)  // 모든 셀 선택 해제

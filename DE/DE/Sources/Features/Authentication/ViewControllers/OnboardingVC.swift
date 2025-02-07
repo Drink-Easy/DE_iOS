@@ -5,7 +5,8 @@ import CoreModule
 import SnapKit
 import Then
 
-public class OnboardingVC: UIViewController, UICollectionViewDelegate {
+public class OnboardingVC: UIViewController, UICollectionViewDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.onboardingVC
     
     private var startImage: [String] = ["onboarding1", "onboarding2", "onboarding3"]
     private var titleText: [String] = ["쉽게 배우는 와인 지식", "함께 즐기는 와인", "나만의 테이스팅 노트"]
@@ -27,21 +28,26 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        if navigationController == nil {
-            let navigationController = UINavigationController(rootViewController: self)
-            navigationController.modalPresentationStyle = .fullScreen
-            
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-               let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
-                keyWindow.rootViewController?.present(navigationController, animated: true)
-            }
-        }
+//        if navigationController == nil {
+//            let navigationController = UINavigationController(rootViewController: self)
+//            navigationController.modalPresentationStyle = .fullScreen
+//            
+//            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+//               let keyWindow = windowScene.windows.first(where: { $0.isKeyWindow }) {
+//                keyWindow.rootViewController?.present(navigationController, animated: true)
+//            }
+//        }
         
         self.navigationController?.isNavigationBarHidden = true
         
         view.backgroundColor = AppColor.bgGray
         setupUI()
         
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func setupUI() {
@@ -68,6 +74,8 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate {
     }
     
     @objc private func startButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.startBtnTapped, fileName: #file)
+        
         let selectLoginViewController = SelectLoginTypeVC()
         navigationController?.pushViewController(selectLoginViewController, animated: true)
     }

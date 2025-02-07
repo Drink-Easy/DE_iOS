@@ -6,7 +6,8 @@ import Then
 import CoreModule
 import SwiftyToaster
 
-public class NewbieEnjoyDrinkingViewController: UIViewController {
+public class NewbieEnjoyDrinkingViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.NewbieEnjoyDrinkingVC
     
     private let navigationBarManager = NavigationBarManager()
     
@@ -32,6 +33,11 @@ public class NewbieEnjoyDrinkingViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     func setupNavigationBar() {
         navigationBarManager.addBackButton(
             to: navigationItem,
@@ -52,6 +58,7 @@ public class NewbieEnjoyDrinkingViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         UserSurveyManager.shared.calculateDrinkType(selectedItems)
         let vc = NewbieFoodViewController()
         navigationController?.pushViewController(vc, animated: true)
@@ -76,13 +83,14 @@ extension NewbieEnjoyDrinkingViewController: UICollectionViewDelegateFlowLayout,
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.shortSurveyCellTapped, fileName: #file, cellID: SurveyKindCollectionViewCell.identifier)
         let selectedItem = cellData[indexPath.row]
         
         if selectedItems.contains(selectedItem) { //이미 selected된 cell
             selectedItems.removeAll { $0 == selectedItem }
         } else {
             if selectedItems.count >= maxSelectionCount { // 이미 2개 선택
-                Toaster.shared.makeToast("선택할 수 있는 갯수를 초과했습니다.", .short)
+                showToastMessage(message: "선택할 수 있는 갯수를 초과했습니다.", yPosition: view.frame.height * 0.75)
                 return
             }
             // 새 아이템 선택
@@ -101,9 +109,10 @@ extension NewbieEnjoyDrinkingViewController: UICollectionViewDelegateFlowLayout,
         let font = UIFont.ptdMediumFont(ofSize: 16)
         let size = title.size(withAttributes: [.font: font])
         
-        let padding: CGFloat = DynamicPadding.dynamicValue(44.0)
+        let padding: CGFloat = DynamicPadding.dynamicValue(40.0)
         let cellWidth = size.width + padding
         
         return CGSize(width: cellWidth, height: DynamicPadding.dynamicValue(49.0))
     }
 }
+

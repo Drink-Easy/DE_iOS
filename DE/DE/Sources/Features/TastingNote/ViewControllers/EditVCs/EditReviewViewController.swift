@@ -4,7 +4,8 @@ import UIKit
 import CoreModule
 import Network
 
-public class EditReviewViewController: UIViewController {
+public class EditReviewViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.editReviewVC
     
     lazy var rView = OnlyReviewView()
     let navigationBarManager = NavigationBarManager()
@@ -43,6 +44,11 @@ public class EditReviewViewController: UIViewController {
         hideKeyboardWhenTappedAround()
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     private func addExtendedBackgroundView() {
         // 네비게이션 바와 Safe Area를 포함한 배경 뷰 추가
         let backgroundView = UIView()
@@ -66,7 +72,7 @@ public class EditReviewViewController: UIViewController {
     }
     
     func setupActions() {
-        rView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        rView.saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         rView.reviewBody.delegate = self
     }
     
@@ -84,8 +90,10 @@ public class EditReviewViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func nextVC() {
-        // Call post api
+    @objc func saveButtonTapped() {
+        logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.saveBtnTapped,
+                       fileName: #file)
         callUpdateAPI()
     }
     
@@ -96,7 +104,7 @@ public class EditReviewViewController: UIViewController {
         Task {
             do {
                 self.view.showBlockingView()
-                try await networkService.patchNote(data: tnData)
+                let _ = try await networkService.patchNote(data: tnData)
                 self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             }

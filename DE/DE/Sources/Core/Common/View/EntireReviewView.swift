@@ -14,6 +14,7 @@ public class EntireReviewView: UIView {
         $0.scrollDirection = .vertical
         $0.minimumInteritemSpacing = 8
         $0.estimatedItemSize = .zero
+        $0.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: DynamicPadding.dynamicValue(20), right: 0)
     }).then {
         $0.layer.cornerRadius = 10
         $0.register(ReviewCollectionViewCell.self, forCellWithReuseIdentifier: ReviewCollectionViewCell.identifier)

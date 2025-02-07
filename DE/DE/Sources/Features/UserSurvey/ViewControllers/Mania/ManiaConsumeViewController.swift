@@ -5,7 +5,8 @@ import CoreModule
 import SnapKit
 import Then
 
-class ManiaConsumeViewController: UIViewController {
+class ManiaConsumeViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.ManiaConsumeVC
     
     private let navigationBarManager = NavigationBarManager()
     
@@ -28,6 +29,11 @@ class ManiaConsumeViewController: UIViewController {
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupNavigationBar() {
@@ -57,6 +63,7 @@ class ManiaConsumeViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         // 정보 저장
         guard let price = self.selectedItem else {return}
         UserSurveyManager.shared.setPrice(Int(price))

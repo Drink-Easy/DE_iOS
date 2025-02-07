@@ -7,7 +7,9 @@ import SDWebImage
 
 // 색상 변경
 
-public class EditWineColorViewController: UIViewController {
+public class EditWineColorViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.editWineColorVC
+    
     let navigationBarManager = NavigationBarManager()
     
     lazy var colorView = EditColorView().then {
@@ -41,6 +43,11 @@ public class EditWineColorViewController: UIViewController {
         setupNavigationBar()
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     func setupUI() {
         view.backgroundColor = AppColor.bgGray
         colorView.propertyHeader.setName(eng: "Color", kor: "색상")
@@ -57,7 +64,7 @@ public class EditWineColorViewController: UIViewController {
     }
     
     func setupActions() {
-        colorView.nextButton.addTarget(self, action: #selector(saveVC), for: .touchUpInside)
+        colorView.nextButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
     }
     
     private func setupNavigationBar() {
@@ -72,7 +79,11 @@ public class EditWineColorViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func saveVC() {
+    @objc func saveButtonTapped() {
+        logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.saveBtnTapped,
+                       fileName: #file)
+        
         guard let selectedColor = self.selectedColor else {
             print("선택된 색상이 없습니다.")
             return
@@ -89,7 +100,7 @@ public class EditWineColorViewController: UIViewController {
         Task {
             do {
                 self.view.showBlockingView()
-                try await networkService.patchNote(data: tnData)
+                let _ = try await networkService.patchNote(data: tnData)
                 self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             }
@@ -126,6 +137,7 @@ extension EditWineColorViewController: UICollectionViewDelegate, UICollectionVie
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.colorCellTapped, fileName: #file, cellID: "WineColorCollectionViewCell")
         let selectedColorHexCode = colorDatas.colors[indexPath.row].colorHexCode
         selectedColor = selectedColorHexCode
         

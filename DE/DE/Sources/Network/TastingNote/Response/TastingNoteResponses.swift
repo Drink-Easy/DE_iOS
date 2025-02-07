@@ -25,7 +25,13 @@ public struct TastingNoteResponsesDTO : Decodable {
 
 public struct AllTastingNoteResponseDTO : Decodable {
     public let sortCount : TastingNoteSortCountResponse
-    public let notePriviewList : [TastingNotePreviewResponseDTO]
+    public let pageResponse : PageResponseTastingNotePreviewResponse
+}
+
+public struct PageResponseTastingNotePreviewResponse : Decodable {
+    public let content : [TastingNotePreviewResponseDTO]
+    public let pageNumber : Int
+    public let totalPages : Int
 }
 
 public struct TastingNoteSortCountResponse : Decodable {

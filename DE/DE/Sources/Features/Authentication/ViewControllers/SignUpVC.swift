@@ -7,7 +7,9 @@ import SnapKit
 import CoreModule
 import Network
 
-class SignUpVC: UIViewController {
+class SignUpVC: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.signUpVC
+    
     private let signUpView = SignUpView()
     
     private let networkService = AuthService()
@@ -36,6 +38,11 @@ class SignUpVC: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func setupNavigationBar() {
@@ -71,6 +78,7 @@ class SignUpVC: UIViewController {
     
     //MARK: - Button Funcs
     @objc private func signupButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.signupBtnTapped, fileName: #file)
         self.view.showBlockingView()
         let signUpDTO = networkService.makeJoinDTO(username: signUpView.usernameField.text!, password: signUpView.passwordField.text!, rePassword: signUpView.confirmPasswordField.text!)
         

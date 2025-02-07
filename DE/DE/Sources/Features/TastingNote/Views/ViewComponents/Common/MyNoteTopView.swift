@@ -6,14 +6,10 @@ import CoreModule
 import Then
 
 class MyNoteTopView: UIView {
-    public lazy var header = UILabel().then {
-        $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
-        $0.numberOfLines = 0
-    }
+    public lazy var header = WineNameView()
+    
     public lazy var infoView = WineDetailView()
 
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .clear
@@ -24,10 +20,6 @@ class MyNoteTopView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    public func setTitleLabel(_ text: String) {
-        self.header.text = text
     }
 
     private func addComponents() {

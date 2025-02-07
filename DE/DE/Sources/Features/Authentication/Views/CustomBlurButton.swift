@@ -44,10 +44,8 @@ public class CustomBlurButton: UIButton {
         titleColor: UIColor,
         blurStyle: UIBlurEffect.Style
     ) {
-        self.then {
-            $0.setTitle(title, for: .normal)
-            $0.setTitleColor(titleColor, for: .normal)
-            self.blurEffectView.effect = UIBlurEffect(style: blurStyle)
-        }
+        self.setTitle(title, for: .normal)
+        self.setTitleColor(titleColor, for: .normal)
+        self.blurEffectView.effect = UIBlurEffect(style: blurStyle)
     }
 }

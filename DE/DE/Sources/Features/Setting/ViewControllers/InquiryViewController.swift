@@ -9,7 +9,8 @@ import Then
 
 import CoreModule
 
-class InquiryViewController: UIViewController {
+class InquiryViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.inquiryVC
     
     private let navigationBarManager = NavigationBarManager()
     
@@ -66,6 +67,11 @@ class InquiryViewController: UIViewController {
         setupTableView()
         setupNavigationBar()
         setNavBarAppearance(navigationController: self.navigationController)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupNavigationBar() {
@@ -138,6 +144,7 @@ extension InquiryViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension InquiryViewController: UITableViewDelegate, MFMailComposeViewControllerDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.inquiryCellTapped, fileName: #file, cellID: InquiryMenuViewCell.identifier)
         let selectedItem = InquiryMenuItems[indexPath.row].title
         
         switch selectedItem {
@@ -161,10 +168,10 @@ extension InquiryViewController: UITableViewDelegate, MFMailComposeViewControlle
                 
             let bodyString = """
                             - 아래 정보를 작성해 주세요
-                            1. 문의 내용 :
+                            1. 문의 내용 : 
                             
                             
-                            2. 드링키지 메일 계정 :
+                            2. 드링키지 메일 계정 : 
                             (마이페이지 - 계정 정보에서 확인 가능)
                             
                             문의 관련 스크린샷을 첨부하시면 더욱 빠른 처리가 가능합니다
@@ -307,8 +314,8 @@ extension InquiryViewController: UITableViewDelegate, MFMailComposeViewControlle
         }
     }
     
-    private func openKakao() { //TODO: 카카오 채널 링크 연결
-        if let url = URL(string: "https://pf.kakao.com/_xnxkxlK") {
+    @objc func openKakao() {
+        if let url = URL(string: "http://pf.kakao.com/_esxcKn/chat") {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
     }

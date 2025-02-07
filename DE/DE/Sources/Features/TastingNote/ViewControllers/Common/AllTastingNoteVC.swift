@@ -6,9 +6,14 @@ import CoreModule
 import Network
 
 //테이스팅노트 메인 노트 보관함 뷰
-public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureRecognizerDelegate {
+public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureRecognizerDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.allTastingNoteVC
     
     private let networkService = TastingNoteService()
+    var isLoading = false
+    var currentPage = 0
+    var totalPage = 0
+    var currentType = "전체"
     
     private var allTastingNoteList: [TastingNotePreviewResponseDTO] = [] // 전체 데이터
     private var currentTastingNoteList: [TastingNotePreviewResponseDTO] = [] // 필터링된 데이터
@@ -18,7 +23,7 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
     let floatingButton = UIButton(type: .system).then {
         $0.setImage(UIImage(named: "pencil"), for: .normal)
         $0.tintColor = .white
-        $0.backgroundColor = AppColor.purple70
+        $0.backgroundColor = AppColor.purple100
         $0.layer.cornerRadius = DynamicPadding.dynamicValue(25.0)
         
         $0.layer.shadowColor = UIColor.black.cgColor
@@ -38,7 +43,7 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
         Task {
             do {
                 self.view.showBlockingView()
-                try await CallAllTastingNote()
+                try await CallAllTastingNote(sort: "전체", page: 0)
                 self.view.hideBlockingView()
             } catch {
                 print("Error: \(error)")
@@ -63,6 +68,11 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
         
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     // MARK: - Setup Methods
     private func setupUI() {
         tastingNoteView.wineImageStackView.delegate = self
@@ -83,19 +93,32 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
         tastingNoteView.TastingNoteCollectionView.delegate = self
     }
     
-    private func CallAllTastingNote() async throws {
+    private func CallAllTastingNote(sort: String, page: Int) async throws {
         
-        let data = try await networkService.fetchAllNotes(sort: "전체")
-        // Call Count 업데이트
-        //        await self.updateCallCount()
-        allTastingNoteList = data.notePriviewList
-        currentTastingNoteList = data.notePriviewList
+        let response = try await networkService.fetchAllNotes(sort: sort, page: page)
+        
+        if response.pageResponse.pageNumber != 0 { // 맨 처음 요청한게 아니면, 이전 데이터가 이미 저장이 되어있는 상황이면
+            // 리스트 뒤에다가 넣어준다!
+            self.currentPage = response.pageResponse.pageNumber
+            //self.allTastingNoteList.append(contentsOf: response.pageResponse.content)
+            self.currentTastingNoteList.append(contentsOf: response.pageResponse.content)
+        } else {
+            // 토탈 페이지 수 갱신, 현재 페이지 수 설정
+            self.totalPage = response.pageResponse.totalPages
+            self.currentPage = response.pageResponse.pageNumber
+            //self.allTastingNoteList = response.pageResponse.content
+            self.currentTastingNoteList = response.pageResponse.content
+        }
+    
         // 데이터 없을 때 콜렉션 뷰 숨기고 없음 라벨
-        tastingNoteView.noTastingNoteLabel.isHidden = !self.allTastingNoteList.isEmpty
-        tastingNoteView.TastingNoteCollectionView.isHidden = self.allTastingNoteList.isEmpty
+        tastingNoteView.noTastingNoteLabel.isHidden = !self.currentTastingNoteList.isEmpty
+        tastingNoteView.TastingNoteCollectionView.isHidden = self.currentTastingNoteList.isEmpty
         
-        tastingNoteView.wineImageStackView.updateCounts(red: data.sortCount.redCount, white: data.sortCount.whiteCount, sparkling: data.sortCount.sparklingCount, rose: data.sortCount.roseCount, etc: data.sortCount.etcCount)
-        tastingNoteView.TastingNoteCollectionView.reloadData()
+        tastingNoteView.wineImageStackView.updateCounts(red: response.sortCount.redCount, white: response.sortCount.whiteCount, sparkling: response.sortCount.sparklingCount, rose: response.sortCount.roseCount, etc: response.sortCount.etcCount)
+        
+        DispatchQueue.main.async {
+            self.tastingNoteView.TastingNoteCollectionView.reloadData()
+        }
     }
     
     func updateCallCount() async {
@@ -116,33 +139,23 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
     
     //와인 이미지 스택 뷰 필터
     func didTapSortButton(for type: WineSortType) {
-        // 필터링된 데이터 가져오기
-        let filteredList = filterPieces(for: type)
-        currentTastingNoteList = filteredList
-        // 필터링 데이터 없을 때 콜렉션 뷰 숨기고 없음 라벨
-        tastingNoteView.noTastingNoteLabel.isHidden = !self.currentTastingNoteList.isEmpty
-        tastingNoteView.TastingNoteCollectionView.isHidden = self.currentTastingNoteList.isEmpty
-        // 필터링된 데이터를 컬렉션 뷰와 동기화
-        tastingNoteView.TastingNoteCollectionView.reloadData()
-    }
-
-    private func filterPieces(for type: WineSortType) -> [TastingNotePreviewResponseDTO] {
-        // `전체` 타입 선택 시 모든 데이터를 반환
-        guard type != .all else { return allTastingNoteList }
-        
-        // 타입별로 필터링
-        return allTastingNoteList.filter { item in
-            switch type {
-            case .red: return item.sort == "레드"
-            case .white: return item.sort == "화이트"
-            case .sparkling: return item.sort == "스파클링"
-            case .rose: return item.sort == "로제"
-            case .etc:
-                        return item.sort != "레드" &&
-                               item.sort != "화이트" &&
-                               item.sort != "스파클링" &&
-                               item.sort != "로제"
-            default: return false
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.sortingBtnTapped, fileName: #file)
+        currentType = type.rawValue
+        self.view.showBlockingView()
+        Task {
+            do {
+                try await CallAllTastingNote(sort: currentType, page: 0)
+                DispatchQueue.main.async {
+                    // ✅ UI 업데이트는 메인 스레드에서 실행
+                    self.tastingNoteView.noTastingNoteLabel.isHidden = !self.currentTastingNoteList.isEmpty
+                    self.tastingNoteView.TastingNoteCollectionView.isHidden = self.currentTastingNoteList.isEmpty
+                    // ✅ 목록을 맨 위로 스크롤
+                    self.tastingNoteView.TastingNoteCollectionView.setContentOffset(.zero, animated: true)
+                }
+                self.view.hideBlockingView()
+            } catch {
+                print("Error: \(error)")
+                self.view.hideBlockingView()
             }
         }
     }
@@ -161,10 +174,12 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
 }
 
 // MARK: - UICollectionViewDataSource, UICollectionViewDelegate
-extension AllTastingNoteVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension AllTastingNoteVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIScrollViewDelegate {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.tnCellTapped, fileName: #file, cellID: "TastingNoteCollectionViewCell")
         let vc = WineTastingNoteVC()
         vc.noteId = currentTastingNoteList[indexPath.row].noteId
+        vc.wineName = currentTastingNoteList[indexPath.row].wineName
         vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -181,5 +196,37 @@ extension AllTastingNoteVC: UICollectionViewDataSource, UICollectionViewDelegate
         let tnItem = currentTastingNoteList[indexPath.row]
         cell.configure(name: tnItem.wineName, imageURL: tnItem.imageUrl)
         return cell
+    }
+    
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y < 0 {
+            scrollView.contentOffset.y = 0 // 위쪽 바운스 막기
+        }
+        
+        guard scrollView is UICollectionView else { return }
+        
+        let contentOffsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let scrollViewHeight = scrollView.frame.size.height
+        
+        // Check if user has scrolled to the bottom
+        if contentOffsetY > contentHeight - scrollViewHeight { // Trigger when arrive the bottom
+            guard !isLoading, currentPage + 1 < totalPage else { return }
+            isLoading = true
+            self.view.showBlockingView()
+            Task {
+                do {
+                    try await CallAllTastingNote(sort: currentType, page: currentPage + 1)
+                    self.view.hideBlockingView()
+                } catch {
+                    print("Failed to fetch next page: \(error)")
+                    self.view.hideBlockingView()
+                }
+                DispatchQueue.main.async {
+                    self.tastingNoteView.TastingNoteCollectionView.reloadData()
+                }
+                isLoading = false
+            }
+        }
     }
 }

@@ -4,7 +4,8 @@ import UIKit
 import CoreModule
 import Network
 
-public class EditRateViewController: UIViewController {
+public class EditRateViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.editRateVC
     
     lazy var rView = OnlyRateView()
     public var ratingValue: Double = 2.5
@@ -37,6 +38,11 @@ public class EditRateViewController: UIViewController {
         hideKeyboardWhenTappedAround()
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     func setConstraints() {
         view.addSubview(rView)
         rView.snp.makeConstraints { make in
@@ -47,7 +53,7 @@ public class EditRateViewController: UIViewController {
     }
     
     func setupActions() {
-        rView.saveButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        rView.saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         
         rView.ratingButton.didFinishTouchingCosmos = { [weak self] rating in
             guard let self = self else { return }
@@ -66,6 +72,7 @@ public class EditRateViewController: UIViewController {
     }
     
     private func updateRatingLabel(with rating: Double) {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.tnRateBtnTapped, fileName: #file)
         ratingValue = rating
         rView.setRate(rating)
     }
@@ -74,8 +81,10 @@ public class EditRateViewController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func nextVC() {
-        // Call post api
+    @objc func saveButtonTapped() {
+        logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.saveBtnTapped,
+                       fileName: #file)
         callUpdateAPI()
     }
     
@@ -86,7 +95,7 @@ public class EditRateViewController: UIViewController {
         Task {
             do {
                 self.view.showBlockingView()
-                try await networkService.patchNote(data: tnData)
+                let _ = try await networkService.patchNote(data: tnData)
                 self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             }

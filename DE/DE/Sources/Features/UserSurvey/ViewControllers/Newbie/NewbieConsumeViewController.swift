@@ -5,7 +5,8 @@ import CoreModule
 import SnapKit
 import Then
 
-class NewbieConsumeViewController: UIViewController {
+class NewbieConsumeViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.NewbieConsumeVC
     
     private let navigationBarManager = NavigationBarManager()
     
@@ -41,6 +42,11 @@ class NewbieConsumeViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     func setupNavigationBar() {
         navigationBarManager.addBackButton(
             to: navigationItem,
@@ -64,6 +70,7 @@ class NewbieConsumeViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         // 정보 저장
         guard let price = self.selectedItem else {return}
         UserSurveyManager.shared.setPrice(Int(price))

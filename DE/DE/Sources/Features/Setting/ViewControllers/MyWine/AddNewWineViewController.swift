@@ -6,7 +6,8 @@ import Network
 import SnapKit
 import Then
 
-public class AddNewWineViewController : UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
+public class AddNewWineViewController : UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.createMyWineVC
     
     let navigationBarManager = NavigationBarManager()
     var wineResults: [SearchResultModel] = []
@@ -21,6 +22,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         self.navigationController?.isNavigationBarHidden = false
         view.backgroundColor = AppColor.grayBG
         self.view = searchHomeView
+        searchHomeView.noSearchResultLabel.isHidden = true
         self.view.addSubview(indicator)
         searchHomeView.searchResultTableView.dataSource = self
         searchHomeView.searchResultTableView.delegate = self
@@ -31,6 +33,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         searchHomeView.searchBar.delegate = self
 //        searchHomeView.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         setupNavigationBar()
+        hideKeyboardWhenTappedAround()
     }
     
     private lazy var searchHomeView = SearchHomeView(
@@ -46,6 +49,11 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupNavigationBar() {
@@ -68,18 +76,25 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let query = searchHomeView.searchBar.text, query.count >= 2 {
             self.view.showBlockingView()
+            DispatchQueue.main.async {
+                // 강제로 맨위로 올리기
+                self.searchHomeView.searchResultTableView.setContentOffset(.zero, animated: true)
+            }
             Task {
                 do {
                     try await callSearchAPI(query: query, startPage: 0)
+                    searchHomeView.noSearchResultLabel.isHidden = !wineResults.isEmpty
                     self.view.hideBlockingView()
                 } catch {
                     print(error)
                     self.view.hideBlockingView()
                 }
             }
+            textField.resignFirstResponder()
             return true
         } else {
             showCharacterLimitAlert()
+            textField.resignFirstResponder()
         }
         return true
     }
@@ -151,11 +166,11 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.searchWineCellTapped, fileName: #file, cellID: "SearchResultTableViewCell")
         let vc = BuyNewWineDateViewController()
         let selectedWine = wineResults[indexPath.row]
         MyOwnedWineManager.shared.setWineId(selectedWine.wineId)
         MyOwnedWineManager.shared.setWineName(selectedWine.name)
-        vc.hidesBottomBarWhenPushed = true // 탭바 숨겨주기
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -164,7 +179,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
             scrollView.contentOffset.y = 0 // 위쪽 바운스 막기
         }
         
-        guard let tableView = scrollView as? UITableView else { return }
+        guard scrollView is UITableView else { return }
         
         let contentOffsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height

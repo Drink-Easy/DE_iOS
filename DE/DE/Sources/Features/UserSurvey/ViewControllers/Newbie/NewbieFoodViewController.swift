@@ -6,7 +6,8 @@ import Then
 import CoreModule
 import SwiftyToaster
 
-class NewbieFoodViewController: UIViewController {
+class NewbieFoodViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.NewbieFoodVC
     
     private let navigationBarManager = NavigationBarManager()
     
@@ -33,6 +34,11 @@ class NewbieFoodViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     func setupNavigationBar() {
         navigationBarManager.addBackButton(
             to: navigationItem,
@@ -53,6 +59,7 @@ class NewbieFoodViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         UserSurveyManager.shared.calculateFoodType(selectedItems)
         let vc = NewbieConsumeViewController()
         navigationController?.pushViewController(vc, animated: true)
@@ -77,13 +84,14 @@ extension NewbieFoodViewController: UICollectionViewDelegateFlowLayout, UICollec
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.shortSurveyCellTapped, fileName: #file, cellID: SurveyFoodCollectionViewCell.identifier)
         let selectedItem = cellData[indexPath.row]
         
         if selectedItems.contains(selectedItem) { //이미 selected된 cell
             selectedItems.removeAll { $0 == selectedItem }
         } else {
             if selectedItems.count >= maxSelectionCount { // 이미 2개 선택
-                Toaster.shared.makeToast("선택할 수 있는 갯수를 초과했습니다.", .short)
+                showToastMessage(message: "선택할 수 있는 갯수를 초과했습니다.", yPosition: view.frame.height * 0.75)
                 return
             }
             // 새 아이템 선택
