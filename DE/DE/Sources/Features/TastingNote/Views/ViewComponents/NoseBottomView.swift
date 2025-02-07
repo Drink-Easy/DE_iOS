@@ -60,5 +60,6 @@ class NoseBottomView: UIView {
         noseCollectionView.snp.updateConstraints { make in
             make.height.equalTo(530)
         }
+        self.layoutIfNeeded()
     }
 }

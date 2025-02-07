@@ -21,22 +21,23 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackab
     }
     
     let topView = NoseTopView() // 기본 상단 뷰
-    let middleView = NoseBottomView(title: "다음", isEnabled: true) // 중간 뷰
+    let middleView = NoseBottomView(title: "다음", isEnabled: false) // 중간 뷰
     private var smallTitleLabel = UILabel()
     let navigationBarManager = NavigationBarManager()
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        NoseManager.shared.collapseAllSections()
-
-        DispatchQueue.main.async {
+        let selectedCount = NoseManager.shared.scentSections.flatMap { $0.scents }.filter { $0.isSelected }.count
+        middleView.nextButton.isEnabled(isEnabled: selectedCount >= 3)
+        
+        if isMovingToParent {
+            NoseManager.shared.collapseAllSections()
+            
             if !NoseManager.shared.selectedScents.isEmpty {
-                self.topView.selectedCollectionView.reloadData()
-                self.topView.updateSelectedCollectionViewHeight()
+                topView.selectedCollectionView.reloadData()
+                topView.updateSelectedCollectionViewHeight()
             }
-            self.middleView.noseCollectionView.reloadData()
-            self.middleView.setAllFoldNoseCollectionView()
         }
         
         topView.header.setTitleLabel(wineData.wineName)
@@ -113,7 +114,7 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackab
         
         noseCollectionView.register(NoseCollectionViewCell.self, forCellWithReuseIdentifier: NoseCollectionViewCell.identifier)
         noseCollectionView.register(NoseCollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: NoseCollectionReusableView.identifier)
-
+        
     }
     
     private func setupActions() {
@@ -142,9 +143,9 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackab
     @objc func nextVC() {
         self.logButtonClick(screenName: self.screenName,
                             buttonName: Tracking.ButtonEvent.nextBtnTapped,
-                       fileName: #file)
+                            fileName: #file)
         let scents = NoseManager.shared.selectedScents
-
+        
         let scentNames = scents.map { $0.name }
         tnManager.saveNose(scentNames)
         let nextVC = RecordGraphViewController()
@@ -243,9 +244,15 @@ extension NoseTestVC : UICollectionViewDelegate, UICollectionViewDataSource {
         if collectionView.tag == 0 { // noseCollectionView
             // 데이터 직접 수정
             logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.noseCellTapped, fileName: #file, cellID: NoseCollectionReusableView.identifier)
+            
             NoseManager.shared.scentSections[indexPath.section].scents[indexPath.row].isSelected.toggle()
         }
-
+        
+        let selectedCount = NoseManager.shared.scentSections.flatMap { $0.scents }.filter { $0.isSelected }.count
+        
+        // 버튼 활성화 조건 적용
+        middleView.nextButton.isEnabled(isEnabled: selectedCount >= 3)
+        
         // UI 업데이트
         collectionView.reloadItems(at: [indexPath])
         Task {

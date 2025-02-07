@@ -20,7 +20,7 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
     }
     
     let topView = NoseTopView() // 기본 상단 뷰
-    let middleView = NoseBottomView(title: "저장하기", isEnabled: true) // 중간 뷰
+    let middleView = NoseBottomView(title: "저장하기", isEnabled: false) // 중간 뷰
 //    let middleView = OnlyScrollView()
     let navigationBarManager = NavigationBarManager()
     let networkService = TastingNoteService()
@@ -29,6 +29,7 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
         NoseManager.shared.resetSelectedScents()
         NoseManager.shared.collapseAllSections()
         
@@ -39,6 +40,9 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
         
         middleView.noseCollectionView.reloadData()
         topView.selectedCollectionView.reloadData()
+        
+        let selectedCount = NoseManager.shared.scentSections.flatMap { $0.scents }.filter { $0.isSelected }.count
+        middleView.nextButton.isEnabled(isEnabled: selectedCount >= 3)
     }
     
     public override func viewDidLoad() {
@@ -270,6 +274,9 @@ extension EditNoseViewController : UICollectionViewDelegate, UICollectionViewDat
             // 데이터 직접 수정
             NoseManager.shared.scentSections[indexPath.section].scents[indexPath.row].isSelected.toggle()
         }
+        
+        let selectedCount = NoseManager.shared.scentSections.flatMap { $0.scents }.filter { $0.isSelected }.count
+        middleView.nextButton.isEnabled(isEnabled: selectedCount >= 3)
         
         collectionView.reloadItems(at: [indexPath])
         Task {

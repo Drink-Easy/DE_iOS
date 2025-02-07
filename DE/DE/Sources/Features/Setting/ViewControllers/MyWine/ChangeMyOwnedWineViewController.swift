@@ -53,11 +53,6 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
         logScreenView(fileName: #file)
     }
     
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        logScreenView(fileName: #file)
-    }
-    
     func setupActions() {
         configureCalendarSelection()
         editInfoView.nextButton.addTarget(self, action: #selector(completeEdit), for: .touchUpInside)
