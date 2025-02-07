@@ -64,11 +64,12 @@ let project = Project(
                         "NSAllowsArbitraryLoads" : true
                     ],
                     "UILaunchStoryboardName": "",
+                    "NSUserTrackingUsageDescription" : "드링키지에서 사용자 맞춤 정보 제공 및 서비스 개선을 위해 데이터를 사용하려고 합니다.",
                     "NSLocationAlwaysAndWhenInUseUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 항상 혹은 앱 활성 시에만 허용하시겠습니까?",
                     "NSLocationWhenInUseUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 앱 활성 시에만 허용하시겠습니까?",
                     "NSLocationAlwaysUsageDescription" : "드링키지 커뮤니티 사용을 위한 위치 권한을 항상 허용하시겠습니까?",
-                    "NSCameraUsageDescription" : "사용자 프로필 설정을 위한 카메라 사용 권한을 허용하시겠습니까?",
-                    "NSPhotoLibraryUsageDescription" : "사용자 프로필 설정을 위한 갤러리 접근 권한을 허용하시겠습니까?",
+                    "NSCameraUsageDescription" : "사용자 프로필 이미지 설정을 위한 카메라 사용 권한을 허용하시겠습니까?",
+                    "NSPhotoLibraryUsageDescription" : "사용자 프로필 이미지 설정을 위한 갤러리 접근 권한을 허용하시겠습니까?",
                     // 런치 스크린
                     //                    "UILaunchScreen" : [
                     //                        "UIColorName" : "LaunchScreenBGColor",
