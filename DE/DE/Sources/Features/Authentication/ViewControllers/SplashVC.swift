@@ -51,7 +51,8 @@ public class SplashVC : UIViewController, FirebaseTrackable {
         let showStopSign = UserDefaults.standard.bool(forKey: "showStopSign")
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             if showStopSign || isNeedUpdate{
-                self.presentAlertView()
+//                self.presentAlertView()
+                self.checkAuthenticationStatus()
             } else {
                 self.checkAuthenticationStatus()
             }
