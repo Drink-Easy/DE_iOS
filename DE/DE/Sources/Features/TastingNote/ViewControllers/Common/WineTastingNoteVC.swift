@@ -162,9 +162,6 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
                                  buttonName: Tracking.ButtonEvent.alertAcceptBtnTapped,
                            fileName: #file)
             self?.noteDelete()
-            self?.logButtonClick(screenName: self!.screenName,
-                                 buttonName: Tracking.ButtonEvent.alertAcceptBtnTapped,
-                           fileName: #file)
         }))
         
         present(alert, animated: true, completion: nil)
