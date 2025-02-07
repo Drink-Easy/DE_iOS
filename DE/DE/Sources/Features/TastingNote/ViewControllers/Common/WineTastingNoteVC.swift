@@ -158,22 +158,25 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         }))
         
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { [weak self] _ in
-            self?.noteDelete()
             self?.logButtonClick(screenName: self!.screenName,
                                  buttonName: Tracking.ButtonEvent.alertAcceptBtnTapped,
                            fileName: #file)
+            self?.noteDelete()
         }))
         
         present(alert, animated: true, completion: nil)
     }
     
     private func noteDelete(){
+        view.showBlockingView()
         Task {
             do {
                 _ = try await networkService.deleteNote(noteId: noteId)
 //                await self.updateCallCount()
+                view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             } catch {
+                view.hideBlockingView()
                 print(error)
             }
         }
