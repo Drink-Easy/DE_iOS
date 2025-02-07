@@ -135,6 +135,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        requestTrackingPermission()
         logScreenView(fileName: #file)
     }
     

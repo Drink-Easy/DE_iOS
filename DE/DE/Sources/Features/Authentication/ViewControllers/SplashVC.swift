@@ -59,7 +59,6 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        requestTrackingPermission()
         logScreenView(fileName: #file)
         self.view.showBlockingView()
     }
