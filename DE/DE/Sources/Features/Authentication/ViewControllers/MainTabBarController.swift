@@ -11,6 +11,12 @@ public class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         
         self.delegate = self
+//        configureTabs()
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
         configureTabs()
     }
     

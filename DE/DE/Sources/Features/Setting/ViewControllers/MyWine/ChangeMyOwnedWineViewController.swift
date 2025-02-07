@@ -45,6 +45,12 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
         setupUI()
         setupNavigationBar()
         setupActions()
+        hideKeyboardWhenTappedAround()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     public override func viewDidAppear(_ animated: Bool) {

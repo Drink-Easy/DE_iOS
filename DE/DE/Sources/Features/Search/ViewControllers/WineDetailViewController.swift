@@ -295,6 +295,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
             do {
                 let responseData = try await wineNetworkService.fetchWineInfo(wineId: wineId)
                 DispatchQueue.main.async {
+                    self.reviewData.removeAll()
                     if let data = responseData {
                         self.transformResponseData(data)
                     }

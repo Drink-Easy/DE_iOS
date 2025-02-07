@@ -29,10 +29,14 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackab
         super.viewWillAppear(animated)
         
         NoseManager.shared.collapseAllSections()
-        
-        if !NoseManager.shared.selectedScents.isEmpty {
-            topView.selectedCollectionView.reloadData()
-            topView.updateSelectedCollectionViewHeight()
+
+        DispatchQueue.main.async {
+            if !NoseManager.shared.selectedScents.isEmpty {
+                self.topView.selectedCollectionView.reloadData()
+                self.topView.updateSelectedCollectionViewHeight()
+            }
+            self.middleView.noseCollectionView.reloadData()
+            self.middleView.setAllFoldNoseCollectionView()
         }
         
         topView.header.setTitleLabel(wineData.wineName)
@@ -76,7 +80,7 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackab
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.width.equalTo(scrollView.snp.width)
-            make.bottom.equalTo(middleView.snp.bottom).offset(DynamicPadding.dynamicValue(30.0)) // 콘텐츠 끝까지 확장
+            make.bottom.equalTo(middleView.snp.bottom).offset(DynamicPadding.dynamicValue(30.0))
         }
         
         topView.snp.makeConstraints { make in
