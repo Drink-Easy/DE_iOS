@@ -7,7 +7,7 @@ final class ToasterToastMessageView: UIView {
     // MARK: - UI Components
     private let toastLabel = UILabel().then {
         $0.textColor = AppColor.white
-        $0.font = UIFont.ptdBoldFont(ofSize: 10)
+        $0.font = UIFont.ptdRegularFont(ofSize: 12)
         $0.numberOfLines = 1
         $0.textAlignment = .center
     }
@@ -29,8 +29,8 @@ final class ToasterToastMessageView: UIView {
 
 private extension ToasterToastMessageView {
     func setupStyle() {
-        self.backgroundColor = AppColor.gray100
-        self.layer.cornerRadius = 23
+        self.backgroundColor = AppColor.gray90
+        self.layer.cornerRadius = 18
         self.layer.masksToBounds = true
     }
     
@@ -40,7 +40,8 @@ private extension ToasterToastMessageView {
     
     func setupLayout() {
         toastLabel.snp.makeConstraints {
-            $0.centerY.equalToSuperview().inset(16)
+            $0.center.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(16))
         }
     }
 }
@@ -49,8 +50,8 @@ extension ToasterToastMessageView {
     func setupDataBind(message: String) {
         toastLabel.text = message
         toastLabel.sizeToFit() // 텍스트 크기에 맞게 조정
-        let padding: CGFloat = 32 // 좌우 패딩 (양쪽 16씩)
+        let padding: CGFloat = DynamicPadding.dynamicValue(32) // 좌우 패딩 (양쪽 16씩)
         self.frame.size = CGSize(width: toastLabel.frame.width + padding,
-                                 height: 46) // 높이 자동 조절
+                                 height: DynamicPadding.dynamicValue(36))
     }
 }
