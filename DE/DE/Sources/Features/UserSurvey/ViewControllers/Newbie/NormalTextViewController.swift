@@ -60,21 +60,21 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
         firstTextLabel.attributedText = setStyledText(
             mainText: "\(UserSurveyManager.shared.name) ",
             highlightText: "님께\n어울리는 와인은",
-            mainFontSize: 34,
+            mainFontSize: 32,
             highlightFontSize: 26
         )
         
         varietyTextLabel.attributedText = setStyledText(
             mainText: varietyString,
             highlightText: " 품종의",
-            mainFontSize: 34,
+            mainFontSize: 32,
             highlightFontSize: 26
         )
         
         sortTextLabel.attributedText = setStyledText(
             mainText: sortString,
             highlightText: " 와인입니다.",
-            mainFontSize: 34,
+            mainFontSize: 32,
             highlightFontSize: 26
         )
         
@@ -85,6 +85,12 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
         setupNavigationBar()
         
         startAlphaAnimationSequence()
+    }
+    
+    func dynamicFontSize(baseSize: CGFloat) -> CGFloat {
+        let adjustedSize = baseSize * DynamicPadding.widthScaleFactor
+        print(adjustedSize)
+        return min(max(adjustedSize, 26), 34) // 최소 12, 최대 34 제한
     }
     
     func calculateResult() -> (String, String ){
@@ -99,10 +105,10 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
         
         var sortString = ""
         if UserSurveyManager.shared.getIntersectionSortData().count > 2 {
-            let sortData = UserSurveyManager.shared.getIntersectionSortData()
+            let sortData = UserSurveyManager.shared.getIntersectionSortData().sorted { $0.count <= $1.count }
             sortString = formatText(from: sortData)
         } else {
-            let sortData = UserSurveyManager.shared.getUnionSortData()
+            let sortData = UserSurveyManager.shared.getUnionSortData().sorted { $0.count <= $1.count }
             sortString = formatText(from: sortData)
         }
         return (varietyString, sortString)
@@ -169,6 +175,7 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
 
     /// ✨ 텍스트 포맷팅 함수 (3개까지만 표시)
     private func formatText(from data: [String]) -> String {
+//        var innerData = data.sorted{ $0.count <= $1.count }
         return data.prefix(3).joined(separator: ", ")
     }
     
@@ -183,7 +190,7 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
     private func createLabel() -> UILabel {
         return UILabel().then {
             $0.textAlignment = .left
-            $0.numberOfLines = 2
+            $0.numberOfLines = 3
             $0.lineBreakMode = .byWordWrapping
         }
     }
