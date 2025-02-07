@@ -9,7 +9,8 @@ import Then
 
 import CoreModule
 
-class InquiryViewController: UIViewController {
+class InquiryViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.inquiryVC
     
     private let navigationBarManager = NavigationBarManager()
     
@@ -66,6 +67,11 @@ class InquiryViewController: UIViewController {
         setupTableView()
         setupNavigationBar()
         setNavBarAppearance(navigationController: self.navigationController)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupNavigationBar() {
@@ -138,6 +144,7 @@ extension InquiryViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 extension InquiryViewController: UITableViewDelegate, MFMailComposeViewControllerDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.inquiryCellTapped, fileName: #file, cellID: InquiryMenuViewCell.identifier)
         let selectedItem = InquiryMenuItems[indexPath.row].title
         
         switch selectedItem {
@@ -307,8 +314,8 @@ extension InquiryViewController: UITableViewDelegate, MFMailComposeViewControlle
         }
     }
     
-    private func openKakao() { //TODO: 카카오 채널 링크 연결
-        if let url = URL(string: "https://pf.kakao.com/_xnxkxlK") {
+    @objc func openKakao() {
+        if let url = URL(string: "http://pf.kakao.com/_esxcKn/chat") {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
     }

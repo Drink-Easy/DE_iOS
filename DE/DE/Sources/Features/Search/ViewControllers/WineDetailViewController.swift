@@ -5,7 +5,8 @@ import Then
 import CoreModule
 import Network
 
-class WineDetailViewController: UIViewController, UIScrollViewDelegate {
+class WineDetailViewController: UIViewController, UIScrollViewDelegate, FirebaseTrackable {
+    var screenName: String = Tracking.VC.wineDetailVC
     
     let navigationBarManager = NavigationBarManager()
     public var wineId: Int = 0
@@ -31,6 +32,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         addView()
         constraints()
         setupNavigationBar()
+        setNavBarAppearance(navigationController: self.navigationController)
 //        callWineDetailAPI(wineId: self.wineId)
         showLiked()
     }
@@ -52,12 +54,13 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
                 } else {
                     await callLikeAPI(wineId: wineId)
                 }
-                
-                if let previousVC = navigationController?.viewControllers.last as? WishListViewController {
-                    previousVC.shouldSkipWishlistUpdate = true
-                }
             }
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupNavigationBar() {
@@ -97,6 +100,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     }
     
     @objc func tappedLiked(_ sender: UIButton) {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.likeBtnTapped, fileName: #file)
         sender.isSelected.toggle()
         isLiked.toggle()
         updateHeartButton(button: sender)
@@ -143,7 +147,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     //largeTitle -> smallTitle
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-        let largeTitleBottom = largeTitleLabel.frame.maxY + 10
+        let largeTitleBottom = largeTitleLabel.frame.maxY + 5
         
         UIView.animate(withDuration: 0.1) {
             self.largeTitleLabel.alpha = offsetY > largeTitleBottom ? 0 : 1
@@ -165,6 +169,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     
     @objc
     private func goToEntireReview() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.moreBtnTapped, fileName: #file)
         let vc = EntireReviewViewController()
         vc.wineId = self.wineId
         vc.wineName = self.wineName
@@ -290,6 +295,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
             do {
                 let responseData = try await wineNetworkService.fetchWineInfo(wineId: wineId)
                 DispatchQueue.main.async {
+                    self.reviewData.removeAll()
                     if let data = responseData {
                         self.transformResponseData(data)
                     }
@@ -302,43 +308,11 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    func checkCallCounter(up: Bool) async {
-        Task {
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("❌ 유저 ID를 찾을 수 없습니다.")
-                return
-            }
-            
-            do {
-                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .wishlist)
-                print("✅ APICounter 생성 완료")
-            } catch {
-                print(error)
-            }
-            
-            do {
-                if up {
-                    try await APICallCounterManager.shared.incrementPost(for: userId, controllerName: .wishlist)
-                    print("✅ 호출 카운트 증가 완료")
-                } else {
-                    try await APICallCounterManager.shared.incrementDelete(for: userId, controllerName: .wishlist)
-                    print("✅ 호출 카운트 증가 완료")
-                }
-                
-            } catch {
-                print("❌ 호출 카운트 증가 실패: \(error.localizedDescription)")
-            }
-        }
-    }
     
     func callLikeAPI(wineId: Int) async {
         self.view.showBlockingView()
         do {
-            let responseData = try await likedNetworkService.postWishlist(wineId: wineId)
-            print("✅ 좋아요 API 호출 성공: \(responseData)") // 이제 프린트가 확실히 출력됩니다.
-            
-            // 호출 카운터 증가
-            await checkCallCounter(up: true)
+            let _ = try await likedNetworkService.postWishlist(wineId: wineId)
             self.view.hideBlockingView()
         } catch {
             print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")
@@ -349,11 +323,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate {
     func calldeleteLikedAPI(wineId: Int) async {
         self.view.showBlockingView()
         do {
-            let responseData = try await likedNetworkService.deleteWishlist(wineId: wineId)
-            print("✅ 좋아요 API 호출 성공: \(responseData)") // 이제 프린트가 확실히 출력됩니다.
-            
-            // 호출 카운터 감소
-            await checkCallCounter(up: false)
+            let _ = try await likedNetworkService.deleteWishlist(wineId: wineId)
             self.view.hideBlockingView()
         } catch {
             print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")

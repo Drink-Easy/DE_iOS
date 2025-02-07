@@ -6,8 +6,9 @@ import Then
 import CoreModule
 import SwiftyToaster
 
-class ManiaKindViewController: UIViewController {
-
+class ManiaKindViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.ManiaKindVC
+    
     private let navigationBarManager = NavigationBarManager()
     
     let cellData = [DrinkSort.레드.rawValue, DrinkSort.화이트.rawValue, DrinkSort.스파클링.rawValue, DrinkSort.로제.rawValue, DrinkSort.주정강화.rawValue, DrinkSort.내추럴.rawValue]
@@ -32,6 +33,11 @@ class ManiaKindViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     func setupNavigationBar() {
         navigationBarManager.addBackButton(
             to: navigationItem,
@@ -52,6 +58,7 @@ class ManiaKindViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         UserSurveyManager.shared.setSort(selectedItems)
         let vc = ManiaTypeViewController()
         navigationController?.pushViewController(vc, animated: true)
@@ -77,6 +84,7 @@ extension ManiaKindViewController: UICollectionViewDelegateFlowLayout, UICollect
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.shortSurveyCellTapped, fileName: #file, cellID: SurveyKindCollectionViewCell.identifier)
         let selectedItem = cellData[indexPath.row]
         
         if selectedItems.contains(selectedItem) { //이미 selected된 cell

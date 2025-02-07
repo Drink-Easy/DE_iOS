@@ -6,7 +6,9 @@ import Network
 import SnapKit
 import Then
 
-public class SearchWineViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+public class SearchWineViewController : UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.tnSearchWineVC
+    
     let navigationBarManager = NavigationBarManager()
     var wineResults: [SearchResultModel] = []
     let networkService = WineService()
@@ -19,6 +21,7 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
         self.navigationController?.isNavigationBarHidden = false
         view.backgroundColor = AppColor.grayBG
         self.view = searchHomeView
+        searchHomeView.noSearchResultLabel.isHidden = true
         self.view.addSubview(indicator)
         
         searchHomeView.searchResultTableView.dataSource = self
@@ -29,6 +32,11 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
         )
         //searchHomeView.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         setupNavigationBar()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private lazy var searchHomeView = SearchHomeView(
@@ -62,15 +70,18 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
             Task {
                 do {
                     try await callSearchAPI(query: query, startPage: 0)
+                    searchHomeView.noSearchResultLabel.isHidden = !wineResults.isEmpty
                     self.view.hideBlockingView()
                 } catch {
                     print(error)
                     self.view.hideBlockingView()
                 }
             }
+            textField.resignFirstResponder()
             return true
         } else {
             showCharacterLimitAlert()
+            textField.resignFirstResponder()
         }
         return true
     }
@@ -141,9 +152,10 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.searchWineCellTapped, fileName: #file, cellID: "SearchResultTableViewCell")
+        
         let vc = TastedDateViewController()
         TNWineDataManager.shared.updateWineData(wineId: wineResults[indexPath.row].wineId, wineName: wineResults[indexPath.row].name, sort: wineResults[indexPath.row].sort, country: wineResults[indexPath.row].country, region: wineResults[indexPath.row].region, imageUrl: wineResults[indexPath.row].imageUrl, variety: wineResults[indexPath.row].variety)
-        print(wineResults[indexPath.row].wineId)
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -152,7 +164,7 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
             scrollView.contentOffset.y = 0 // 위쪽 바운스 막기
         }
         
-        guard let tableView = scrollView as? UITableView else { return }
+        guard scrollView is UITableView else { return }
         
         let contentOffsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height

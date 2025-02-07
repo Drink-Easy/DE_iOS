@@ -6,7 +6,8 @@ import SnapKit
 import Then
 import Network
 
-public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
+public class SearchHomeViewController : UIViewController, UITextFieldDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.searchHomeVC
     
     let navigationBarManager = NavigationBarManager()
     var wineResults: [SearchResultModel] = []
@@ -15,10 +16,21 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     var currentPage = 0
     var totalPage = 0
     
+    private lazy var searchHomeView = SearchHomeView(
+        titleText: "검색하고 싶은\n와인을 입력해주세요",
+        placeholder: "검색어 입력"
+    ).then {
+        $0.searchResultTableView.dataSource = self
+        $0.searchResultTableView.delegate = self
+        $0.searchBar.delegate = self
+        //$0.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.grayBG
         self.view = searchHomeView
+        searchHomeView.noSearchResultLabel.isHidden = true
         setupNavigationBar()
         self.view.addSubview(indicator)
     }
@@ -33,14 +45,9 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
-    private lazy var searchHomeView = SearchHomeView(
-        titleText: "검색하고 싶은\n와인을 입력해주세요",
-        placeholder: "검색어 입력"
-    ).then {
-        $0.searchResultTableView.dataSource = self
-        $0.searchResultTableView.delegate = self
-        $0.searchBar.delegate = self
-        //$0.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -50,7 +57,7 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let query = searchHomeView.searchBar.text, query.count >= 2 {
-            indicator.startAnimating()
+            self.view.showBlockingView()
             DispatchQueue.main.async {
                 // 강제로 맨위로 올리기
                 self.searchHomeView.searchResultTableView.setContentOffset(.zero, animated: true)
@@ -58,15 +65,18 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate {
             Task {
                 do {
                     try await callSearchAPI(query: query, startPage: 0)
-                    indicator.stopAnimating()
+                    searchHomeView.noSearchResultLabel.isHidden = !wineResults.isEmpty
+                    self.view.hideBlockingView()
                 } catch {
                     print(error)
-                    indicator.stopAnimating()
+                    self.view.hideBlockingView()
                 }
             }
+            textField.resignFirstResponder()
             return true
         } else {
             showCharacterLimitAlert()
+            textField.resignFirstResponder()
         }
         return true
     }
@@ -149,6 +159,7 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
     }
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.searchWineCellTapped, fileName: #file, cellID: "SearchResultTableViewCell")
         let vc = WineDetailViewController()
         vc.wineId = wineResults[indexPath.row].wineId
         vc.wineName = wineResults[indexPath.row].name
@@ -160,7 +171,7 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
             scrollView.contentOffset.y = 0 // 위쪽 바운스 막기
         }
         
-        guard let tableView = scrollView as? UITableView else { return }
+        guard scrollView is UITableView else { return }
         
         let contentOffsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height

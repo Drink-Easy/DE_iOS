@@ -7,7 +7,8 @@ import CoreModule
 import SwiftyToaster
 import Network
 
-class ManiaCountryViewController: UIViewController {
+class ManiaCountryViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.ManiaCountryVC
     
     private let navigationBarManager = NavigationBarManager()
     let networkService = MemberService()
@@ -35,6 +36,11 @@ class ManiaCountryViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+    }
+    
     func setupNavigationBar() {
         navigationBarManager.addBackButton(
             to: navigationItem,
@@ -55,6 +61,7 @@ class ManiaCountryViewController: UIViewController {
     }
     
     @objc func nextButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         UserSurveyManager.shared.setArea(selectedItems)
         callPatchAPI()
     }
@@ -71,7 +78,7 @@ class ManiaCountryViewController: UIViewController {
         Task {
             do {
                 async let imageUpload: String? = {
-                    if let profileImage = userMng.imageData {
+                    if let profileImage = await userMng.imageData {
                         return try await networkService.postImgAsync(image: profileImage)
                     }
                     return nil
@@ -90,31 +97,14 @@ class ManiaCountryViewController: UIViewController {
     }
     
     func processData() {
-        Task {
-            guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-                print("⚠️ userId가 UserDefaults에 없습니다.")
-                return
-            }
+        DispatchQueue.main.async {
+            let homeTabBarController = MainTabBarController()
+            SelectLoginTypeVC.keychain.set(false, forKey: "isFirst")
             
-            do {
-                // 캐시데이터에 기본 유저 정보 저장
-                try await PersonalDataManager.shared.createPersonalData(for: userId, userName: userMng.name, userCity: userMng.region)
-                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .member)
-                try await APICallCounterManager.shared.incrementPatch(for: userId, controllerName: .member)
-            } catch {
-                print(error)
-            }
-            
-            // UI 전환
-            await MainActor.run {
-                let homeTabBarController = MainTabBarController()
-                SelectLoginTypeVC.keychain.set(false, forKey: "isFirst")
-                
-                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                   let window = windowScene.windows.first {
-                    window.rootViewController = homeTabBarController
-                    UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
-                }
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first {
+                window.rootViewController = homeTabBarController
+                UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
             }
         }
     }
@@ -139,6 +129,7 @@ extension ManiaCountryViewController: UICollectionViewDelegateFlowLayout, UIColl
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.shortSurveyCellTapped, fileName: #file, cellID: SurveyKindCollectionViewCell.identifier)
         let selectedItem = cellData[indexPath.row]
         
         if selectedItems.contains(selectedItem) { //이미 selected된 cell

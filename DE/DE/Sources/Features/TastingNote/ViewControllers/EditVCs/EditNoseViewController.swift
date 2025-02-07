@@ -4,7 +4,8 @@ import UIKit
 import CoreModule
 import Network
 
-class EditNoseViewController: UIViewController, UIScrollViewDelegate {
+class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTrackable {
+    var screenName: String = Tracking.VC.editNoseVC
 
     let wineData = TNWineDataManager.shared
     let tnManager = NewTastingNoteManager.shared
@@ -48,6 +49,12 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate {
         setupCollectionView()
         setupActions()
         setupNavigationBar()
+        setNavBarAppearance(navigationController: self.navigationController)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     public override func viewDidLayoutSubviews() {
@@ -119,7 +126,7 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate {
     }
     
     private func setupActions() {
-        middleView.nextButton.addTarget(self, action: #selector(saveVC), for: .touchUpInside)
+        middleView.nextButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
     }
     
     private func setupNavigationBar() {
@@ -141,7 +148,10 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate {
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func saveVC() {
+    @objc func saveButtonTapped() {
+        logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.saveBtnTapped,
+                       fileName: #file)
         let scents = NoseManager.shared.selectedScents
 
         scentNames = scents.map { $0.name }
@@ -166,7 +176,7 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-        let largeTitleBottom = topView.header.frame.maxY + 10
+        let largeTitleBottom = topView.header.frame.maxY + 5
         
         UIView.animate(withDuration: 0.1) {
             self.topView.header.alpha = offsetY > largeTitleBottom ? 0 : 1
@@ -256,15 +266,10 @@ extension EditNoseViewController : UICollectionViewDelegate, UICollectionViewDat
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 0 { // noseCollectionView
+            logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.noseCellTapped, fileName: #file, cellID: NoseCollectionReusableView.identifier)
             // 데이터 직접 수정
             NoseManager.shared.scentSections[indexPath.section].scents[indexPath.row].isSelected.toggle()
         }
-//        else if collectionView.tag == 1 {
-//            if let cell = collectionView.cellForItem(at: indexPath) as? NoseCollectionViewCell {
-//                guard let name = cell.menuLabel.text else { return }
-//                NoseManager.shared.toggleScentSelection(name)
-//            }
-//        }
         
         collectionView.reloadItems(at: [indexPath])
         Task {

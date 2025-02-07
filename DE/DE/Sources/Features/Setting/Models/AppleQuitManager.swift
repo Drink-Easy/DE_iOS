@@ -22,14 +22,6 @@ extension AccountInfoViewController: ASAuthorizationControllerDelegate {
         print("애플 계정 인증 실패: \(error.localizedDescription)")
     }
     
-    public func deleteUserInSwiftData() async {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-        await UserDataManager.shared.deleteUser(userId: userId)
-    }
-    
     public func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
@@ -38,9 +30,7 @@ extension AccountInfoViewController: ASAuthorizationControllerDelegate {
                 let data = memberService.makeDeleteAppleUserRequest(AuthCode: authorizationCode)
                 Task {
                     do {
-                        let result = try await memberService.deleteAppleUser(body: data) // 서버에 삭제 요청
-                        print(result)
-                        await deleteUserInSwiftData() // 성공 후, 로컬 디비에서 유저 삭제
+                        let _ = try await memberService.deleteAppleUser(body: data) // 서버에 삭제 요청
                         DispatchQueue.main.async {
                             self.clearForQuit()
                             self.showSplashScreen()

@@ -12,13 +12,14 @@ class SurveyFoodView: UIView {
     public lazy var surveyFoodCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.minimumLineSpacing = 12
         $0.scrollDirection = .vertical
-        $0.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 0)
+        $0.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: DynamicPadding.dynamicValue(20), right: 0)
     }).then {
         $0.register(SurveyFoodCollectionViewCell.self, forCellWithReuseIdentifier: SurveyFoodCollectionViewCell.identifier)
         $0.backgroundColor = .clear
         $0.isScrollEnabled = true
         $0.showsVerticalScrollIndicator = false
         $0.allowsMultipleSelection = true
+        $0.layer.cornerRadius = 10
     }
     
     public var nextButton: CustomButton
@@ -53,7 +54,7 @@ class SurveyFoodView: UIView {
         surveyFoodCollectionView.snp.makeConstraints {
             $0.top.equalTo(surveyTopView.snp.bottom).offset(DynamicPadding.dynamicValue(40.0))
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(24.0))
-            $0.bottom.equalTo(nextButton.snp.top)
+            $0.bottom.equalTo(nextButton.snp.top).offset(-DynamicPadding.dynamicValue(12))
         }
         
         nextButton.snp.makeConstraints {

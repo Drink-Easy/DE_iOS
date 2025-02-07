@@ -8,7 +8,8 @@ import CoreModule
 
 // 4번 선택 뷰컨 테이스팅 노트 : 팔레트 선택
 
-public class RecordGraphViewController: UIViewController, UIScrollViewDelegate {
+public class RecordGraphViewController: UIViewController, UIScrollViewDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.tnRecordGraphVC
     
     let navigationBarManager = NavigationBarManager()
     let wineData = TNWineDataManager.shared
@@ -54,6 +55,11 @@ public class RecordGraphViewController: UIViewController, UIScrollViewDelegate {
         setupNavigationBar()
         setNavBarAppearance(navigationController: self.navigationController)
         saveSliderValues()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func setupUI() {
@@ -125,7 +131,9 @@ public class RecordGraphViewController: UIViewController, UIScrollViewDelegate {
     }
     
     @objc private func nextVC() {
-        print("nextVC Tapped")
+        self.logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.nextBtnTapped,
+                       fileName: #file)
         saveSliderValues()
         let nextVC = RatingWineViewController()
         navigationController?.pushViewController(nextVC, animated: true)
@@ -156,7 +164,7 @@ public class RecordGraphViewController: UIViewController, UIScrollViewDelegate {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-        let largeTitleBottom = header.frame.maxY + 10
+        let largeTitleBottom = header.frame.maxY + 5
         
         UIView.animate(withDuration: 0.1) {
             self.header.alpha = offsetY > largeTitleBottom ? 0 : 1

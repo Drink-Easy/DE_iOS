@@ -60,7 +60,8 @@ class SelectColorView: UIView {
         }
         
         propertyHeader.snp.makeConstraints { make in
-            make.top.equalTo(infoView.snp.bottom).offset(DynamicPadding.dynamicValue(50))
+            make.top.equalTo(infoView.snp.bottom).offset(DynamicPadding.dynamicValue(20))
+//            make.top.equalTo(infoView.snp.bottom).offset(DynamicPadding.dynamicValue(50)) TODO: 원래 값
             make.leading.trailing.equalToSuperview()
             make.height.greaterThanOrEqualTo(30)
         }

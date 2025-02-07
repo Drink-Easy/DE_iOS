@@ -5,7 +5,8 @@ import CoreModule
 
 // 향 선택 뷰컨
 
-public class NoseTestVC: UIViewController, UIScrollViewDelegate {
+public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.tnChooseNoseVC
     
     let wineData = TNWineDataManager.shared
     let tnManager = NewTastingNoteManager.shared
@@ -26,7 +27,16 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        NoseManager.shared.collapseAllSections()
+        
+        if !NoseManager.shared.selectedScents.isEmpty {
+            topView.selectedCollectionView.reloadData()
+            topView.updateSelectedCollectionViewHeight()
+        }
+        
         topView.header.setTitleLabel(wineData.wineName)
+        
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -42,6 +52,12 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate {
         setupCollectionView()
         setupActions()
         setupNavigationBar()
+        setNavBarAppearance(navigationController: self.navigationController)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func setupUI() {
@@ -60,7 +76,7 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate {
         contentView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
             make.width.equalTo(scrollView.snp.width)
-            make.bottom.equalTo(middleView.snp.bottom).offset(DynamicPadding.dynamicValue(30.0)) // 콘텐츠 끝까지 확장
+            make.bottom.equalTo(middleView.snp.bottom).offset(DynamicPadding.dynamicValue(30.0))
         }
         
         topView.snp.makeConstraints { make in
@@ -120,6 +136,9 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate {
     }
     
     @objc func nextVC() {
+        self.logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.nextBtnTapped,
+                       fileName: #file)
         let scents = NoseManager.shared.selectedScents
 
         let scentNames = scents.map { $0.name }
@@ -130,7 +149,7 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate {
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-        let largeTitleBottom = topView.header.frame.maxY + 10
+        let largeTitleBottom = topView.header.frame.maxY + 5
         
         UIView.animate(withDuration: 0.1) {
             self.topView.header.alpha = offsetY > largeTitleBottom ? 0 : 1
@@ -219,6 +238,7 @@ extension NoseTestVC : UICollectionViewDelegate, UICollectionViewDataSource {
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView.tag == 0 { // noseCollectionView
             // 데이터 직접 수정
+            logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.noseCellTapped, fileName: #file, cellID: NoseCollectionReusableView.identifier)
             NoseManager.shared.scentSections[indexPath.section].scents[indexPath.row].isSelected.toggle()
         }
 

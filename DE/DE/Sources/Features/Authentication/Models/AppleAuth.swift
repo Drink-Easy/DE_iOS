@@ -24,7 +24,7 @@ extension SelectLoginTypeVC: ASAuthorizationControllerDelegate {
     public func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
-            let userIdentifier = appleIDCredential.user
+            let _ = appleIDCredential.user
 
             // 1. identityToken 존재 여부 확인
             if let authCode = appleIDCredential.authorizationCode,
@@ -59,8 +59,6 @@ extension SelectLoginTypeVC: ASAuthorizationControllerDelegate {
             Task {
                 do {
                     let response = try await networkService.appleLogin(data: loginData)
-                    saveUserId(userId: response.id)
-                    await UserDataManager.shared.createUser(userId: response.id)
                     DispatchQueue.main.async {
                         self.goToNextView(response.isFirst)
                     }

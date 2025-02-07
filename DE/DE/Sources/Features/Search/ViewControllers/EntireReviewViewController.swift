@@ -5,7 +5,8 @@ import Then
 import CoreModule
 import Network
 
-class EntireReviewViewController: UIViewController {
+class EntireReviewViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.entireReviewVC
     
     let navigationBarManager = NavigationBarManager()
     var wineId: Int = 0
@@ -47,6 +48,11 @@ class EntireReviewViewController: UIViewController {
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func setupNavigationBar() {
@@ -101,6 +107,7 @@ class EntireReviewViewController: UIViewController {
     }
     
     private func setupDropdownAction() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.dropdownBtnTapped, fileName: #file)
         entireReviewView.dropdownView.onOptionSelected = { [weak self] selectedOption in
             guard let self = self else { return }
             if selectedOption == "최신 순" {
@@ -215,7 +222,7 @@ extension EntireReviewViewController: UICollectionViewDataSource, UICollectionVi
             scrollView.contentOffset.y = 0 // 위쪽 바운스 막기
         }
         
-        guard let collectionView = scrollView as? UICollectionView else { return }
+        guard scrollView is UICollectionView else { return }
         
         let contentOffsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height

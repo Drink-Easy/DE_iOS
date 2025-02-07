@@ -8,7 +8,8 @@ import Then
 import CoreModule
 import Network
 
-public class MyOwnedWineInfoViewController: UIViewController, ChildViewControllerDelegate {
+public class MyOwnedWineInfoViewController: UIViewController, ChildViewControllerDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.myWineDetailVC
     
     let navigationBarManager = NavigationBarManager()
     let networkService = MyWineService()
@@ -23,9 +24,6 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if needUpdate {
-            fetchMyWineAPI()
-        }
         self.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
@@ -43,9 +41,15 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
         wineDetailView.setEditButton(showEditButton: true)
     }
     
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+        fetchMyWineAPI()
+    }
+    
     private func setWineData() {
         guard let currentWine = self.registerWine else { return }
-        header.setTitleLabel(currentWine.wineName)
+        header.header.setTitleLabel(currentWine.wineName)
         header.infoView.image.sd_setImage(with: URL(string: currentWine.wineImageUrl), placeholderImage: UIImage(named: "placeholder"))
         header.infoView.typeContents.text = "\(currentWine.wineCountry), \(currentWine.wineRegion)"
         header.infoView.countryContents.text = currentWine.wineVariety
@@ -110,6 +114,7 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     }
     
     @objc func editButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.editBtnTapped, fileName: #file)
         guard let currentWine = self.registerWine else { return }
         
         let nextVC = ChangeMyOwnedWineViewController()
@@ -132,9 +137,11 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { [weak self] _ in
-            self?.callDeleteAPI()
+            guard let self = self else { return }
+            self.logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.deleteBtnTapped, fileName: #file)
+            self.callDeleteAPI()
             DispatchQueue.main.async {
-                self?.navigationController?.popViewController(animated: true)
+                self.navigationController?.popViewController(animated: true)
             }
         }))
         
@@ -142,16 +149,9 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     }
     
     private func callDeleteAPI() {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-        
         Task {
             do {
                 _ = try await networkService.deleteMyWine(myWineId: registerWine!.myWineId)
-                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
-                try await APICallCounterManager.shared.incrementDelete(for: userId, controllerName: .myWine)
             } catch {
                 print("\(error)")
             }
@@ -159,18 +159,13 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     }
     
     private func fetchMyWineAPI() {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-        
         Task {
             do {
                 let data = try await networkService.fetchMyWine(myWineId: registerWine!.myWineId)
                 DispatchQueue.main.async { [self] in
                     self.registerWine = MyWineViewModel(myWineId: data.myWineId, wineId: data.wineId, wineName: data.wineName, wineSort: data.wineSort, wineCountry: data.wineCountry, wineRegion: data.wineRegion, wineVariety: data.wineVariety, wineImageUrl: data.wineImageUrl, purchaseDate: data.purchaseDate, purchasePrice: data.purchasePrice, period: data.period)
                     self.setWineData()
-                    self.needUpdate = false
+//                    self.needUpdate = false
                 }
             } catch {
                 print("\(error)")

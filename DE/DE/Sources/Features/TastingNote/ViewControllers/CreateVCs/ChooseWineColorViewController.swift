@@ -6,7 +6,9 @@ import Network
 
 // 2번 선택 뷰컨 테이스팅 노트 : 색상 선택
 
-public class ChooseWineColorViewController: UIViewController {
+public class ChooseWineColorViewController: UIViewController, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.tnChooseWineColorVC
+    
     var selectedColor : String?
     let navigationBarManager = NavigationBarManager()
     lazy var colorView = SelectColorView().then {
@@ -34,6 +36,11 @@ public class ChooseWineColorViewController: UIViewController {
         setConstraints()
         setupActions()
         setupNavigationBar()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupUI() {
@@ -68,6 +75,9 @@ public class ChooseWineColorViewController: UIViewController {
     }
     
     @objc func nextVC() {
+        self.logButtonClick(screenName: self.screenName,
+                            buttonName: Tracking.ButtonEvent.nextBtnTapped,
+                       fileName: #file)
         guard let selectedColor = self.selectedColor else {
             print("선택된 색상이 없습니다.")
             return
@@ -108,6 +118,7 @@ extension ChooseWineColorViewController: UICollectionViewDelegate, UICollectionV
     }
     
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.colorCellTapped, fileName: #file, cellID: "WineColorCollectionViewCell")
         let selectedColorHexCode = colorDatas.colors[indexPath.row].colorHexCode
         selectedColor = selectedColorHexCode
         colorView.nextButton.isEnabled(isEnabled: true)

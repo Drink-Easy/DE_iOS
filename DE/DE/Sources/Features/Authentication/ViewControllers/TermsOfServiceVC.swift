@@ -7,7 +7,8 @@ import Then
 
 import CoreModule
 
-public class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegate {
+public class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegate, FirebaseTrackable {
+    public var screenName: String = Tracking.VC.termsOfServiceVC
     
     // MARK: - Properties
     let navigationBarManager = NavigationBarManager()
@@ -87,10 +88,17 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
             UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
         }
         
+        self.view.window?.rootViewController = HomeViewController()
+        
         
         setupNavigationBar()
         setupUI()
         setupConstraints()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     // MARK: - UI Setup
@@ -193,6 +201,7 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
     }
     
     @objc private func startButtonTapped() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.startBtnTapped, fileName: #file)
         let vc = WelcomeVC()
         navigationController?.pushViewController(vc, animated: true)
     }

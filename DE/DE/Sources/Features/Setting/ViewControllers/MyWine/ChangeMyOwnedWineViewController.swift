@@ -8,7 +8,9 @@ import Then
 // 기기대응 완료
 // 보유와인 정보 수정
 
-class ChangeMyOwnedWineViewController: UIViewController {
+class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
+    var screenName: String = Tracking.VC.updateMyWineVC
+    
     weak var delegate: ChildViewControllerDelegate?
     
     let navigationBarManager = NavigationBarManager()
@@ -37,12 +39,18 @@ class ChangeMyOwnedWineViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         setupUI()
         setupNavigationBar()
         setupActions()
+        hideKeyboardWhenTappedAround()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     func setupActions() {
@@ -98,6 +106,7 @@ class ChangeMyOwnedWineViewController: UIViewController {
     }
     
     @objc private func deleteNewWine() {
+
         guard let currentWine = self.registerWine else { return }
         
         let alert = UIAlertController(
@@ -109,9 +118,12 @@ class ChangeMyOwnedWineViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { [weak self] _ in
-            self?.callDeleteAPI()
+            guard let self = self else { return }
+            self.logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.deleteBtnTapped, fileName: #file)
+            
+            self.callDeleteAPI()
             DispatchQueue.main.async {
-                self?.navigationController?.popViewController(animated: true)
+                self.navigationController?.popViewController(animated: true)
             }
         }))
         
@@ -120,6 +132,7 @@ class ChangeMyOwnedWineViewController: UIViewController {
     
     @objc
     private func completeEdit() {
+        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.updatemyWineBtnTapped, fileName: #file)
         guard let wine = registerWine else { return }
         callUpdateAPI(wineId: wine.myWineId, price: checkPrice(), buyDate: checkDate())
         DispatchQueue.main.async {
@@ -145,17 +158,11 @@ class ChangeMyOwnedWineViewController: UIViewController {
     }
     
     private func callDeleteAPI() {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
         guard let wine = registerWine else {return}
         
         Task {
             do {
                 _ = try await networkService.deleteMyWine(myWineId: wine.myWineId)
-                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
-                try await APICallCounterManager.shared.incrementDelete(for: userId, controllerName: .myWine)
             } catch {
                 print("\(error)\n 잠시후 다시 시도해주세요.")
             }
@@ -163,20 +170,12 @@ class ChangeMyOwnedWineViewController: UIViewController {
     }
     
     private func callUpdateAPI(wineId: Int, price: Int?, buyDate: String?) {
-        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-            print("⚠️ userId가 UserDefaults에 없습니다.")
-            return
-        }
-        
         let data = networkService.makeUpdateDTO(buyDate: buyDate, buyPrice: price)
         
         Task {
             do {
                 _ = try await networkService.updateMyWine(myWineId: wineId, data: data)
-                delegate?.didUpdateData(true)
-                
-                try await APICallCounterManager.shared.createAPIControllerCounter(for: userId, controllerName: .myWine)
-                try await APICallCounterManager.shared.incrementPatch(for: userId, controllerName: .myWine)
+//                delegate?.didUpdateData(true)
             } catch {
                 print("\(error)\n 잠시후 다시 시도해주세요.")
             }
