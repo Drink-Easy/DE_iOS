@@ -33,6 +33,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         searchHomeView.searchBar.delegate = self
 //        searchHomeView.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         setupNavigationBar()
+        hideKeyboardWhenTappedAround()
     }
     
     private lazy var searchHomeView = SearchHomeView(

@@ -45,6 +45,7 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
         setupUI()
         setupNavigationBar()
         setupActions()
+        hideKeyboardWhenTappedAround()
     }
     
     public override func viewDidAppear(_ animated: Bool) {
