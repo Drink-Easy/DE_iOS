@@ -5,6 +5,7 @@ import KakaoSDKAuth
 import KakaoSDKCommon
 import FirebaseRemoteConfig
 import Firebase
+import FirebaseCrashlytics
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
