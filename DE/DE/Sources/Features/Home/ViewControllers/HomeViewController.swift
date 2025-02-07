@@ -415,13 +415,13 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             navigationController?.pushViewController(vc, animated: true)
         } else if collectionView.tag == 0 {
             logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.adBannerCellTapped, fileName: #file, cellID: AdCollectionViewCell.identifier)
-            print("\(adImage[indexPath.row].postUrl) : 이 주소로 이동하세요")
+//            print("\(adImage[indexPath.row].postUrl) : 이 주소로 이동하세요")
             
             // 사파리 뷰 띄우는거 주석 해제만 하면 됨! by dyk.
-//            if let url = URL(string: adImage[indexPath.row].postUrl) {
-//                let safariVC = SFSafariViewController(url: url)
-//                present(safariVC, animated: true, completion: nil)
-//            }
+            if let url = URL(string: adImage[indexPath.row].postUrl) {
+                let safariVC = SFSafariViewController(url: url)
+                present(safariVC, animated: true, completion: nil)
+            }
         }
     }
     
