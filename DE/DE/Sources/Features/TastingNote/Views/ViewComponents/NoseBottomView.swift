@@ -54,11 +54,12 @@ class NoseBottomView: UIView {
         }
     }
     
-//    func updateNoseCollectionViewHeight() {
-//        noseCollectionView.layoutIfNeeded() // 레이아웃 업데이트
-//        let contentHeight = noseCollectionView.contentSize.height
-//        noseCollectionView.snp.updateConstraints { make in
-//            make.height.equalTo(contentHeight)
-//        }
-//    }
+    func setAllFoldNoseCollectionView() {
+        noseCollectionView.layoutIfNeeded() // 레이아웃 업데이트
+        let contentHeight = noseCollectionView.contentSize.height
+        noseCollectionView.snp.updateConstraints { make in
+            make.height.equalTo(530)
+        }
+        self.layoutIfNeeded()
+    }
 }
