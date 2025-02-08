@@ -59,7 +59,7 @@ extension NetworkManager {
         
         let decodedResponse = try JSONDecoder().decode(ApiResponse<T>.self, from: response.data)
         guard let result = decodedResponse.result else {
-            throw NetworkError.decodingError
+            throw NetworkError.decodingError(devMessage: "[데이터 변환 실패] DTO 양식 확인 필요", userMessage: "데이터 변환에 실패했습니다.\n관리자에게 문의하세요.")
         }
 
         return result
@@ -77,12 +77,12 @@ extension NetworkManager {
         
         if let httpResponse = response.response {
             let cookieStorage = CookieStorage()
-            cookieStorage.extractTokensAndStore(from: httpResponse) // 🔄 변경된 함수 사용
+            cookieStorage.extractTokensAndStore(from: httpResponse)
         }
         
         let decodedResponse = try JSONDecoder().decode(ApiResponse<T>.self, from: response.data)
         guard let result = decodedResponse.result else {
-            throw NetworkError.decodingError
+            throw NetworkError.decodingError(devMessage: "[데이터 변환 실패] DTO 양식 확인 필요", userMessage: "데이터 변환에 실패했습니다.\n관리자에게 문의하세요.")
         }
 
         return result
@@ -97,37 +97,44 @@ extension NetworkManager {
         do {
             let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: response.data)
             
-            Analytics.logEvent("DRINKIG_NETWORK_ERROR",
-                               parameters: ["statusCode": response.statusCode,
-                                            "serverCode" : errorResponse.code,
-                                            "message" : errorResponse.message
-                                           ])
+            let devMessage = errorResponse.message
+            let serverErrorCode = ServerErrorCode(rawValue: errorResponse.code) ?? .unknown
+            let userMessage = serverErrorCode.errorMessage
             
-            if errorResponse.code == "ACCESS_TOKEN4002" {
-                print("🔄 [토큰 만료] 토큰 재발급 시작...")
-
+            // 개발팀 용 로그
+            Analytics.logEvent("DRINKIG_NETWORK_ERROR", parameters: [
+                "isSuccess" : errorResponse.isSuccess,
+                "statusCode": response.statusCode,
+                "httpStatusCode" : errorResponse.httpStatus,
+                "serverCode": errorResponse.code,
+                "message": devMessage
+            ])
+            
+            // 🔄 [토큰 만료] ACCESS_TOKEN4001 또는 ACCESS_TOKEN4002 → 토큰 재발급 후 API 재시도
+            if serverErrorCode == .accessTokenExpired || serverErrorCode == .accessTokenInvalid {
                 guard retryCount > 0 else {
-                    print("❌ [재시도 한도 초과] API 요청 중단")
-                    throw NetworkError.tokenExpiredError
+                    let addDevMessage = "❌ [재시도 한도 초과] API 요청 중단" + devMessage
+                    throw NetworkError.tokenExpiredError(statusCode: response.statusCode, devMessage: addDevMessage, userMessage: userMessage)
                 }
 
                 do {
                     _ = try await AuthService().reissueTokenAsync()
-                    print("✅ [토큰 재발급 완료] API 재요청 실행...")
-
-                    // ✅ 토큰이 재발급되었으므로 동일 API 요청 다시 실행 (재시도 횟수 감소)
+                    // ✅ 토큰 재발급 후 동일 API 요청 재시도
                     return try await handleResponseRequired(response, decodingType: decodingType, target: target, retryCount: retryCount - 1)
                 } catch {
-                    print("❌ [토큰 재발급 실패] \(error.localizedDescription)")
-                    throw NetworkError.tokenExpiredError
+                    let addDevMessage = "❌ 토큰 재발급 실패" + devMessage
+                    throw NetworkError.tokenExpiredError(statusCode: response.statusCode, devMessage: addDevMessage, userMessage: userMessage)
                 }
-            } else if errorResponse.code == "ACCESS_TOKEN4001" {
-                throw NetworkError.tokenExpiredError
+            }
+
+            if serverErrorCode == .refreshTokenExpired {
+                throw NetworkError.refreshTokenExpiredError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
             }
             
-            throw NetworkError.serverError(statusCode: response.statusCode, message: errorResponse.message)
+            throw NetworkError.serverError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
+            
         } catch {
-            throw NetworkError.serverError(statusCode: response.statusCode, message: "서버 응답 해석 실패")
+            throw NetworkError.serverError(statusCode: response.statusCode, devMessage: "서버 응답 해석 실패", userMessage: "서버 응답이 올바르지 않습니다.")
         }
     }
     
@@ -140,36 +147,43 @@ extension NetworkManager {
         do {
             let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: response.data)
             
-            Analytics.logEvent("DRINKIG_NETWORK_ERROR",
-                               parameters: ["statusCode": response.statusCode,
-                                            "serverCode" : errorResponse.code,
-                                            "message" : errorResponse.message
-                                           ])
+            let devMessage = errorResponse.message
+            let serverErrorCode = ServerErrorCode(rawValue: errorResponse.code) ?? .unknown
+            let userMessage = serverErrorCode.errorMessage
             
-            if errorResponse.code == "ACCESS_TOKEN4002" {
-                print("🔄 [토큰 만료] 토큰 재발급 시작...")
-
+            // 개발팀 용 로그
+            Analytics.logEvent("DRINKIG_NETWORK_ERROR", parameters: [
+                "isSuccess" : errorResponse.isSuccess,
+                "statusCode": response.statusCode,
+                "httpStatusCode" : errorResponse.httpStatus,
+                "serverCode": errorResponse.code,
+                "message": devMessage
+            ])
+            
+            // 🔄 [토큰 만료] ACCESS_TOKEN4001 또는 ACCESS_TOKEN4002 → 토큰 재발급 후 API 재시도
+            if serverErrorCode == .accessTokenExpired || serverErrorCode == .accessTokenInvalid {
                 guard retryCount > 0 else {
-                    print("❌ [재시도 한도 초과] API 요청 중단")
-                    throw NetworkError.tokenExpiredError
+                    let addDevMessage = "❌ [재시도 한도 초과] API 요청 중단" + devMessage
+                    throw NetworkError.tokenExpiredError(statusCode: response.statusCode, devMessage: addDevMessage, userMessage: userMessage)
                 }
 
                 do {
                     _ = try await AuthService().reissueTokenAsync()
-                    print("✅ [토큰 재발급 완료] API 재요청 실행...")
-
-                    return try await handleResponseOptional(response, decodingType: decodingType, target: target, retryCount: retryCount - 1)
+                    // ✅ 토큰 재발급 후 동일 API 요청 재시도
+                    return try await handleResponseRequired(response, decodingType: decodingType, target: target, retryCount: retryCount - 1)
                 } catch {
-                    print("❌ [토큰 재발급 실패] \(error.localizedDescription)")
-                    throw NetworkError.tokenExpiredError
+                    let addDevMessage = "❌ 토큰 재발급 실패" + devMessage
+                    throw NetworkError.tokenExpiredError(statusCode: response.statusCode, devMessage: addDevMessage, userMessage: userMessage)
                 }
-            } else if errorResponse.code == "ACCESS_TOKEN4001" {
-                throw NetworkError.tokenExpiredError
+            }
+
+            if serverErrorCode == .refreshTokenExpired {
+                throw NetworkError.refreshTokenExpiredError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
             }
             
-            throw NetworkError.serverError(statusCode: response.statusCode, message: errorResponse.message)
+            throw NetworkError.serverError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
         } catch {
-            throw NetworkError.serverError(statusCode: response.statusCode, message: "서버 응답 해석 실패")
+            throw NetworkError.serverError(statusCode: response.statusCode, devMessage: "서버 응답 해석 실패", userMessage: "서버 응답이 올바르지 않습니다.")
         }
     }
     

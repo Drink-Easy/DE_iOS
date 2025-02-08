@@ -110,7 +110,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
         vc.popularWineDataList = self.allPopularWineDataList
         navigationController?.pushViewController(vc, animated: true)
     }
-
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
@@ -238,7 +238,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     func toHomeWineModels(_ wines: [HomeWineDTO]) -> [HomeWineModel] {
         return wines.map { toHomeWineModel($0) }
     }
-
+    
     // MARK: - 네트워크 요청 처리
     func setAdBanner() {
         self.view.showBlockingView()
@@ -248,11 +248,25 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                 self.view.hideBlockingView()
             } catch {
                 self.view.hideBlockingView()
-                if case NetworkError.tokenExpiredError = error {
-                    // 스플래시뷰로 보내기
-                } else {
-                    // 토스트메세지 처리?
-                    print("❌ 네트워크 요청 실패: \(error.localizedDescription)")
+                switch error {
+                case NetworkError.tokenExpiredError(_, _, let userMessage):
+                    let action = UIAlertAction(title: "로그인 하러가기", style: .default) { _ in
+                        self.redirectToScreen(to: SelectLoginTypeVC(), withNavigation: true)
+                    }
+                    self.presentAlertView("인증 만료", message: userMessage, alertActions: action)
+                case NetworkError.refreshTokenExpiredError(_, _, let userMessage):
+                    let action = UIAlertAction(title: "로그인 하러가기", style: .default) { _ in
+                        self.redirectToScreen(to: SelectLoginTypeVC(), withNavigation: true)
+                    }
+                    self.presentAlertView("인증 만료", message: userMessage, alertActions: action)
+                case NetworkError.serverError(let statusCode, let devMessage, let userMessage) :
+                    self.showToastMessage(message: userMessage, yPosition: view.center.y)
+                case NetworkError.decodingError(let devMessage, let userMessage):
+                    self.showToastMessage(message: userMessage, yPosition: view.center.y)
+                case NetworkError.networkError(let devMessage, let userMessage):
+                    self.showToastMessage(message: userMessage, yPosition: view.center.y)
+                default:
+                    self.showToastMessage(message: "알 수 없는 오류가 발생하였습니다.", yPosition: view.center.y)
                 }
             }
         }
@@ -260,7 +274,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     
     private func fetchHomeBanner() async throws -> [BannerResponse] {
         let response = try await bannerNetworkService.fetchHomeBanner()
-
+        
         DispatchQueue.main.async {
             self.adImage = response.bannerResponseList.map {
                 HomeBannerModel(imageUrl: $0.imageUrl, postUrl: $0.postUrl)
@@ -400,7 +414,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             
             cell.configure(imageURL: wine.imageUrl, score: "\(wine.vivinoRating)", price: aroundPrice, name: wine.wineName, kind: wine.sort)
             return cell
-
+            
         }
         return UICollectionViewCell()
     }
@@ -415,7 +429,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             navigationController?.pushViewController(vc, animated: true)
         } else if collectionView.tag == 0 {
             logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.adBannerCellTapped, fileName: #file, cellID: AdCollectionViewCell.identifier)
-//            print("\(adImage[indexPath.row].postUrl) : 이 주소로 이동하세요")
+            //            print("\(adImage[indexPath.row].postUrl) : 이 주소로 이동하세요")
             
             // 사파리 뷰 띄우는거 주석 해제만 하면 됨! by dyk.
             if let url = URL(string: adImage[indexPath.row].postUrl) {
