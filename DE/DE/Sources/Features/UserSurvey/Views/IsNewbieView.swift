@@ -55,7 +55,7 @@ class IsNewbieView: UIView {
         isNewbieCollectionView.snp.makeConstraints {
             $0.top.equalTo(title.snp.bottom).offset(DynamicPadding.dynamicValue(40.0))
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(24.0))
-            $0.height.equalTo(DynamicPadding.dynamicValue(220))
+            $0.height.equalTo(300)
         }
         
         startButton.snp.makeConstraints {
