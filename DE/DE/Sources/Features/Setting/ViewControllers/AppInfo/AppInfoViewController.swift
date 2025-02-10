@@ -47,7 +47,7 @@ class AppInfoViewController : UIViewController, FirebaseTrackable {
         setupTableView()
         setupUI()
         setupNavigationBar()
-        requestReview()
+//        requestReview()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -83,12 +83,12 @@ class AppInfoViewController : UIViewController, FirebaseTrackable {
     }
     
     // MARK: - UI Setup
-    func requestReview() {
-            if let scene = UIApplication.shared.connectedScenes
-                .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
-                SKStoreReviewController.requestReview(in: scene)
-            }
-        }
+//    func requestReview() {
+//            if let scene = UIApplication.shared.connectedScenes
+//                .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+//                SKStoreReviewController.requestReview(in: scene)
+//            }
+//        }
 //    func requestReview() {
 //            let appID = 6741486172
 //            let urlString = "https://apps.apple.com/app/id\(appID)?action=write-review"
