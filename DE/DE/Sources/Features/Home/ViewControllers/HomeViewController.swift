@@ -34,6 +34,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     let networkService = WineService()
     let bannerNetworkService = NoticeService()
     let memberService = MemberService()
+    private let errorHandler = NetworkErrorHandler()
     
     // View 세팅
     private lazy var scrollView: UIScrollView = {
@@ -248,26 +249,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                 self.view.hideBlockingView()
             } catch {
                 self.view.hideBlockingView()
-                switch error {
-                case NetworkError.tokenExpiredError(_, _, let userMessage):
-                    let action = UIAlertAction(title: "로그인 하러가기", style: .default) { _ in
-                        self.redirectToScreen(to: SelectLoginTypeVC(), withNavigation: true)
-                    }
-                    self.presentAlertView("인증 만료", message: userMessage, alertActions: action)
-                case NetworkError.refreshTokenExpiredError(_, _, let userMessage):
-                    let action = UIAlertAction(title: "로그인 하러가기", style: .default) { _ in
-                        self.redirectToScreen(to: SelectLoginTypeVC(), withNavigation: true)
-                    }
-                    self.presentAlertView("인증 만료", message: userMessage, alertActions: action)
-                case NetworkError.serverError(let statusCode, let devMessage, let userMessage) :
-                    self.showToastMessage(message: userMessage, yPosition: view.center.y)
-                case NetworkError.decodingError(let devMessage, let userMessage):
-                    self.showToastMessage(message: userMessage, yPosition: view.center.y)
-                case NetworkError.networkError(let devMessage, let userMessage):
-                    self.showToastMessage(message: userMessage, yPosition: view.center.y)
-                default:
-                    self.showToastMessage(message: "알 수 없는 오류가 발생하였습니다.", yPosition: view.center.y)
-                }
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
@@ -292,8 +274,8 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                 updateCollectionView(isRecommend: isRecommend, with: data) // UI update(내부에서 처리)
                 self.view.hideBlockingView()
             } catch {
-                print("❌ 네트워크 요청 실패: \(error)")
                 self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
