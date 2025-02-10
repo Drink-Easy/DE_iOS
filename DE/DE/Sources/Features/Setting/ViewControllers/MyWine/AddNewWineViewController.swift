@@ -13,6 +13,8 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     var wineResults: [SearchResultModel] = []
     var registerWine: MyOwnedWine = MyOwnedWine()
     let networkService = WineService()
+    private let errorHandler = NetworkErrorHandler()
+    
     var isLoading = false
     var currentPage = 0
     var totalPage = 0
@@ -34,6 +36,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
 //        searchHomeView.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         setupNavigationBar()
         hideKeyboardWhenTappedAround()
+        self.view.addSubview(indicator)
     }
     
     private lazy var searchHomeView = SearchHomeView(
@@ -86,8 +89,8 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
                     searchHomeView.noSearchResultLabel.isHidden = !wineResults.isEmpty
                     self.view.hideBlockingView()
                 } catch {
-                    print(error)
                     self.view.hideBlockingView()
+                    errorHandler.handleNetworkError(error, in: self)
                 }
             }
             textField.resignFirstResponder()
@@ -195,8 +198,8 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
                     try await callSearchAPI(query: searchHomeView.searchBar.text ?? "", startPage: currentPage + 1)
                     self.view.hideBlockingView()
                 } catch {
-                    print("Failed to fetch next page: \(error)")
                     self.view.hideBlockingView()
+                    errorHandler.handleNetworkError(error, in: self)
                 }
                 DispatchQueue.main.async {
                     self.searchHomeView.searchResultTableView.reloadData()

@@ -13,6 +13,8 @@ public class WishListViewController: UIViewController, FirebaseTrackable {
     var wineResults: [WishResultModel] = []
     private let networkService = WishlistService()
     
+    private let errorHandler = NetworkErrorHandler()
+    
     private lazy var searchResultTableView = UITableView().then {
         $0.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
@@ -94,7 +96,6 @@ public class WishListViewController: UIViewController, FirebaseTrackable {
     }
     
     func callFetchAPI() {
-        
         Task {
             do {
                 let responseData = try await networkService.fetchWishlist()
@@ -102,8 +103,8 @@ public class WishListViewController: UIViewController, FirebaseTrackable {
                     self.updateUI(data: responseData)
                 }
             } catch {
-                print(error.localizedDescription)
                 view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }

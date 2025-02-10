@@ -13,6 +13,7 @@ public final class SettingMenuViewController : UIViewController, UIGestureRecogn
     public var screenName: String = Tracking.VC.settingMainVC
     
     private let networkService = MemberService()
+    private let errorHandler = NetworkErrorHandler()
     private var profileData: SimpleProfileInfoData?
     
     private var tableView = UITableView()
@@ -97,8 +98,8 @@ public final class SettingMenuViewController : UIViewController, UIGestureRecogn
                 
                 self.setUserData(userName: data.username, imageURL: safeImageUrl)
             } catch {
-                print("❌ 서버에서 사용자 정보를 가져오지 못함: \(error.localizedDescription)")
                 self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
