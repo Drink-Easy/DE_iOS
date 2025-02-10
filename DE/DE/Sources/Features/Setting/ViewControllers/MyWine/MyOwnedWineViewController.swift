@@ -9,6 +9,7 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
     
     private let navigationBarManager = NavigationBarManager()
     private let networkService = MyWineService()
+    private let errorHandler = NetworkErrorHandler()
     var wineResults: [MyWineViewModel] = []
     
     private lazy var myWineTableView = UITableView().then {
@@ -35,6 +36,7 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
         setupNavigationBar()
         addComponents()
         setConstraints()
+        self.view.addSubview(indicator)
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -123,12 +125,12 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
                     }
                 }
                 DispatchQueue.main.async {
-                    self.updateUI()
                     self.view.hideBlockingView()
+                    self.updateUI()
                 }
             } catch {
-                print("❌ API 호출 실패: \(error.localizedDescription)")
                 self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
@@ -180,7 +182,6 @@ extension MyOwnedWineViewController: UITableViewDelegate, UITableViewDataSource 
         }
     }
     
-    // TODO : 와인 삭제 api 점검
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let wineName = wineResults[indexPath.row].wineName
@@ -188,12 +189,13 @@ extension MyOwnedWineViewController: UITableViewDelegate, UITableViewDataSource 
         let deleteAction = UIContextualAction(style: .destructive, title: "") { (action, view, completionHandler) in
             let alert = UIAlertController(title: "이 와인을 삭제하시겠습니까?", message: wineName, preferredStyle: .alert)
             let deleteConfirmAction = UIAlertAction(title: "삭제", style: .destructive) { _ in
+                self.view.showBlockingView()
                 Task {
                     do {
                         // 1️⃣ 서버에서 와인 삭제
                         _ = try await self.networkService.deleteMyWine(myWineId: self.wineResults[indexPath.row].myWineId)
-                        
                         self.wineResults.remove(at: indexPath.row)
+                        self.view.hideBlockingView()
                         tableView.deleteRows(at: [indexPath], with: .fade)
                         completionHandler(true)
                         
@@ -201,7 +203,8 @@ extension MyOwnedWineViewController: UITableViewDelegate, UITableViewDataSource 
                         
                         
                     } catch {
-                        print("❌ 삭제 실패: \(error)")
+                        self.view.hideBlockingView()
+                        self.errorHandler.handleNetworkError(error, in: self)
                         completionHandler(false)
                     }
                 }

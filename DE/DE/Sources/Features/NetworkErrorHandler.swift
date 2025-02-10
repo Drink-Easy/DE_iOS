@@ -2,6 +2,7 @@
 
 import UIKit
 import Network
+import CoreModule
 
 public class NetworkErrorHandler {
     

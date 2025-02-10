@@ -19,6 +19,8 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
     let memberService = MemberService()
     private let authService = AuthService()
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
+    private let errorHandler = NetworkErrorHandler()
+    
     private var userProfile: MemberInfoResponse?
     
     //MARK: - UI Components
@@ -150,8 +152,8 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
                     self.showSplashScreen()
                 }
             } catch {
-                print(error)
                 self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
@@ -199,8 +201,8 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
                     self.showSplashScreen()
                 }
             } catch {
-                print("회원탈퇴 실패: \(error.localizedDescription)")
-                view.hideBlockingView()
+                self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
@@ -272,7 +274,8 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
             self.userProfile = MemberInfoResponse(imageUrl: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
             self.setUserData(imageURL: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
         } catch {
-            print("❌ 서버에서 사용자 정보를 가져오지 못함: \(error.localizedDescription)")
+            self.view.hideBlockingView()
+            errorHandler.handleNetworkError(error, in: self)
         }
     }
     

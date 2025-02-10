@@ -31,6 +31,7 @@ public class BuyNewWineDateViewController: UIViewController, FirebaseTrackable {
         setupUI()
         setupActions()
         setupNavigationBar()
+//        self.view.addSubview(indicator)
     }
     
     public override func viewDidAppear(_ animated: Bool) {
