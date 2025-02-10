@@ -18,6 +18,8 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
     var currentPage = 0
     var totalPage = 0
     var currentType = "최신순"
+    
+    private let errorHandler = NetworkErrorHandler()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -129,8 +131,8 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
                     }
                     self.view.hideBlockingView()
                 } catch {
-                    print(error)
                     self.view.hideBlockingView()
+                    errorHandler.handleNetworkError(error, in: self)
                 }
             }
         }

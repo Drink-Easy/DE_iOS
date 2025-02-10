@@ -16,6 +16,8 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate, F
     var currentPage = 0
     var totalPage = 0
     
+    private let errorHandler = NetworkErrorHandler()
+    
     private lazy var searchHomeView = SearchHomeView(
         titleText: "검색하고 싶은\n와인을 입력해주세요",
         placeholder: "검색어 입력"
@@ -68,8 +70,8 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate, F
                     searchHomeView.noSearchResultLabel.isHidden = !wineResults.isEmpty
                     self.view.hideBlockingView()
                 } catch {
-                    print(error)
                     self.view.hideBlockingView()
+                    errorHandler.handleNetworkError(error, in: self)
                 }
             }
             textField.resignFirstResponder()
