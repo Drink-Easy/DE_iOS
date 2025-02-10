@@ -24,6 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         remoteConfig.configSettings = settings
         
         // remote config를 가져올 수 없을때 사용
+
 //        let defaultValue = ["isNeedUpdate": false]
 //        remoteConfig.setDefaults(defaultValue as [String : NSObject])
         
