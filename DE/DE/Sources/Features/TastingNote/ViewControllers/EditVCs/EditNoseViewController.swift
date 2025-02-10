@@ -9,6 +9,7 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
 
     let wineData = TNWineDataManager.shared
     let tnManager = NewTastingNoteManager.shared
+    private let errorHandler = NetworkErrorHandler()
     
     let scrollView = UIScrollView().then {
         $0.backgroundColor = .clear
@@ -167,13 +168,16 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
         let updateData = networkService.makeUpdateNoteBodyDTO(updateNoseList: tnManager.nose)
         
         let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
+        self.view.showBlockingView()
         Task {
             do {
-                self.view.showBlockingView()
                 _ = try await networkService.patchNote(data: tnData)
                 NoseManager.shared.resetAllScents()
                 self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
+            } catch {
+                self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }

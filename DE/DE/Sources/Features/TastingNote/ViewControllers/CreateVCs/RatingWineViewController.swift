@@ -11,11 +11,13 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
     
     lazy var rView = RatingWineView()
     private var ratingValue: Double = 2.5
-    let navigationBarManager = NavigationBarManager()
     
+    let navigationBarManager = NavigationBarManager()
+
     let networkService = TastingNoteService()
     let tnManager = NewTastingNoteManager.shared
     let wineData = TNWineDataManager.shared
+    private let errorHandler = NetworkErrorHandler()
     
     let textViewPlaceHolder = "추가로 기록하고 싶은 내용을 작성해 보세요!"
     
@@ -127,9 +129,9 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
                 self.view.hideBlockingView()
                 navigationController?.popToRootViewController(animated: true)
             } catch {
-                print("Error: \(error)")
                 self.view.hideBlockingView()
-                // Alert 표시 등 추가
+                print(error)
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }

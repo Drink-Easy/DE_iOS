@@ -13,7 +13,7 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
     
     let navigationBarManager = NavigationBarManager()
     let networkService = TastingNoteService()
-    
+    private let errorHandler = NetworkErrorHandler()
     let tnManager = NewTastingNoteManager.shared
     let wineData = TNWineDataManager.shared
     
@@ -152,6 +152,9 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
                 let _ = try await networkService.patchNote(data: tnData)
                 self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
+            } catch {
+                self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }

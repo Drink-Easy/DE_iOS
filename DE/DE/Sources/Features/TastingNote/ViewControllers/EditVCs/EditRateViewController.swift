@@ -10,7 +10,7 @@ public class EditRateViewController: UIViewController, FirebaseTrackable {
     lazy var rView = OnlyRateView()
     public var ratingValue: Double = 2.5
     let navigationBarManager = NavigationBarManager()
-    
+    private let errorHandler = NetworkErrorHandler()
     let networkService = TastingNoteService()
     let tnManager = NewTastingNoteManager.shared
     let wineData = TNWineDataManager.shared
@@ -92,12 +92,15 @@ public class EditRateViewController: UIViewController, FirebaseTrackable {
         let updateData = networkService.makeUpdateNoteBodyDTO(satisfaction: ratingValue)
         
         let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
+        self.view.showBlockingView()
         Task {
             do {
-                self.view.showBlockingView()
                 let _ = try await networkService.patchNote(data: tnData)
                 self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
+            } catch {
+                self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }

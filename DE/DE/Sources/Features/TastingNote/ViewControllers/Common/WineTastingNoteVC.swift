@@ -14,6 +14,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     public var screenName: String = Tracking.VC.wineTastingNoteVC
     
     let navigationBarManager = NavigationBarManager()
+    private let errorHandler = NetworkErrorHandler()
     
     let networkService = TastingNoteService()
     let tnManager = NewTastingNoteManager.shared
@@ -177,7 +178,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
                 navigationController?.popViewController(animated: true)
             } catch {
                 view.hideBlockingView()
-                print(error)
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
         
@@ -192,8 +193,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
                 self.view.hideBlockingView()
             } catch {
                 self.view.hideBlockingView()
-                print("Error: \(error)")
-                // Alert 표시 등 추가
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }

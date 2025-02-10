@@ -19,6 +19,7 @@ class LoginVC: UIViewController, FirebaseTrackable {
     private let navigationBarManager = NavigationBarManager()
     let validationManager = ValidationManager()
     let networkService = AuthService()
+    private let errorHandler = NetworkErrorHandler()
     
     var isSavingId : Bool = false
     var usernameString : String = ""

@@ -132,7 +132,7 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
                     self.view.hideBlockingView()
                 } catch {
                     self.view.hideBlockingView()
-                    errorHandler.handleNetworkError(error, in: self)
+                    self.errorHandler.handleNetworkError(error, in: self)
                 }
             }
         }
