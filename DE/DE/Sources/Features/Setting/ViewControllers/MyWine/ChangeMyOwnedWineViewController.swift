@@ -17,6 +17,7 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
     lazy var editInfoView = ChangeMyOwnedWineView()
     
     let networkService = MyWineService()
+    private let errorHandler = NetworkErrorHandler()
     
     var registerWine: MyWineViewModel?
     
@@ -46,6 +47,7 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
         setupNavigationBar()
         setupActions()
         hideKeyboardWhenTappedAround()
+        self.view.addSubview(indicator)
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -120,8 +122,8 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
         alert.addAction(UIAlertAction(title: "삭제", style: .destructive, handler: { [weak self] _ in
             guard let self = self else { return }
             self.logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.deleteBtnTapped, fileName: #file)
-            
-            self.callDeleteAPI()
+            self.view.showBlockingView()
+
             DispatchQueue.main.async {
                 self.navigationController?.popViewController(animated: true)
             }
@@ -136,6 +138,7 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
         guard let wine = registerWine else { return }
         callUpdateAPI(wineId: wine.myWineId, price: checkPrice(), buyDate: checkDate())
         DispatchQueue.main.async {
+            self.view.hideBlockingView()
             self.navigationController?.popViewController(animated: true)
         }
     }
@@ -160,24 +163,27 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
     private func callDeleteAPI() {
         guard let wine = registerWine else {return}
         
+        self.view.showBlockingView()
         Task {
             do {
                 _ = try await networkService.deleteMyWine(myWineId: wine.myWineId)
             } catch {
-                print("\(error)\n 잠시후 다시 시도해주세요.")
+                self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
     
     private func callUpdateAPI(wineId: Int, price: Int?, buyDate: String?) {
         let data = networkService.makeUpdateDTO(buyDate: buyDate, buyPrice: price)
-        
+        self.view.showBlockingView()
         Task {
             do {
                 _ = try await networkService.updateMyWine(myWineId: wineId, data: data)
 //                delegate?.didUpdateData(true)
             } catch {
-                print("\(error)\n 잠시후 다시 시도해주세요.")
+                self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }

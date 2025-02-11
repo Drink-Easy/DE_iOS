@@ -11,6 +11,7 @@ import CoreModule
 
 import AuthenticationServices
 import KakaoSDKUser
+import FirebaseAnalytics
 
 
 public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
@@ -37,6 +38,7 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
         setupActions()
+        view.addSubview(indicator)
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -94,6 +96,7 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
         Task {
             do {
                 let response = try await networkService.kakaoLogin(data: kakaoDTO)
+                Analytics.setUserID("\(response.id)") // 유저 아이디
                 DispatchQueue.main.async {
                     self.goToNextView(response.isFirst)
                 }

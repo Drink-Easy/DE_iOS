@@ -14,6 +14,7 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
     let priceNewWineView = MyWinePriceView()
     let navigationBarManager = NavigationBarManager()
     let networkService = MyWineService()
+    private let errorHandler = NetworkErrorHandler()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +23,7 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
         setupNavigationBar()
         setupActions()
         hideKeyboardWhenTappedAround()
+        self.view.addSubview(indicator)
     }
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -74,6 +76,7 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
         }
         MyOwnedWineManager.shared.setPrice(price)
         Task {
+            self.view.showBlockingView()
             await callPostAPI()
         }
         
@@ -103,7 +106,8 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
             // 데이터 전송
             _ = try await networkService.postMyWine(data: data)
         } catch {
-            print("\(error)\n 잠시후 다시 시도해주세요.")
+            self.view.hideBlockingView()
+            self.errorHandler.handleNetworkError(error, in: self)
         }
     }
     

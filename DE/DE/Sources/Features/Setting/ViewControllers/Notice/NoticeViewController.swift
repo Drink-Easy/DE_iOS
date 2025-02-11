@@ -17,6 +17,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private let navigationBarManager = NavigationBarManager()
     private let networkService = NoticeService()
     var noticeData : [NoticeResponse] = []
+    private let errorHandler = NetworkErrorHandler()
     
     private lazy var noticeListView = UITableView().then {
         $0.register(NoticeTableViewCell.self, forCellReuseIdentifier: NoticeTableViewCell.identifier)
@@ -92,6 +93,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 }
             } catch {
                 self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }

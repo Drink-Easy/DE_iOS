@@ -17,6 +17,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     private let imagePickerManager = ImagePickerManager()
     
     private let networkService = MemberService()
+    private let errorHandler = NetworkErrorHandler()
     
     private let profileView = ProfileView()
     private let ValidationManager = NicknameValidateManager()
@@ -140,9 +141,8 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
                 self.view.hideBlockingView()
                 self.navigationController?.popViewController(animated: true)
             } catch {
-                print("Error: \(error)")
                 self.view.hideBlockingView()
-                // Alert 표시 등 추가
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }

@@ -4,6 +4,7 @@ import UIKit
 import AuthenticationServices
 import Network
 import CoreModule
+import FirebaseAnalytics
 
 extension SelectLoginTypeVC: ASAuthorizationControllerDelegate {
     public func startAppleLoginProcess() {
@@ -45,7 +46,6 @@ extension SelectLoginTypeVC: ASAuthorizationControllerDelegate {
                     print("idToken 발급 불가 : 애플 로그인 실패")
                     return
                 }
-                
                 // 4. 기존 토큰으로 DTO 생성
                 self.appleLoginDto = networkService.makeAppleDTO(idToken: cachedTokenString)
             }
@@ -55,11 +55,13 @@ extension SelectLoginTypeVC: ASAuthorizationControllerDelegate {
                 return
             }
             
-            // TODO : 로딩 인디케이터 추가
             Task {
+                self.view.showBlockingView()
                 do {
                     let response = try await networkService.appleLogin(data: loginData)
+                    Analytics.setUserID("\(response.id)") // 유저 아이디
                     DispatchQueue.main.async {
+                        self.view.hideBlockingView()
                         self.goToNextView(response.isFirst)
                     }
                 } catch {

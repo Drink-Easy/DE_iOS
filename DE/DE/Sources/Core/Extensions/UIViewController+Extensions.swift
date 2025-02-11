@@ -28,4 +28,30 @@ extension UIViewController {
             toastView.removeFromSuperview()
         }
     }
+    
+    // 이동하고 싶은 화면, 내비게이션 포함 유무
+    public func redirectToScreen(to targetVC: UIViewController, withNavigation: Bool = true) {
+        DispatchQueue.main.async {
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first {
+                let rootVC = withNavigation ? UINavigationController(rootViewController: targetVC) : targetVC
+                
+                window.rootViewController = rootVC
+                UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
+            }
+        }
+    }
+    
+    // 얼럿뷰 띄우기 - 네트워크 에러처리
+    public func presentAlertView(_ title : String, message : String, alertActions : UIAlertAction) {
+        let alert = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: .alert
+        )
+        // 얼럿 메뉴 추가
+        alert.addAction(alertActions)
+        
+        present(alert, animated: true, completion: nil)
+    }
 }

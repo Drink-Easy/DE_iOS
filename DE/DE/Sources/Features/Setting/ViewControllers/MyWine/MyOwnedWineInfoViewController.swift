@@ -13,6 +13,7 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     
     let navigationBarManager = NavigationBarManager()
     let networkService = MyWineService()
+    private let errorHandler = NetworkErrorHandler()
     
     //MARK: UI Elements
     private lazy var header = MyNoteTopView()
@@ -39,6 +40,7 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
         setupNavigationBar()
         setWineData()
         wineDetailView.setEditButton(showEditButton: true)
+        self.view.addSubview(indicator)
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -140,7 +142,9 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
             guard let self = self else { return }
             self.logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.deleteBtnTapped, fileName: #file)
             self.callDeleteAPI()
+            
             DispatchQueue.main.async {
+                self.view.hideBlockingView()
                 self.navigationController?.popViewController(animated: true)
             }
         }))
@@ -149,16 +153,20 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     }
     
     private func callDeleteAPI() {
+        self.view.showBlockingView()
         Task {
             do {
                 _ = try await networkService.deleteMyWine(myWineId: registerWine!.myWineId)
+                self.view.hideBlockingView()
             } catch {
-                print("\(error)")
+                self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
     
     private func fetchMyWineAPI() {
+        self.view.showBlockingView()
         Task {
             do {
                 let data = try await networkService.fetchMyWine(myWineId: registerWine!.myWineId)
@@ -166,9 +174,11 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
                     self.registerWine = MyWineViewModel(myWineId: data.myWineId, wineId: data.wineId, wineName: data.wineName, wineSort: data.wineSort, wineCountry: data.wineCountry, wineRegion: data.wineRegion, wineVariety: data.wineVariety, wineImageUrl: data.wineImageUrl, purchaseDate: data.purchaseDate, purchasePrice: data.purchasePrice, period: data.period)
                     self.setWineData()
 //                    self.needUpdate = false
+                    self.view.hideBlockingView()
                 }
             } catch {
-                print("\(error)")
+                self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }

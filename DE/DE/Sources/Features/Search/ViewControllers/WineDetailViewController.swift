@@ -21,6 +21,8 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     var originalIsLiked: Bool = false
     let wineNetworkService = WineService()
     let likedNetworkService = WishlistService()
+    private let errorHandler = NetworkErrorHandler()
+    
     var reviewData: [WineReviewModel] = []
     private var expandedCells: [Bool] = []
 
@@ -303,7 +305,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
                 }
             } catch {
                 self.view.hideBlockingView()
-                print(error.localizedDescription)
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
@@ -315,8 +317,8 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
             let _ = try await likedNetworkService.postWishlist(wineId: wineId)
             self.view.hideBlockingView()
         } catch {
-            print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")
             self.view.hideBlockingView()
+            errorHandler.handleNetworkError(error, in: self)
         }
     }
     
@@ -326,8 +328,8 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
             let _ = try await likedNetworkService.deleteWishlist(wineId: wineId)
             self.view.hideBlockingView()
         } catch {
-            print("❌ 좋아요 API 호출 실패: \(error.localizedDescription)")
             self.view.hideBlockingView()
+            errorHandler.handleNetworkError(error, in: self)
         }
     }
     

@@ -13,8 +13,6 @@ class AppInfoViewController : UIViewController, FirebaseTrackable {
     var screenName: String = Tracking.VC.appInfoVC
     
     let navigationBarManager = NavigationBarManager()
-    
-    private let networkService = MemberService()
     private var memberData: MemberInfoResponse?
     
     private lazy var appVersion: String = {

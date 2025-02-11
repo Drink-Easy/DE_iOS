@@ -34,6 +34,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     let networkService = WineService()
     let bannerNetworkService = NoticeService()
     let memberService = MemberService()
+    private let errorHandler = NetworkErrorHandler()
     
     // View 세팅
     private lazy var scrollView: UIScrollView = {
@@ -110,7 +111,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
         vc.popularWineDataList = self.allPopularWineDataList
         navigationController?.pushViewController(vc, animated: true)
     }
-
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.bgGray
@@ -238,7 +239,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     func toHomeWineModels(_ wines: [HomeWineDTO]) -> [HomeWineModel] {
         return wines.map { toHomeWineModel($0) }
     }
-
+    
     // MARK: - 네트워크 요청 처리
     func setAdBanner() {
         self.view.showBlockingView()
@@ -248,19 +249,14 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                 self.view.hideBlockingView()
             } catch {
                 self.view.hideBlockingView()
-                if case NetworkError.tokenExpiredError = error {
-                    // 스플래시뷰로 보내기
-                } else {
-                    // 토스트메세지 처리?
-                    print("❌ 네트워크 요청 실패: \(error.localizedDescription)")
-                }
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
     
     private func fetchHomeBanner() async throws -> [BannerResponse] {
         let response = try await bannerNetworkService.fetchHomeBanner()
-
+        
         DispatchQueue.main.async {
             self.adImage = response.bannerResponseList.map {
                 HomeBannerModel(imageUrl: $0.imageUrl, postUrl: $0.postUrl)
@@ -278,8 +274,8 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                 updateCollectionView(isRecommend: isRecommend, with: data) // UI update(내부에서 처리)
                 self.view.hideBlockingView()
             } catch {
-                print("❌ 네트워크 요청 실패: \(error)")
                 self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
@@ -400,7 +396,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             
             cell.configure(imageURL: wine.imageUrl, score: "\(wine.vivinoRating)", price: aroundPrice, name: wine.wineName, kind: wine.sort)
             return cell
-
+            
         }
         return UICollectionViewCell()
     }
@@ -415,7 +411,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             navigationController?.pushViewController(vc, animated: true)
         } else if collectionView.tag == 0 {
             logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.adBannerCellTapped, fileName: #file, cellID: AdCollectionViewCell.identifier)
-//            print("\(adImage[indexPath.row].postUrl) : 이 주소로 이동하세요")
+            //            print("\(adImage[indexPath.row].postUrl) : 이 주소로 이동하세요")
             
             // 사파리 뷰 띄우는거 주석 해제만 하면 됨! by dyk.
             if let url = URL(string: adImage[indexPath.row].postUrl) {
