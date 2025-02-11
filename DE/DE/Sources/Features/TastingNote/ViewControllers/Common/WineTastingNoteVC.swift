@@ -21,7 +21,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     let wineData = TNWineDataManager.shared
     
     public var noteId: Int = 0
-    var wineName: String = "Default Name"
+    var wineName: String = ""
     var wineInfo: TastingNoteResponsesDTO?
     
     //MARK: UI Elements
@@ -49,13 +49,11 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         }
     }
     
-    
     //MARK: Initializers
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         self.view.addSubview(indicator)
-        self.callFetchApi()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -74,6 +72,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        self.callFetchApi()
         logScreenView(fileName: #file)
     }
     
@@ -122,7 +121,6 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         self.logButtonClick(screenName: self.screenName, buttonName: Tracking.ButtonEvent.editBtnTapped, fileName: #file) //TODO: 수정
             var viewController: UIViewController
             switch type {
-                
             case .palateGraph:
                 viewController = ChangePalateVC()
             case .color:
@@ -173,7 +171,6 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         Task {
             do {
                 _ = try await networkService.deleteNote(noteId: noteId)
-//                await self.updateCallCount()
                 view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
             } catch {
@@ -189,7 +186,9 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         Task {
             do {
                 try await CallTastingNote()
-                setWineData()
+                DispatchQueue.main.async {
+                    self.setWineData()
+                }
                 self.view.hideBlockingView()
             } catch {
                 self.view.hideBlockingView()
@@ -197,27 +196,10 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
             }
         }
     }
-    func updateCallCount() async {
-        //        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-        //            print("⚠️ userId가 UserDefaults에 없습니다.")
-        //            return
-        //        }
-        //        Task {
-        //            // patch count + 1
-        //            do {
-        //                try await APICallCounterManager.shared.incrementPatch(for: userId, controllerName: .tastingNote)
-        //            } catch {
-        //                print(error)
-        //            }
-        //
-        //        }
-    }
     
     private func CallTastingNote() async throws {
         
         let data = try await networkService.fetchNote(noteId: noteId)
-        // Call Count 업데이트
-        //        await self.updateCallCount()
         //데이터 매니저에 와인 정보 + 테노 정보 저장
         wineData.updateWineData(wineId: data.wineId, wineName: data.wineName, sort: data.sort, country: data.country, region: data.region, imageUrl: data.imageUrl, variety: data.variety)
         

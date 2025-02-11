@@ -176,7 +176,6 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         
         let cancelAction = UIAlertAction(title: "취소", style: .cancel) { _ in
             self.logButtonClick(screenName: self.screenName, buttonName: Tracking.ButtonEvent.alertCancelBtnTapped, fileName: #file)
-            print("❌ 취소 버튼 눌림")
         }
         
         // ✅ 액션 추가
@@ -209,7 +208,6 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     @objc func checkNicknameValidity(){
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.checkDuplicateNicknameBtnTapped, fileName: #file)
         guard let nickname = profileView.nicknameTextField.text, !nickname.isEmpty, ValidationManager.isLengthValid else {
-            print("닉네임이 없습니다")
             return
         }
         view.showBlockingView()
@@ -218,6 +216,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
             DispatchQueue.main.async {
                 self.view.hideBlockingView()  // ✅ 네트워크 요청 후 인디케이터 중지
                 self.checkFormValidity()  // ✅ UI 업데이트
+                // 에러 검증 패스
             }
         }
     }

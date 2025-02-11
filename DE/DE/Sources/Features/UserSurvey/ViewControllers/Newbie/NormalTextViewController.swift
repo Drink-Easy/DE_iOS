@@ -276,6 +276,7 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
 
                 // ✅ 두 개의 네트워크 요청이 모두 끝날 때까지 기다림
                 _ = try await (imageUpload, userInfoUpdate)
+                userMng.resetData()
 
                 // UI 변경
                 DispatchQueue.main.async {
@@ -289,7 +290,6 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
                     }
                 }
             } catch {
-                print(error)
                 self.view.hideBlockingView()
                 errorHandler.handleNetworkError(error, in: self)
             }

@@ -48,9 +48,9 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
                 try await CallAllTastingNote(sort: "전체", page: 0)
                 self.view.hideBlockingView()
             } catch {
-                print("Error: \(error)")
                 self.view.hideBlockingView()
-                errorHandler.handleNetworkError(error, in: self)            }
+                errorHandler.handleNetworkError(error, in: self)
+            }
         }
     }
     
@@ -122,22 +122,6 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
         }
     }
     
-    func updateCallCount() async {
-        //        guard let userId = UserDefaults.standard.value(forKey: "userId") as? Int else {
-        //            print("⚠️ userId가 UserDefaults에 없습니다.")
-        //            return
-        //        }
-        //        Task {
-        //            // patch count + 1
-        //            do {
-        //                try await APICallCounterManager.shared.incrementPatch(for: userId, controllerName: .tastingNote)
-        //            } catch {
-        //                print(error)
-        //            }
-        //
-        //        }
-    }
-    
     //와인 이미지 스택 뷰 필터
     func didTapSortButton(for type: WineSortType) {
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.sortingBtnTapped, fileName: #file)
@@ -164,6 +148,7 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
     
     //MARK: Setup Actions
     @objc func newNoteTapped(){
+        NewTastingNoteManager.shared.resetData() // 테이스팅노트 싱글톤 매니저 초기화
         let newVC = SearchWineViewController()
         newVC.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(newVC, animated: true)

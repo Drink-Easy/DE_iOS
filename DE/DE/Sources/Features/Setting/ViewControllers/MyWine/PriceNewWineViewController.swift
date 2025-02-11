@@ -105,6 +105,7 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
         do {
             // 데이터 전송
             _ = try await networkService.postMyWine(data: data)
+            wm.resetWine() // 싱글톤 매니저 데이터 초기화
         } catch {
             self.view.hideBlockingView()
             self.errorHandler.handleNetworkError(error, in: self)

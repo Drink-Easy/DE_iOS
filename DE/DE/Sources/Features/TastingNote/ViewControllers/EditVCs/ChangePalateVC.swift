@@ -137,9 +137,7 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
                             buttonName: Tracking.ButtonEvent.saveBtnTapped,
                        fileName: #file)
         callUpdateAPI()
-        
-        // popViewController
-        // 데이터 매니저에 변경된 데이터 저장하기
+
     }
     
     private func callUpdateAPI() {

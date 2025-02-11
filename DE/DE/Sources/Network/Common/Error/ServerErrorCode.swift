@@ -7,6 +7,7 @@ public enum ServerErrorCode: String {
     case invalidContentType = "INVALID_CONTENT_TYPE" // 올바른 이미지가 아닙니다.
     case argumentError = "ARGUMENT_ERROR"
     case validationError = "VALIDATION_ERROR"
+    // 이 위에 4개는 상세 메세지가 따로 오는 것 같기도?
 
     case wineNotFound = "WINE4001" // 와인이 없습니다.
     case wineUploadFailed = "WINE4002" // 와인 이미지 업로드에 실패했습니다.
@@ -16,7 +17,20 @@ public enum ServerErrorCode: String {
     case noteInvalidSort = "NOTE4003" // 올바른 와인 종류가 아닙니다.
 
     case memberNotFound = "MEMBER4001"
-
+    case loginFailed = "MEMBER4002"
+    case sessionUnauthorized = "MEMBER4003"
+    case authRequestBodyNotFound = "MEMBER4004"
+    case usernameNotFound = "MEMBER4005"
+    case emailNotFound = "MEMBER4006"
+    case passwordNotFound = "MEMBER4007"
+    case passwordNotMatch = "MEMBER4008"
+    case passwordNotInvalid = "MEMBER4009"
+    case memberAlreadyExist = "MEMBER4010"
+    case memberforbidden = "MEMBER4011"
+    case memberproviderNotFound = "MEMBER4012"
+    case roleNotFound = "MEMBER4013"
+    case profileImageNotFound = "MEMBER4014"
+    
     case accessTokenExpired = "ACCESS_TOKEN4001" // 인증이 만료되었습니다. 다시 로그인해주세요.
     case accessTokenInvalid = "ACCESS_TOKEN4002"
     case refreshTokenExpired = "REFRESH_TOKEN4001"
@@ -76,6 +90,32 @@ extension ServerErrorCode {
         case .unknown: return "알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요."
         case .memberNotFound:
             return "사용자 인증 방식에 문제가 있습니다."
+        case .loginFailed:
+            return "로그인 실패1"
+        case .sessionUnauthorized:
+            return "로그인 실패2"
+        case .authRequestBodyNotFound:
+            return "로그인 실패3"
+        case .usernameNotFound:
+            return "로그인 실패4"
+        case .emailNotFound:
+            return "로그인 실패5"
+        case .passwordNotFound:
+            return "로그인 실패6"
+        case .passwordNotMatch:
+            return "로그인 실패7"
+        case .passwordNotInvalid:
+            return "로그인 실패8"
+        case .memberAlreadyExist:
+            return "로그인 실패9"
+        case .memberforbidden:
+            return "로그인 실패10"
+        case .memberproviderNotFound:
+            return "로그인 실패11"
+        case .roleNotFound:
+            return "로그인 실패12"
+        case .profileImageNotFound:
+            return "로그인 실패13"
         }
     }
 }

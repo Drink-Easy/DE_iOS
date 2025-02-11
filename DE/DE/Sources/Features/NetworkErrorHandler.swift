@@ -19,7 +19,7 @@ public class NetworkErrorHandler {
             showToastMessage(message: userMessage, in: viewController)
             
         default:
-            showToastMessage(message: "알 수 없는 오류가 발생하였습니다.", in: viewController)
+            showToastMessage(message: "알 수 없는 오류가 발생하였습니다. 관리자에게 문의하세요.", in: viewController)
         }
     }
     
@@ -48,7 +48,7 @@ public class NetworkErrorHandler {
         let toastView = ToasterToastMessageView()
         toastView.setupDataBind(message: message)
         
-        toastView.center = CGPoint(x: viewController.view.center.x, y: viewController.view.center.y)
+        toastView.center = CGPoint(x: viewController.view.center.x, y: viewController.view.frame.height * 0.75)
         viewController.view.addSubview(toastView)
         
         UIView.animate(withDuration: 0.7, delay: 1.3, options: [.curveEaseIn], animations: {

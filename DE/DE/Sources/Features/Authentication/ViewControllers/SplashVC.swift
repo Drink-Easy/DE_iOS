@@ -94,7 +94,7 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     
     func checkAuthenticationStatus() {
         
-        if let cookies = HTTPCookieStorage.shared.cookies {
+        if let cookies = HTTPCookieStorage.shared.cookies(for: URL(string: API.baseURL)!) {
             for cookie in cookies {
                 if cookie.name == "accessToken" {
                     if let expires = cookie.expiresDate {

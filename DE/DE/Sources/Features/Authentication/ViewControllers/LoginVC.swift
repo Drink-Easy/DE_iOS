@@ -144,8 +144,11 @@ class LoginVC: UIViewController, FirebaseTrackable {
                 self.goToNextView(data.isFirst)
                 Analytics.setUserID("\(data.id)") // 유저 아이디
             } catch {
-                print("Error: \(error)")
                 self.view.hideBlockingView()
+                
+                // 에러 출력
+                errorHandler.handleNetworkError(error, in: self)
+                
                 self.loginView.loginButton.isEnabled = false
                 self.loginView.loginButton.isEnabled(isEnabled: false)
                 self.validationManager.showValidationError(loginView.usernameField, message: "")

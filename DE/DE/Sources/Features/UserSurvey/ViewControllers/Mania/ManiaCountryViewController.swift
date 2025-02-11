@@ -91,6 +91,7 @@ class ManiaCountryViewController: UIViewController, FirebaseTrackable {
 
                 // ✅ 두 개의 네트워크 요청이 모두 끝날 때까지 기다림
                 _ = try await (imageUpload, userInfoUpdate)
+                userMng.resetData()
                 view.hideBlockingView()
                 processData()
             } catch {

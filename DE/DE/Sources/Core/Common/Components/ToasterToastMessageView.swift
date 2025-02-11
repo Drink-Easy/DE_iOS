@@ -8,7 +8,7 @@ public final class ToasterToastMessageView: UIView {
     private let toastLabel = UILabel().then {
         $0.textColor = AppColor.white
         $0.font = UIFont.ptdRegularFont(ofSize: 12)
-        $0.numberOfLines = 1
+        $0.numberOfLines = 2
         $0.textAlignment = .center
     }
     

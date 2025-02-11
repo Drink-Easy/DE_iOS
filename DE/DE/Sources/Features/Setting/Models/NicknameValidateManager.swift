@@ -107,7 +107,17 @@ public class NicknameValidateManager {
                 self.isNicknameCanUse = false
             }
         } catch {
-            self.showValidationError(view, message: "네트워크 오류가 발생했습니다. 다시 시도해주세요.")
+            switch error {
+            case NetworkError.tokenExpiredError(_, _, let userMessage),
+                NetworkError.refreshTokenExpiredError(_, _, let userMessage):
+                self.showValidationError(view, message: userMessage)
+            case NetworkError.serverError(_, _, let userMessage),
+                 NetworkError.decodingError(_, let userMessage),
+                 NetworkError.networkError(_, let userMessage):
+                self.showValidationError(view, message: userMessage)
+            default:
+                self.showValidationError(view, message: "알 수 없는 오류가 발생하였습니다. 관리자에게 문의하세요.")
+            }
             self.isNicknameCanUse = false
         }
     }

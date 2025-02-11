@@ -113,4 +113,19 @@ public class NewTastingNoteManager {
     func getReview() -> String {
         return review
     }
+    
+    func resetData() {
+        noteId = 0
+        wineId = 0
+        color = ""
+        tasteDate = ""
+        sugarContent = 0
+        acidity = 0
+        tannin = 0
+        body = 0
+        alcohol = 0
+        nose.removeAll()
+        rating = 0.0
+        review = ""
+    }
 }

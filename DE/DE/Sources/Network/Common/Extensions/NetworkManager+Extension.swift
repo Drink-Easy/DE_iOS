@@ -134,7 +134,7 @@ extension NetworkManager {
             throw NetworkError.serverError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
             
         } catch {
-            throw NetworkError.serverError(statusCode: response.statusCode, devMessage: "서버 응답 해석 실패", userMessage: "서버 응답이 올바르지 않습니다.")
+            throw NetworkError.serverError(statusCode: response.statusCode, devMessage: "서버 응답 해석 실패\(response.data)", userMessage: "서버 응답이 올바르지 않습니다.")
         }
     }
     

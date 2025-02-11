@@ -106,6 +106,27 @@ public class UserSurveyManager {
         return arr
     }
     
+    public func resetData() {
+        name = ""
+        region = ""
+        imageData = nil
+        isNewbie = true
+        monthPrice = 0
+        wineSort = []
+        wineArea = []
+        wineVariety = []
+
+        drinkVarietyResult = []
+        drinkSortResult = []
+        foodVarietyResult = []
+        foodSortResult = []
+
+        unionSortData.removeAll()
+        unionVarietyData.removeAll()
+        intersectionSortData.removeAll()
+        intersectionVarietyData.removeAll()
+    }
+    
     public func calculateDrinkType(_ drinks: [String]) {
         for drink in drinks {
             if drink.contains(DrinkType.소주.rawValue) {

@@ -125,12 +125,13 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
         Task {
             do {
                 try await postCreateTastingNote()
+                tnManager.resetData()
+                wineData.resetData()
                 NoseManager.shared.resetAllScents()
                 self.view.hideBlockingView()
                 navigationController?.popToRootViewController(animated: true)
             } catch {
                 self.view.hideBlockingView()
-                print(error)
                 errorHandler.handleNetworkError(error, in: self)
             }
         }

@@ -21,6 +21,7 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
     public var appleLoginDto : AppleLoginRequestDTO?
     let networkService = AuthService()
+    private let errorHandler = NetworkErrorHandler()
     
     private let mainView = SelectLoginTypeView()
     
@@ -93,15 +94,18 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
     
     private func kakaoLoginProceed(_ userIDString: String, userEmail: String) {
         let kakaoDTO = self.networkService.makeKakaoDTO(username: userIDString, email: userEmail)
+        self.view.showBlockingView()
         Task {
             do {
                 let response = try await networkService.kakaoLogin(data: kakaoDTO)
                 Analytics.setUserID("\(response.id)") // 유저 아이디
                 DispatchQueue.main.async {
+                    self.view.hideBlockingView()
                     self.goToNextView(response.isFirst)
                 }
             } catch {
-                print(error.localizedDescription)
+                self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }

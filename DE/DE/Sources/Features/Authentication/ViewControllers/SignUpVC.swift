@@ -15,6 +15,7 @@ class SignUpVC: UIViewController, FirebaseTrackable {
     private let networkService = AuthService()
     let navigationBarManager = NavigationBarManager()
     let validationManager = ValidationManager()
+    private let errorHandler = NetworkErrorHandler()
     
     var isEmailDuplicate : Bool = true
     var textFields: [UITextField] = []
@@ -88,8 +89,8 @@ class SignUpVC: UIViewController, FirebaseTrackable {
                 self.view.hideBlockingView()
                 self.goToLoginView()
             } catch {
-                print(error)
                 self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
@@ -102,14 +103,13 @@ class SignUpVC: UIViewController, FirebaseTrackable {
     
     @objc private func checkEmailDuplicate() {
         guard let email = signUpView.usernameField.text, !email.isEmpty else {
-            print("이메일이 없습니다")
             return
         }
         view.showBlockingView()
         Task {
             await validationManager.checkEmailDuplicate(email: email, view: signUpView.usernameField)
-            self.view.hideBlockingView()  // ✅ 네트워크 요청 후 인디케이터 중지
-            self.validateInputs()  // ✅ UI 업데이트
+            self.view.hideBlockingView()
+            self.validateInputs()
         }
     }
     
@@ -141,7 +141,7 @@ class SignUpVC: UIViewController, FirebaseTrackable {
             let targetVC = navigationController.viewControllers[targetIndex]
             navigationController.popToViewController(targetVC, animated: true)
         } else {
-            navigationController.popToRootViewController(animated: true) // 못 찾으면 루트로 이동
+            navigationController.popToRootViewController(animated: true)
         }
     }
     
