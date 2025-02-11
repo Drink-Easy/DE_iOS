@@ -134,6 +134,7 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
     }
     
     @objc private func logoutButtonTapped() {
+        clearCookie()
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.logoutBtnTapped, fileName: #file)
         self.view.showBlockingView()
         Task {
@@ -151,13 +152,17 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
                     self.view.hideBlockingView()
                     self.showSplashScreen()
                 }
+            } catch let error as NetworkError {
+                self.view.hideBlockingView()
+                print(error.errorDescription!)
+                errorHandler.handleNetworkError(error, in: self)
             } catch {
                 self.view.hideBlockingView()
                 errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
-
+    
 
     @objc private func deleteButtonTapped() {
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.quitBtnTapped, fileName: #file)
@@ -200,6 +205,10 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
                     self.view.hideBlockingView()
                     self.showSplashScreen()
                 }
+            } catch let error as NetworkError {
+                self.view.hideBlockingView()
+                print(error.errorDescription!)
+                errorHandler.handleNetworkError(error, in: self)
             } catch {
                 self.view.hideBlockingView()
                 errorHandler.handleNetworkError(error, in: self)
@@ -273,6 +282,10 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
             
             self.userProfile = MemberInfoResponse(imageUrl: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
             self.setUserData(imageURL: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
+        }  catch let error as NetworkError {
+            self.view.hideBlockingView()
+            print(error.errorDescription!)
+            errorHandler.handleNetworkError(error, in: self)
         } catch {
             self.view.hideBlockingView()
             errorHandler.handleNetworkError(error, in: self)

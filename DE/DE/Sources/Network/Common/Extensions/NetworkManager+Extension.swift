@@ -117,13 +117,14 @@ extension NetworkManager {
                     let addDevMessage = "❌ [재시도 한도 초과] API 요청 중단" + devMessage
                     throw NetworkError.tokenExpiredError(statusCode: response.statusCode, devMessage: addDevMessage, userMessage: userMessage)
                 }
-
+                print("남은 요청 횟수 : \(retryCount)")
+                
                 do {
                     _ = try await AuthService().reissueTokenAsync()
                     // ✅ 토큰 재발급 후 동일 API 요청 재시도
                     return try await handleResponseRequired(response, decodingType: decodingType, target: target, retryCount: retryCount - 1)
                 } catch {
-                    let addDevMessage = "❌ 토큰 재발급 실패" + devMessage
+                    let addDevMessage = "❌ 토큰 재발급 실패 " + devMessage
                     throw NetworkError.tokenExpiredError(statusCode: response.statusCode, devMessage: addDevMessage, userMessage: userMessage)
                 }
             }
@@ -135,7 +136,13 @@ extension NetworkManager {
             throw NetworkError.serverError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
             
         } catch {
-            throw NetworkError.serverError(statusCode: response.statusCode, devMessage: "서버 응답 해석 실패\(response.data)", userMessage: "서버 응답이 올바르지 않습니다.")
+            if let jsonString = String(data: response.data, encoding: .utf8) {
+                print("📜 Raw Response Data: \(jsonString)")
+            } else {
+                print("❌ 데이터 변환 실패")
+            }
+            
+            throw NetworkError.serverError(statusCode: response.statusCode, devMessage: "서버 응답 해석 실패", userMessage: "서버 응답이 올바르지 않습니다.")
         }
     }
     
