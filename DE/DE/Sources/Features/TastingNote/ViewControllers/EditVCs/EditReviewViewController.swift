@@ -98,7 +98,14 @@ public class EditReviewViewController: UIViewController, FirebaseTrackable {
     }
     
     private func callUpdateAPI() {
-        let updateData = networkService.makeUpdateNoteBodyDTO(review: rView.reviewBody.text)
+        var reviewString = ""
+        if rView.reviewBody.text == textViewPlaceHolder {
+            reviewString = "작성된 리뷰가 없습니다."
+        } else {
+            reviewString = rView.reviewBody.text ?? "작성된 리뷰가 없습니다."
+        }
+        
+        let updateData = networkService.makeUpdateNoteBodyDTO(review: reviewString)
         
         let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
         self.view.showBlockingView()

@@ -29,6 +29,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         $0.isScrollEnabled = true
         $0.bounces = false
         $0.alwaysBounceVertical = false
+//        $0.contentInsetAdjustmentBehavior = .never
     }
     
     let contentView = UIView().then {
@@ -40,9 +41,10 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     private var smallTitleLabel = UILabel()
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let offsetY = scrollView.contentOffset.y + 100
-        let largeTitleBottom = wineInfoView.header.header.frame.maxY/2
-        
+        let adjustedTopInset = scrollView.adjustedContentInset.top
+        let offsetY = scrollView.contentOffset.y + adjustedTopInset
+        let largeTitleBottom = wineInfoView.header.header.frame.maxY
+//        print("offsetY : \(offsetY) + \(adjustedTopInset) vs largeTitleBottom : \(largeTitleBottom)")
         UIView.animate(withDuration: 0.1) {
             self.wineInfoView.header.header.alpha = offsetY > largeTitleBottom ? 0 : 1
             self.smallTitleLabel.isHidden = !(offsetY > largeTitleBottom)
