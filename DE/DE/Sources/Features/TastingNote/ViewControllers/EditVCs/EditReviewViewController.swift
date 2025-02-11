@@ -153,12 +153,32 @@ extension EditReviewViewController : UITextViewDelegate {
         let inputString = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard let oldString = textView.text, let newRange = Range(range, in: oldString) else { return true }
         let newString = oldString.replacingCharacters(in: newRange, with: inputString).trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // 1️⃣ 글자 수 제한 (500자)
+        if newString.count > 500 {
+            showToastMessage(message: "500자 이하의 리뷰만 가능해요.", yPosition: view.frame.height * 0.75)
+            rView.saveButton.isEnabled(isEnabled: false)
+            return false
+        }
+
+        // 2️⃣ 비속어 필터링
+        let currentFilePath = URL(fileURLWithPath: #file)
+        let currentDirectory = currentFilePath.deletingLastPathComponent()
+        let badWordFilePath = currentDirectory
+            .deletingLastPathComponent() // ViewControllers/
+            .deletingLastPathComponent() // TastingNote/
+            .deletingLastPathComponent() // Features/
+            .deletingLastPathComponent() // Sources/
+            .appendingPathComponent("BadWord.txt")
         
-        let characterCount = newString.count
-        guard characterCount <= 500 else { return false }
-        // TODO : 경고창 띄우기?
-        // alertview?
+        let nicknameFilter = TextFilter(filePath: badWordFilePath.path)
         
+        if nicknameFilter.checkFWords(newString) { // 비속어 감지
+            showToastMessage(message: "비속어를 사용할 수 없어요.", yPosition: view.frame.height * 0.75)
+            rView.saveButton.isEnabled(isEnabled: false)
+            return false
+        }
+        rView.saveButton.isEnabled(isEnabled: true)
         return true
     }
 }

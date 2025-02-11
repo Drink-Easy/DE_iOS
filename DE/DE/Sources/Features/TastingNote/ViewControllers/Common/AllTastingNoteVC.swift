@@ -66,7 +66,6 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
         setupCollectionView()
         tastingNoteView.searchButton.addTarget(self, action: #selector(noteSearchTapped), for: .touchUpInside)
         floatingButton.addTarget(self, action: #selector(newNoteTapped), for: .touchUpInside)
-        
     }
     
     public override func viewDidAppear(_ animated: Bool) {
