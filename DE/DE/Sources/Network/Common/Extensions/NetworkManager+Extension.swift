@@ -101,6 +101,7 @@ extension NetworkManager {
             let serverErrorCode = ServerErrorCode(rawValue: errorResponse.code) ?? .unknown
             let userMessage = serverErrorCode.errorMessage
             
+            print("재시도 횟수 : \(retryCount)")
             // 개발팀 용 로그
             Analytics.logEvent("DRINKIG_NETWORK_ERROR", parameters: [
                 "isSuccess" : errorResponse.isSuccess,
@@ -151,6 +152,7 @@ extension NetworkManager {
             let serverErrorCode = ServerErrorCode(rawValue: errorResponse.code) ?? .unknown
             let userMessage = serverErrorCode.errorMessage
             
+            print("재시도 횟수 : \(retryCount)")
             // 개발팀 용 로그
             Analytics.logEvent("DRINKIG_NETWORK_ERROR", parameters: [
                 "isSuccess" : errorResponse.isSuccess,

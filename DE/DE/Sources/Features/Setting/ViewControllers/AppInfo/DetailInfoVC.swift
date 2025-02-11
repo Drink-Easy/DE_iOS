@@ -8,14 +8,13 @@ class DetailInfoVC: UIViewController {
     // MARK: - Properties
     private let navigationBarManager = NavigationBarManager()
     
-    private let scrollView = UIScrollView()
-    private let contentView = UIView()
-    
-    private let contentLabel = UILabel().then {
+    private let textView = UITextView().then {
         $0.font = UIFont.ptdRegularFont(ofSize: 16)
         $0.textColor = AppColor.gray100
-        $0.textAlignment = .left
-        $0.numberOfLines = 0
+        $0.backgroundColor = .clear
+        $0.isEditable = false // 읽기 전용
+        $0.isScrollEnabled = true // 자체 스크롤 활성화
+        $0.textContainerInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16) // 좌우 여백 추가
     }
     
     private var itemTitle: String?
@@ -54,39 +53,22 @@ class DetailInfoVC: UIViewController {
     
     // MARK: - Setup Navigation Bar
     private func setupNavigationBar(itemTitleString: String) {
-        // itemTitle을 네비게이션 바 제목으로 설정
         navigationBarManager.setTitle(to: navigationItem, title: itemTitleString, textColor: AppColor.black!)
         navigationBarManager.addBackButton(to: navigationItem, target: self, action: #selector(backButtonTapped))
     }
     
     // MARK: - Setup UI
     private func setupUI() {
-        // 스크롤뷰 계층 구조 추가
-        view.addSubview(scrollView)
-        scrollView.addSubview(contentView)
-        contentView.addSubview(contentLabel)
+        view.addSubview(textView)
         
-        // 스크롤뷰 제약 설정
-        scrollView.snp.makeConstraints { make in
+        textView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
-        }
-        
-        // 컨텐츠 뷰 제약 설정
-        contentView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-            make.width.equalToSuperview() // 수평 스크롤 방지
-        }
-        
-        // 컨텐츠 라벨 제약 설정
-        contentLabel.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview().inset(16)
-            make.bottom.equalToSuperview() // 컨텐츠 아래 공간 확보
         }
     }
     
     // MARK: - Configure Data
     private func configureData() {
-        contentLabel.text = itemContent
+        textView.text = itemContent
     }
     
     // MARK: - Actions

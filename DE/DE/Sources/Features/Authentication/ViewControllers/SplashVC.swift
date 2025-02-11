@@ -19,8 +19,9 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     public var screenName: String = Tracking.VC.splashVC
     
     let networkService = AuthService()
-    
+    private let errorHandler = NetworkErrorHandler()
     var refreshToken: String = ""
+    var accessToken: String = ""
     var ExpiresAt: Date = Date()
     
     private lazy var logoImage = UIImageView().then { logoImage in
@@ -97,6 +98,7 @@ public class SplashVC : UIViewController, FirebaseTrackable {
         if let cookies = HTTPCookieStorage.shared.cookies(for: URL(string: API.baseURL)!) {
             for cookie in cookies {
                 if cookie.name == "accessToken" {
+                    accessToken = cookie.value
                     if let expires = cookie.expiresDate {
                         ExpiresAt = expires
                     }
@@ -105,6 +107,14 @@ public class SplashVC : UIViewController, FirebaseTrackable {
                     refreshToken = cookie.value
                 }
             }
+        }
+        
+        // 아예 토큰 없을 때, 바로 온보딩으로 넘어가기
+        if refreshToken == "" || accessToken == "" {
+            DispatchQueue.main.async {
+                self.navigateToOnBoaringScreen()
+            }
+            return
         }
         
         //토큰 유효
@@ -116,6 +126,7 @@ public class SplashVC : UIViewController, FirebaseTrackable {
                     let _ = try await networkService.reissueTokenAsync()
                     checkIsFirst()
                 } catch {
+                    errorHandler.handleNetworkError(error, in: self)
                     DispatchQueue.main.async {
                         self.navigateToOnBoaringScreen()
                     }
