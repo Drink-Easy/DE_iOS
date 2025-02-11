@@ -10,6 +10,8 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
     public var screenName: String = Tracking.VC.allTastingNoteVC
     
     private let networkService = TastingNoteService()
+    private let errorHandler = NetworkErrorHandler()
+    
     var isLoading = false
     var currentPage = 0
     var totalPage = 0
@@ -48,8 +50,7 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
             } catch {
                 print("Error: \(error)")
                 self.view.hideBlockingView()
-                // Alert 표시 등 추가
-            }
+                errorHandler.handleNetworkError(error, in: self)            }
         }
     }
     
@@ -156,6 +157,7 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
             } catch {
                 print("Error: \(error)")
                 self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
@@ -221,6 +223,7 @@ extension AllTastingNoteVC: UICollectionViewDataSource, UICollectionViewDelegate
                 } catch {
                     print("Failed to fetch next page: \(error)")
                     self.view.hideBlockingView()
+                    errorHandler.handleNetworkError(error, in: self)
                 }
                 DispatchQueue.main.async {
                     self.tastingNoteView.TastingNoteCollectionView.reloadData()

@@ -14,6 +14,7 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
     let userMng = UserSurveyManager.shared
     
     private let navigationBarManager = NavigationBarManager()
+    private let errorHandler = NetworkErrorHandler()
     
     private lazy var firstTextLabel = createLabel()
     private lazy var varietyTextLabel = createLabel()
@@ -290,6 +291,7 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
             } catch {
                 print(error)
                 self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }

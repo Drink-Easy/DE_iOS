@@ -19,6 +19,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     private let imagePickerManager = ImagePickerManager()
     
     private let networkService = MemberService()
+    private let errorHandler = NetworkErrorHandler()
     
     private let profileView = ProfileView()
     

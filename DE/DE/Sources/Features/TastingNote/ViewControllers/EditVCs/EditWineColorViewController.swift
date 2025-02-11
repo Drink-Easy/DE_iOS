@@ -11,6 +11,7 @@ public class EditWineColorViewController: UIViewController, FirebaseTrackable {
     public var screenName: String = Tracking.VC.editWineColorVC
     
     let navigationBarManager = NavigationBarManager()
+    private let errorHandler = NetworkErrorHandler()
     
     lazy var colorView = EditColorView().then {
         $0.colorCollectionView.delegate = self
@@ -97,12 +98,15 @@ public class EditWineColorViewController: UIViewController, FirebaseTrackable {
         let updateData = networkService.makeUpdateNoteBodyDTO(color: selectedColor)
         
         let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
+        self.view.showBlockingView()
         Task {
             do {
-                self.view.showBlockingView()
                 let _ = try await networkService.patchNote(data: tnData)
                 self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
+            } catch {
+                self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
