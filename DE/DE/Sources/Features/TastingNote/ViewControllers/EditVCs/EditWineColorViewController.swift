@@ -27,7 +27,7 @@ public class EditWineColorViewController: UIViewController, FirebaseTrackable {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        colorView.header.setTitleLabel(wineData.wineName)
+        colorView.setWineName(wineData.wineName)
         colorView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         colorView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         colorView.infoView.kindContents.text = wineData.sort

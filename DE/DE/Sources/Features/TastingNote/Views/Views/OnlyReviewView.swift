@@ -8,7 +8,11 @@ import Then
 
 class OnlyReviewView: UIView {
     // 탑 - 와인 정보
-    public lazy var header = WineNameView()
+    public lazy var header = UILabel().then {
+        $0.textColor = AppColor.black
+        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.numberOfLines = 0
+    }
     public lazy var infoView = WineDetailView()
     
     // 리뷰
@@ -44,7 +48,7 @@ class OnlyReviewView: UIView {
     }
     
     public func setWineName(_ name: String) {
-        self.header.setTitleLabel(name)
+        self.header.text = name
     }
     
     private func addComponents() {
@@ -55,7 +59,6 @@ class OnlyReviewView: UIView {
         header.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview()
-            make.height.greaterThanOrEqualTo(62)
         }
         
         infoView.snp.makeConstraints { make in

@@ -19,7 +19,7 @@ public class EditRateViewController: UIViewController, FirebaseTrackable {
         super.viewWillAppear(animated)
         self.updateRatingLabel(with: tnManager.rating)
         
-        rView.header.setTitleLabel(wineData.wineName)
+        rView.setWineName(wineData.wineName)
         rView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         rView.infoView.kindContents.text = wineData.sort

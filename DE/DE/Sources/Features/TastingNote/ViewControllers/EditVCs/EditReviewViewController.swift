@@ -19,7 +19,7 @@ public class EditReviewViewController: UIViewController, FirebaseTrackable {
         super.viewWillAppear(animated)
         //        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
         //           NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
-        rView.header.setTitleLabel(wineData.wineName)
+        rView.setWineName(wineData.wineName)
         rView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         rView.infoView.kindContents.text = wineData.sort

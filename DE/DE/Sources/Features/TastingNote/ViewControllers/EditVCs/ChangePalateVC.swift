@@ -27,7 +27,11 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
     let contentView = UIView().then {
         $0.backgroundColor = AppColor.bgGray
     }
-    private let wineNameTitle = WineNameView()
+    public lazy var wineNameTitle = UILabel().then {
+        $0.textColor = AppColor.black
+        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.numberOfLines = 0
+    }
     private let recordGraphView = RecordGraphView()
     let nextButton = CustomButton(
         title: "저장하기",
@@ -39,7 +43,7 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        wineNameTitle.setTitleLabel(wineData.wineName)
+        self.setWineName(wineData.wineName)
         
         recordGraphView.recordSliderView.sweetnessView.slider.setSavedValue(palateInfo[0])
         recordGraphView.recordSliderView.alcoholView.slider.setSavedValue(palateInfo[1])
@@ -69,6 +73,10 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
         logScreenView(fileName: #file)
     }
     
+    public func setWineName(_ name: String) {
+        self.wineNameTitle.text = name
+    }
+    
     private func setupUI() {
         view.backgroundColor = AppColor.bgGray
         view.addSubview(scrollView)
@@ -79,7 +87,7 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
         scrollView.addSubview(contentView)
         
         scrollView.delegate = self
-        wineNameTitle.header.text = wineData.wineName
+        self.setWineName(wineData.wineName)
         
         scrollView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -187,10 +195,10 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-        let largeTitleBottom = wineNameTitle.header.frame.maxY + 5
+        let largeTitleBottom = wineNameTitle.frame.maxY + 5
         
         UIView.animate(withDuration: 0.1) {
-            self.wineNameTitle.header.alpha = offsetY > largeTitleBottom ? 0 : 1
+            self.wineNameTitle.alpha = offsetY > largeTitleBottom ? 0 : 1
             self.smallTitleLabel.isHidden = !(offsetY > largeTitleBottom)
         }
     }
