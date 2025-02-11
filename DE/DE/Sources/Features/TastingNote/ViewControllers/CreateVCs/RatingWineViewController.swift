@@ -115,10 +115,14 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
         self.logButtonClick(screenName: self.screenName,
                             buttonName: Tracking.ButtonEvent.createBtnTapped,
                        fileName: #file)
-        guard let reviewString = rView.reviewBody.text else {
-            print("작성된 리뷰가 없습니다.")
-            return
+        
+        var reviewString = ""
+        if rView.reviewBody.text == textViewPlaceHolder {
+            reviewString = "작성된 리뷰가 없습니다."
+        } else {
+            reviewString = rView.reviewBody.text ?? "작성된 리뷰가 없습니다."
         }
+        
         tnManager.saveRating(ratingValue)
         tnManager.saveReview(reviewString)
         self.view.showBlockingView()
@@ -180,6 +184,8 @@ extension RatingWineViewController : UITextViewDelegate {
         let inputString = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard let oldString = textView.text, let newRange = Range(range, in: oldString) else { return true }
         let newString = oldString.replacingCharacters(in: newRange, with: inputString).trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        
 
         // 1️⃣ 글자 수 제한 (500자)
         if newString.count > 500 {
