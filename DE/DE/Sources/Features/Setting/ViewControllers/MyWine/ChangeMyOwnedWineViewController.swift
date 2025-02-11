@@ -57,6 +57,7 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
     
     func setupActions() {
         configureCalendarSelection()
+        editInfoView.priceTextField.textField.addTarget(self, action: #selector(checkEmpty), for: .allEditingEvents)
         editInfoView.nextButton.addTarget(self, action: #selector(completeEdit), for: .touchUpInside)
     }
     
@@ -140,6 +141,24 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
         DispatchQueue.main.async {
             self.view.hideBlockingView()
             self.navigationController?.popViewController(animated: true)
+        }
+    }
+    
+    @objc func checkEmpty() {
+        guard let text = self.editInfoView.priceTextField.text else {
+            editInfoView.nextButton.isEnabled(isEnabled: false)
+            return
+        }
+
+        if text.isEmpty {
+            editInfoView.nextButton.isEnabled(isEnabled: false)
+        } else {
+            editInfoView.nextButton.isEnabled(isEnabled: true)
+        }
+
+        if text.count >= 10 {
+            showToastMessage(message: "와인 가격은 10억까지만 가능해요.", yPosition: view.frame.height * 0.5)
+            editInfoView.nextButton.isEnabled(isEnabled: false)
         }
     }
     

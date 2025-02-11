@@ -122,10 +122,15 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
             return
         }
 
-        if text.isEmpty || text == "" {
+        if text.isEmpty {
             priceNewWineView.nextButton.isEnabled(isEnabled: false)
         } else {
             priceNewWineView.nextButton.isEnabled(isEnabled: true)
+        }
+
+        if text.count >= 10 {
+            showToastMessage(message: "와인 가격은 10억까지만 가능해요.", yPosition: view.frame.height * 0.5)
+            priceNewWineView.nextButton.isEnabled(isEnabled: false)
         }
     }
 }
