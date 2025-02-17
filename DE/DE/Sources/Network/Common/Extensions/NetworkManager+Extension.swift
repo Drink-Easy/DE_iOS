@@ -54,7 +54,7 @@ extension NetworkManager {
         
         if let httpResponse = response.response {
             let cookieStorage = CookieStorage()
-            cookieStorage.extractTokensAndStore(from: httpResponse) // 🔄 변경된 함수 사용
+            cookieStorage.extractTokensAndStore(from: httpResponse)
         }
         
         let decodedResponse = try JSONDecoder().decode(ApiResponse<T>.self, from: response.data)
@@ -99,38 +99,39 @@ extension NetworkManager {
             
             let devMessage = errorResponse.message
             let serverErrorCode = ServerErrorCode(rawValue: errorResponse.code) ?? .unknown
+            print("서버 에러 코드 :  \(serverErrorCode)")
             let userMessage = serverErrorCode.errorMessage
-            
-            print("재시도 횟수 : \(retryCount)")
+        
+            print("재시도 횟수 : \(retryCount - 1)")
             // 개발팀 용 로그
-            Analytics.logEvent("DRINKIG_NETWORK_ERROR", parameters: [
-                "isSuccess" : errorResponse.isSuccess,
-                "statusCode": response.statusCode,
-                "httpStatusCode" : errorResponse.httpStatus,
-                "serverCode": errorResponse.code,
-                "message": devMessage
-            ])
+//            Analytics.logEvent("DRINKIG_NETWORK_ERROR", parameters: [
+//                "isSuccess" : errorResponse.isSuccess,
+//                "statusCode": response.statusCode,
+//                "httpStatusCode" : errorResponse.httpStatus,
+//                "serverCode": errorResponse.code,
+//                "message": devMessage
+//            ])
+            
+            if serverErrorCode == .refreshTokenExpired {
+                print("리프레시 토큰 만료 에러 잡으러 옴")
+                throw NetworkError.refreshTokenExpiredError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
+            }
             
             // 🔄 [토큰 만료] ACCESS_TOKEN4001 또는 ACCESS_TOKEN4002 → 토큰 재발급 후 API 재시도
             if serverErrorCode == .accessTokenExpired || serverErrorCode == .accessTokenInvalid {
+                print("액세스 토큰 오류 캐치함")
                 guard retryCount > 0 else {
                     let addDevMessage = "❌ [재시도 한도 초과] API 요청 중단" + devMessage
                     throw NetworkError.tokenExpiredError(statusCode: response.statusCode, devMessage: addDevMessage, userMessage: userMessage)
                 }
-                print("남은 요청 횟수 : \(retryCount)")
                 
                 do {
-                    _ = try await AuthService().reissueTokenAsync()
-                    // ✅ 토큰 재발급 후 동일 API 요청 재시도
-                    return try await handleResponseRequired(response, decodingType: decodingType, target: target, retryCount: retryCount - 1)
-                } catch {
+                    try await AuthService().reissueTokenAsync()
+                    return try await requestAsync(target: target, decodingType: decodingType)
+                } catch let error as NetworkError {
                     let addDevMessage = "❌ 토큰 재발급 실패 " + devMessage
                     throw NetworkError.tokenExpiredError(statusCode: response.statusCode, devMessage: addDevMessage, userMessage: userMessage)
                 }
-            }
-
-            if serverErrorCode == .refreshTokenExpired {
-                throw NetworkError.refreshTokenExpiredError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
             }
             
             throw NetworkError.serverError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
