@@ -12,6 +12,7 @@ import Then
 
 import Network
 import CoreModule
+import FirebaseAnalytics
 
 // SelectLoginTypeVC.keychain.getBool("isFirst")
 
@@ -46,6 +47,8 @@ public class SplashVC : UIViewController, FirebaseTrackable {
                 UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
             }
         }
+        Analytics.setAnalyticsCollectionEnabled(true)
+        Analytics.setUserProperty("false", forName: "debug_mode")
         
 //        let isNeedUpdate = UserDefaults.standard.bool(forKey: "isNeedUpdate")
 //        let showStopSign = UserDefaults.standard.bool(forKey: "showStopSign")
