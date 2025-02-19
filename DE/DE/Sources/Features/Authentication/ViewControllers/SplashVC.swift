@@ -139,7 +139,9 @@ public class SplashVC : UIViewController, FirebaseTrackable {
         let isFirstString = SelectLoginTypeVC.keychain.getBool("isFirst")
         if isFirstString == true || isFirstString == nil {
             navigateToWelcomeScreen()
-        } else { navigateToMainScreen() }
+        } else {
+            navigateToMainScreen()
+        }
     }
     
     func navigateToMainScreen() {
