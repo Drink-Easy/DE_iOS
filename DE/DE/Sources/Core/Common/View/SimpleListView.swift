@@ -13,7 +13,7 @@ public class SimpleListView: UIView {
     }
     
     public lazy var backView = UIView().then {
-        $0.backgroundColor = AppColor.white
+        $0.backgroundColor = .clear
         $0.layer.cornerRadius = 14
         $0.layer.masksToBounds = true
     }
@@ -36,6 +36,7 @@ public class SimpleListView: UIView {
     
     public var items: [(title: String, value: String)] = [] {
         didSet {
+            backView.backgroundColor = AppColor.white
             updateUI() // 데이터 변경 시 UI 업데이트
         }
     }
@@ -80,6 +81,7 @@ public class SimpleListView: UIView {
     // MARK: - UI Update
     private func updateUI() {
         // 기존 스택뷰와 라인 제거
+        
         stackViews.forEach { $0.removeFromSuperview() }
         lines.forEach { $0.removeFromSuperview() }
         stackViews.removeAll()

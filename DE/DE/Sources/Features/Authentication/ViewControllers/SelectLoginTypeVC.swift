@@ -44,7 +44,7 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        logScreenView(fileName: #file)
+        logScreenView(fileName: ( #file as NSString ).lastPathComponent)
     }
     
     // MARK: - Setup Methods
