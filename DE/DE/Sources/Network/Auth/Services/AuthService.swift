@@ -87,31 +87,24 @@ public final class AuthService : NetworkManager {
             print("⚠️ [토큰 재발급] 이미 요청 진행 중...")
             throw NetworkError.serverError(statusCode: 401, devMessage: "이미 토큰 재발급 요청 중", userMessage: "이미 토큰 재발급 요청 중")
         }
-
+        
         AuthService.isReissuingToken = true // ✅ 재발급 진행 중
         defer { AuthService.isReissuingToken = false } // ✅ 요청 완료 후 해제
         
-        do {
-            let response = try await provider.request(.postReIssueToken)
+        let response = try await provider.request(.postReIssueToken)
+        
+        guard (200...299).contains(response.statusCode) else {
+            let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: response.data)
+            let serverErrorCode = ServerErrorCode(rawValue: errorResponse.code) ?? .unknown
+            let userMessage = serverErrorCode.errorMessage
+            let devMessage = errorResponse.message
             
-            guard (200...299).contains(response.statusCode) else {
-                let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: response.data)
-                let serverErrorCode = ServerErrorCode(rawValue: errorResponse.code) ?? .unknown
-                let userMessage = serverErrorCode.errorMessage
-                let devMessage = errorResponse.message
-                
-                throw NetworkError.refreshTokenExpiredError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
-            }
-            
-            if let httpResponse = response.response {
-                let cookieStorage = CookieStorage()
-                cookieStorage.extractTokensAndStore(from: httpResponse)
-            }
-
-        } catch {
-            print("❌ [토큰 재발급 요청 실패] \(error)")
-            throw NetworkError.unknown
+            throw NetworkError.refreshTokenExpiredError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
         }
-
+        
+        if let httpResponse = response.response {
+            let cookieStorage = CookieStorage()
+            cookieStorage.extractTokensAndStore(from: httpResponse)
+        }
     }
 }

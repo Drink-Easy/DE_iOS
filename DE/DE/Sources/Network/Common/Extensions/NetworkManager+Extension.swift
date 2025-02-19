@@ -94,57 +94,46 @@ extension NetworkManager {
         decodingType: T.Type,
         retryCount: Int = 1 // ✅ 재시도 횟수 제한 추가
     ) async throws -> T {
-        do {
-            let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: response.data)
-            
-            let devMessage = errorResponse.message
-            let serverErrorCode = ServerErrorCode(rawValue: errorResponse.code) ?? .unknown
-            print("서버 에러 코드 :  \(serverErrorCode)")
-            let userMessage = serverErrorCode.errorMessage
+        let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: response.data)
         
-            print("재시도 횟수 : \(retryCount - 1)")
-            // 개발팀 용 로그
-//            Analytics.logEvent("DRINKIG_NETWORK_ERROR", parameters: [
-//                "isSuccess" : errorResponse.isSuccess,
-//                "statusCode": response.statusCode,
-//                "httpStatusCode" : errorResponse.httpStatus,
-//                "serverCode": errorResponse.code,
-//                "message": devMessage
-//            ])
-            
-            if serverErrorCode == .refreshTokenExpired {
-                print("리프레시 토큰 만료 에러 잡으러 옴")
-                throw NetworkError.refreshTokenExpiredError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
-            }
-            
-            // 🔄 [토큰 만료] ACCESS_TOKEN4001 또는 ACCESS_TOKEN4002 → 토큰 재발급 후 API 재시도
-            if serverErrorCode == .accessTokenExpired || serverErrorCode == .accessTokenInvalid {
-                print("액세스 토큰 오류 캐치함")
-                guard retryCount > 0 else {
-                    let addDevMessage = "❌ [재시도 한도 초과] API 요청 중단" + devMessage
-                    throw NetworkError.tokenExpiredError(statusCode: response.statusCode, devMessage: addDevMessage, userMessage: userMessage)
-                }
-                
-                do {
-                    try await AuthService().reissueTokenAsync()
-                    return try await requestAsync(target: target, decodingType: decodingType)
-                } catch let error as NetworkError {
-                    let addDevMessage = "❌ 토큰 재발급 실패 " + devMessage
-                    throw NetworkError.tokenExpiredError(statusCode: response.statusCode, devMessage: addDevMessage, userMessage: userMessage)
-                }
-            }
-            
-            throw NetworkError.serverError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
-            
-        } catch {
-            if let jsonString = String(data: response.data, encoding: .utf8) {
-                print("📜 Raw Response Data: \(jsonString)")
-            } else {
-                print("❌ 데이터 변환 실패")
-            }
-            
-            throw NetworkError.serverError(statusCode: response.statusCode, devMessage: "서버 응답 해석 실패", userMessage: "서버 응답이 올바르지 않습니다.")
+        let devMessage = errorResponse.message
+        let serverErrorCode = ServerErrorCode(rawValue: errorResponse.code) ?? .unknown
+        //            print("서버 에러 코드 :  \(serverErrorCode)")
+        let userMessage = serverErrorCode.errorMessage
+        
+        //            print("재시도 횟수 : \(retryCount - 1)")
+        // 개발팀 용 로그
+        //            Analytics.logEvent("DRINKIG_NETWORK_ERROR", parameters: [
+        //                "isSuccess" : errorResponse.isSuccess,
+        //                "statusCode": response.statusCode,
+        //                "httpStatusCode" : errorResponse.httpStatus,
+        //                "serverCode": errorResponse.code,
+        //                "message": devMessage
+        //            ])
+        
+        if serverErrorCode == .refreshTokenExpired {
+            print("리프레시 토큰 만료 에러 잡으러 옴")
+            throw NetworkError.refreshTokenExpiredError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
         }
+        
+        // 🔄 [토큰 만료] ACCESS_TOKEN4001 또는 ACCESS_TOKEN4002 → 토큰 재발급 후 API 재시도
+        if serverErrorCode == .accessTokenExpired || serverErrorCode == .accessTokenInvalid {
+            print("액세스 토큰 오류 캐치함")
+            guard retryCount > 0 else {
+                let addDevMessage = "❌ [재시도 한도 초과] API 요청 중단" + devMessage
+                throw NetworkError.tokenExpiredError(statusCode: response.statusCode, devMessage: addDevMessage, userMessage: userMessage)
+            }
+            
+            do {
+                try await AuthService().reissueTokenAsync()
+                return try await requestAsync(target: target, decodingType: decodingType)
+            } catch {
+                let addDevMessage = "❌ 토큰 재발급 실패 " + devMessage
+                throw NetworkError.tokenExpiredError(statusCode: response.statusCode, devMessage: addDevMessage, userMessage: userMessage)
+            }
+        }
+        
+        throw NetworkError.serverError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
     }
     
     private func handleErrorResponseOptional<T: Decodable>(
@@ -170,25 +159,26 @@ extension NetworkManager {
                 "message": devMessage
             ])
             
+            if serverErrorCode == .refreshTokenExpired {
+                print("리프레시 토큰 만료 에러 잡으러 옴")
+                throw NetworkError.refreshTokenExpiredError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
+            }
+            
             // 🔄 [토큰 만료] ACCESS_TOKEN4001 또는 ACCESS_TOKEN4002 → 토큰 재발급 후 API 재시도
             if serverErrorCode == .accessTokenExpired || serverErrorCode == .accessTokenInvalid {
+                print("액세스 토큰 오류 캐치함")
                 guard retryCount > 0 else {
                     let addDevMessage = "❌ [재시도 한도 초과] API 요청 중단" + devMessage
                     throw NetworkError.tokenExpiredError(statusCode: response.statusCode, devMessage: addDevMessage, userMessage: userMessage)
                 }
-
+                
                 do {
-                    _ = try await AuthService().reissueTokenAsync()
-                    // ✅ 토큰 재발급 후 동일 API 요청 재시도
-                    return try await handleResponseRequired(response, decodingType: decodingType, target: target, retryCount: retryCount - 1)
-                } catch {
-                    let addDevMessage = "❌ 토큰 재발급 실패" + devMessage
+                    try await AuthService().reissueTokenAsync()
+                    return try await requestAsync(target: target, decodingType: decodingType)
+                } catch let error as NetworkError {
+                    let addDevMessage = "❌ 토큰 재발급 실패 " + devMessage
                     throw NetworkError.tokenExpiredError(statusCode: response.statusCode, devMessage: addDevMessage, userMessage: userMessage)
                 }
-            }
-
-            if serverErrorCode == .refreshTokenExpired {
-                throw NetworkError.refreshTokenExpiredError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
             }
             
             throw NetworkError.serverError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
