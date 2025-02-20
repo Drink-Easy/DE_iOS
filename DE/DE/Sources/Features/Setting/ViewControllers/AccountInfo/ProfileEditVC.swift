@@ -28,7 +28,6 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     public var profileImgURL: String?
     public var originUsername: String?
-    public var originUserCity: String?
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -86,12 +85,10 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         view.addSubview(profileView)
         view.addSubview(indicator)
         guard let profileImg = self.profileImgURL,
-              let usernameText = self.originUsername,
-              let usercityText = self.originUserCity else { return }
+              let usernameText = self.originUsername else { return }
         let imgURL = URL(string: profileImg)
         self.profileView.profileImageView.sd_setImage(with: imgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
         self.profileView.nicknameTextField.text = usernameText
-        self.profileView.myLocationTextField.text = usercityText
     }
     
     func setupConstraints() {
@@ -107,7 +104,6 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         profileView.nicknameTextField.textField.addTarget(self, action: #selector(validateNickname), for: .editingChanged)
         profileView.checkDuplicateButton.addTarget(self, action: #selector(checkNicknameValidity), for: .touchUpInside)
         profileView.myLocationTextField.textField.addTarget(self, action: #selector(checkFormValidity), for: .allEditingEvents)
-        profileView.locationImageIconButton.addTarget(self, action: #selector(getMyLocation), for: .touchUpInside)
     }
     
     //MARK: Functions
@@ -122,10 +118,9 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
             let _ = try await networkService.deleteProfileImage()
         }
         
-        guard let newUserName = self.profileView.nicknameTextField.text,
-              let newUserCity = self.profileView.myLocationTextField.text else { return }
+        guard let newUserName = self.profileView.nicknameTextField.text else { return }
         
-        let data = networkService.makeMemberInfoUpdateRequestDTO(username: newUserName, city: newUserCity)
+        let data = networkService.makeMemberInfoUpdateRequestDTO(username: newUserName)
         
         // 병렬 처리
         let _ = try await networkService.patchUserInfoAsync(body: data)
@@ -235,9 +230,8 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     @objc func checkFormValidity() {
         let isNicknameValid = !(profileView.nicknameTextField.textField.text?.isEmpty ?? true) && ValidationManager.isNicknameCanUse && ValidationManager.isLengthValid
-        let isLocationValid = !(profileView.myLocationTextField.textField.text?.isEmpty ?? true)
         let isImageSelected = profileView.profileImageView.image != nil
-        let isFormValid = isNicknameValid && isLocationValid && isImageSelected
+        let isFormValid = isNicknameValid && isImageSelected
         navigationItem.rightBarButtonItem?.isEnabled = isFormValid
     }
 }

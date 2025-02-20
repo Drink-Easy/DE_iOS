@@ -75,8 +75,7 @@ class ManiaCountryViewController: UIViewController, FirebaseTrackable {
                                                                monthPrice: userMng.monthPrice,
                                                                wineSort: userMng.wineSort,
                                                                wineArea: userMng.wineArea,
-                                                               wineVariety: userMng.wineVariety,
-                                                               region: userMng.region)
+                                                               wineVariety: userMng.wineVariety)
         print(userMng.imageData ?? "이미지 없음")
         Task {
             do {

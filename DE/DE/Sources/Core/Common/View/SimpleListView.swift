@@ -125,8 +125,8 @@ public class SimpleListView: UIView {
         }
         
         backView.snp.updateConstraints { make in
-            if items.count == 4 { //리스트 개수가 2일 때
-                make.height.greaterThanOrEqualTo(164)
+            if items.count == 3 { //리스트 개수가 3일 때
+                make.height.greaterThanOrEqualTo(124)
             } else { //리스트 개수가 2일 때
                 make.height.greaterThanOrEqualTo(84)
             }
