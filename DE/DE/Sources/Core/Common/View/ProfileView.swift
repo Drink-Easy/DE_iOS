@@ -71,7 +71,7 @@ public class ProfileView: UIView {
     }
     
     private func setupUI() {
-        [profileImageView, profileImageEditButton, profileImageIconView, nicknameTextField, checkDuplicateButton, myLocationTextField, locationImageIconButton].forEach {
+        [profileImageView, profileImageEditButton, profileImageIconView, nicknameTextField, checkDuplicateButton, /*myLocationTextField, locationImageIconButton*/].forEach {
             addSubview($0)
         }
     }
@@ -99,15 +99,15 @@ public class ProfileView: UIView {
             make.top.equalTo(profileImageView.snp.bottom).offset(DynamicPadding.dynamicValue(32.0))
             make.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
         }
-        myLocationTextField.snp.makeConstraints { make in
-            make.top.equalTo(nicknameTextField.snp.bottom).offset(DynamicPadding.dynamicValue(32.0))
-            make.leading.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
-            make.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(80.0))
-        }
-        locationImageIconButton.snp.makeConstraints { make in
-            make.width.height.equalTo(DynamicPadding.dynamicValue(48.0))
-            make.leading.equalTo(myLocationTextField.snp.trailing).offset(8)
-            make.bottom.equalTo(myLocationTextField.snp.bottom)
-        }
+//        myLocationTextField.snp.makeConstraints { make in
+//            make.top.equalTo(nicknameTextField.snp.bottom).offset(DynamicPadding.dynamicValue(32.0))
+//            make.leading.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
+//            make.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(80.0))
+//        }
+//        locationImageIconButton.snp.makeConstraints { make in
+//            make.width.height.equalTo(DynamicPadding.dynamicValue(48.0))
+//            make.leading.equalTo(myLocationTextField.snp.trailing).offset(8)
+//            make.bottom.equalTo(myLocationTextField.snp.bottom)
+//        }
     }
 }

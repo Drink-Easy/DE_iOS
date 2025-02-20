@@ -23,7 +23,9 @@ class AppInfoViewController : UIViewController, FirebaseTrackable {
     private var tableView = UITableView()
     
     private let appInfoItems: [String] = [
-        "서비스 이용약관", "개인정보 처리방침", "위치정보 이용약관", "오픈소스 라이브러리"
+        "서비스 이용약관", "개인정보 처리방침",
+//        "위치정보 이용약관",
+        "오픈소스 라이브러리"
     ]
     
     private let instaButton = UIButton().then {
