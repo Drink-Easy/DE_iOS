@@ -141,6 +141,7 @@ class LoginVC: UIViewController, FirebaseTrackable {
                     SelectLoginTypeVC.keychain.set(usernameString, forKey: "savedUserEmail")
                 }
                 self.view.hideBlockingView()
+                SelectLoginTypeVC.keychain.set(data.isFirst, forKey: "isFirst")
                 self.goToNextView(data.isFirst)
                 Analytics.setUserID("\(data.id)") // 유저 아이디
             } catch {

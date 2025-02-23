@@ -33,9 +33,8 @@ public class UserSurveyManager {
         self.wineVariety = self.getIntersectionVarietyData()
     }
     
-    public func setPersonalInfo(name : String, addr region: String, profileImg image : UIImage? = nil) {
+    public func setPersonalInfo(name : String, profileImg image : UIImage? = nil) {
         self.name = name
-        self.region = region
         self.imageData = image
     }
     

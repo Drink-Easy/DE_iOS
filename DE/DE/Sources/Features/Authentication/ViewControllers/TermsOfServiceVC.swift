@@ -113,9 +113,13 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
             view.addSubview($0)
         }
         
-        for index in 0..<3 {
-            let title = ["개인정보 수집 및 이용 동의 (필수)", "위치정보 이용약관 (필수)", "서비스 이용약관 (필수)"][index]
-            let contents = [Constants.Policy.privacy, Constants.Policy.location, Constants.Policy.service][index]
+        for index in 0..<2 {
+            let title = ["개인정보 수집 및 이용 동의 (필수)",
+//                         "위치정보 이용약관 (필수)",
+                         "서비스 이용약관 (필수)"][index]
+            let contents = [Constants.Policy.privacy,
+//                            Constants.Policy.location,
+                            Constants.Policy.service][index]
             let agreeView = createAgreeView(title: title, content: contents ,index: index)
             agreeItems.append(agreeView)
             view.addSubview(agreeView)

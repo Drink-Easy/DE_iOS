@@ -80,16 +80,16 @@ public final class AuthService : NetworkManager {
         return try await requestAsync(target: .emailVerification(data: data), decodingType: Bool.self)
     }
     /// ✅ 토큰 재발급 API (무한 루프 방지)
-    private var isReissuingToken = false
+    private static var isReissuingToken = false
 
     public func reissueTokenAsync() async throws {
-        guard !isReissuingToken else {
+        guard !AuthService.isReissuingToken else {
             print("⚠️ [토큰 재발급] 이미 요청 진행 중...")
             throw NetworkError.serverError(statusCode: 401, devMessage: "이미 토큰 재발급 요청 중", userMessage: "이미 토큰 재발급 요청 중")
         }
 
-        isReissuingToken = true // ✅ 재발급 진행 중
-        defer { isReissuingToken = false } // ✅ 요청 완료 후 해제
+        AuthService.isReissuingToken = true // ✅ 재발급 진행 중
+        defer { AuthService.isReissuingToken = false } // ✅ 요청 완료 후 해제
 
         _ = try await requestAsync(target: .postReIssueToken, decodingType: String.self)
         

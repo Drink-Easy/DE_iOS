@@ -129,11 +129,11 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
         let vc = ProfileEditVC()
         vc.profileImgURL = userProfile?.imageUrl
         vc.originUsername = userProfile?.username
-        vc.originUserCity = userProfile?.city
         navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc private func logoutButtonTapped() {
+        clearCookie()
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.logoutBtnTapped, fileName: #file)
         self.view.showBlockingView()
         Task {
@@ -151,13 +151,17 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
                     self.view.hideBlockingView()
                     self.showSplashScreen()
                 }
+            } catch let error as NetworkError {
+                self.view.hideBlockingView()
+                print(error.errorDescription!)
+                errorHandler.handleNetworkError(error, in: self)
             } catch {
                 self.view.hideBlockingView()
                 errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
-
+    
 
     @objc private func deleteButtonTapped() {
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.quitBtnTapped, fileName: #file)
@@ -200,6 +204,10 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
                     self.view.hideBlockingView()
                     self.showSplashScreen()
                 }
+            } catch let error as NetworkError {
+                self.view.hideBlockingView()
+                print(error.errorDescription!)
+                errorHandler.handleNetworkError(error, in: self)
             } catch {
                 self.view.hideBlockingView()
                 errorHandler.handleNetworkError(error, in: self)
@@ -271,25 +279,39 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
             
             let safeImageUrl = data.imageUrl ?? "https://placehold.co/400x400"
             
-            self.userProfile = MemberInfoResponse(imageUrl: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
-            self.setUserData(imageURL: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
+            self.userProfile = MemberInfoResponse(imageUrl: safeImageUrl, username: data.username, email: data.email, authType: data.authType, adult: data.adult)
+            self.setUserData(imageURL: safeImageUrl, username: data.username, email: data.email, authType: data.authType, adult: data.adult)
+        }  catch let error as NetworkError {
+            self.view.hideBlockingView()
+            print(error.errorDescription!)
+            errorHandler.handleNetworkError(error, in: self)
         } catch {
             self.view.hideBlockingView()
             errorHandler.handleNetworkError(error, in: self)
         }
     }
     
+    private func changeKor(_ authType: String) -> String {
+        switch authType.lowercased() {
+        case "apple" :
+            return "애플"
+        case "kakao" :
+            return "카카오"
+        default:
+            return "드링키지"
+        }
+    }
+    
     /// UI update
-    private func setUserData(imageURL: String, username: String, email: String, city: String, authType: String, adult: Bool) {
+    private func setUserData(imageURL: String, username: String, email: String, authType: String, adult: Bool) {
         DispatchQueue.main.async {
             let profileImgURL = URL(string: imageURL)
             self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
             self.accountView.titleLabel.text = "내 정보"
 //            let adultText = adult ? "인증 완료" : "인증 전"
             self.accountView.items = [("닉네임", username),
-            ("내 동네", city),
-            ("이메일", email),
-            ("연동상태", authType)
+                                      ("이메일", email),
+                                      ("연동상태", self.changeKor(authType))
     //        ("성인인증", adultText)
             ]
         }
