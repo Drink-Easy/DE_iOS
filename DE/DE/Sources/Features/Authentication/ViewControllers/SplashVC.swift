@@ -13,8 +13,6 @@ import Then
 import Network
 import CoreModule
 
-// SelectLoginTypeVC.keychain.getBool("isFirst")
-
 public class SplashVC : UIViewController, FirebaseTrackable {
     public var screenName: String = Tracking.VC.splashVC
     

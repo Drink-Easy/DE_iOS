@@ -11,9 +11,9 @@ import FirebaseRemoteConfig
 import Firebase
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
-
+    
     var window: UIWindow?
-
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
@@ -22,9 +22,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // 화면을 구성하는 UIWindow 인스턴스 생성
         let window = UIWindow(windowScene: windowScene)
         // 실제 첫 화면이 되는 MainViewController 인스턴스 생성
-
+        
         let vc = SplashVC()
-
+        
         // NavigationController을 사용할 경우, MainViewController를 rootViewController로 갖는 NavigationController을 생성해야한다.
         let navigationController = UINavigationController(rootViewController: vc)
         navigationController.isNavigationBarHidden = true
@@ -35,14 +35,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // makeKeyAndVisible() 메서드 호출
         window.makeKeyAndVisible()
     }
-
+    
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
         // Release any resources associated with this scene that can be re-created the next time the scene connects.
         // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
     }
-
+    
     func sceneDidBecomeActive(_ scene: UIScene) {
         // 앱이 활성화될 때 RemoteConfig 가져오기
         fetchRemoteConfig()
@@ -52,12 +52,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called when the scene will move from an active state to an inactive state.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
     }
-
+    
     func sceneWillEnterForeground(_ scene: UIScene) {
         // 앱이 백그라운드에서 돌아올 때도 RemoteConfig 새로고침
         fetchRemoteConfig()
     }
-
+    
     func sceneDidEnterBackground(_ scene: UIScene) {
         // Called as the scene transitions from the foreground to the background.
         // Use this method to save data, release shared resources, and store enough scene-specific state information
@@ -113,7 +113,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 struct JsonTest : Codable {
     let showStopSign : Bool
-    let startDate : String
-    let endDate : String
+    let 
     let message : String
 }
