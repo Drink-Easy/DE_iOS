@@ -257,8 +257,7 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
                                                                monthPrice: userMng.monthPrice,
                                                                wineSort: userMng.wineSort,
                                                                wineArea: userMng.wineArea,
-                                                               wineVariety: userMng.wineVariety,
-                                                               region: userMng.region)
+                                                               wineVariety: userMng.wineVariety)
 
     }
     

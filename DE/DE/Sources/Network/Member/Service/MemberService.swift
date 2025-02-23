@@ -22,13 +22,13 @@ public final class MemberService : NetworkManager {
     
     // MARK: - DTO funcs
     /// 취향찾기 데이터 생성 함수 - body argument
-    public func makeMemberInfoRequestDTO(name: String, isNewbie: Bool, monthPrice: Int, wineSort: [String], wineArea: [String], wineVariety: [String], region: String) -> MemberRequestDTO {
-        return MemberRequestDTO(name: name, isNewbie: isNewbie, monthPrice: monthPrice, wineSort: wineSort, wineArea: wineArea, wineVariety: wineVariety, region: region)
+    public func makeMemberInfoRequestDTO(name: String, isNewbie: Bool, monthPrice: Int, wineSort: [String], wineArea: [String], wineVariety: [String]) -> MemberRequestDTO {
+        return MemberRequestDTO(name: name, isNewbie: isNewbie, monthPrice: monthPrice, wineSort: wineSort, wineArea: wineArea, wineVariety: wineVariety)
     }
     
     /// 프로필 업데이트 데이터 생성 함수 - body argument
-    public func makeMemberInfoUpdateRequestDTO(username: String?, city: String?) -> MemberUpdateRequest {
-        return MemberUpdateRequest(username: username, city: city)
+    public func makeMemberInfoUpdateRequestDTO(username: String?) -> MemberUpdateRequest {
+        return MemberUpdateRequest(username: username)
     }
     
     /// 애플 로그인한 유저 탈퇴 데이터 생성 함수

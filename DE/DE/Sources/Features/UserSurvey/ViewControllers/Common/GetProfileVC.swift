@@ -137,8 +137,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     @objc func nextButtonTapped() {
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
-        guard let name = self.userName,
-              let addr = self.userRegion else { return }
+        guard let name = self.userName else { return }
         
         if let placeholderImage = UIImage(named: "profilePlaceholder"),
            let currentImageData = self.profileView.profileImageView.image?.pngData(),
@@ -148,7 +147,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
             self.profileImg = nil
         }
         
-        UserSurveyManager.shared.setPersonalInfo(name: name, addr: addr, profileImg: profileImg)
+        UserSurveyManager.shared.setPersonalInfo(name: name, profileImg: profileImg)
         
         let vc = IsNewbieViewController()
         navigationController?.pushViewController(vc, animated: true)
@@ -211,12 +210,10 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     //MARK: - 폼 유효성 검사
     @objc func checkFormValidity() {
         let isNicknameValid =  ValidationManager.isNicknameCanUse && ValidationManager.isLengthValid
-        let isLocationValid = !(profileView.myLocationTextField.textField.text?.isEmpty ?? true)
         let isImageSelected = profileView.profileImageView.image != nil
-        let isFormValid = isNicknameValid && isLocationValid && isImageSelected
+        let isFormValid = isNicknameValid && isImageSelected
         
         self.userName = profileView.nicknameTextField.textField.text
-        self.userRegion = profileView.myLocationTextField.textField.text
         self.profileImg = profileView.profileImageView.image
         
         nextButton.isEnabled = isFormValid

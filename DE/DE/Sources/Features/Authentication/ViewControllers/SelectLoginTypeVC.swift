@@ -21,7 +21,7 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
     public var appleLoginDto : AppleLoginRequestDTO?
     let networkService = AuthService()
-    private let errorHandler = NetworkErrorHandler()
+    let errorHandler = NetworkErrorHandler()
     
     private let mainView = SelectLoginTypeView()
     
@@ -44,7 +44,7 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        logScreenView(fileName: #file)
+        logScreenView(fileName: ( #file as NSString ).lastPathComponent)
     }
     
     // MARK: - Setup Methods
@@ -63,9 +63,6 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
                 UserApi.shared.me { (user, error) in
                     if let error = error {
                         print("에러 발생: \(error.localizedDescription)")
-                        DispatchQueue.main.async {
-                            Toaster.shared.makeToast("사용자 정보 가져오기 실패")
-                        }
                         return
                     }
                     
@@ -101,6 +98,7 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
                 Analytics.setUserID("\(response.id)") // 유저 아이디
                 DispatchQueue.main.async {
                     self.view.hideBlockingView()
+                    SelectLoginTypeVC.keychain.set(response.isFirst, forKey: "isFirst")
                     self.goToNextView(response.isFirst)
                 }
             } catch {

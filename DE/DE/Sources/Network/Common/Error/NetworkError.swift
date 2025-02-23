@@ -14,18 +14,35 @@ public enum NetworkError: Error {
 extension NetworkError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .networkError(let devMessage, let userMessage):
-            return userMessage
-        case .decodingError(let devMessage, let userMessage):
-            return userMessage
-        case .serverError(let statusCode, let devMessage, let userMessage):
-            return "\(devMessage)"
+        case .networkError(let devMessage, _):
+            return devMessage
+        case .decodingError(let devMessage, _):
+            return devMessage
+        case .serverError(let statusCode, let devMessage, _):
+            return "[\(statusCode)] \(devMessage)"
         case .unknown:
-            return "알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요."
-        case .tokenExpiredError(let statusCode, let devMessage, let userMessage):
-            return "\(devMessage)"
-        case .refreshTokenExpiredError(let statusCode, let devMessage, let userMessage):
-            return "\(devMessage)"
+            return "알 수 없는 오류가 발생했습니다."
+        case .tokenExpiredError(let statusCode, let devMessage, _):
+            return "[\(statusCode)] \(devMessage)"
+        case .refreshTokenExpiredError(let statusCode, let devMessage, _):
+            return "[\(statusCode)] \(devMessage)"
+        }
+    }
+    
+    public var recoverySuggestion: String? {
+        switch self {
+        case .networkError(_, let userMessage):
+            return userMessage
+        case .decodingError(_, let userMessage):
+            return userMessage
+        case .serverError(_, _, let userMessage):
+            return "\(userMessage)"
+        case .unknown:
+            return "관리자에게 문의하세요."
+        case .tokenExpiredError(_, _, let userMessage):
+            return "\(userMessage)"
+        case .refreshTokenExpiredError(_, _, let userMessage):
+            return "\(userMessage)"
         }
     }
 }
