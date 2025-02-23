@@ -22,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // 화면을 구성하는 UIWindow 인스턴스 생성
         let window = UIWindow(windowScene: windowScene)
         // 실제 첫 화면이 되는 MainViewController 인스턴스 생성
-        
+
         let vc = SplashVC()
         
         // NavigationController을 사용할 경우, MainViewController를 rootViewController로 갖는 NavigationController을 생성해야한다.
@@ -86,16 +86,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     UserDefaults.standard.set(isNeedUpdate, forKey: "isNeedUpdate")
                     UserDefaults.standard.synchronize()
                     
-                    let jsonString = remoteConfig["jsonTest"].stringValue
+                    let jsonString = remoteConfig["serverSign"].stringValue
                     let jsonData = jsonString.data(using: .utf8)!
                     print(jsonData)
                     // ✅ JSON 디코딩
                     do {
-                        let data = try JSONDecoder().decode(JsonTest.self, from: jsonData)
+                        let data = try JSONDecoder().decode(serverSign.self, from: jsonData)
                         if data.showStopSign {
                             UserDefaults.standard.set(data.showStopSign, forKey: "showStopSign")
                             UserDefaults.standard.set("🚨 \(data.message)", forKey: "signMessage")
-                            UserDefaults.standard.set("🕒 점검 시간: \(data.startDate) ~ \(data.endDate)", forKey: "signDate")
+                            UserDefaults.standard.set("🕒 점검 시간: \(data.stopDate)", forKey: "signDate")
                             UserDefaults.standard.synchronize()
                         } else {
                             print("✅ 점검 중이 아닙니다.")
@@ -104,15 +104,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         fatalError("❌ JSON 디코딩 실패: \(error.localizedDescription)")
                     }
                 }
-            } else {
-                print("⚠️ RemoteConfig Fetch 실패: \(error?.localizedDescription ?? "알 수 없는 에러")")
             }
         }
     }
 }
 
-struct JsonTest : Codable {
+struct serverSign : Codable {
     let showStopSign : Bool
-    let 
+    let stopDate : String
     let message : String
 }

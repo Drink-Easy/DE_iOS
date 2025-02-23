@@ -45,16 +45,17 @@ public class SplashVC : UIViewController, FirebaseTrackable {
             }
         }
         
-//        let isNeedUpdate = UserDefaults.standard.bool(forKey: "isNeedUpdate")
-//        let showStopSign = UserDefaults.standard.bool(forKey: "showStopSign")
+
+        
+        let isNeedUpdate = UserDefaults.standard.bool(forKey: "isNeedUpdate")
+        let showStopSign = UserDefaults.standard.bool(forKey: "showStopSign")
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            self.checkAuthenticationStatus()
-//            if showStopSign || isNeedUpdate{
-////                self.presentAlertView()
-//                self.checkAuthenticationStatus()
-//            } else {
-//                
-//            }
+            if showStopSign {
+                // 서버 점검시간 공지
+                self.presentAlertView()
+            } else {
+                self.checkAuthenticationStatus()
+            }
         }
     }
     
