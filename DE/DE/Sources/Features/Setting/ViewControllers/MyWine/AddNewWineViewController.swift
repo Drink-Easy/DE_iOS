@@ -41,7 +41,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     
     private lazy var searchHomeView = SearchHomeView(
         titleText: "추가할 와인을 선택해주세요",
-        placeholder: "와인 이름을 적어 검색"
+        placeholder: "와인 이름을 검색하세요 (한글/영문)"
     )
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -100,6 +100,19 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
             textField.resignFirstResponder()
         }
         return true
+    }
+    
+    public func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField.text?.isEmpty ?? true {
+            let placeholderText = "와인 이름을 검색하세요 (한글/영문)"
+            textField.attributedPlaceholder = NSAttributedString(
+                string: placeholderText,
+                attributes: [
+                    .foregroundColor: AppColor.gray70 ?? .gray,
+                    .font: UIFont.ptdRegularFont(ofSize: 14)
+                ]
+            )
+        }
     }
 
     private func showCharacterLimitAlert() {

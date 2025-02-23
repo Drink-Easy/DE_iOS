@@ -41,7 +41,7 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
     
     private lazy var searchHomeView = SearchHomeView(
         titleText: "검색하고 싶은\n와인을 입력해주세요",
-        placeholder: "검색어 입력"
+        placeholder: "와인 이름을 검색하세요 (한글/영문)"
     ).then {
         $0.searchBar.delegate = self
     }
@@ -84,6 +84,19 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
             textField.resignFirstResponder()
         }
         return true
+    }
+    
+    public func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField.text?.isEmpty ?? true {
+            let placeholderText = "와인 이름을 검색하세요 (한글/영문)"
+            textField.attributedPlaceholder = NSAttributedString(
+                string: placeholderText,
+                attributes: [
+                    .foregroundColor: AppColor.gray70 ?? .gray,
+                    .font: UIFont.ptdRegularFont(ofSize: 14)
+                ]
+            )
+        }
     }
 
     private func showCharacterLimitAlert() {
