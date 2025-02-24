@@ -276,8 +276,6 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
                    let createdAt = data.createdAt {
                     let reviewModel = WineReviewModel(name: name, contents: review, rating: rating, createdAt: createdAt)
                     self.reviewData.append(reviewModel)
-                } else {
-                    print("작성된 리뷰가 없습니다.")
                 }
             }
             expandedCells = Array(repeating: false, count: self.reviewData.count)

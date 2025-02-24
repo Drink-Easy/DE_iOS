@@ -186,7 +186,6 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     @objc func checkNicknameValidity(){
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.checkDuplicateNicknameBtnTapped, fileName: #file)
         guard let nickname = profileView.nicknameTextField.text, !nickname.isEmpty else {
-            print("닉네임이 없습니다")
             return
         }
         view.showBlockingView()

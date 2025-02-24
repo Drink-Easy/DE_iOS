@@ -31,7 +31,6 @@ class NoseManager {
                 scentSections[sectionIndex].scents[scentIndex].isSelected = false
             }
         }
-        print("🔄 모든 향 선택 해제 완료!")
     }
     
     public func applySelectedScents(from selectedScentNames: [String]) {
@@ -45,7 +44,6 @@ class NoseManager {
                 }
             }
         }
-//        print("✅ 선택된 향 적용 완료: \(selectedScentNames)")
     }
     
     func collapseAllSections() {

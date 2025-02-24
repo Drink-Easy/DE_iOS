@@ -153,10 +153,8 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
                 }
             } catch let error as NetworkError {
                 self.view.hideBlockingView()
-                print(error.errorDescription!)
                 errorHandler.handleNetworkError(error, in: self)
             } catch {
-                self.view.hideBlockingView()
                 errorHandler.handleNetworkError(error, in: self)
             }
         }
@@ -206,7 +204,6 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
                 }
             } catch let error as NetworkError {
                 self.view.hideBlockingView()
-                print(error.errorDescription!)
                 errorHandler.handleNetworkError(error, in: self)
             } catch {
                 self.view.hideBlockingView()
@@ -223,7 +220,6 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
             .compactMap({ $0 as? UIWindowScene })
             .first?.windows
             .first else {
-            print("윈도우를 가져올 수 없습니다.")
             return
         }
         
@@ -242,8 +238,6 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
                 HTTPCookieStorage.shared.deleteCookie(cookie)
             }
         }
-        
-        print("✅ 쿠키에 저장된 토큰이 삭제되었습니다.")
     }
     
     private func clearForLogout() {
@@ -283,7 +277,6 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
             self.setUserData(imageURL: safeImageUrl, username: data.username, email: data.email, authType: data.authType, adult: data.adult)
         }  catch let error as NetworkError {
             self.view.hideBlockingView()
-            print(error.errorDescription!)
             errorHandler.handleNetworkError(error, in: self)
         } catch {
             self.view.hideBlockingView()

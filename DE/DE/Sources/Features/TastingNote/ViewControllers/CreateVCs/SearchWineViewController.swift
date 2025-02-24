@@ -73,7 +73,6 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
                     searchHomeView.noSearchResultLabel.isHidden = !wineResults.isEmpty
                     self.view.hideBlockingView()
                 } catch {
-                    print(error)
                     self.view.hideBlockingView()
                 }
             }
@@ -193,7 +192,6 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
                     try await callSearchAPI(query: searchHomeView.searchBar.text ?? "", startPage: currentPage + 1)
                     self.view.hideBlockingView()
                 } catch {
-                    print("Failed to fetch next page: \(error)")
                     self.view.hideBlockingView()
                 }
                 DispatchQueue.main.async {

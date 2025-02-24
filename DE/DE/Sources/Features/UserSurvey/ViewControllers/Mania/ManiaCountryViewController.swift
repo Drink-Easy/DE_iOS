@@ -76,7 +76,6 @@ class ManiaCountryViewController: UIViewController, FirebaseTrackable {
                                                                wineSort: userMng.wineSort,
                                                                wineArea: userMng.wineArea,
                                                                wineVariety: userMng.wineVariety)
-        print(userMng.imageData ?? "이미지 없음")
         Task {
             do {
                 async let imageUpload: String? = {
@@ -94,7 +93,6 @@ class ManiaCountryViewController: UIViewController, FirebaseTrackable {
                 view.hideBlockingView()
                 processData()
             } catch {
-                print(error)
                 view.hideBlockingView()
                 errorHandler.handleNetworkError(error, in: self)
             }

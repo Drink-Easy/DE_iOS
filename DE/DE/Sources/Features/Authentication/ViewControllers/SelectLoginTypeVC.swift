@@ -62,24 +62,19 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
             if success {
                 UserApi.shared.me { (user, error) in
                     if let error = error {
-                        print("에러 발생: \(error.localizedDescription)")
                         return
                     }
                     
                     guard let userID = user?.id else {
-                        print("user id가 nil입니다.")
                         return
                     }
                     guard let userEmail = user?.kakaoAccount?.email else {
-                        print("userEmail가 nil입니다.")
                         return
                     }
                     let userIDString = String(userID)
                     
                     self.kakaoLoginProceed(userIDString, userEmail: userEmail)
                 }
-            } else {
-                print("카카오 회원가입 실패")
             }
         }
     }

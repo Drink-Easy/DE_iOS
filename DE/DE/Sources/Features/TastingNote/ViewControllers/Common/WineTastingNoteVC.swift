@@ -44,7 +44,6 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         let adjustedTopInset = scrollView.adjustedContentInset.top
         let offsetY = scrollView.contentOffset.y + adjustedTopInset
         let largeTitleBottom = wineInfoView.header.header.frame.maxY
-//        print("offsetY : \(offsetY) + \(adjustedTopInset) vs largeTitleBottom : \(largeTitleBottom)")
         UIView.animate(withDuration: 0.1) {
             self.wineInfoView.header.header.alpha = offsetY > largeTitleBottom ? 0 : 1
             self.smallTitleLabel.isHidden = !(offsetY > largeTitleBottom)
