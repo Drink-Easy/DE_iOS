@@ -14,7 +14,7 @@ import KakaoSDKUser
 import FirebaseAnalytics
 
 
-public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
+public class SelectLoginTypeVC: UIViewController, FirebaseTrackable, UIGestureRecognizerDelegate {
     public var screenName: String = Tracking.VC.selectLoginTypeVC
     
     public static let keychain = KeychainSwift()
@@ -29,6 +29,7 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     public override func loadView() {
