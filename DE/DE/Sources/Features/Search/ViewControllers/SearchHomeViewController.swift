@@ -202,8 +202,8 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
                     try await callSearchAPI(query: searchHomeView.searchBar.text ?? "", startPage: currentPage + 1)
                     indicator.stopAnimating()
                 } catch {
-                    print("Failed to fetch next page: \(error)")
                     indicator.stopAnimating()
+                    errorHandler.handleNetworkError(error, in: self)
                 }
                 DispatchQueue.main.async {
                     self.searchHomeView.searchResultTableView.reloadData()

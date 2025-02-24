@@ -34,8 +34,8 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
                 try await callEntireReviewAPI(wineId: self.wineId, sortType: "최신순", page: 0)
                 self.view.hideBlockingView()
             } catch {
-                print(error)
                 self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
         setupDropdownAction()
@@ -148,7 +148,6 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
                   let review = data.review,
                   let rating = data.rating,
                   let createdAt = data.createdAt else {
-                print("작성된 리뷰가 없습니다.")
                 return nil
             }
             return WineReviewModel(name: name, contents: review, rating: rating, createdAt: createdAt)
@@ -240,8 +239,8 @@ extension EntireReviewViewController: UICollectionViewDataSource, UICollectionVi
                     try await callEntireReviewAPI(wineId: self.wineId, sortType: currentType, page: currentPage + 1)
                     self.view.hideBlockingView()
                 } catch {
-                    print("Failed to fetch next page: \(error)")
                     self.view.hideBlockingView()
+                    errorHandler.handleNetworkError(error, in: self)
                 }
                 DispatchQueue.main.async {
                     self.entireReviewView.reviewCollectionView.reloadData()

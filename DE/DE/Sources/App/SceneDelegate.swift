@@ -72,47 +72,47 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
     
-//    func fetchRemoteConfig() {
-//        let remoteConfig = RemoteConfig.remoteConfig()
-//        let settings = RemoteConfigSettings()
-//        settings.minimumFetchInterval = 0  // 즉시 업데이트
-//        remoteConfig.configSettings = settings
-//        
-//        remoteConfig.fetch() { (status, error) -> Void in
-//            if status == .success {
-//                remoteConfig.activate { (changed, error) in
-//                    print(changed)
-//                    let isNeedUpdate = remoteConfig["isNeedUpdate"].boolValue
-//                    UserDefaults.standard.set(isNeedUpdate, forKey: "isNeedUpdate")
-//                    UserDefaults.standard.synchronize()
-//                    
-//                    let jsonString = remoteConfig["jsonTest"].stringValue
-//                    let jsonData = jsonString.data(using: .utf8)!
-//                    print(jsonData)
-//                    // ✅ JSON 디코딩
-//                    do {
-//                        let data = try JSONDecoder().decode(JsonTest.self, from: jsonData)
-//                        if data.showStopSign {
-//                            UserDefaults.standard.set(data.showStopSign, forKey: "showStopSign")
-//                            UserDefaults.standard.set("🚨 \(data.message)", forKey: "signMessage")
-//                            UserDefaults.standard.set("🕒 점검 시간: \(data.startDate) ~ \(data.endDate)", forKey: "signDate")
-//                            UserDefaults.standard.synchronize()
-//                        } else {
-//                            print("✅ 점검 중이 아닙니다.")
-//                        }
-//                    } catch {
-//                        fatalError("❌ JSON 디코딩 실패: \(error.localizedDescription)")
-//                    }
-//                }
-//            } else {
-//                print("⚠️ RemoteConfig Fetch 실패: \(error?.localizedDescription ?? "알 수 없는 에러")")
-//            }
-//        }
-//    }
+    func fetchRemoteConfig() {
+        let remoteConfig = RemoteConfig.remoteConfig()
+        let settings = RemoteConfigSettings()
+        settings.minimumFetchInterval = 0  // 즉시 업데이트
+        remoteConfig.configSettings = settings
+        
+        remoteConfig.fetch() { (status, error) -> Void in
+            if status == .success {
+                remoteConfig.activate { (changed, error) in
+                    print(changed)
+                    let isNeedUpdate = remoteConfig["isNeedUpdate"].boolValue
+                    UserDefaults.standard.set(isNeedUpdate, forKey: "isNeedUpdate")
+                    UserDefaults.standard.synchronize()
+                    
+                    let jsonString = remoteConfig["jsonTest"].stringValue
+                    let jsonData = jsonString.data(using: .utf8)!
+                    print(jsonData)
+                    // ✅ JSON 디코딩
+                    do {
+                        let data = try JSONDecoder().decode(JsonTest.self, from: jsonData)
+                        if data.showStopSign {
+                            UserDefaults.standard.set(data.showStopSign, forKey: "showStopSign")
+                            UserDefaults.standard.set(data.message, forKey: "signMessage")
+                            UserDefaults.standard.set(data.stopDate, forKey: "signDate")
+                            UserDefaults.standard.synchronize()
+                        } else {
+                            print("✅ 점검 중이 아닙니다.")
+                        }
+                    } catch {
+                        fatalError("❌ JSON 디코딩 실패: \(error.localizedDescription)")
+                    }
+                }
+            } else {
+                print("⚠️ RemoteConfig Fetch 실패: \(error?.localizedDescription ?? "알 수 없는 에러")")
+            }
+        }
+    }
 }
 
-//struct JsonTest : Codable {
-//    let showStopSign : Bool
-//    let
-//    let message : String
-//}
+struct JsonTest : Codable {
+    let showStopSign : Bool
+    let stopDate : String
+    let message : String
+}
