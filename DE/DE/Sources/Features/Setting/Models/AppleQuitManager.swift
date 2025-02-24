@@ -36,11 +36,11 @@ extension AccountInfoViewController: ASAuthorizationControllerDelegate {
                             self.showSplashScreen()
                         }
                     } catch {
-                        print(error)
+                        errorHandler.handleNetworkError(error, in: self)
                     }
                 }
             } else {
-                print("애플 인증 실패 : 인가 코드 발급에 실패했습니다.\n다시 시도해주세요.")
+                showToastMessage(message: "애플 인증 실패 : 인가 코드 발급에 실패했습니다.\n다시 시도해주세요.", yPosition: view.frame.height * 0.75)
             }
         default:
             break

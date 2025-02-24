@@ -19,7 +19,7 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
     let memberService = MemberService()
     private let authService = AuthService()
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
-    private let errorHandler = NetworkErrorHandler()
+    internal let errorHandler = NetworkErrorHandler()
     
     private var userProfile: MemberInfoResponse?
     
