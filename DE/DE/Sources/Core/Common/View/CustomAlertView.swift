@@ -15,6 +15,10 @@ public class CustomAlertView: UIView {
         view.clipsToBounds = true
     }
     
+    private lazy var logoImage = UIImageView().then { logoImage in
+        logoImage.image = UIImage(named: "logo")
+    }
+    
     private let titleLabel = UILabel().then { label in
         label.textAlignment = .center
         label.font = UIFont.ptdSemiBoldFont(ofSize: 18)
@@ -27,7 +31,7 @@ public class CustomAlertView: UIView {
         textView.textAlignment = .center
         textView.textColor = AppColor.gray100
         textView.isEditable = false
-        textView.isScrollEnabled = true
+        textView.isScrollEnabled = false
         textView.showsVerticalScrollIndicator = true
         textView.textContainerInset = UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4)
         textView.backgroundColor = .clear
@@ -57,6 +61,7 @@ public class CustomAlertView: UIView {
     private func setupUI() {
         backgroundColor = AppColor.black?.withAlphaComponent(0.3)
         addSubview(containerView)
+        containerView.addSubview(logoImage)
         containerView.addSubview(titleLabel)
         containerView.addSubview(messageTextView)
         containerView.addSubview(confirmButton)
@@ -76,11 +81,16 @@ public class CustomAlertView: UIView {
         containerView.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.width.equalTo(Constants.superViewWidth * 0.7)
-            make.height.equalTo(Constants.superViewHeight * 0.3)
+        }
+        
+        logoImage.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(24)
+            make.width.height.equalTo(24)
+            make.centerX.equalToSuperview()
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(24)
+            make.top.equalTo(logoImage.snp.bottom).offset(16)
             make.leading.equalToSuperview().offset(16)
             make.trailing.equalToSuperview().offset(-16)
         }
@@ -89,14 +99,16 @@ public class CustomAlertView: UIView {
             make.top.equalTo(titleLabel.snp.bottom).offset(16)
             make.leading.equalToSuperview().offset(16)
             make.trailing.equalToSuperview().offset(-16)
-            make.height.lessThanOrEqualTo(160) // 최대 높이 제한
+            make.height.lessThanOrEqualTo(300) // 최대 높이 제한
         }
         
         confirmButton.snp.makeConstraints { make in
             make.top.equalTo(messageTextView.snp.bottom).offset(24)
             make.centerX.equalToSuperview()
             make.height.equalTo(44) // ✅ 버튼 크기 고정
-            make.bottom.lessThanOrEqualToSuperview().offset(-16) // ✅ 최소 여백 유지
+        }
+        containerView.snp.makeConstraints { make in
+            make.bottom.equalTo(confirmButton.snp.bottom).offset(16)
         }
     }
     

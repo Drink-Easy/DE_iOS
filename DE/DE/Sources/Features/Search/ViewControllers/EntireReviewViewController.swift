@@ -20,8 +20,6 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
     var totalPage = 0
     var currentType = "최신순"
     
-    private let errorHandler = NetworkErrorHandler()
-
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.grayBG
