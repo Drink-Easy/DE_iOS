@@ -12,6 +12,7 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
     let navigationBarManager = NavigationBarManager()
     var wineResults: [SearchResultModel] = []
     let networkService = WineService()
+    let errorHandler = NetworkErrorHandler()
     var isLoading = false
     var currentPage = 0
     var totalPage = 0
@@ -193,6 +194,7 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
                     self.view.hideBlockingView()
                 } catch {
                     self.view.hideBlockingView()
+                    errorHandler.handleNetworkError(error, in: self)
                 }
                 DispatchQueue.main.async {
                     self.searchHomeView.searchResultTableView.reloadData()

@@ -12,6 +12,7 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate, F
     let navigationBarManager = NavigationBarManager()
     var wineResults: [SearchResultModel] = []
     let networkService = WineService()
+    let errorHandler = NetworkErrorHandler()
     var isLoading = false
     var currentPage = 0
     var totalPage = 0
@@ -202,8 +203,8 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
                     try await callSearchAPI(query: searchHomeView.searchBar.text ?? "", startPage: currentPage + 1)
                     indicator.hideBlockingView()
                 } catch {
-                    print("Failed to fetch next page: \(error)")
                     indicator.hideBlockingView()
+                    errorHandler.handleNetworkError(error, in: self)
                 }
                 DispatchQueue.main.async {
                     self.searchHomeView.searchResultTableView.reloadData()

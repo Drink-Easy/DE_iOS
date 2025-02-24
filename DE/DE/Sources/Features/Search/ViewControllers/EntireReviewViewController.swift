@@ -13,6 +13,7 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
     var wineName: String = ""
     var reviewResults: [WineReviewModel] = []
     let networkService = WineService()
+    private let errorHandler = NetworkErrorHandler()
     private var expandedCells: [Bool] = []
     var isLoading = false
     var currentPage = 0
@@ -240,8 +241,8 @@ extension EntireReviewViewController: UICollectionViewDataSource, UICollectionVi
                     try await callEntireReviewAPI(wineId: self.wineId, sortType: currentType, page: currentPage + 1)
                     self.view.hideBlockingView()
                 } catch {
-                    print("Failed to fetch next page: \(error)")
                     self.view.hideBlockingView()
+                    errorHandler.handleNetworkError(error, in: self)
                 }
                 DispatchQueue.main.async {
                     self.entireReviewView.reviewCollectionView.reloadData()
