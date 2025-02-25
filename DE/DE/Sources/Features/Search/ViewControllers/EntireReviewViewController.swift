@@ -19,7 +19,7 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
     var currentPage = 0
     var totalPage = 0
     var currentType = "최신순"
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.grayBG

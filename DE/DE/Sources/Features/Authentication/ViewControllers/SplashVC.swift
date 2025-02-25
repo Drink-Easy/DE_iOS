@@ -48,8 +48,6 @@ public class SplashVC : UIViewController, FirebaseTrackable {
         Analytics.setAnalyticsCollectionEnabled(true)
         Analytics.setUserProperty("false", forName: "debug_mode")
         
-
-        
         let isNeedUpdate = UserDefaults.standard.bool(forKey: "isNeedUpdate")
         let showStopSign = UserDefaults.standard.bool(forKey: "showStopSign")
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
@@ -79,20 +77,23 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     }
     
     func presentAlertView() {
-        let title = UserDefaults.standard.string(forKey: "signMessage")
-        let date = UserDefaults.standard.string(forKey: "signDate")
+        guard let title = UserDefaults.standard.string(forKey: "signMessage"),
+              let date = UserDefaults.standard.string(forKey: "signDate") else {
+            return
+        }
         
-        let alert = UIAlertController(
-            title: title,
-            message: date,
-            preferredStyle: .alert
-        )
-        
-        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: { _ in
-            UIControl().sendAction(#selector(NSXPCConnection.suspend), to: UIApplication.shared, for: nil)
-        }))
-        
-        present(alert, animated: true, completion: nil)
+        self.showAlertView(title: title, message: date)
+        //        let alert = UIAlertController(
+        //            title: title,
+        //            message: date,
+        //            preferredStyle: .alert
+        //        )
+        //
+        //        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: { _ in
+        //            UIControl().sendAction(#selector(NSXPCConnection.suspend), to: UIApplication.shared, for: nil)
+        //        }))
+        //
+        //        present(alert, animated: true, completion: nil)
     }
     
     func checkAuthenticationStatus() {
@@ -107,7 +108,7 @@ public class SplashVC : UIViewController, FirebaseTrackable {
             refreshToken = refreshTokenCookie.value
             refreshExpiresAt = refreshTokenCookie.expiresDate
         }
-
+        
         // 리프레시 토큰 추출 실패
         guard !refreshToken.isEmpty else {
             navigateToOnBoaringScreen()
@@ -183,5 +184,5 @@ public class SplashVC : UIViewController, FirebaseTrackable {
             make.width.height.equalTo(Constants.superViewWidth * 0.3)
         }
     }
-
+    
 }

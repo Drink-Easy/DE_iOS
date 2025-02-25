@@ -17,6 +17,7 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate, F
     var currentPage = 0
     var totalPage = 0
     
+    
     private lazy var searchHomeView = SearchHomeView(
         titleText: "검색하고 싶은\n와인을 입력해주세요",
         placeholder: "와인 이름을 검색하세요 (한글/영문)"
