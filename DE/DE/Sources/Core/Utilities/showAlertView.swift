@@ -5,7 +5,7 @@ import SnapKit
 
 extension UIViewController {
     /// 커스텀 얼럿 뷰를 현재 뷰 컨트롤러에 추가하는 함수
-    public func showAlertView(title: String, message: String) {
+    public func showAlertView(title: String = "서버 점검 안내", message: String) {
         let alertView = CustomAlertView()
         alertView.configure(title: title, message: message) // ✅ 매개변수 전달
 

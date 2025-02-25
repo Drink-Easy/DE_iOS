@@ -77,12 +77,11 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     }
     
     func presentAlertView() {
-        guard let title = UserDefaults.standard.string(forKey: "signMessage"),
-              let date = UserDefaults.standard.string(forKey: "signDate") else {
+        guard let date = UserDefaults.standard.string(forKey: "signDate") else {
             return
         }
         
-        self.showAlertView(title: title, message: date)
+        self.showAlertView(message: date)
         //        let alert = UIAlertController(
         //            title: title,
         //            message: date,

@@ -45,7 +45,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func sceneDidBecomeActive(_ scene: UIScene) {
         // 앱이 활성화될 때 RemoteConfig 가져오기
-        //fetchRemoteConfig()
+        fetchRemoteConfig()
     }
     
     func sceneWillResignActive(_ scene: UIScene) {
@@ -55,7 +55,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func sceneWillEnterForeground(_ scene: UIScene) {
         // 앱이 백그라운드에서 돌아올 때도 RemoteConfig 새로고침
-        //fetchRemoteConfig()
+        fetchRemoteConfig()
     }
     
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -86,7 +86,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     UserDefaults.standard.set(isNeedUpdate, forKey: "isNeedUpdate")
                     UserDefaults.standard.synchronize()
                     
-                    let jsonString = remoteConfig["jsonTest"].stringValue
+                    let jsonString = remoteConfig["serverSign"].stringValue
                     let jsonData = jsonString.data(using: .utf8)!
                     print(jsonData)
                     // ✅ JSON 디코딩
@@ -94,7 +94,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         let data = try JSONDecoder().decode(JsonTest.self, from: jsonData)
                         if data.showStopSign {
                             UserDefaults.standard.set(data.showStopSign, forKey: "showStopSign")
-                            UserDefaults.standard.set(data.message, forKey: "signMessage")
                             UserDefaults.standard.set(data.stopDate, forKey: "signDate")
                             UserDefaults.standard.synchronize()
                         } else {
@@ -114,5 +113,4 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 struct JsonTest : Codable {
     let showStopSign : Bool
     let stopDate : String
-    let message : String
 }
