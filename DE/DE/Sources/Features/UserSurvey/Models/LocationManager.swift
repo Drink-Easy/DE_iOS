@@ -29,7 +29,7 @@ final class LocationManager: NSObject, CLLocationManagerDelegate {
         case .denied, .restricted:
             showLocationDeniedAlert()
         @unknown default:
-            print("알 수 없는 권한 상태")
+            break
         }
     }
 

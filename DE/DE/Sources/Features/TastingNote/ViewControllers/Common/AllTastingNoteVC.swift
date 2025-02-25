@@ -138,7 +138,6 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
                 }
                 self.view.hideBlockingView()
             } catch {
-                print("Error: \(error)")
                 self.view.hideBlockingView()
                 errorHandler.handleNetworkError(error, in: self)
             }
@@ -205,7 +204,6 @@ extension AllTastingNoteVC: UICollectionViewDataSource, UICollectionViewDelegate
                     try await CallAllTastingNote(sort: currentType, page: currentPage + 1)
                     self.view.hideBlockingView()
                 } catch {
-                    print("Failed to fetch next page: \(error)")
                     self.view.hideBlockingView()
                     errorHandler.handleNetworkError(error, in: self)
                 }

@@ -95,6 +95,7 @@ let project = Project(
                             "CFBundleURLSchemes" : ["kakao180ebe6367eb8ee6eafe439aa551744a"]
                         ],
                     ],
+                    "ITSAppUsesNonExemptEncryption" : false,
                     // 다른 설정은 여기에다가 추가
                 ]
             ),

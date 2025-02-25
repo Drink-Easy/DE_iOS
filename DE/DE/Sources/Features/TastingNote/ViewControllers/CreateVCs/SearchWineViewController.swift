@@ -12,6 +12,7 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
     let navigationBarManager = NavigationBarManager()
     var wineResults: [SearchResultModel] = []
     let networkService = WineService()
+    let errorHandler = NetworkErrorHandler()
     var isLoading = false
     var currentPage = 0
     var totalPage = 0
@@ -41,7 +42,7 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
     
     private lazy var searchHomeView = SearchHomeView(
         titleText: "검색하고 싶은\n와인을 입력해주세요",
-        placeholder: "검색어 입력"
+        placeholder: "와인 이름을 검색하세요 (한글/영문)"
     ).then {
         $0.searchBar.delegate = self
     }
@@ -73,7 +74,6 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
                     searchHomeView.noSearchResultLabel.isHidden = !wineResults.isEmpty
                     self.view.hideBlockingView()
                 } catch {
-                    print(error)
                     self.view.hideBlockingView()
                 }
             }
@@ -84,6 +84,19 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
             textField.resignFirstResponder()
         }
         return true
+    }
+    
+    public func textFieldDidBeginEditing(_ textField: UITextField) {
+        if textField.text?.isEmpty ?? true {
+            let placeholderText = "와인 이름을 검색하세요 (한글/영문)"
+            textField.attributedPlaceholder = NSAttributedString(
+                string: placeholderText,
+                attributes: [
+                    .foregroundColor: AppColor.gray70 ?? .gray,
+                    .font: UIFont.ptdRegularFont(ofSize: 14)
+                ]
+            )
+        }
     }
 
     private func showCharacterLimitAlert() {
@@ -180,8 +193,8 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
                     try await callSearchAPI(query: searchHomeView.searchBar.text ?? "", startPage: currentPage + 1)
                     self.view.hideBlockingView()
                 } catch {
-                    print("Failed to fetch next page: \(error)")
                     self.view.hideBlockingView()
+                    errorHandler.handleNetworkError(error, in: self)
                 }
                 DispatchQueue.main.async {
                     self.searchHomeView.searchResultTableView.reloadData()

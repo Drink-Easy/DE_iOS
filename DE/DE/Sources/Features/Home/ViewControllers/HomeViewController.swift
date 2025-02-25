@@ -82,8 +82,8 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
                 self.userName = try await memberService.getUserName()
                 self.view.hideBlockingView()
             } catch {
-                print(error.localizedDescription)
                 self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
@@ -199,7 +199,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
             case .notDetermined:
                 print("Tracking 권한 요청 전 상태")
             case .restricted:
-                print("Tracking 권한 제한됨")
+                HomeViewController.isTrackingOn = true
             @unknown default:
                 print("알 수 없는 상태")
             }
@@ -411,9 +411,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             navigationController?.pushViewController(vc, animated: true)
         } else if collectionView.tag == 0 {
             logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.adBannerCellTapped, fileName: #file, cellID: AdCollectionViewCell.identifier)
-            //            print("\(adImage[indexPath.row].postUrl) : 이 주소로 이동하세요")
-            
-            // 사파리 뷰 띄우는거 주석 해제만 하면 됨! by dyk.
+
             if let url = URL(string: adImage[indexPath.row].postUrl) {
                 let safariVC = SFSafariViewController(url: url)
                 present(safariVC, animated: true, completion: nil)

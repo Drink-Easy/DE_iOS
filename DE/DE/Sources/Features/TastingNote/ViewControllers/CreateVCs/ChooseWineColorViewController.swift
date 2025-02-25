@@ -79,7 +79,6 @@ public class ChooseWineColorViewController: UIViewController, FirebaseTrackable 
                             buttonName: Tracking.ButtonEvent.nextBtnTapped,
                        fileName: #file)
         guard let selectedColor = self.selectedColor else {
-            print("선택된 색상이 없습니다.")
             return
         }
         

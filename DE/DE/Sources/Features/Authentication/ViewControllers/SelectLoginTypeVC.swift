@@ -14,14 +14,14 @@ import KakaoSDKUser
 import FirebaseAnalytics
 
 
-public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
+public class SelectLoginTypeVC: UIViewController, FirebaseTrackable, UIGestureRecognizerDelegate {
     public var screenName: String = Tracking.VC.selectLoginTypeVC
     
     public static let keychain = KeychainSwift()
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
     public var appleLoginDto : AppleLoginRequestDTO?
     let networkService = AuthService()
-    private let errorHandler = NetworkErrorHandler()
+    let errorHandler = NetworkErrorHandler()
     
     private let mainView = SelectLoginTypeView()
     
@@ -29,6 +29,7 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
+        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     public override func loadView() {
@@ -44,7 +45,7 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        logScreenView(fileName: #file)
+        logScreenView(fileName: ( #file as NSString ).lastPathComponent)
     }
     
     // MARK: - Setup Methods
@@ -62,27 +63,19 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
             if success {
                 UserApi.shared.me { (user, error) in
                     if let error = error {
-                        print("에러 발생: \(error.localizedDescription)")
-                        DispatchQueue.main.async {
-                            Toaster.shared.makeToast("사용자 정보 가져오기 실패")
-                        }
                         return
                     }
                     
                     guard let userID = user?.id else {
-                        print("user id가 nil입니다.")
                         return
                     }
                     guard let userEmail = user?.kakaoAccount?.email else {
-                        print("userEmail가 nil입니다.")
                         return
                     }
                     let userIDString = String(userID)
                     
                     self.kakaoLoginProceed(userIDString, userEmail: userEmail)
                 }
-            } else {
-                print("카카오 회원가입 실패")
             }
         }
     }
@@ -101,6 +94,7 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable {
                 Analytics.setUserID("\(response.id)") // 유저 아이디
                 DispatchQueue.main.async {
                     self.view.hideBlockingView()
+                    SelectLoginTypeVC.keychain.set(response.isFirst, forKey: "isFirst")
                     self.goToNextView(response.isFirst)
                 }
             } catch {

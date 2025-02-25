@@ -90,7 +90,6 @@ public class BuyNewWineDateViewController: UIViewController, FirebaseTrackable {
     @objc func nextVC() {
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
         guard let selectedDate = selectedDate else {
-            print("선택된 날짜가 없습니다.")
             return
         }
         if let date = Calendar.current.date(from: selectedDate) {
@@ -103,10 +102,7 @@ public class BuyNewWineDateViewController: UIViewController, FirebaseTrackable {
             let nextVC = PriceNewWineViewController()
             nextVC.hidesBottomBarWhenPushed = true
             navigationController?.pushViewController(nextVC, animated: true)
-        } else {
-            print("선택된 날짜를 Date로 변환할 수 없습니다.")
         }
-        
     }
 }
 

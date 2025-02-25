@@ -12,7 +12,7 @@ public final class TastingNoteService: NetworkManager {
         // 플러그인 추가
         let plugins: [PluginType] = [
             CookiePlugin(),
-            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)) // 로그 플러그인
+//            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)) // 로그 플러그인
         ]
         
         // provider 초기화

@@ -23,7 +23,7 @@ public class SearchBar: UITextField {
     private func setupSearchBar() {
         // 기본 플레이스홀더
         self.attributedPlaceholder = NSAttributedString(
-            string: "검색어 입력",
+            string: "와인 이름을 검색하세요 (한글/영문)",
             attributes: [
                 .foregroundColor: AppColor.gray70 ?? .gray,
                 .font: UIFont.ptdRegularFont(ofSize: 14)
