@@ -54,15 +54,11 @@ public class CookieStorage {
         if let accessToken = extractedAccessToken {
             let expiry = accessTokenExpiry ?? Date().addingTimeInterval(3600)
             updateHTTPCookies(with: accessToken, key: "accessToken", expiredIn: expiry, domain: domain)
-        } else {
-            print("⚠️ AccessToken을 찾을 수 없음")
         }
 
         if let refreshToken = extractedRefreshToken {
             let expiry = refreshTokenExpiry ?? Date().addingTimeInterval(864000)
             updateHTTPCookies(with: refreshToken, key: "refreshToken", expiredIn: expiry, domain: domain)
-        } else {
-            print("⚠️ RefreshToken을 찾을 수 없음")
         }
     }
 
@@ -90,9 +86,6 @@ public class CookieStorage {
 
         if let newCookie = newCookie {
             HTTPCookieStorage.shared.setCookie(newCookie)
-//            print("✅ 새로운 \(key) 쿠키 저장 완료: \(newCookie.value)")
-        } else {
-//            print("⚠️ 새로운 쿠키 생성 실패")
         }
     }
 

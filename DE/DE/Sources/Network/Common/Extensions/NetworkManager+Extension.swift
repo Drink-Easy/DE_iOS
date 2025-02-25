@@ -43,7 +43,6 @@ extension NetworkManager {
     func extractCacheTimeInterval(from response: Response) -> TimeInterval? {
         guard let httpResponse = response.response,
               let cacheControl = httpResponse.allHeaderFields["Cache-Control"] as? String else {
-            print("⚠️ Cache-Control 헤더가 없습니다.")
             return nil
         }
 
@@ -57,7 +56,6 @@ extension NetworkManager {
             }
         }
         
-        print("⚠️ Cache-Control 헤더에서 max-age를 찾을 수 없습니다.")
         return nil
     }
 }
