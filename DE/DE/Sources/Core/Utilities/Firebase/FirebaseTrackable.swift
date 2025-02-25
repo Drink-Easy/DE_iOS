@@ -16,10 +16,13 @@ extension FirebaseTrackable where Self: UIViewController {
     
     /// 🔥 화면 방문 이벤트 자동 로깅 (viewDidAppear에서 호출)
     public func logScreenView(fileName: String) {
-        Analytics.logEvent("DRINKIG_viewController_viewDidAppear", parameters: [
+        let sanitizedFileName = (fileName as NSString).lastPathComponent
+        let finalFileName = sanitizedFileName.prefix(100) // 100자까지만 자르기
+        
+        Analytics.logEvent("DRINKIG_vc_viewDidAppear", parameters: [
             "screen_name": screenName,
             "screen_class": screenName,
-            "file_name" : fileName
+            "file_name" : String(finalFileName)
         ])
     }
 }

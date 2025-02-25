@@ -73,7 +73,7 @@ extension AuthorizationEndpoints: TargetType {
         
         switch self {
         case .postReIssueToken:
-            if let cookies = HTTPCookieStorage.shared.cookies {
+            if let cookies = HTTPCookieStorage.shared.cookies(for: URL(string: API.baseURL)!) {
                 let cookieHeader = HTTPCookie.requestHeaderFields(with: cookies)
                 for (key, value) in cookieHeader {
                     headers[key] = value // 쿠키를 헤더에 추가

@@ -14,6 +14,7 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
     let userMng = UserSurveyManager.shared
     
     private let navigationBarManager = NavigationBarManager()
+    private let errorHandler = NetworkErrorHandler()
     
     private lazy var firstTextLabel = createLabel()
     private lazy var varietyTextLabel = createLabel()
@@ -78,7 +79,6 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
             highlightFontSize: 26
         )
         
-        // 🚀 초기 설정
         nextButton.isHidden = true  // 버튼을 처음엔 숨김
 
         setUI()
@@ -86,6 +86,12 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
         
         startAlphaAnimationSequence()
     }
+    // 폰트 사이즈 조절 함수 -> 1차 때 사용안함
+//    func dynamicFontSize(baseSize: CGFloat) -> CGFloat {
+//        let adjustedSize = baseSize * DynamicPadding.widthScaleFactor
+//        print(adjustedSize)
+//        return min(max(adjustedSize, 26), 34) // 최소 12, 최대 34 제한
+//    }
     
     func dynamicFontSize(baseSize: CGFloat) -> CGFloat {
         let adjustedSize = baseSize * DynamicPadding.widthScaleFactor
@@ -251,8 +257,7 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
                                                                monthPrice: userMng.monthPrice,
                                                                wineSort: userMng.wineSort,
                                                                wineArea: userMng.wineArea,
-                                                               wineVariety: userMng.wineVariety,
-                                                               region: userMng.region)
+                                                               wineVariety: userMng.wineVariety)
 
     }
     
@@ -270,6 +275,7 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
 
                 // ✅ 두 개의 네트워크 요청이 모두 끝날 때까지 기다림
                 _ = try await (imageUpload, userInfoUpdate)
+                userMng.resetData()
 
                 // UI 변경
                 DispatchQueue.main.async {
@@ -283,8 +289,8 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
                     }
                 }
             } catch {
-                print(error)
                 self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }

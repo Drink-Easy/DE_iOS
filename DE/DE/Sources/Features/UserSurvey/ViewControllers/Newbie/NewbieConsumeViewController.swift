@@ -22,14 +22,6 @@ public class NewbieConsumeViewController: UIViewController, FirebaseTrackable {
         
         UserSurveyManager.shared.union()
         UserSurveyManager.shared.intersection()
-        
-//        print("====합집합====")
-//        print("\(UserSurveyManager.shared.getUnionVarietyData().count)")
-//        print("\(UserSurveyManager.shared.getUnionSortData().count)")
-//        
-//        print("====교집합====")
-//        print("\(UserSurveyManager.shared.getIntersectionVarietyData().count)")
-//        print("\(UserSurveyManager.shared.getIntersectionSortData().count)")
     }
     
     public override func viewWillAppear(_ animated: Bool) {

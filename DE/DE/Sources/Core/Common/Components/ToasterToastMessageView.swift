@@ -2,13 +2,13 @@
 
 import UIKit
 
-final class ToasterToastMessageView: UIView {
+public final class ToasterToastMessageView: UIView {
     
     // MARK: - UI Components
     private let toastLabel = UILabel().then {
         $0.textColor = AppColor.white
         $0.font = UIFont.ptdRegularFont(ofSize: 12)
-        $0.numberOfLines = 1
+        $0.numberOfLines = 2
         $0.textAlignment = .center
     }
     
@@ -47,7 +47,7 @@ private extension ToasterToastMessageView {
 }
 
 extension ToasterToastMessageView {
-    func setupDataBind(message: String) {
+    public func setupDataBind(message: String) {
         toastLabel.text = message
         toastLabel.sizeToFit() // 텍스트 크기에 맞게 조정
         let padding: CGFloat = DynamicPadding.dynamicValue(32) // 좌우 패딩 (양쪽 16씩)

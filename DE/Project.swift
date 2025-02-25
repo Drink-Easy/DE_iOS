@@ -95,6 +95,7 @@ let project = Project(
                             "CFBundleURLSchemes" : ["kakao180ebe6367eb8ee6eafe439aa551744a"]
                         ],
                     ],
+                    "ITSAppUsesNonExemptEncryption" : false,
                     // 다른 설정은 여기에다가 추가
                 ]
             ),
@@ -198,7 +199,7 @@ let project = Project(
                 runAction: .runAction(
                     configuration: .release,
                     arguments: .arguments(
-                        launchArguments: [.launchArgument(name: "-FIRDebugEnabled", isEnabled: true)]
+                        launchArguments: [.launchArgument(name: "-FIRDebugDisabled", isEnabled: true)]
                     )
                 ),
                 archiveAction: .archiveAction(configuration: .release),
@@ -210,7 +211,7 @@ let project = Project(
                 runAction: .runAction(
                     configuration: .debug,
                     arguments: .arguments(
-                        launchArguments: [.launchArgument(name: "-FIRDebugEnabled", isEnabled: true)]
+                        launchArguments: [.launchArgument(name: "-FIRDebugDisabled", isEnabled: true)]
                     )
                 ),
                 archiveAction: .archiveAction(configuration: .debug),

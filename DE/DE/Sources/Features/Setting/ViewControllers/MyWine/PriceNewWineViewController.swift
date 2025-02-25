@@ -14,6 +14,7 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
     let priceNewWineView = MyWinePriceView()
     let navigationBarManager = NavigationBarManager()
     let networkService = MyWineService()
+    private let errorHandler = NetworkErrorHandler()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +23,7 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
         setupNavigationBar()
         setupActions()
         hideKeyboardWhenTappedAround()
+        self.view.addSubview(indicator)
     }
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -74,6 +76,7 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
         }
         MyOwnedWineManager.shared.setPrice(price)
         Task {
+            self.view.showBlockingView()
             await callPostAPI()
         }
         
@@ -102,8 +105,10 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
         do {
             // 데이터 전송
             _ = try await networkService.postMyWine(data: data)
+            wm.resetWine() // 싱글톤 매니저 데이터 초기화
         } catch {
-            print("\(error)\n 잠시후 다시 시도해주세요.")
+            self.view.hideBlockingView()
+            self.errorHandler.handleNetworkError(error, in: self)
         }
     }
     
@@ -117,10 +122,15 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
             return
         }
 
-        if text.isEmpty || text == "" {
+        if text.isEmpty {
             priceNewWineView.nextButton.isEnabled(isEnabled: false)
         } else {
             priceNewWineView.nextButton.isEnabled(isEnabled: true)
+        }
+
+        if text.count >= 10 {
+            showToastMessage(message: "와인 가격은 10억까지만 가능해요.", yPosition: view.frame.height * 0.5)
+            priceNewWineView.nextButton.isEnabled(isEnabled: false)
         }
     }
 }

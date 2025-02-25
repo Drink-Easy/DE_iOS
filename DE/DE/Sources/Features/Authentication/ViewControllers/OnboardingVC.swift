@@ -39,7 +39,6 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate, FirebaseT
 //        }
         
         self.navigationController?.isNavigationBarHidden = true
-        
         view.backgroundColor = AppColor.bgGray
         setupUI()
         

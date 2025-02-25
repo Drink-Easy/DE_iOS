@@ -7,6 +7,7 @@ import Then
 
 import CoreModule
 import Network
+import FirebaseAnalytics
 
 class LoginVC: UIViewController, FirebaseTrackable {
     // struct 사용
@@ -18,6 +19,7 @@ class LoginVC: UIViewController, FirebaseTrackable {
     private let navigationBarManager = NavigationBarManager()
     let validationManager = ValidationManager()
     let networkService = AuthService()
+    private let errorHandler = NetworkErrorHandler()
     
     var isSavingId : Bool = false
     var usernameString : String = ""
@@ -44,7 +46,6 @@ class LoginVC: UIViewController, FirebaseTrackable {
         DispatchQueue.main.async {
             self.fillSavedId()
         }
-        self.view.addSubview(indicator)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -128,8 +129,6 @@ class LoginVC: UIViewController, FirebaseTrackable {
     }
     
     @objc private func loginButtonTapped() {
-//        Analytics.setUserID("userID = \(1234)") -> 로그인성공하고 설정해도 될까..? 되겟지.. userid 서버에서 오는거 저장하면될듯
-        
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.loginBtnTapped, fileName: #file)
         
         self.view.showBlockingView()
@@ -142,10 +141,15 @@ class LoginVC: UIViewController, FirebaseTrackable {
                     SelectLoginTypeVC.keychain.set(usernameString, forKey: "savedUserEmail")
                 }
                 self.view.hideBlockingView()
+                SelectLoginTypeVC.keychain.set(data.isFirst, forKey: "isFirst")
                 self.goToNextView(data.isFirst)
+                Analytics.setUserID("\(data.id)") // 유저 아이디
             } catch {
-                print("Error: \(error)")
                 self.view.hideBlockingView()
+                
+                // 에러 출력
+                errorHandler.handleNetworkError(error, in: self)
+                
                 self.loginView.loginButton.isEnabled = false
                 self.loginView.loginButton.isEnabled(isEnabled: false)
                 self.validationManager.showValidationError(loginView.usernameField, message: "")

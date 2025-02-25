@@ -17,13 +17,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         FirebaseApp.configure()
         
-        let remoteConfig = RemoteConfig.remoteConfig()
-        let settings = RemoteConfigSettings()
-        
-        settings.minimumFetchInterval = 0
-        remoteConfig.configSettings = settings
+//        let remoteConfig = RemoteConfig.remoteConfig()
+//        let settings = RemoteConfigSettings()
+//        
+//        settings.minimumFetchInterval = 0
+//        remoteConfig.configSettings = settings
         
         // remote config를 가져올 수 없을때 사용
+
 //        let defaultValue = ["isNeedUpdate": false]
 //        remoteConfig.setDefaults(defaultValue as [String : NSObject])
         
@@ -82,9 +83,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
-struct jsontest : Codable {
-    let showStopSign : Bool
-    let startDate : String
-    let endDate : String
-    let message : String
-}
+//struct jsontest : Codable {
+//    let showStopSign : Bool
+//    let startDate : String
+//    let endDate : String
+//    let message : String
+//}

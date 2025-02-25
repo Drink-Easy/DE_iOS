@@ -33,9 +33,8 @@ public class UserSurveyManager {
         self.wineVariety = self.getIntersectionVarietyData()
     }
     
-    public func setPersonalInfo(name : String, addr region: String, profileImg image : UIImage? = nil) {
+    public func setPersonalInfo(name : String, profileImg image : UIImage? = nil) {
         self.name = name
-        self.region = region
         self.imageData = image
     }
     
@@ -104,6 +103,27 @@ public class UserSurveyManager {
             arr.append($0.rawValue)
         }
         return arr
+    }
+    
+    public func resetData() {
+        name = ""
+        region = ""
+        imageData = nil
+        isNewbie = true
+        monthPrice = 0
+        wineSort = []
+        wineArea = []
+        wineVariety = []
+
+        drinkVarietyResult = []
+        drinkSortResult = []
+        foodVarietyResult = []
+        foodSortResult = []
+
+        unionSortData.removeAll()
+        unionVarietyData.removeAll()
+        intersectionSortData.removeAll()
+        intersectionVarietyData.removeAll()
     }
     
     public func calculateDrinkType(_ drinks: [String]) {

@@ -1,6 +1,7 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+import StoreKit
 
 import SnapKit
 import Then
@@ -13,8 +14,6 @@ class AppInfoViewController : UIViewController, FirebaseTrackable {
     var screenName: String = Tracking.VC.appInfoVC
     
     let navigationBarManager = NavigationBarManager()
-    
-    private let networkService = MemberService()
     private var memberData: MemberInfoResponse?
     
     private lazy var appVersion: String = {
@@ -24,7 +23,9 @@ class AppInfoViewController : UIViewController, FirebaseTrackable {
     private var tableView = UITableView()
     
     private let appInfoItems: [String] = [
-        "서비스 이용약관", "개인정보 처리방침", "위치정보 이용약관", "오픈소스 라이브러리"
+        "서비스 이용약관", "개인정보 처리방침",
+//        "위치정보 이용약관",
+        "오픈소스 라이브러리"
     ]
     
     private let instaButton = UIButton().then {
@@ -46,6 +47,7 @@ class AppInfoViewController : UIViewController, FirebaseTrackable {
         setupTableView()
         setupUI()
         setupNavigationBar()
+//        requestReview()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -81,6 +83,21 @@ class AppInfoViewController : UIViewController, FirebaseTrackable {
     }
     
     // MARK: - UI Setup
+//    func requestReview() {
+//            if let scene = UIApplication.shared.connectedScenes
+//                .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
+//                SKStoreReviewController.requestReview(in: scene)
+//            }
+//        }
+//    func requestReview() {
+//            let appID = 6741486172
+//            let urlString = "https://apps.apple.com/app/id\(appID)?action=write-review"
+//            
+//            if let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) {
+//                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+//            }
+//        }
+    
     private func setupNavigationBar() {
         navigationBarManager.setTitle(to: navigationItem, title: "앱 정보", textColor: AppColor.black!)
         navigationBarManager.addBackButton(to: navigationItem, target: self, action: #selector(backButtonTapped))

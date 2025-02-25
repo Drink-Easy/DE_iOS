@@ -12,7 +12,7 @@ public final class AuthService : NetworkManager {
     public init(provider: MoyaProvider<AuthorizationEndpoints>? = nil) {
         // 플러그인 추가
         let plugins: [PluginType] = [
-            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)) // 로그 플러그인
+//            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)) // 로그 플러그인
         ]
         
         // provider 초기화
@@ -80,19 +80,31 @@ public final class AuthService : NetworkManager {
         return try await requestAsync(target: .emailVerification(data: data), decodingType: Bool.self)
     }
     /// ✅ 토큰 재발급 API (무한 루프 방지)
-    private var isReissuingToken = false
+    private static var isReissuingToken = false
 
     public func reissueTokenAsync() async throws {
-        guard !isReissuingToken else {
+        guard !AuthService.isReissuingToken else {
             print("⚠️ [토큰 재발급] 이미 요청 진행 중...")
-            throw NetworkError.serverError(statusCode: 401, message: "이미 토큰 재발급 요청 중")
+            throw NetworkError.serverError(statusCode: 401, devMessage: "이미 토큰 재발급 요청 중", userMessage: "이미 토큰 재발급 요청 중")
         }
-
-        isReissuingToken = true // ✅ 재발급 진행 중
-        defer { isReissuingToken = false } // ✅ 요청 완료 후 해제
-
-        _ = try await requestAsync(target: .postReIssueToken, decodingType: String.self)
         
-        print("✅ [토큰 재발급 완료]")
+        AuthService.isReissuingToken = true // ✅ 재발급 진행 중
+        defer { AuthService.isReissuingToken = false } // ✅ 요청 완료 후 해제
+        
+        let response = try await provider.request(.postReIssueToken)
+        
+        guard (200...299).contains(response.statusCode) else {
+            let errorResponse = try JSONDecoder().decode(ErrorResponse.self, from: response.data)
+            let serverErrorCode = ServerErrorCode(rawValue: errorResponse.code) ?? .unknown
+            let userMessage = serverErrorCode.errorMessage
+            let devMessage = errorResponse.message
+            
+            throw NetworkError.refreshTokenExpiredError(statusCode: response.statusCode, devMessage: devMessage, userMessage: userMessage)
+        }
+        
+        if let httpResponse = response.response {
+            let cookieStorage = CookieStorage()
+            cookieStorage.extractTokensAndStore(from: httpResponse)
+        }
     }
 }

@@ -19,6 +19,8 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
     let memberService = MemberService()
     private let authService = AuthService()
     lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
+    internal let errorHandler = NetworkErrorHandler()
+    
     private var userProfile: MemberInfoResponse?
     
     //MARK: - UI Components
@@ -127,11 +129,11 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
         let vc = ProfileEditVC()
         vc.profileImgURL = userProfile?.imageUrl
         vc.originUsername = userProfile?.username
-        vc.originUserCity = userProfile?.city
         navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc private func logoutButtonTapped() {
+        clearCookie()
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.logoutBtnTapped, fileName: #file)
         self.view.showBlockingView()
         Task {
@@ -149,13 +151,15 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
                     self.view.hideBlockingView()
                     self.showSplashScreen()
                 }
-            } catch {
-                print(error)
+            } catch let error as NetworkError {
                 self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
+            } catch {
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
-
+    
 
     @objc private func deleteButtonTapped() {
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.quitBtnTapped, fileName: #file)
@@ -198,9 +202,12 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
                     self.view.hideBlockingView()
                     self.showSplashScreen()
                 }
+            } catch let error as NetworkError {
+                self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             } catch {
-                print("회원탈퇴 실패: \(error.localizedDescription)")
-                view.hideBlockingView()
+                self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
@@ -213,7 +220,6 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
             .compactMap({ $0 as? UIWindowScene })
             .first?.windows
             .first else {
-            print("윈도우를 가져올 수 없습니다.")
             return
         }
         
@@ -223,7 +229,7 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
     }
     
     private func clearCookie() {
-        guard let cookies = HTTPCookieStorage.shared.cookies else { return }
+        guard let cookies = HTTPCookieStorage.shared.cookies(for: URL(string: API.baseURL)!) else { return }
         
         let targetCookieNames = ["accessToken", "refreshToken"]
         
@@ -232,8 +238,6 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
                 HTTPCookieStorage.shared.deleteCookie(cookie)
             }
         }
-        
-        print("✅ 쿠키에 저장된 토큰이 삭제되었습니다.")
     }
     
     private func clearForLogout() {
@@ -269,24 +273,38 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
             
             let safeImageUrl = data.imageUrl ?? "https://placehold.co/400x400"
             
-            self.userProfile = MemberInfoResponse(imageUrl: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
-            self.setUserData(imageURL: safeImageUrl, username: data.username, email: data.email, city: data.city, authType: data.authType, adult: data.adult)
+            self.userProfile = MemberInfoResponse(imageUrl: safeImageUrl, username: data.username, email: data.email, authType: data.authType, adult: data.adult)
+            self.setUserData(imageURL: safeImageUrl, username: data.username, email: data.email, authType: data.authType, adult: data.adult)
+        }  catch let error as NetworkError {
+            self.view.hideBlockingView()
+            errorHandler.handleNetworkError(error, in: self)
         } catch {
-            print("❌ 서버에서 사용자 정보를 가져오지 못함: \(error.localizedDescription)")
+            self.view.hideBlockingView()
+            errorHandler.handleNetworkError(error, in: self)
+        }
+    }
+    
+    private func changeKor(_ authType: String) -> String {
+        switch authType.lowercased() {
+        case "apple" :
+            return "애플"
+        case "kakao" :
+            return "카카오"
+        default:
+            return "드링키지"
         }
     }
     
     /// UI update
-    private func setUserData(imageURL: String, username: String, email: String, city: String, authType: String, adult: Bool) {
+    private func setUserData(imageURL: String, username: String, email: String, authType: String, adult: Bool) {
         DispatchQueue.main.async {
             let profileImgURL = URL(string: imageURL)
             self.profileImageView.sd_setImage(with: profileImgURL, placeholderImage: UIImage(named: "profilePlaceholder"))
             self.accountView.titleLabel.text = "내 정보"
 //            let adultText = adult ? "인증 완료" : "인증 전"
             self.accountView.items = [("닉네임", username),
-            ("내 동네", city),
-            ("이메일", email),
-            ("연동상태", authType)
+                                      ("이메일", email),
+                                      ("연동상태", self.changeKor(authType))
     //        ("성인인증", adultText)
             ]
         }

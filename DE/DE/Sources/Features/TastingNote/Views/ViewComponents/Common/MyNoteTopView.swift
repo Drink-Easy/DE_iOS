@@ -6,7 +6,11 @@ import CoreModule
 import Then
 
 class MyNoteTopView: UIView {
-    public lazy var header = WineNameView()
+    public lazy var header = UILabel().then {
+        $0.textColor = AppColor.black
+        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.numberOfLines = 0
+    }
     
     public lazy var infoView = WineDetailView()
 
@@ -26,11 +30,14 @@ class MyNoteTopView: UIView {
         [header, infoView].forEach{ addSubview($0) }
     }
     
+    public func setWineName(_ name: String) {
+        self.header.text = name
+    }
+    
     private func setConstraints() {
         header.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview()
-            make.height.greaterThanOrEqualTo(62)
         }
         
         infoView.snp.makeConstraints { make in

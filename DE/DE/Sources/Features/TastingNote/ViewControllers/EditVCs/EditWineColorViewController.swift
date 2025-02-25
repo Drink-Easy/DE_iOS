@@ -11,6 +11,7 @@ public class EditWineColorViewController: UIViewController, FirebaseTrackable {
     public var screenName: String = Tracking.VC.editWineColorVC
     
     let navigationBarManager = NavigationBarManager()
+    private let errorHandler = NetworkErrorHandler()
     
     lazy var colorView = EditColorView().then {
         $0.colorCollectionView.delegate = self
@@ -26,7 +27,7 @@ public class EditWineColorViewController: UIViewController, FirebaseTrackable {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        colorView.header.setTitleLabel(wineData.wineName)
+        colorView.setWineName(wineData.wineName)
         colorView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         colorView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         colorView.infoView.kindContents.text = wineData.sort
@@ -85,7 +86,6 @@ public class EditWineColorViewController: UIViewController, FirebaseTrackable {
                        fileName: #file)
         
         guard let selectedColor = self.selectedColor else {
-            print("선택된 색상이 없습니다.")
             return
         }
         
@@ -97,12 +97,15 @@ public class EditWineColorViewController: UIViewController, FirebaseTrackable {
         let updateData = networkService.makeUpdateNoteBodyDTO(color: selectedColor)
         
         let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
+        self.view.showBlockingView()
         Task {
             do {
-                self.view.showBlockingView()
                 let _ = try await networkService.patchNote(data: tnData)
                 self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
+            } catch {
+                self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }

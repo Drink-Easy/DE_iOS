@@ -9,7 +9,7 @@ public class EditReviewViewController: UIViewController, FirebaseTrackable {
     
     lazy var rView = OnlyReviewView()
     let navigationBarManager = NavigationBarManager()
-    
+    private let errorHandler = NetworkErrorHandler()
     let networkService = TastingNoteService()
     let tnManager = NewTastingNoteManager.shared
     let wineData = TNWineDataManager.shared
@@ -19,7 +19,7 @@ public class EditReviewViewController: UIViewController, FirebaseTrackable {
         super.viewWillAppear(animated)
         //        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
         //           NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
-        rView.header.setTitleLabel(wineData.wineName)
+        rView.setWineName(wineData.wineName)
         rView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         rView.infoView.kindContents.text = wineData.sort
@@ -98,15 +98,25 @@ public class EditReviewViewController: UIViewController, FirebaseTrackable {
     }
     
     private func callUpdateAPI() {
-        let updateData = networkService.makeUpdateNoteBodyDTO(review: rView.reviewBody.text)
+        var reviewString = ""
+        if rView.reviewBody.text == textViewPlaceHolder {
+            reviewString = "작성된 리뷰가 없습니다."
+        } else {
+            reviewString = rView.reviewBody.text ?? "작성된 리뷰가 없습니다."
+        }
+        
+        let updateData = networkService.makeUpdateNoteBodyDTO(review: reviewString)
         
         let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
+        self.view.showBlockingView()
         Task {
             do {
-                self.view.showBlockingView()
                 let _ = try await networkService.patchNote(data: tnData)
                 self.view.hideBlockingView()
                 navigationController?.popViewController(animated: true)
+            } catch {
+                self.view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
@@ -150,12 +160,32 @@ extension EditReviewViewController : UITextViewDelegate {
         let inputString = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard let oldString = textView.text, let newRange = Range(range, in: oldString) else { return true }
         let newString = oldString.replacingCharacters(in: newRange, with: inputString).trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // 1️⃣ 글자 수 제한 (500자)
+        if newString.count > 500 {
+            showToastMessage(message: "500자 이하의 리뷰만 가능해요.", yPosition: view.frame.height * 0.75)
+            rView.saveButton.isEnabled(isEnabled: false)
+            return false
+        }
+
+        // 2️⃣ 비속어 필터링
+        let currentFilePath = URL(fileURLWithPath: #file)
+        let currentDirectory = currentFilePath.deletingLastPathComponent()
+        let badWordFilePath = currentDirectory
+            .deletingLastPathComponent() // ViewControllers/
+            .deletingLastPathComponent() // TastingNote/
+            .deletingLastPathComponent() // Features/
+            .deletingLastPathComponent() // Sources/
+            .appendingPathComponent("BadWord.txt")
         
-        let characterCount = newString.count
-        guard characterCount <= 500 else { return false }
-        // TODO : 경고창 띄우기?
-        // alertview?
+        let nicknameFilter = TextFilter(filePath: badWordFilePath.path)
         
+        if nicknameFilter.checkFWords(newString) { // 비속어 감지
+            showToastMessage(message: "비속어를 사용할 수 없어요.", yPosition: view.frame.height * 0.75)
+            rView.saveButton.isEnabled(isEnabled: false)
+            return false
+        }
+        rView.saveButton.isEnabled(isEnabled: true)
         return true
     }
 }

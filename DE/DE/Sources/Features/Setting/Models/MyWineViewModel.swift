@@ -21,7 +21,6 @@ public struct MyWineViewModel {
         dateFormatter.locale = Locale(identifier: "ko_KR") // 한국 시간대 설정
         
         guard let date = dateFormatter.date(from: purchaseDate) else {
-            print("변환할 수 없는 날짜 형식입니다: \(purchaseDate)")
             return nil
         }
         

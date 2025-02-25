@@ -5,7 +5,6 @@ import Foundation
 public class CookieStorage {
     public func extractTokensAndStore(from response: HTTPURLResponse) {
         guard let setCookieHeader = response.allHeaderFields["Set-Cookie"] as? String else {
-//            print("⚠️ `Set-Cookie` 헤더 없음")
             return
         }
 
@@ -70,6 +69,15 @@ public class CookieStorage {
     /// ✅ 쿠키 저장 함수
     private func updateHTTPCookies(with newToken: String, key: String, expiredIn endTime: Date, domain: String) {
         guard let url = URL(string: domain) else { return }
+        
+        // 기존 토큰 삭제
+        if let existingCookies = HTTPCookieStorage.shared.cookies {
+            for cookie in existingCookies {
+                if cookie.name == key {
+                    HTTPCookieStorage.shared.deleteCookie(cookie)
+                }
+            }
+        }
 
         let newCookie = HTTPCookie(properties: [
             .domain: url.host!,
@@ -82,18 +90,10 @@ public class CookieStorage {
 
         if let newCookie = newCookie {
             HTTPCookieStorage.shared.setCookie(newCookie)
-            print("✅ 새로운 \(key) 쿠키 저장 완료: \(newCookie.value)")
+//            print("✅ 새로운 \(key) 쿠키 저장 완료: \(newCookie.value)")
         } else {
-            print("⚠️ 새로운 쿠키 생성 실패")
+//            print("⚠️ 새로운 쿠키 생성 실패")
         }
-
-
-//        if let updatedCookies = HTTPCookieStorage.shared.cookies {
-//            print("🍪 현재 저장된 쿠키 목록:")
-//            for cookie in updatedCookies {
-//                print("🔹 \(cookie.name): \(cookie.value) | Expiry: \(cookie.expiresDate ?? Date())")
-//            }
-//        }
     }
 
     /// ✅ `Expires="Wed, 05 Feb 2025 17:51:04 GMT"` 형식의 문자열을 `Date`로 변환하는 함수

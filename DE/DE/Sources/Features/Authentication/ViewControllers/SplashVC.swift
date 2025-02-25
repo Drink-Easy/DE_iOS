@@ -12,16 +12,16 @@ import Then
 
 import Network
 import CoreModule
-
-// SelectLoginTypeVC.keychain.getBool("isFirst")
+import FirebaseAnalytics
 
 public class SplashVC : UIViewController, FirebaseTrackable {
     public var screenName: String = Tracking.VC.splashVC
     
     let networkService = AuthService()
-    
+    private let errorHandler = NetworkErrorHandler()
     var refreshToken: String = ""
-    var ExpiresAt: Date = Date()
+    var accessToken: String = ""
+    var refreshExpiresAt: Date?
     
     private lazy var logoImage = UIImageView().then { logoImage in
         logoImage.image = UIImage(named: "logo")
@@ -45,17 +45,20 @@ public class SplashVC : UIViewController, FirebaseTrackable {
                 UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: nil)
             }
         }
+        Analytics.setAnalyticsCollectionEnabled(true)
+        Analytics.setUserProperty("false", forName: "debug_mode")
         
-//        let isNeedUpdate = UserDefaults.standard.bool(forKey: "isNeedUpdate")
-//        let showStopSign = UserDefaults.standard.bool(forKey: "showStopSign")
+
+        
+        let isNeedUpdate = UserDefaults.standard.bool(forKey: "isNeedUpdate")
+        let showStopSign = UserDefaults.standard.bool(forKey: "showStopSign")
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            self.checkAuthenticationStatus()
-//            if showStopSign || isNeedUpdate{
-////                self.presentAlertView()
-//                self.checkAuthenticationStatus()
-//            } else {
-//                
-//            }
+            if showStopSign {
+                // 서버 점검시간 공지
+                self.presentAlertView()
+            } else {
+                self.checkAuthenticationStatus()
+            }
         }
     }
     
@@ -93,33 +96,44 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     }
     
     func checkAuthenticationStatus() {
-        
-        if let cookies = HTTPCookieStorage.shared.cookies {
-            for cookie in cookies {
-                if cookie.name == "accessToken" {
-                    if let expires = cookie.expiresDate {
-                        ExpiresAt = expires
-                    }
-                }
-                if cookie.name == "refreshToken" {
-                    refreshToken = cookie.value
-                }
-            }
+        // 저장된 쿠키 없는 경우
+        guard let cookies = HTTPCookieStorage.shared.cookies(for: URL(string: API.baseURL)!) else {
+            navigateToOnBoaringScreen()
+            return
         }
         
-        //토큰 유효
-        if Date() < ExpiresAt {
-            checkIsFirst()
-        } else {
-            Task {
-                do {
-                    let _ = try await networkService.reissueTokenAsync()
-                    checkIsFirst()
-                } catch {
-                    DispatchQueue.main.async {
-                        self.navigateToOnBoaringScreen()
-                    }
-                }
+        // 리프레시토큰 추출
+        if let refreshTokenCookie = cookies.first(where: { $0.name == "refreshToken" }) {
+            refreshToken = refreshTokenCookie.value
+            refreshExpiresAt = refreshTokenCookie.expiresDate
+        }
+
+        // 리프레시 토큰 추출 실패
+        guard !refreshToken.isEmpty else {
+            navigateToOnBoaringScreen()
+            return
+        }
+        
+        // 리프레시토큰 유효기간 추출 실패
+        guard let refreshTokenExpiresDate = refreshExpiresAt else {
+            navigateToOnBoaringScreen()
+            return
+        }
+        
+        // 리프레시 토큰 유효기간 검증
+        guard Date() < refreshTokenExpiresDate else {
+            navigateToOnBoaringScreen()
+            return
+        }
+        
+        Task {
+            do {
+                // 액세스 토큰 재발급
+                let _ = try await networkService.reissueTokenAsync()
+                checkIsFirst()
+            } catch {
+                errorHandler.handleNetworkError(error, in: self)
+                navigateToOnBoaringScreen()
             }
         }
     }
@@ -128,7 +142,9 @@ public class SplashVC : UIViewController, FirebaseTrackable {
         let isFirstString = SelectLoginTypeVC.keychain.getBool("isFirst")
         if isFirstString == true || isFirstString == nil {
             navigateToWelcomeScreen()
-        } else { navigateToMainScreen() }
+        } else {
+            navigateToMainScreen()
+        }
     }
     
     func navigateToMainScreen() {
@@ -153,9 +169,11 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     }
     
     func navigateToOnBoaringScreen() {
-        self.view.hideBlockingView()
-        let onboardingVC = OnboardingVC()
-        self.navigationController?.pushViewController(onboardingVC, animated: true)
+        DispatchQueue.main.async {
+            self.view.hideBlockingView()
+            let onboardingVC = OnboardingVC()
+            self.navigationController?.pushViewController(onboardingVC, animated: true)
+        }
     }
     
     func setConstraints() {

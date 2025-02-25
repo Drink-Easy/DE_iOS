@@ -11,11 +11,13 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
     
     lazy var rView = RatingWineView()
     private var ratingValue: Double = 2.5
-    let navigationBarManager = NavigationBarManager()
     
+    let navigationBarManager = NavigationBarManager()
+
     let networkService = TastingNoteService()
     let tnManager = NewTastingNoteManager.shared
     let wineData = TNWineDataManager.shared
+    private let errorHandler = NetworkErrorHandler()
     
     let textViewPlaceHolder = "추가로 기록하고 싶은 내용을 작성해 보세요!"
     
@@ -113,23 +115,28 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
         self.logButtonClick(screenName: self.screenName,
                             buttonName: Tracking.ButtonEvent.createBtnTapped,
                        fileName: #file)
-        guard let reviewString = rView.reviewBody.text else {
-            print("작성된 리뷰가 없습니다.")
-            return
+        
+        var reviewString = ""
+        if rView.reviewBody.text == textViewPlaceHolder {
+            reviewString = "작성된 리뷰가 없습니다."
+        } else {
+            reviewString = rView.reviewBody.text ?? "작성된 리뷰가 없습니다."
         }
+        
         tnManager.saveRating(ratingValue)
         tnManager.saveReview(reviewString)
         self.view.showBlockingView()
         Task {
             do {
                 try await postCreateTastingNote()
+                tnManager.resetData()
+                wineData.resetData()
                 NoseManager.shared.resetAllScents()
                 self.view.hideBlockingView()
                 navigationController?.popToRootViewController(animated: true)
             } catch {
-                print("Error: \(error)")
                 self.view.hideBlockingView()
-                // Alert 표시 등 추가
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
     }
@@ -177,12 +184,34 @@ extension RatingWineViewController : UITextViewDelegate {
         let inputString = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard let oldString = textView.text, let newRange = Range(range, in: oldString) else { return true }
         let newString = oldString.replacingCharacters(in: newRange, with: inputString).trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        
 
-        let characterCount = newString.count
-        guard characterCount <= 500 else { return false }
-        // TODO : 경고창 띄우기?
-        // alertview?
+        // 1️⃣ 글자 수 제한 (500자)
+        if newString.count > 500 {
+            showToastMessage(message: "500자 이하의 리뷰만 가능해요.", yPosition: view.frame.height * 0.75)
+            rView.saveButton.isEnabled(isEnabled: false)
+            return false
+        }
 
+        // 2️⃣ 비속어 필터링
+        let currentFilePath = URL(fileURLWithPath: #file)
+        let currentDirectory = currentFilePath.deletingLastPathComponent()
+        let badWordFilePath = currentDirectory
+            .deletingLastPathComponent() // ViewControllers/
+            .deletingLastPathComponent() // TastingNote/
+            .deletingLastPathComponent() // Features/
+            .deletingLastPathComponent() // Sources/
+            .appendingPathComponent("BadWord.txt")
+        
+        let nicknameFilter = TextFilter(filePath: badWordFilePath.path)
+        
+        if nicknameFilter.checkFWords(newString) { // 비속어 감지
+            showToastMessage(message: "비속어를 사용할 수 없어요.", yPosition: view.frame.height * 0.75)
+            rView.saveButton.isEnabled(isEnabled: false)
+            return false
+        }
+        rView.saveButton.isEnabled(isEnabled: true)
         return true
     }
 }

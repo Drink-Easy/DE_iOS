@@ -10,8 +10,6 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
     public let textField: PaddedTextField
     let validationLabel: UILabel
     
-    public var inputLimit : Int = 15
-    
     public var text: String? {
         get {
             //필요한 연산 과정
@@ -25,8 +23,7 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
     // MARK: - 초기화
     public init(descriptionLabelText: String,
                 textFieldPlaceholder: String,
-                validationText: String,
-                limitCount : Int = 15) {
+                validationText: String) {
         // 초기화
         self.textField = PaddedTextField(padding: UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16))
         self.descriptionLabel = UILabel()
@@ -36,8 +33,7 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
         
         setupUI(descriptionLabelText: descriptionLabelText,
                 textFieldPlaceholder: textFieldPlaceholder,
-                validationText: validationText,
-                limitCount: limitCount
+                validationText: validationText
         )
     }
     
@@ -47,9 +43,7 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
     
     // MARK: - UI 세팅
     private func setupUI(descriptionLabelText: String,
-                         textFieldPlaceholder: String, validationText: String, limitCount : Int) {
-        
-        self.inputLimit = limitCount
+                         textFieldPlaceholder: String, validationText: String) {
         
         // 설명 라벨 설정
         descriptionLabel.text = descriptionLabelText
@@ -130,9 +124,9 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
         }
         
         //특정 글자수(기본 9) 이상 입력 받지 않음
-        if updatedText.count > inputLimit {
-            return false
-        }
+//        if updatedText.count > inputLimit {
+//            return false
+//        }
         return true
     }
 }

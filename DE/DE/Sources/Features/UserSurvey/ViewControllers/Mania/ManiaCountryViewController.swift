@@ -12,6 +12,7 @@ class ManiaCountryViewController: UIViewController, FirebaseTrackable {
     
     private let navigationBarManager = NavigationBarManager()
     let networkService = MemberService()
+    private let errorHandler = NetworkErrorHandler()
     let userMng = UserSurveyManager.shared
     
     let cellData = ["프랑스", "이탈리아", "미국", "스페인", "아르헨티나", "독일", "호주", "포르투갈", "캐나다", "뉴질랜드", "슬로베니아", "헝가리", "오스트리아", "대한민국", "그리스", "칠레"]
@@ -29,6 +30,7 @@ class ManiaCountryViewController: UIViewController, FirebaseTrackable {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        view.addSubview(indicator)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -67,14 +69,13 @@ class ManiaCountryViewController: UIViewController, FirebaseTrackable {
     }
     
     private func callPatchAPI() {
+        view.showBlockingView()
         let bodyData = networkService.makeMemberInfoRequestDTO(name: userMng.name,
                                                                isNewbie: userMng.isNewbie,
                                                                monthPrice: userMng.monthPrice,
                                                                wineSort: userMng.wineSort,
                                                                wineArea: userMng.wineArea,
-                                                               wineVariety: userMng.wineVariety,
-                                                               region: userMng.region)
-        print(userMng.imageData ?? "이미지 없음")
+                                                               wineVariety: userMng.wineVariety)
         Task {
             do {
                 async let imageUpload: String? = {
@@ -88,9 +89,12 @@ class ManiaCountryViewController: UIViewController, FirebaseTrackable {
 
                 // ✅ 두 개의 네트워크 요청이 모두 끝날 때까지 기다림
                 _ = try await (imageUpload, userInfoUpdate)
+                userMng.resetData()
+                view.hideBlockingView()
                 processData()
             } catch {
-                print(error)
+                view.hideBlockingView()
+                errorHandler.handleNetworkError(error, in: self)
             }
         }
         

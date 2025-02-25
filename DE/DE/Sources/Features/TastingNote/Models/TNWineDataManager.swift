@@ -14,8 +14,6 @@ class TNWineDataManager {
     var imageUrl: String
     var variety: String
     
-    
-    
     // MARK: - Initializer
     public init(
         wineId: Int = 0,
@@ -53,5 +51,16 @@ class TNWineDataManager {
         if let imageUrl = imageUrl { self.imageUrl = imageUrl }
         if let variety = variety { self.variety = variety }
     }
+    
+    func resetData() {
+        wineId = 0
+        wineName = ""
+        sort = ""
+        country = ""
+        region = ""
+        imageUrl = ""
+        variety = ""
+    }
+    
 }
 

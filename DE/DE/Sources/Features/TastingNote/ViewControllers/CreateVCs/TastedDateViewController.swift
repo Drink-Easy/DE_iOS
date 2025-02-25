@@ -74,7 +74,6 @@ public class TastedDateViewController: UIViewController, FirebaseTrackable {
                             buttonName: Tracking.ButtonEvent.nextBtnTapped,
                        fileName: #file)
         guard let selectedDate = selectedDate else {
-            print("선택된 날짜가 없습니다.")
             return
         }
 
@@ -88,10 +87,7 @@ public class TastedDateViewController: UIViewController, FirebaseTrackable {
             
             let nextVC = ChooseWineColorViewController()
             navigationController?.pushViewController(nextVC, animated: true)
-        } else {
-            print("선택된 날짜를 Date로 변환할 수 없습니다.")
         }
-        
     }
     
 }
