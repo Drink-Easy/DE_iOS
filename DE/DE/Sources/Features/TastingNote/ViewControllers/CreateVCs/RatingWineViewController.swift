@@ -118,9 +118,9 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
         
         var reviewString = ""
         if rView.reviewBody.text == textViewPlaceHolder {
-            reviewString = "작성된 리뷰가 없습니다."
+            reviewString = ""
         } else {
-            reviewString = rView.reviewBody.text ?? "작성된 리뷰가 없습니다."
+            reviewString = rView.reviewBody.text ?? ""
         }
         
         tnManager.saveRating(ratingValue)

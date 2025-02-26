@@ -1,5 +1,5 @@
 {
-  "originHash" : "d0a29d1aa22c63bf57d8f8aa9fee359bbc69bb76abfef266a5f79885495367fa",
+  "originHash" : "b287990fc0eda1c693d6bfa41aca250ca2d1eca93dd5a31d87d9544e9bb0a0f3",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -53,15 +53,6 @@
       "state" : {
         "revision" : "6318278e8e64d21f0fdcc69004395e4d34048aaf",
         "version" : "11.8.1"
-      }
-    },
-    {
-      "identity" : "flexlayout",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/layoutBox/FlexLayout.git",
-      "state" : {
-        "revision" : "0ceb4f5e3da86b6f2988eed7ee7a09296a193dd9",
-        "version" : "2.1.0"
       }
     },
     {
@@ -173,15 +164,6 @@
       }
     },
     {
-      "identity" : "pinlayout",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/layoutBox/PinLayout.git",
-      "state" : {
-        "revision" : "8eaa3a15e4dcabaca4c95aea4c0ff0c9b4a67213",
-        "version" : "1.10.5"
-      }
-    },
-    {
       "identity" : "polykit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/heestand-xyz/PolyKit.git",
@@ -260,15 +242,6 @@
       "state" : {
         "revision" : "d41ef523faef0f911369f79c0b96815d9dbb6d7a",
         "version" : "3.0.0"
-      }
-    },
-    {
-      "identity" : "yoga",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/facebook/yoga.git",
-      "state" : {
-        "revision" : "042f5013152eb81c1552dec945b88f7b95ca350f",
-        "version" : "3.2.1"
       }
     }
   ],

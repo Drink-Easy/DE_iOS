@@ -47,9 +47,14 @@ public class SplashVC : UIViewController, FirebaseTrackable {
         }
         Analytics.setAnalyticsCollectionEnabled(true)
         Analytics.setUserProperty("false", forName: "debug_mode")
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         let isNeedUpdate = UserDefaults.standard.double(forKey: "isNeedUpdate")
         let showStopSign = UserDefaults.standard.bool(forKey: "showStopSign")
         let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as?Double ?? 1.0
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             if showStopSign {
                 guard let date = UserDefaults.standard.string(forKey: "signDate") else {
@@ -62,10 +67,6 @@ public class SplashVC : UIViewController, FirebaseTrackable {
                 self.checkAuthenticationStatus()
             }
         }
-    }
-    
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
         logScreenView(fileName: #file)
     }
     

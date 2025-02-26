@@ -10,15 +10,9 @@
         // productTypes: ["Alamofire": .framework,]
         productTypes: ["Moya" : .framework,
                        "SnapKit": .framework,
-                       "PinLayout": .framework,
-                       "FlexLayout": .framework,
                        "KeychainSwift" : .framework,
                        
                        "KakaoSDK": .staticLibrary,
-//                       "KakaoSDKAuth": .staticLibrary,
-//                       "KakaoSDKCert": .staticLibrary,
-//                       "KakaoSDKCertCore": .staticLibrary,
-//                       "KakaoSDKCommon": .staticLibrary,
                        
                        "SDWebImage" : .framework,
                        "SwiftyToaster" : .framework,
@@ -43,8 +37,6 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/Moya/Moya.git", from: "15.0.0"),
         .package(url: "https://github.com/SnapKit/SnapKit.git", from: "5.0.0"),
-        .package(url: "https://github.com/layoutBox/PinLayout.git", from: "1.10.5"),
-        .package(url: "https://github.com/layoutBox/FlexLayout.git", from: "2.0.10"),
         .package(url: "https://github.com/evgenyneu/keychain-swift.git", from: "24.0.0"),
         
         .package(url: "https://github.com/kakao/kakao-ios-sdk", from: "2.23.0"),

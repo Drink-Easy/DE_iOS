@@ -100,9 +100,9 @@ public class EditReviewViewController: UIViewController, FirebaseTrackable {
     private func callUpdateAPI() {
         var reviewString = ""
         if rView.reviewBody.text == textViewPlaceHolder {
-            reviewString = "작성된 리뷰가 없습니다."
+            reviewString = ""
         } else {
-            reviewString = rView.reviewBody.text ?? "작성된 리뷰가 없습니다."
+            reviewString = rView.reviewBody.text ?? ""
         }
         
         let updateData = networkService.makeUpdateNoteBodyDTO(review: reviewString)
