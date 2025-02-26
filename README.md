@@ -6,7 +6,31 @@
 | [@doyeonk429](https://github.com/doyeonk429) | [@yeseonglee](https://github.com/yeseonglee) | [@dlguszoo](https://github.com/dlguszoo) |
 |:---:|:---:|:---:|
 | <img width="160px" src="https://avatars.githubusercontent.com/u/80318425?v=4"/> | <img width="160px" src="https://avatars.githubusercontent.com/u/122416722?v=4"/> | <img width="160px" src="https://avatars.githubusercontent.com/u/128601891?v=4"/> |
-| `프로젝트 총괄`</br>`사용자 인증(애플 로그인)`</br>`보유와인 냉장고`</br>`취향찾기 설문` | `사용자 인증(자체/카카오 로그인)`</br>`테이스팅 노트`</br>`마이페이지` | `홈`</br>`와인 검색`</br>`위시리스트`</br>`취향찾기 설문` |
+| `프로젝트 총괄`</br>`사용자 인증(애플 로그인)`</br>`보유와인 냉장고`</br>`취향찾기 설문` | `사용자 인증(자체/카카오 로그인)`</br>`테이스팅 노트`</br>`마이페이지`</br>`다크모드 기능` | `홈`</br>`와인 검색`</br>`위시리스트`</br>`취향찾기 설문` |
+
+## 🎥 Main Features
+<table>
+  <tr>
+    <td align="center">와인 추천</td>
+    <td align="center">취향찾기</td>
+    <td align="center">테이스팅 노트</td>
+    <td align="center">와인 셀러</td>
+  </tr>
+  <tr>
+    <td>
+      <img src="https://github.com/user-attachments/assets/e4766de3-1a86-4ea1-a9cf-03a83a536cf4" width="200">
+    </td>
+    <td>
+      <img src="https://github.com/user-attachments/assets/cd28f1e2-be1c-4b89-acdf-9c176e81045d" width="200">
+    </td>
+    <td>
+      <img src="https://github.com/user-attachments/assets/af766fae-f105-4118-8c06-ea9310dad8ee" width="200">
+    </td>
+    <td>
+      <img src="https://github.com/user-attachments/assets/0f64f649-3cd4-42f4-a950-afa0fa24dc94" width="200">
+    </td>
+  </tr>
+</table>
 
 ## 🛠 Development Environment
 | Name          | Description   |
