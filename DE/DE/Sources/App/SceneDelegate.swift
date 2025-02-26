@@ -82,18 +82,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             if status == .success {
                 remoteConfig.activate { (changed, error) in
                     print(changed)
-                    let isNeedUpdate = remoteConfig["isNeedUpdate"].boolValue
+                    let isNeedUpdate = remoteConfig["isNeedUpdate"].numberValue
                     UserDefaults.standard.set(isNeedUpdate, forKey: "isNeedUpdate")
                     UserDefaults.standard.synchronize()
-                    
                     let jsonString = remoteConfig["serverSign"].stringValue
                     let jsonData = jsonString.data(using: .utf8)!
                     print(jsonData)
                     // ✅ JSON 디코딩
                     do {
                         let data = try JSONDecoder().decode(JsonTest.self, from: jsonData)
+                        UserDefaults.standard.set(data.showStopSign, forKey: "showStopSign")
+                        UserDefaults.standard.synchronize()
                         if data.showStopSign {
-                            UserDefaults.standard.set(data.showStopSign, forKey: "showStopSign")
                             UserDefaults.standard.set(data.stopDate, forKey: "signDate")
                             UserDefaults.standard.synchronize()
                         } else {

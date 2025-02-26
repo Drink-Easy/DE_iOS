@@ -41,6 +41,7 @@ public class CustomAlertView: UIView {
         button.setTitle("확인", for: .normal)
         button.setTitleColor(AppColor.purple100, for: .normal)
         button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 20)
+        button.isUserInteractionEnabled = true
     }
     
     
@@ -49,38 +50,37 @@ public class CustomAlertView: UIView {
         super.init(frame: frame)
         setupUI()
         setupConstraints()
+        layoutIfNeeded()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setupUI()
         setupConstraints()
+        layoutIfNeeded()
     }
     
     // MARK: - Setup UI
     private func setupUI() {
         backgroundColor = AppColor.black?.withAlphaComponent(0.3)
+        
         addSubview(containerView)
         containerView.addSubview(logoImage)
         containerView.addSubview(titleLabel)
         containerView.addSubview(messageTextView)
         containerView.addSubview(confirmButton)
         
+        containerView.clipsToBounds = false
+        containerView.bringSubviewToFront(confirmButton)
+        confirmButton.isUserInteractionEnabled = true
         confirmButton.addTarget(self, action: #selector(didTapConfirmButton), for: .touchUpInside)
-    }
-    
-    public override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        // containerView 외부는 터치 이벤트를 무시
-        if !containerView.frame.contains(point) {
-            return false
-        }
-        return true
     }
     
     private func setupConstraints() {
         containerView.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.width.equalTo(Constants.superViewWidth * 0.7)
+            make.height.lessThanOrEqualTo(Constants.superViewHeight * 0.7)
         }
         
         logoImage.snp.makeConstraints { make in
@@ -104,7 +104,7 @@ public class CustomAlertView: UIView {
         
         confirmButton.snp.makeConstraints { make in
             make.top.equalTo(messageTextView.snp.bottom).offset(24)
-            make.centerX.equalToSuperview()
+            make.leading.trailing.equalToSuperview()
             make.height.equalTo(44) // ✅ 버튼 크기 고정
         }
         containerView.snp.makeConstraints { make in
@@ -122,9 +122,8 @@ public class CustomAlertView: UIView {
     }
     
     // MARK: - Actions
-    @objc private func didTapConfirmButton() {
-        UIControl().sendAction(#selector(NSXPCConnection.suspend), to: UIApplication.shared, for: nil)
-//        self.removeFromSuperview()
-//        onDismiss?()
+    @objc public func didTapConfirmButton() {
+        self.removeFromSuperview()
+        exit(0)
     }
 }
