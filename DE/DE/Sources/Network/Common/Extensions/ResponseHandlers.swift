@@ -65,7 +65,7 @@ extension NetworkManager {
         let serverErrorCode = ServerErrorCode(rawValue: errorResponse.code) ?? .unknown
         let userMessage = serverErrorCode.errorMessage
         
-        Analytics.logEvent("DRINKIG_NETWORK_ERROR", parameters: [
+        Analytics.logEvent("DrinkigNetworkError", parameters: [
             "isSuccess" : errorResponse.isSuccess,
             "statusCode": response.statusCode,
             "httpStatusCode" : errorResponse.httpStatus,
@@ -108,7 +108,7 @@ extension NetworkManager {
         let serverErrorCode = ServerErrorCode(rawValue: errorResponse.code) ?? .unknown
         let userMessage = serverErrorCode.errorMessage
         
-        Analytics.logEvent("DRINKIG_NETWORK_ERROR", parameters: [
+        Analytics.logEvent("DrinkigNetworkError", parameters: [
             "isSuccess" : errorResponse.isSuccess,
             "statusCode": response.statusCode,
             "httpStatusCode" : errorResponse.httpStatus,
