@@ -17,6 +17,9 @@ public class NicknameValidateManager {
     // MARK: - Validation Methods
     
     public func noNeedToCheck(_ view: CustomTextFieldView) -> Bool {
+        self.isNicknameCanUse = true
+        self.isLengthValid = true
+        self.isNicknameValid = true
         hideValidationError(view, message: "")
         return true
     }
