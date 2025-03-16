@@ -194,13 +194,13 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
         if contentOffsetY > contentHeight - scrollViewHeight { // Trigger when arrive the bottom
             guard !isLoading, currentPage + 1 < totalPage else { return }
             isLoading = true
-            indicator.showBlockingView()
+            self.view.showBlockingView()
             Task {
                 do {
                     try await callSearchAPI(query: searchHomeView.searchBar.text ?? "", startPage: currentPage + 1)
-                    indicator.hideBlockingView()
+                    self.view.hideBlockingView()
                 } catch {
-                    indicator.hideBlockingView()
+                    self.view.hideBlockingView()
                     errorHandler.handleNetworkError(error, in: self)
                 }
                 DispatchQueue.main.async {
