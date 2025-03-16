@@ -12,6 +12,7 @@
 
 | [@doyeonk429](https://github.com/doyeonk429) | [@yeseonglee](https://github.com/yeseonglee) | [@dlguszoo](https://github.com/dlguszoo) |
 |:---:|:---:|:---:|
+| **도연** | **예성** | **현주** |
 | <img width="160px" src="https://avatars.githubusercontent.com/u/80318425?v=4"/> | <img width="160px" src="https://avatars.githubusercontent.com/u/122416722?v=4"/> | <img width="160px" src="https://avatars.githubusercontent.com/u/128601891?v=4"/> |
 | `프로젝트 총괄`</br>`사용자 인증(애플 로그인)`</br>`보유와인 냉장고`</br>`취향찾기 설문`</br>`네트워크 시스템` | `디자인 시스템`</br>`사용자 인증(자체/카카오 로그인)`</br>`테이스팅 노트`</br>`마이페이지`</br>`다크모드 기능` | `디자인 시스템`</br>`홈`</br>`와인 검색`</br>`위시리스트`</br>`취향찾기 설문` |
 
