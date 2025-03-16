@@ -51,7 +51,6 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.addSubview(indicator)
         view.backgroundColor = AppColor.bgGray
         
         let (varietyString, sortString) = calculateResult()

@@ -26,7 +26,6 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
 
         addView()
         constraints()
-        self.view.addSubview(indicator)
         self.view.showColorBlockingView()
         Task {
             do {
@@ -43,6 +42,7 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     

@@ -41,9 +41,9 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         callWineDetailAPI(wineId: self.wineId)
-        self.view.addSubview(indicator)
     }
     
     override func viewWillDisappear(_ animated: Bool) {

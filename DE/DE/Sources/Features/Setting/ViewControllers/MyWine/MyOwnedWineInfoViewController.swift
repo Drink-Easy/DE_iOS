@@ -25,6 +25,7 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
@@ -40,7 +41,6 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
         setupNavigationBar()
         setWineData()
         wineDetailView.setEditButton(showEditButton: true)
-        self.view.addSubview(indicator)
     }
     
     public override func viewDidAppear(_ animated: Bool) {

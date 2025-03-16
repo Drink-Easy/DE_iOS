@@ -27,13 +27,13 @@ public class EditWineColorViewController: UIViewController, FirebaseTrackable {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         colorView.setWineName(wineData.wineName)
         colorView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         colorView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         colorView.infoView.kindContents.text = wineData.sort
         colorView.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")
         selectedColor = tnManager.color
-        self.view.addSubview(indicator)
     }
     
     public override func viewDidLoad() {

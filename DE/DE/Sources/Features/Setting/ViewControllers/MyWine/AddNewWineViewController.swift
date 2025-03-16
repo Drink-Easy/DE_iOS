@@ -25,7 +25,6 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         view.backgroundColor = AppColor.grayBG
         self.view = searchHomeView
         searchHomeView.noSearchResultLabel.isHidden = true
-        self.view.addSubview(indicator)
         searchHomeView.searchResultTableView.dataSource = self
         searchHomeView.searchResultTableView.delegate = self
         searchHomeView.searchResultTableView.register(
@@ -36,16 +35,11 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
 //        searchHomeView.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         setupNavigationBar()
         hideKeyboardWhenTappedAround()
-        self.view.addSubview(indicator)
     }
-    
-    private lazy var searchHomeView = SearchHomeView(
-        titleText: "추가할 와인을 선택해주세요",
-        placeholder: "와인 이름을 검색하세요 (한글/영문)"
-    )
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -58,6 +52,11 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         super.viewDidAppear(animated)
         logScreenView(fileName: #file)
     }
+    
+    private lazy var searchHomeView = SearchHomeView(
+        titleText: "추가할 와인을 선택해주세요",
+        placeholder: "와인 이름을 검색하세요 (한글/영문)"
+    )
     
     func setupNavigationBar() {
         navigationBarManager.addBackButton(

@@ -23,10 +23,11 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
         setupNavigationBar()
         setupActions()
         hideKeyboardWhenTappedAround()
-        self.view.addSubview(indicator)
     }
+    
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     

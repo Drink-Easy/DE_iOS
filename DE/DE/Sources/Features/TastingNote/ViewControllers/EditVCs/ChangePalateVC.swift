@@ -42,6 +42,7 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         self.setWineName(wineData.wineName)
         
@@ -60,7 +61,6 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.addSubview(indicator)
         palateInfo = tnManager.getSliderValues()
         setupUI()
         setupActions()

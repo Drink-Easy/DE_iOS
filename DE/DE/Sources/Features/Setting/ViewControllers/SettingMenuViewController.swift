@@ -53,10 +53,10 @@ public final class SettingMenuViewController : UIViewController, UIGestureRecogn
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         self.navigationController?.interactivePopGestureRecognizer?.delegate = self
         fetchMemberInfo()
-        self.view.addSubview(indicator)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
