@@ -123,9 +123,10 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.navigationController?.isNavigationBarHidden = true
         self.navigationController?.interactivePopGestureRecognizer?.delegate = self
-        self.view.addSubview(indicator)
+
         fetchName()
         
         setAdBanner()

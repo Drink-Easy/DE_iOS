@@ -36,11 +36,11 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
         setupNavigationBar()
         addComponents()
         setConstraints()
-        self.view.addSubview(indicator)
     }
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         setNavBarAppearance(navigationController: self.navigationController)
         callGetAPI()
@@ -53,7 +53,6 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.view.addSubview(indicator)
         logScreenView(fileName: #file)
         callGetAPI()
     }

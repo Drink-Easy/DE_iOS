@@ -53,8 +53,8 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     //MARK: Initializers
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.setNavigationBarHidden(false, animated: animated)
         self.view.addSubview(indicator)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
