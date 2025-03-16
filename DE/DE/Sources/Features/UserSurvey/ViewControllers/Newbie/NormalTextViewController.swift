@@ -51,7 +51,6 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.addSubview(indicator)
         view.backgroundColor = AppColor.bgGray
         
         let (varietyString, sortString) = calculateResult()
@@ -85,18 +84,6 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
         setupNavigationBar()
         
         startAlphaAnimationSequence()
-    }
-    // 폰트 사이즈 조절 함수 -> 1차 때 사용안함
-//    func dynamicFontSize(baseSize: CGFloat) -> CGFloat {
-//        let adjustedSize = baseSize * DynamicPadding.widthScaleFactor
-//        print(adjustedSize)
-//        return min(max(adjustedSize, 26), 34) // 최소 12, 최대 34 제한
-//    }
-    
-    func dynamicFontSize(baseSize: CGFloat) -> CGFloat {
-        let adjustedSize = baseSize * DynamicPadding.widthScaleFactor
-        print(adjustedSize)
-        return min(max(adjustedSize, 26), 34) // 최소 12, 최대 34 제한
     }
     
     func calculateResult() -> (String, String ){

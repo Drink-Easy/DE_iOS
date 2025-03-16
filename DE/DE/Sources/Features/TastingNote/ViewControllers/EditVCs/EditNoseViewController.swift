@@ -30,6 +30,7 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         
         NoseManager.shared.resetSelectedScents()
         NoseManager.shared.collapseAllSections()
@@ -48,7 +49,6 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.addSubview(indicator)
         view.backgroundColor = AppColor.bgGray
         setupUI()
         setupCollectionView()

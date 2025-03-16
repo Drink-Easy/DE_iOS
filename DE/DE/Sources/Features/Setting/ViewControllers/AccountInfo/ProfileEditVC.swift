@@ -174,8 +174,8 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
         }
         
         // ✅ 액션 추가
-        actionSheet.addAction(deleteAction)
         actionSheet.addAction(editAction)
+        actionSheet.addAction(deleteAction)
         actionSheet.addAction(cancelAction)
 
         // ✅ 액션 시트 표시

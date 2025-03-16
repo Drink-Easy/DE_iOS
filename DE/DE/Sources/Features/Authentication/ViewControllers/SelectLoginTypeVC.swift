@@ -29,7 +29,7 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable, UIGestureRe
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
-        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
+//        self.navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
     
     public override func loadView() {

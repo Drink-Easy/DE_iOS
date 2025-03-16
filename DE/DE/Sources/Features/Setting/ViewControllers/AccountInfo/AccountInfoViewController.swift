@@ -47,9 +47,9 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
     //MARK: - View LifeCycle
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         CheckCacheData()
-        self.view.addSubview(indicator)
     }
     
     override func viewWillDisappear(_ animated: Bool) {

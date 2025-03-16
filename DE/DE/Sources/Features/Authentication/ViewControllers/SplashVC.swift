@@ -47,52 +47,32 @@ public class SplashVC : UIViewController, FirebaseTrackable {
         }
         Analytics.setAnalyticsCollectionEnabled(true)
         Analytics.setUserProperty("false", forName: "debug_mode")
-        
-
-        
-        let isNeedUpdate = UserDefaults.standard.bool(forKey: "isNeedUpdate")
-        let showStopSign = UserDefaults.standard.bool(forKey: "showStopSign")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            if showStopSign {
-                // 서버 점검시간 공지
-                self.presentAlertView()
-            } else {
-                self.checkAuthenticationStatus()
-            }
-        }
     }
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        let isNeedUpdate = UserDefaults.standard.double(forKey: "isNeedUpdate")
+        let showStopSign = UserDefaults.standard.bool(forKey: "showStopSign")
+        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as?Double ?? 1.0
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            if showStopSign {
+                guard let date = UserDefaults.standard.string(forKey: "signDate") else {
+                    return
+                }
+                self.showAlertView(message: date)
+            } else if isNeedUpdate > appVersion {
+                self.showUpdateAlertView()
+            } else {
+                self.checkAuthenticationStatus()
+            }
+        }
         logScreenView(fileName: #file)
-        self.view.showBlockingView()
     }
     
     func setupViews() {
         view.backgroundColor = AppColor.bgGray
         view.addSubview(logoImage)
-    }
-    
-    func setNewTitle() {
-        print("업데이트가 필요합니다!")
-        self.view.hideBlockingView()
-    }
-    
-    func presentAlertView() {
-        let title = UserDefaults.standard.string(forKey: "signMessage")
-        let date = UserDefaults.standard.string(forKey: "signDate")
-        
-        let alert = UIAlertController(
-            title: title,
-            message: date,
-            preferredStyle: .alert
-        )
-        
-        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: { _ in
-            UIControl().sendAction(#selector(NSXPCConnection.suspend), to: UIApplication.shared, for: nil)
-        }))
-        
-        present(alert, animated: true, completion: nil)
     }
     
     func checkAuthenticationStatus() {
@@ -107,7 +87,7 @@ public class SplashVC : UIViewController, FirebaseTrackable {
             refreshToken = refreshTokenCookie.value
             refreshExpiresAt = refreshTokenCookie.expiresDate
         }
-
+        
         // 리프레시 토큰 추출 실패
         guard !refreshToken.isEmpty else {
             navigateToOnBoaringScreen()
@@ -183,5 +163,5 @@ public class SplashVC : UIViewController, FirebaseTrackable {
             make.width.height.equalTo(Constants.superViewWidth * 0.3)
         }
     }
-
+    
 }

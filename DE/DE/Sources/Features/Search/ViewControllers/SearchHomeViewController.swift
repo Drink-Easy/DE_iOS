@@ -33,11 +33,11 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate, F
         self.view = searchHomeView
         searchHomeView.noSearchResultLabel.isHidden = true
         setupNavigationBar()
-        self.view.addSubview(indicator)
     }
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -58,13 +58,13 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate, F
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let query = searchHomeView.searchBar.text, query.count >= 2 {
-            self.view.showBlockingView()
             DispatchQueue.main.async {
                 // 강제로 맨위로 올리기
                 self.searchHomeView.searchResultTableView.setContentOffset(.zero, animated: true)
             }
             Task {
                 do {
+                    self.view.showBlockingView()
                     try await callSearchAPI(query: query, startPage: 0)
                     searchHomeView.noSearchResultLabel.isHidden = !wineResults.isEmpty
                     self.view.hideBlockingView()
@@ -130,7 +130,6 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate, F
     }
     
     func callSearchAPI(query: String, startPage: Int) async throws {
-        
         guard let response = try await networkService.fetchWines(searchName: query, page: startPage) else { return }
         
         guard let content = response.content else { return }
@@ -195,13 +194,13 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
         if contentOffsetY > contentHeight - scrollViewHeight { // Trigger when arrive the bottom
             guard !isLoading, currentPage + 1 < totalPage else { return }
             isLoading = true
-            indicator.showBlockingView()
+            self.view.showBlockingView()
             Task {
                 do {
                     try await callSearchAPI(query: searchHomeView.searchBar.text ?? "", startPage: currentPage + 1)
-                    indicator.hideBlockingView()
+                    self.view.hideBlockingView()
                 } catch {
-                    indicator.hideBlockingView()
+                    self.view.hideBlockingView()
                     errorHandler.handleNetworkError(error, in: self)
                 }
                 DispatchQueue.main.async {

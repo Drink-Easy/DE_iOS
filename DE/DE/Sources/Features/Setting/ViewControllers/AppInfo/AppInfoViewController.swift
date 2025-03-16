@@ -10,6 +10,14 @@ import SDWebImage
 import CoreModule
 import Network
 
+enum AppInfoSection: String {
+    case service = "서비스 이용약관"
+    case privacy = "개인정보 처리방침"
+    case location = "위치정보 이용약관"
+    case openSource = "오픈소스 라이브러리"
+    case copyright = "저작권 법적 고지"
+}
+
 class AppInfoViewController : UIViewController, FirebaseTrackable {
     var screenName: String = Tracking.VC.appInfoVC
     
@@ -22,10 +30,11 @@ class AppInfoViewController : UIViewController, FirebaseTrackable {
     
     private var tableView = UITableView()
     
-    private let appInfoItems: [String] = [
-        "서비스 이용약관", "개인정보 처리방침",
-//        "위치정보 이용약관",
-        "오픈소스 라이브러리"
+    private let appInfoItems: [AppInfoSection] = [
+        AppInfoSection.service,
+        AppInfoSection.privacy,
+        AppInfoSection.openSource,
+        AppInfoSection.copyright
     ]
     
     private let instaButton = UIButton().then {
@@ -139,7 +148,7 @@ extension AppInfoViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         cell.selectionStyle = .none
-        cell.configure(name: appInfoItems[indexPath.row])
+        cell.configure(name: appInfoItems[indexPath.row].rawValue)
 
         return cell
     }
@@ -156,22 +165,24 @@ extension AppInfoViewController: UITableViewDelegate {
         
         // 선택된 항목에 따라 다른 내용 설정
         switch selectedItem {
-        case "서비스 이용약관":
+        case .service:
             content = Constants.Policy.service
-        case "개인정보 처리방침":
+        case .privacy:
             content = Constants.Policy.privacy
-        case "위치정보 이용약관":
+        case .location:
             content = Constants.Policy.location
-        case "오픈소스 라이브러리":
+        case .openSource:
             content = Constants.Policy.openSource
-        default:
-            content = "정보를 찾을 수 없습니다."
+        case .copyright:
+            content = Constants.Policy.copyright
+//        default:
+//            content = "정보를 찾을 수 없습니다."
         }
         DispatchQueue.main.async {
             self.view.hideBlockingView()
         }
         
-        let detailVC = DetailInfoVC(title: selectedItem, content: content)
+        let detailVC = DetailInfoVC(title: selectedItem.rawValue, content: content)
         navigationController?.pushViewController(detailVC, animated: true)
     }
 }

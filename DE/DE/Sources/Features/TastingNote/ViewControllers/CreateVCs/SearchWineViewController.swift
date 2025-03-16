@@ -17,14 +17,17 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
     var currentPage = 0
     var totalPage = 0
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.isNavigationBarHidden = false
         view.backgroundColor = AppColor.grayBG
         self.view = searchHomeView
         searchHomeView.noSearchResultLabel.isHidden = true
-        self.view.addSubview(indicator)
-        
         searchHomeView.searchResultTableView.dataSource = self
         searchHomeView.searchResultTableView.delegate = self
         searchHomeView.searchResultTableView.register(

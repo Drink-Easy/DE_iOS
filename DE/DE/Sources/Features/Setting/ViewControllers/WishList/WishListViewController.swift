@@ -43,13 +43,13 @@ public class WishListViewController: UIViewController, FirebaseTrackable {
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        self.view.addSubview(indicator)
         logScreenView(fileName: #file)
         callFetchAPI()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         setNavBarAppearance(navigationController: self.navigationController)
         self.view.showBlockingView()

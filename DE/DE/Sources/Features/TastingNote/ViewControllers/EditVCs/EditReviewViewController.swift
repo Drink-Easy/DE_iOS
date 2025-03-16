@@ -17,6 +17,7 @@ public class EditReviewViewController: UIViewController, FirebaseTrackable {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         //        NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
         //           NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
         rView.setWineName(wineData.wineName)
@@ -25,7 +26,6 @@ public class EditReviewViewController: UIViewController, FirebaseTrackable {
         rView.infoView.kindContents.text = wineData.sort
         rView.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")
         rView.reviewBody.text = tnManager.review
-        self.view.addSubview(indicator)
     }
     
     //    public override func viewWillDisappear(_ animated: Bool) {
@@ -100,9 +100,9 @@ public class EditReviewViewController: UIViewController, FirebaseTrackable {
     private func callUpdateAPI() {
         var reviewString = ""
         if rView.reviewBody.text == textViewPlaceHolder {
-            reviewString = "작성된 리뷰가 없습니다."
+            reviewString = ""
         } else {
-            reviewString = rView.reviewBody.text ?? "작성된 리뷰가 없습니다."
+            reviewString = rView.reviewBody.text ?? ""
         }
         
         let updateData = networkService.makeUpdateNoteBodyDTO(review: reviewString)

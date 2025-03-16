@@ -17,6 +17,8 @@ public class EditRateViewController: UIViewController, FirebaseTrackable {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
+        
         self.updateRatingLabel(with: tnManager.rating)
         
         rView.setWineName(wineData.wineName)
@@ -30,7 +32,6 @@ public class EditRateViewController: UIViewController, FirebaseTrackable {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.addSubview(indicator)
         view.backgroundColor = AppColor.bgGray
         setConstraints()
         setupActions()

@@ -19,14 +19,13 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
     var currentPage = 0
     var totalPage = 0
     var currentType = "최신순"
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.grayBG
 
         addView()
         constraints()
-        self.view.addSubview(indicator)
         self.view.showColorBlockingView()
         Task {
             do {
@@ -43,6 +42,7 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     

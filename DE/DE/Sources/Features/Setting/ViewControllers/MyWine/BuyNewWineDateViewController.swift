@@ -17,6 +17,7 @@ public class BuyNewWineDateViewController: UIViewController, FirebaseTrackable {
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.view.addSubview(indicator)
         self.tastedDateView.setWineName(MyOwnedWineManager.shared.getWineName())
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
@@ -31,7 +32,6 @@ public class BuyNewWineDateViewController: UIViewController, FirebaseTrackable {
         setupUI()
         setupActions()
         setupNavigationBar()
-//        self.view.addSubview(indicator)
     }
     
     public override func viewDidAppear(_ animated: Bool) {

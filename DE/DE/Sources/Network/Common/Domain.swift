@@ -3,7 +3,7 @@
 import UIKit
 
 public struct API {
-    public static let baseURL = "https://drinkeg.com"
+    public static let baseURL = "https://drinkig.com"
     public static let commentURL = "\(baseURL)/comments"
     public static let recommentURL = "\(baseURL)/recomments"
     public static let tastingNoteURL = "\(baseURL)/tasting-note"
