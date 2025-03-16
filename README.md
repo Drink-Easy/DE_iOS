@@ -1,12 +1,18 @@
-# 드링키지
-> 손쉽게 즐기는 주류 생활
+<div align="center"> 
+
+<h2>🍷 이제는 와인이 쉽다! <span style="color: purple;"><b>드링키지</b></span>로 시작하는 이지 와인 라이프 🍷</h2>
+
+<img src="https://github.com/user-attachments/assets/be25ed05-659f-4549-86d9-7cb98ed68599" width="200" />
+
+[<img width="200" alt="스크린샷 2021-11-19 오후 3 52 02" src="https://github-production-user-asset-6210df.s3.amazonaws.com/75518683/268173445-322afec8-38fa-46ba-bbe0-3fffd0c93f5b.png">](https://apps.apple.com/kr/app/%EB%93%9C%EB%A7%81%ED%82%A4%EC%A7%80/id6741486172)
+</div>
 
 ## 🍎 Developers
 
 | [@doyeonk429](https://github.com/doyeonk429) | [@yeseonglee](https://github.com/yeseonglee) | [@dlguszoo](https://github.com/dlguszoo) |
 |:---:|:---:|:---:|
 | <img width="160px" src="https://avatars.githubusercontent.com/u/80318425?v=4"/> | <img width="160px" src="https://avatars.githubusercontent.com/u/122416722?v=4"/> | <img width="160px" src="https://avatars.githubusercontent.com/u/128601891?v=4"/> |
-| `프로젝트 총괄`</br>`사용자 인증(애플 로그인)`</br>`보유와인 냉장고`</br>`취향찾기 설문` | `사용자 인증(자체/카카오 로그인)`</br>`테이스팅 노트`</br>`마이페이지`</br>`다크모드 기능` | `홈`</br>`와인 검색`</br>`위시리스트`</br>`취향찾기 설문` |
+| `프로젝트 총괄`</br>`사용자 인증(애플 로그인)`</br>`보유와인 냉장고`</br>`취향찾기 설문`</br>`네트워크 시스템` | `디자인 시스템`</br>`사용자 인증(자체/카카오 로그인)`</br>`테이스팅 노트`</br>`마이페이지`</br>`다크모드 기능` | `디자인 시스템`</br>`홈`</br>`와인 검색`</br>`위시리스트`</br>`취향찾기 설문` |
 
 ## 🎥 Main Features
 <table>
@@ -33,6 +39,7 @@
 </table>
 
 ## 🛠 Development Environment
+<img width="77" alt="스크린샷 2021-11-19 오후 3 52 02" src="https://img.shields.io/badge/iOS-17.0+-silver"> <img width="95" alt="스크린샷 2021-11-19 오후 3 52 02" src="https://img.shields.io/badge/Xcode-16.2-blue">
 | Name          | Description   |
 | ------------  | ------------- |
 | <img src="https://img.shields.io/badge/-UIKit-2396F3?style=flat&logo=uikit&logoColor=white"> | iOS 앱의 UI를 구축하고 사용자 인터페이스를 관리하는 기본 프레임워크.|
