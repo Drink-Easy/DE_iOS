@@ -58,13 +58,13 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate, F
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let query = searchHomeView.searchBar.text, query.count >= 2 {
-            self.view.showBlockingView()
             DispatchQueue.main.async {
                 // 강제로 맨위로 올리기
                 self.searchHomeView.searchResultTableView.setContentOffset(.zero, animated: true)
             }
             Task {
                 do {
+                    self.view.showBlockingView()
                     try await callSearchAPI(query: query, startPage: 0)
                     searchHomeView.noSearchResultLabel.isHidden = !wineResults.isEmpty
                     self.view.hideBlockingView()
@@ -130,7 +130,6 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate, F
     }
     
     func callSearchAPI(query: String, startPage: Int) async throws {
-        
         guard let response = try await networkService.fetchWines(searchName: query, page: startPage) else { return }
         
         guard let content = response.content else { return }
