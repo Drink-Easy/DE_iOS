@@ -1,6 +1,7 @@
 <div align="center"> 
 
-<h2>🍷 이제는 와인이 쉽다! <span style="color: purple;"><b>드링키지</b></span>로 시작하는 이지 와인 라이프 🍷</h2>
+<h1>드링키지</h1>
+<p>🍷 이제는 와인이 쉽다! <span style="color: purple; font-weight: bold;">드링키지</span>로 시작하는 이지 와인 라이프 🍷</p>
 
 <img src="https://github.com/user-attachments/assets/be25ed05-659f-4549-86d9-7cb98ed68599" width="200" />
 
