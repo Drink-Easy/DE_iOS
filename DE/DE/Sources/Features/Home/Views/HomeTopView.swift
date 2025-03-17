@@ -15,7 +15,7 @@ class HomeTopView: UIView {
     }
     
     private lazy var logo = UIImageView().then {
-        $0.image = UIImage(named: "HomeLogo")
+        $0.image = UIImage(named: "homeLogo")
         $0.contentMode = .scaleAspectFit
         $0.backgroundColor = .clear
     }
