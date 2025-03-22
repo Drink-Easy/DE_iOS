@@ -132,11 +132,16 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
         let nextWineDatas = content.map { data in
             SearchResultModel(wineId: data.wineId, name: data.name, nameEng: data.nameEng, imageUrl: data.imageUrl, sort: data.sort, country: data.country, region: data.region, variety: data.variety, vivinoRating: data.vivinoRating, price: data.price)
         }
+        // TODO : 와인 검색결과 표시 임시 처리
+        let correctDatas = nextWineDatas.filter { $0.name.contains(query) || $0.nameEng.lowercased().contains(query.lowercased()) }
+        
+        let restDatas = nextWineDatas.filter { !correctDatas.contains($0) }
         
         if response.pageNumber != 0 { // 맨 처음 요청한게 아니면, 이전 데이터가 이미 저장이 되어있는 상황이면
             // 리스트 뒤에다가 넣어준다!
             self.currentPage = response.pageNumber
-            self.wineResults.append(contentsOf: nextWineDatas)
+            self.wineResults.append(contentsOf: correctDatas)
+            self.wineResults.append(contentsOf: restDatas)
         } else {
             // 토탈 페이지 수 갱신, 현재 페이지 수 설정
             self.totalPage = response.totalPages
