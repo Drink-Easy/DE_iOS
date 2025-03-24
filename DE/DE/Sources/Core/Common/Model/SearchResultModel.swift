@@ -2,7 +2,7 @@
 
 import UIKit
 
-public struct SearchResultModel {
+public struct SearchResultModel : Equatable {
     public let wineId: Int
     public let name: String
     public let nameEng: String
@@ -25,5 +25,9 @@ public struct SearchResultModel {
         self.variety = variety
         self.vivinoRating = vivinoRating
         self.price = price
+    }
+    
+    public static func ==(lhs: SearchResultModel, rhs: SearchResultModel) -> Bool {
+        return lhs.wineId == rhs.wineId
     }
 }

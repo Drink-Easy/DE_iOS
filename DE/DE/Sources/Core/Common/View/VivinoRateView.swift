@@ -9,7 +9,7 @@ import Cosmos
 
 public class VivinoRateView: UIView {
     
-    public var score = 0.0 {
+    public var score : Double = 0.0 {
         didSet {
             updateScore()
         }
@@ -67,6 +67,7 @@ public class VivinoRateView: UIView {
     
     public lazy var scoreStar = CosmosView().then {
         $0.rating = score
+        $0.settings.fillMode = .precise
         $0.settings.updateOnTouch = false
         $0.settings.starSize = 25
         $0.settings.starMargin = 6.14

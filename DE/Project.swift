@@ -7,6 +7,10 @@ let releaseBundleFin = "drinkig"
 let minimunTarget = "17.0"
 let projectName = "DE"
 let releaseTargetName = "DRINKIG"
+let major = 1
+let minor = 0
+let patch = 3
+
 
 //let crashlyticsScript = TargetScript.post(
 //    script: """
@@ -45,6 +49,8 @@ let project = Project(
             deploymentTargets: .iOS(minimunTarget),
             infoPlist: .extendingDefault(
                 with: [
+                    "CFBundleShortVersionString" : "\(major).\(minor).\(patch)",
+                    "CFBundleVersion" : "1",
                     "UISupportedInterfaceOrientations" : ["UIInterfaceOrientationPortrait"], // 화면 방향 세로 고정
                     "UIApplicationSceneManifest": [ // Scene 설정
                         "UIApplicationSupportsMultipleScenes": false,

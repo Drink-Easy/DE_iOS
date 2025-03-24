@@ -226,8 +226,14 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         
         wineInfoView.ratingValue = tnManager.rating
         wineInfoView.ratingButton.rating = tnManager.rating
+
+        if tnManager.review.isEmpty {
+            wineInfoView.dateView.text = "\(tnManager.tasteDate)에 기록되었어요."
+            wineInfoView.reviewView.text = "작성된 리뷰가 없습니다."
+        } else {
+            wineInfoView.dateView.text = "\(tnManager.tasteDate)에 작성되었어요."
+            wineInfoView.reviewView.text = tnManager.review
+        }
         
-        wineInfoView.dateView.text = "\(tnManager.tasteDate)에 작성되었어요."
-        wineInfoView.reviewView.text = tnManager.review
     }
 }
