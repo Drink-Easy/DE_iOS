@@ -11,13 +11,11 @@ public class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         
         self.delegate = self
-//        configureTabs()
+        configureTabs()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        configureTabs()
     }
     
     public override func viewDidLayoutSubviews() {
@@ -46,7 +44,10 @@ public class MainTabBarController: UITabBarController {
         
         tabBar.tintColor = AppColor.purple100
         tabBar.unselectedItemTintColor = AppColor.gray50
-        setViewControllers([nav1, nav2, nav3], animated: true)
+        
+        DispatchQueue.main.async {
+            self.setViewControllers([nav1, nav2, nav3], animated: false)
+        }
     }
 }
 // MARK: - UITabBarControllerDelegate
