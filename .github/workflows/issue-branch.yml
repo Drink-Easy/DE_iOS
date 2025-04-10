@@ -1,4 +1,4 @@
-branchName: '#${issue.number}'
+branchName: '${issue.number}-${issue.title}'
 branches:
   - label: '✨ Feature'
     prefix: feat/
@@ -9,7 +9,7 @@ branches:
   - label: '📃 Docs'
     prefix: docs/
   - label: '⚙ Setting'
-    prefic: setting/
+    prefix: setting/
   - label: '🌏 Deploy'
     prefix: deploy/
   - label: '🎨 Design'
