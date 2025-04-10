@@ -16,6 +16,8 @@ jobs:
         with:
           project-url: "https://github.com/orgs/Drink-Easy/projects/5"
           github-token: ${{ secrets.PAT_TOKEN }}
+      - name: 🔍 debug full event
+        run: echo "${{ toJson(github.event) }}"
 
       - name: 🏷️ 이슈 생성 시 `startDate` 설정
         if: github.event.action == 'opened'
