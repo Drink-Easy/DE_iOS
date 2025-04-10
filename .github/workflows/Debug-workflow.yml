@@ -1,0 +1,15 @@
+name: Debug Workflow
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  just-debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ✅ 워크플로 실행 테스트
+        run: echo "이슈 생성 이벤트 정상 트리거됨 ✅"
+
+      - name: 🐛 이벤트 전체 로그
+        run: echo '${{ toJson(github.event) }}'

@@ -9,7 +9,7 @@ let projectName = "DE"
 let releaseTargetName = "DRINKIG"
 let major = 1
 let minor = 0
-let patch = 4
+let patch = 5
 
 
 //let crashlyticsScript = TargetScript.post(
