@@ -21,4 +21,4 @@ branches:
   - label: '🙋‍♂️ Question'
     prefix: question/
 autoCloseIssue: true
-commentMessage: 'Branch ${branchName} created for issue: ${issue.title}'
+commentMessage: '✅ 자동 생성된 브랜치: `${branchName}` 이슈: ${issue.title}'
