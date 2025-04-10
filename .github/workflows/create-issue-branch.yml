@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Issue Branch
-        uses: robvanderleek/create-issue-branch@v1.9.0
+        uses: robvanderleek/create-issue-branch@main
         env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   delete_merged_branch:
         if: github.event.pull_request.merged == true
