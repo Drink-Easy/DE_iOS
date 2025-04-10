@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create Issue Branch
-        uses: robvanderleek/create-issue-branch@main
+        uses: robvanderleek/create-issue-branch@v1.9.0
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
 
@@ -22,7 +22,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
           - name: Delete Merged Branch
-            uses: dawidd6/action-delete-branch@v3
+            uses: dawidd6/action-delete-branch@v3.1.0
             with:
               github_token: ${{ secrets.PAT_TOKEN }}
               branches: ${{ github.event.pull_request.head.ref }}
