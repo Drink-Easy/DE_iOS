@@ -2,7 +2,7 @@ name: Create and Delete Issue Branch
 
 on:
   issues:
-    types: [labeled]
+    types: [ opened, assigned ]
   issue_comment:
     types: [created]
   pull_request:
