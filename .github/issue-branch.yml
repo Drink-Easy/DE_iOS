@@ -1,5 +1,5 @@
 branchName: short
- autoCloseIssue: true
+autoCloseIssue: true
 branches:
   - label: '✨ Feature'
     prefix: feat/
