@@ -22,3 +22,8 @@ branches:
     prefix: question/
 autoCloseIssue: true
 commentMessage: '✅ 자동 생성된 브랜치: `${branchName}` 이슈: ${issue.title}'
+transform:
+  issue.title:
+    pattern: '[^a-zA-Z0-9]+'
+    replacement: '-'
+    toLower: true
