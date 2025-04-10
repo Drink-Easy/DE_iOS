@@ -10,14 +10,15 @@ jobs:
   update_project:
     runs-on: ubuntu-latest
     steps:
+      - name: 이벤트 전체 로그 출력
+        run: echo '${{ toJson(github.event) }}'
+        
       - name: 이슈 생성 시 프로젝트 보드에 추가
         if: github.event.action == 'opened'
         uses: actions/add-to-project@v1.0.2
         with:
           project-url: "https://github.com/orgs/Drink-Easy/projects/5"
           github-token: ${{ secrets.PAT_TOKEN }}
-      - name: 🔍 debug full event
-        run: echo "${{ toJson(github.event) }}"
 
       - name: 🏷️ 이슈 생성 시 `startDate` 설정
         if: github.event.action == 'opened'
