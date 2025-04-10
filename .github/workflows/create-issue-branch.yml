@@ -16,8 +16,6 @@ jobs:
         uses: robvanderleek/create-issue-branch@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Echo branch name
-         run: echo ${{ steps.Create_Issue_Branch.outputs.branchName }}
 
   delete_merged_branch:
         if: github.event.pull_request.merged == true
