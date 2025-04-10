@@ -1,0 +1,16 @@
+name: Create Issue Branch Automatically
+
+on:
+  issues:
+    types:
+      - labeled
+
+jobs:
+  create-issue-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: robvanderleek/create-issue-branch@v3
+        with:
+          configurationPath: .github/workflows/issue-branch-config.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
