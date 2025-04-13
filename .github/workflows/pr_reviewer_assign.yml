@@ -1,0 +1,34 @@
+name: Auto Assign Reviewers Except Author
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  assign-reviewers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine reviewers
+        id: reviewers
+        run: |
+          AUTHOR="${{ github.actor }}"
+          echo "Author is $AUTHOR"
+
+          ALL_MEMBERS=("doyeonk429" "yeseonglee" "dlguszoo")
+          SELECTED_REVIEWERS=()
+
+          for MEMBER in "${ALL_MEMBERS[@]}"; do
+            if [ "$MEMBER" != "$AUTHOR" ]; then
+              SELECTED_REVIEWERS+=("$MEMBER")
+            fi
+          done
+
+          REVIEWERS_CSV=$(IFS=, ; echo "${SELECTED_REVIEWERS[*]}")
+          echo "reviewers=$REVIEWERS_CSV" >> $GITHUB_OUTPUT
+
+      - name: Assign reviewers
+        uses: ahmadnassri/action-pr-reviewer@v2.6.6
+        with:
+          reviewers: ${{ steps.reviewers.outputs.reviewers }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
