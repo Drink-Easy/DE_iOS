@@ -22,7 +22,7 @@ public class RecordGraphViewController: UIViewController, UIScrollViewDelegate, 
     }
     
     let contentView = UIView().then {
-        $0.backgroundColor = AppColor.bgGray
+        $0.backgroundColor = AppColor.background
     }
     
     let header = TopView(currentPage: 4, entirePage: 5)
@@ -63,7 +63,7 @@ public class RecordGraphViewController: UIViewController, UIScrollViewDelegate, 
     }
     
     private func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         view.addSubview(scrollView)
         scrollView.delegate = self
         

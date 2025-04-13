@@ -34,7 +34,7 @@ class DetailInfoVC: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         setupNavigationBar(itemTitleString: itemTitle ?? "앱 정보")
         setNavBarAppearance(navigationController: self.navigationController)
         setupUI()

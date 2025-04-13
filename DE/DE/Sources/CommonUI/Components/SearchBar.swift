@@ -25,7 +25,7 @@ public class SearchBar: UITextField {
         self.attributedPlaceholder = NSAttributedString(
             string: "와인 이름을 검색하세요 (한글/영문)",
             attributes: [
-                .foregroundColor: AppColor.gray70 ?? .gray,
+                .foregroundColor: AppColor.gray70,
                 .font: UIFont.ptdRegularFont(ofSize: 14)
             ]
         )
@@ -38,7 +38,7 @@ public class SearchBar: UITextField {
         
         let icon = UIImage(named: "searchBarIcon")?.withRenderingMode(.alwaysTemplate)
         imageView.image = icon
-        imageView.tintColor = AppColor.gray70 ?? .gray
+        imageView.tintColor = AppColor.gray70
         imageView.contentMode = .scaleAspectFit
         
         let containerView = UIView(frame: CGRect(x: 0, y: 0, width: DynamicPadding.dynamicValue(47), height: DynamicPadding.dynamicValue(24)))
@@ -57,9 +57,9 @@ public class SearchBar: UITextField {
     public override func becomeFirstResponder() -> Bool {
         let didBecomeFirstResponder = super.becomeFirstResponder()
         if didBecomeFirstResponder {
-            self.backgroundColor = AppColor.bgGray
+            self.backgroundColor = AppColor.background
             self.layer.borderWidth = 1
-            self.layer.borderColor = AppColor.purple100?.cgColor
+            self.layer.borderColor = AppColor.purple100.cgColor
             self.imageView.tintColor = AppColor.purple100
         }
         return didBecomeFirstResponder

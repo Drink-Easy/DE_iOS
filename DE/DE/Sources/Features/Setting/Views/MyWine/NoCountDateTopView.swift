@@ -27,7 +27,7 @@ class NoCountDateTopView: UIView {
 
     init() {
         super.init(frame: .zero)
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         
         self.addComponents()
         self.constraints()

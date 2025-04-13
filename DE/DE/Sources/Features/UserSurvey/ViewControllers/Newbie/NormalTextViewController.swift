@@ -22,13 +22,13 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
 
     
     private let firblurView = UIView().then {
-        $0.backgroundColor = AppColor.bgGray?.withAlphaComponent(1)
+        $0.backgroundColor = AppColor.background.withAlphaComponent(1)
     }
     private let secblurView = UIView().then {
-        $0.backgroundColor = AppColor.bgGray?.withAlphaComponent(1)
+        $0.backgroundColor = AppColor.background.withAlphaComponent(1)
     }
     private let thirdblurView = UIView().then {
-        $0.backgroundColor = AppColor.bgGray?.withAlphaComponent(1)
+        $0.backgroundColor = AppColor.background.withAlphaComponent(1)
     }
     
     lazy var nextButton = CustomButton(title: "추천 와인 확인하러 가기", isEnabled: true)
@@ -51,7 +51,7 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         
         let (varietyString, sortString) = calculateResult()
 

@@ -23,7 +23,7 @@ public class WineInfoView: UIView {
     
     //디테일 뷰 담을 껍데기
     let backgroundView = UIView().then {
-        $0.backgroundColor = AppColor.tnbg
+        $0.backgroundColor = AppColor.tastingNoteBackground
         $0.layer.cornerRadius = 10
         
         $0.layer.shadowColor = UIColor.black.cgColor  // 그림자 색상

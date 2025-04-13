@@ -31,7 +31,7 @@ public class VivinoRateView: UIView {
             // 전체 텍스트 스타일 설정
             attributedString.addAttributes(
                 [
-                    .foregroundColor: AppColor.gray70!,
+                    .foregroundColor: AppColor.gray70,
                     .font: UIFont.ptdRegularFont(ofSize: 12)
                 ],
                 range: NSRange(location: 0, length: text.count)
@@ -42,7 +42,7 @@ public class VivinoRateView: UIView {
                 let nsRange = NSRange(range, in: text)
                 attributedString.addAttributes(
                     [
-                        .foregroundColor: AppColor.purple100 ?? .purple,
+                        .foregroundColor: AppColor.purple100,
                         .font: UIFont.ptdSemiBoldFont(ofSize: 18)
                     ],
                     range: nsRange
@@ -71,15 +71,15 @@ public class VivinoRateView: UIView {
         $0.settings.updateOnTouch = false
         $0.settings.starSize = 25
         $0.settings.starMargin = 6.14
-        $0.settings.filledColor = AppColor.purple100!
-        $0.settings.filledBorderColor = AppColor.purple100!
-        $0.settings.emptyColor = AppColor.gray30!
-        $0.settings.emptyBorderColor = AppColor.gray30!
+        $0.settings.filledColor = AppColor.purple100
+        $0.settings.filledBorderColor = AppColor.purple100
+        $0.settings.emptyColor = AppColor.gray30
+        $0.settings.emptyBorderColor = AppColor.gray30
     }
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.grayBG
+        backgroundColor = AppColor.background
         self.addComponents()
         self.constraints()
     }

@@ -64,7 +64,7 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     
     // MARK: - Setup Methods
     private func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         [header, wineDetailView, deleteButton].forEach{
             view.addSubview($0)
         }

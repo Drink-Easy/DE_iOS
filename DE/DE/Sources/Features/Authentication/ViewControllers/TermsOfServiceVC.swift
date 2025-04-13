@@ -30,7 +30,7 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.ptdSemiBoldFont(ofSize: 24),
             .paragraphStyle: paragraphStyle,
-            .foregroundColor: AppColor.black!
+            .foregroundColor: AppColor.black
         ]
         
         $0.attributedText = NSAttributedString(string: text, attributes: attributes)
@@ -103,11 +103,11 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
     
     // MARK: - UI Setup
     private func setupNavigationBar() {
-        navigationBarManager.setTitle(to: navigationItem, title: "서비스 약관 동의", textColor: AppColor.black!)
+        navigationBarManager.setTitle(to: navigationItem, title: "서비스 약관 동의", textColor: AppColor.black)
     }
     
     private func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         
         [subHeaderLabel, allTitleLabel, allToggleButton, dividerView, startButton].forEach {
             view.addSubview($0)

@@ -17,7 +17,7 @@ public class SearchHomeView: UIView {
         let attributes: [NSAttributedString.Key: Any] = [
             .font: UIFont.ptdSemiBoldFont(ofSize: 24),
             .paragraphStyle: paragraphStyle,
-            .foregroundColor: AppColor.DGblack ?? .black
+            .foregroundColor: AppColor.black
         ]
         $0.attributedText = NSAttributedString(string: text, attributes: attributes)
     }
@@ -27,19 +27,19 @@ public class SearchHomeView: UIView {
     public lazy var searchResultTableView = UITableView().then {
         $0.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        $0.backgroundColor = AppColor.grayBG
+        $0.backgroundColor = AppColor.background
     }
     
     public lazy var noSearchResultLabel = UILabel().then {
         $0.text = "검색 결과가 없습니다."
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
         $0.textColor = AppColor.gray70
         $0.textAlignment = .center
     }
 
     public init(titleText: String, placeholder: String) {
         super.init(frame: .zero)
-        backgroundColor = AppColor.grayBG
+        backgroundColor = AppColor.background
 
         title.text = titleText
         searchBar.placeholderText = placeholder

@@ -42,7 +42,7 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
     }
     
     func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         priceNewWineView.setWineName(MyOwnedWineManager.shared.getWineName())
         
         view.addSubview(priceNewWineView)

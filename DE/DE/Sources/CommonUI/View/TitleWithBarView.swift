@@ -21,7 +21,7 @@ public class TitleWithBarView: UIView {
 
     public init(title: String, subTitle: String) {
         super.init(frame: .zero)
-        backgroundColor = AppColor.grayBG
+        backgroundColor = AppColor.background
         setupView()
         setupConstraints()
 

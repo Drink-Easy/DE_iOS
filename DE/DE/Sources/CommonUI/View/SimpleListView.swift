@@ -25,7 +25,7 @@ public class SimpleListView: UIView {
                 attributes: [
                     .font: UIFont.ptdRegularFont(ofSize: 12), // 폰트 적용
                     .underlineStyle: NSUnderlineStyle.single.rawValue,    // 밑줄 스타일
-                    .foregroundColor: AppColor.gray70!                // 텍스트 색상 (필요 시)
+                    .foregroundColor: AppColor.gray70
                 ]
             ),
             for: .normal
@@ -156,15 +156,15 @@ public class SimpleListView: UIView {
             
             if let rangeOfKeyword = title.range(of: "구매일") {
                 let nsRange = NSRange(rangeOfKeyword, in: title)
-                attributedString.addAttribute(.foregroundColor, value: AppColor.black!, range: nsRange)
+                attributedString.addAttribute(.foregroundColor, value: AppColor.black, range: nsRange)
                 
                 if let remainingRange = title.range(of: title.replacingOccurrences(of: "구매일", with: "")) {
                     let nsRemainingRange = NSRange(remainingRange, in: title)
-                    attributedString.addAttribute(.foregroundColor, value: AppColor.purple100!, range: nsRemainingRange)
+                    attributedString.addAttribute(.foregroundColor, value: AppColor.purple100, range: nsRemainingRange)
                 }
             } else {
                 // "구매일"이 없으면 기본 텍스트 적용
-                $0.textColor = isTitle ? AppColor.black : AppColor.gray50 ?? .gray
+                $0.textColor = isTitle ? AppColor.black : AppColor.gray50
                 $0.text = title
             }
             
@@ -174,7 +174,7 @@ public class SimpleListView: UIView {
     }
     private func createline() -> UIView {
         return UIView().then {
-            $0.backgroundColor = AppColor.gray30 ?? .gray
+            $0.backgroundColor = AppColor.gray30
         }
     }
     

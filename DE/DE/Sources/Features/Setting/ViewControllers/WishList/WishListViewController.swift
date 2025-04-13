@@ -18,7 +18,7 @@ public class WishListViewController: UIViewController, FirebaseTrackable {
     private lazy var searchResultTableView = UITableView().then {
         $0.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        $0.backgroundColor = AppColor.grayBG
+        $0.backgroundColor = AppColor.background
         $0.dataSource = self
         $0.delegate = self
         $0.showsVerticalScrollIndicator = false
@@ -35,7 +35,7 @@ public class WishListViewController: UIViewController, FirebaseTrackable {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         setupNavigationBar()
         addComponents()
         setConstraints()

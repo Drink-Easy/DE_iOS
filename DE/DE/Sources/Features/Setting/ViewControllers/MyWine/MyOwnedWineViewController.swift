@@ -15,7 +15,7 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
     private lazy var myWineTableView = UITableView().then {
         $0.register(MyWineTableViewCell.self, forCellReuseIdentifier: MyWineTableViewCell.identifier)
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        $0.backgroundColor = AppColor.grayBG
+        $0.backgroundColor = AppColor.background
         $0.dataSource = self
         $0.delegate = self
         $0.showsVerticalScrollIndicator = false
@@ -32,7 +32,7 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         setupNavigationBar()
         addComponents()
         setConstraints()
@@ -177,7 +177,7 @@ extension MyOwnedWineViewController: UITableViewDelegate, UITableViewDataSource 
     // 스와이프 종료 시 셀 배경색 복원
     func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
         if let indexPath = indexPath, let cell = tableView.cellForRow(at: indexPath) {
-            cell.contentView.backgroundColor = AppColor.bgGray
+            cell.contentView.backgroundColor = AppColor.background
         }
     }
     

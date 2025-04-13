@@ -49,7 +49,7 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         setupUI()
         setupCollectionView()
         setupActions()

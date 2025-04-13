@@ -17,7 +17,7 @@ public class IsNewbieViewController: UIViewController,FirebaseTrackable {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         self.view = isNewbieView
         setupNavigationBar()
     }

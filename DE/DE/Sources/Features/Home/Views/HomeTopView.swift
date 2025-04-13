@@ -29,7 +29,7 @@ class HomeTopView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         self.addComponents()
         self.constraints()
     }

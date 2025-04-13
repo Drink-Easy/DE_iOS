@@ -45,7 +45,7 @@ public final class SettingMenuViewController : UIViewController, UIGestureRecogn
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         setupUI()
         setupTableView()
         setupNavigationBar()
@@ -74,7 +74,7 @@ public final class SettingMenuViewController : UIViewController, UIGestureRecogn
         tableView.dataSource = self
         tableView.isScrollEnabled = false
         tableView.rowHeight = 50
-        tableView.backgroundColor = AppColor.bgGray
+        tableView.backgroundColor = AppColor.background
         tableView.register(SettingMenuViewCell.self, forCellReuseIdentifier: SettingMenuViewCell.identifier)
         
         view.addSubview(tableView)

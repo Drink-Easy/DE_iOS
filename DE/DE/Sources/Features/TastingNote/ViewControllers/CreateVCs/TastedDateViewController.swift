@@ -32,7 +32,7 @@ public class TastedDateViewController: UIViewController, FirebaseTrackable {
     }
     
     func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         
         view.addSubview(tastedDateView)
         tastedDateView.snp.makeConstraints { make in

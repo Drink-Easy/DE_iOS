@@ -22,7 +22,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.isNavigationBarHidden = false
-        view.backgroundColor = AppColor.grayBG
+        view.backgroundColor = AppColor.background
         self.view = searchHomeView
         searchHomeView.noSearchResultLabel.isHidden = true
         searchHomeView.searchResultTableView.dataSource = self

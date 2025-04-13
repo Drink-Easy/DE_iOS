@@ -114,7 +114,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         addComponents()
         constraints()
         startAutoScrolling()

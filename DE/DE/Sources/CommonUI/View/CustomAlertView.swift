@@ -62,7 +62,7 @@ public class CustomAlertView: UIView {
     
     // MARK: - Setup UI
     private func setupUI() {
-        backgroundColor = AppColor.black?.withAlphaComponent(0.3)
+        backgroundColor = AppColor.black.withAlphaComponent(0.3)
         
         addSubview(containerView)
         containerView.addSubview(logoImage)

@@ -32,32 +32,6 @@ public struct Constants {
         
     }
     
-    public struct AppColor {
-        static public let grayBG = UIColor(named: "background")
-        static public let DGblack = UIColor(named: "Dblack")
-        static public let winebg = UIColor(named: "winebg")
-        static public let tooltipbg = UIColor(named: "tooltipbg")
-        static public let tnbg = UIColor(named: "tnbg")
-        
-        static public let purple100 = UIColor(named: "purple100")
-        static public let purple70 = UIColor(named: "purple70")
-        static public let purple50 = UIColor(named: "purple50")
-        static public let purple30 = UIColor(named: "purple30")
-        static public let purple10 = UIColor(named: "purple10")
-        
-        static public let gray100 = UIColor(named: "gray100")
-        static public let gray90 = UIColor(named: "gray90")
-        static public let gray70 = UIColor(named: "gray70")
-        static public let gray50 = UIColor(named: "gray50")
-        static public let gray30 = UIColor(named: "gray30")
-        static public let gray10 = UIColor(named: "gray10")
-        
-        static public let black = UIColor(named: "Dblack")
-        static public let white = UIColor(named: "Dwhite")
-        static public let bgGray = UIColor(named: "background")
-        static public let red = UIColor(named: "red")
-    }
-    
     public struct Policy {
         //MARK: - Copyright
         public static let copyright = """

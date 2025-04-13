@@ -14,7 +14,7 @@ public class WineDetailView: UIView {
         $0.layer.shadowOpacity = 0.07
         $0.layer.shadowOffset = CGSize(width: 0, height: 1)
         $0.layer.shadowRadius = 10.5
-        $0.layer.shadowColor = AppColor.black?.cgColor
+        $0.layer.shadowColor = AppColor.black.cgColor
         $0.clipsToBonds = false
     }
     
@@ -35,7 +35,7 @@ public class WineDetailView: UIView {
         $0.backgroundColor = AppColor.white
         $0.layer.cornerRadius = 14
         $0.layer.masksToBounds = true
-        $0.layer.shadowColor = AppColor.black?.cgColor
+        $0.layer.shadowColor = AppColor.black.cgColor
         $0.layer.shadowOpacity = 0.07
         $0.layer.shadowOffset = CGSize(width: 0, height: 1)
         $0.layer.shadowRadius = 10.5
@@ -78,7 +78,7 @@ public class WineDetailView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         self.addComponents()
         self.constraints()
     }

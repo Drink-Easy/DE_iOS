@@ -43,7 +43,7 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         setConstraints()
         setupActions()
         
@@ -60,7 +60,7 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
     private func addExtendedBackgroundView() {
         // 네비게이션 바와 Safe Area를 포함한 배경 뷰 추가
         let backgroundView = UIView()
-        backgroundView.backgroundColor = AppColor.bgGray
+        backgroundView.backgroundColor = AppColor.background
         view.addSubview(backgroundView)
         
         backgroundView.snp.makeConstraints { make in
@@ -97,7 +97,7 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
             action: #selector(prevVC)
         )
         
-        self.navigationController?.navigationBar.backgroundColor = AppColor.bgGray
+        self.navigationController?.navigationBar.backgroundColor = AppColor.background
     }
     
     private func updateRatingLabel(with rating: Double) {

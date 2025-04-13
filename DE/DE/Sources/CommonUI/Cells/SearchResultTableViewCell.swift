@@ -14,7 +14,7 @@ public class SearchResultTableViewCell: UITableViewCell {
     private lazy var imageBackground = UIView().then {
         $0.layer.cornerRadius = 5
         $0.layer.masksToBounds = true
-        $0.backgroundColor = AppColor.winebg
+        $0.backgroundColor = AppColor.wineBackground
     }
     
     private lazy var image = UIImageView().then {
@@ -24,7 +24,7 @@ public class SearchResultTableViewCell: UITableViewCell {
     }
     
     private lazy var name = UILabel().then {
-        $0.textColor = AppColor.DGblack
+        $0.textColor = AppColor.black
         $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
         $0.numberOfLines = 1
         $0.lineBreakMode = .byTruncatingTail
@@ -58,15 +58,15 @@ public class SearchResultTableViewCell: UITableViewCell {
         if selected {
             borderLayer.cornerRadius = 8
             contentView.backgroundColor = AppColor.purple10 // 선택된 배경색
-            borderLayer.borderColor = AppColor.purple70?.cgColor // 선택된 테두리색
+            borderLayer.borderColor = AppColor.purple70.cgColor // 선택된 테두리색
             // 1초 후 기본 상태로 복원
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
                 guard let self = self else { return }
-                self.contentView.backgroundColor = AppColor.grayBG // 기본 배경색
+                self.contentView.backgroundColor = AppColor.background // 기본 배경색
                 self.borderLayer.borderColor = UIColor.clear.cgColor // 기본 테두리 없음
             }
         } else {
-            contentView.backgroundColor = AppColor.grayBG // 기본 배경색
+            contentView.backgroundColor = AppColor.background // 기본 배경색
             borderLayer.borderColor = UIColor.clear.cgColor // 기본 테두리 없음
         }
     }
@@ -92,7 +92,7 @@ public class SearchResultTableViewCell: UITableViewCell {
     
     private func setupView() {
         // 기본 셀 스타일 설정
-        contentView.backgroundColor = AppColor.grayBG
+        contentView.backgroundColor = AppColor.background
         selectionStyle = .none // 기본 선택 스타일 제거
         
         // 테두리 설정
@@ -172,8 +172,8 @@ public class SearchResultTableViewCell: UITableViewCell {
         let attributedString = NSMutableAttributedString(string: text)
         let range = (text.lowercased() as NSString).range(of: highlight.lowercased())
         if range.location != NSNotFound {
-            attributedString.addAttribute(.foregroundColor, value: AppColor.purple100!, range: range)
-            attributedString.addAttribute(.font, value: UIFont.ptdSemiBoldFont(ofSize: 16), range: range)
+            attributedString.addAttribute(.foregroundColor, value: AppColor.purple100, range: range)
+            attributedString.addAttribute(.font, value: UIFont.pretendard(.semiBold, size: 16), range: range)
         }
         return attributedString
     }

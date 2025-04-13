@@ -10,7 +10,7 @@ class MyWineTableViewCell: UITableViewCell {
     private lazy var imageBackground = UIView().then {
         $0.layer.cornerRadius = 5
         $0.layer.masksToBounds = true
-        $0.backgroundColor = AppColor.winebg
+        $0.backgroundColor = AppColor.wineBackground
     }
     
     private lazy var image = UIImageView().then {
@@ -64,7 +64,7 @@ class MyWineTableViewCell: UITableViewCell {
     
     private func setupView() {
         // 기본 셀 스타일 설정
-        contentView.backgroundColor = AppColor.bgGray
+        contentView.backgroundColor = AppColor.background
         selectionStyle = .none // 기본 선택 스타일 제거
     }
     

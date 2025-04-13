@@ -12,7 +12,7 @@ class TastingNoteCollectionViewCell: UICollectionViewCell {
     private lazy var imageBackground = UIView().then {
         $0.layer.cornerRadius = 8
         $0.layer.masksToBounds = true
-        $0.backgroundColor = AppColor.winebg
+        $0.backgroundColor = AppColor.wineBackground
     }
     
     private lazy var image = UIImageView().then {

@@ -30,7 +30,7 @@ public class NoticeTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.backgroundColor = AppColor.bgGray
+        contentView.backgroundColor = AppColor.background
         contentView.layer.masksToBounds = true
         self.addComponents()
         self.constraints()

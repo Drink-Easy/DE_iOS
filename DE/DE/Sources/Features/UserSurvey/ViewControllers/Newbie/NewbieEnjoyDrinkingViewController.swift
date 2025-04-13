@@ -18,7 +18,7 @@ public class NewbieEnjoyDrinkingViewController: UIViewController, FirebaseTracka
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         self.view = surveyKindView
         setupNavigationBar()
     }

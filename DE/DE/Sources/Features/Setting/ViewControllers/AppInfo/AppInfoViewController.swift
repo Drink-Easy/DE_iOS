@@ -39,7 +39,7 @@ class AppInfoViewController : UIViewController, FirebaseTrackable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         appVersionLabel.text = "Version \(appVersion)"
         setupTableView()
         setupUI()
@@ -71,7 +71,7 @@ class AppInfoViewController : UIViewController, FirebaseTrackable {
         tableView.dataSource = self
         tableView.isScrollEnabled = false
         tableView.rowHeight = rowHeight
-        tableView.backgroundColor = AppColor.bgGray
+        tableView.backgroundColor = AppColor.background
         tableView.register(SettingMenuViewCell.self, forCellReuseIdentifier: SettingMenuViewCell.identifier)
 
         view.addSubview(tableView)

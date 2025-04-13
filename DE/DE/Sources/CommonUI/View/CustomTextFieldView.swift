@@ -57,7 +57,7 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
         textField.backgroundColor = AppColor.gray10
         
         textField.delegate = self
-        textField.layer.borderColor = AppColor.gray10?.cgColor
+        textField.layer.borderColor = AppColor.gray10.cgColor
         textField.layer.borderWidth = 2
         textField.layer.cornerRadius = 8
         
@@ -74,7 +74,7 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
         let placeholderColor = AppColor.gray70
         textField.attributedPlaceholder = NSAttributedString(
             string: textFieldPlaceholder,
-            attributes: [NSAttributedString.Key.foregroundColor: placeholderColor ?? UIColor.systemGray]
+            attributes: [NSAttributedString.Key.foregroundColor: placeholderColor]
         )
         
         // UI 추가

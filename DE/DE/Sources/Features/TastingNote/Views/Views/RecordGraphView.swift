@@ -24,7 +24,7 @@ class RecordGraphView: UIView {
     }
     
     private func setupUI() {
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         
         [chartHeaderView, chartView, recordSliderView].forEach {
             addSubview($0)

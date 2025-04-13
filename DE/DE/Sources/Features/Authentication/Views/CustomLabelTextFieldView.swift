@@ -74,7 +74,7 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
         textField.font = UIFont.ptdMediumFont(ofSize: 14)
         textField.backgroundColor = AppColor.gray10
         textField.delegate = self
-        textField.layer.borderColor = AppColor.gray10?.cgColor
+        textField.layer.borderColor = AppColor.gray10.cgColor
         textField.layer.borderWidth = 2
         textField.layer.cornerRadius = 10
         textField.isSecureTextEntry = isPasswordField // 비밀번호 필드 여부에 따라 처리
@@ -88,7 +88,7 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
         let placeholderColor = AppColor.gray70
         textField.attributedPlaceholder = NSAttributedString(
             string: textFieldPlaceholder,
-            attributes: [NSAttributedString.Key.foregroundColor: placeholderColor ?? UIColor.systemGray]
+            attributes: [NSAttributedString.Key.foregroundColor: placeholderColor]
         )
         
         // 유효성 라벨 설정

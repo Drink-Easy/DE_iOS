@@ -64,7 +64,7 @@ public class CustomDropdownView: UIView {
     private func setupDropdownMenu() {
         dropdownMenu.backgroundColor = AppColor.white
         dropdownMenu.layer.cornerRadius = 8
-        dropdownMenu.layer.shadowColor = AppColor.black?.cgColor
+        dropdownMenu.layer.shadowColor = AppColor.black.cgColor
         dropdownMenu.layer.shadowOpacity = 0.1
         dropdownMenu.layer.shadowOffset = CGSize(width: 0, height: 2)
         dropdownMenu.layer.shadowRadius = 8

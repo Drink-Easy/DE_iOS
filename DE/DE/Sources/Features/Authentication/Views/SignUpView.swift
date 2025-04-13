@@ -56,7 +56,7 @@ class SignUpView: UIView {
     // MARK: - Initializer
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         setupUI()
         setupConstraints()
     }

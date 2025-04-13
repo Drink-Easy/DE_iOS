@@ -28,12 +28,12 @@ public class AddNewWineView: UIView {
     public lazy var searchResultTableView = UITableView().then {
         $0.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        $0.backgroundColor = AppColor.grayBG
+        $0.backgroundColor = AppColor.background
     }
 
     public init(titleText: String, placeholder: String) {
         super.init(frame: .zero)
-        backgroundColor = AppColor.grayBG
+        backgroundColor = AppColor.background
 
         title.text = titleText
         searchBar.placeholderText = placeholder

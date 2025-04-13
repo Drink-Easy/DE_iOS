@@ -29,7 +29,7 @@ public class ReviewView: UIView {
         // 전체 텍스트 스타일 설정
         attributedString.addAttributes(
             [
-                .foregroundColor: AppColor.gray70!,
+                .foregroundColor: AppColor.gray70,
                 .font: UIFont.ptdRegularFont(ofSize: 12)
             ],
             range: NSRange(location: 0, length: text.count)
@@ -40,7 +40,7 @@ public class ReviewView: UIView {
             let nsRange = NSRange(range, in: text)
             attributedString.addAttributes(
                 [
-                    .foregroundColor: AppColor.purple100 ?? .purple,
+                    .foregroundColor: AppColor.purple100,
                     .font: UIFont.ptdSemiBoldFont(ofSize: 18)
                 ],
                 range: nsRange
@@ -56,7 +56,7 @@ public class ReviewView: UIView {
         
         var configuration = UIButton.Configuration.plain()
         // 이미지 설정
-        configuration.image = UIImage(systemName: "chevron.forward")?.withRenderingMode(.alwaysOriginal).withTintColor(AppColor.gray50 ?? .gray)
+        configuration.image = UIImage(systemName: "chevron.forward")?.withRenderingMode(.alwaysOriginal).withTintColor(AppColor.gray50)
         let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 10, weight: .regular) // 원하는 크기
         configuration.preferredSymbolConfigurationForImage = symbolConfiguration
         
@@ -65,7 +65,7 @@ public class ReviewView: UIView {
 
         // 타이틀 속성 설정
         let attributes: AttributeContainer = AttributeContainer([
-            .font: UIFont.ptdMediumFont(ofSize: 12), .foregroundColor: AppColor.gray50 ?? .gray])
+            .font: UIFont.ptdMediumFont(ofSize: 12), .foregroundColor: AppColor.gray50])
         configuration.attributedTitle = AttributedString("더보기", attributes: attributes)
         configuration.titleAlignment = .center
         configuration.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 2, bottom: 0, trailing: 0)
@@ -86,7 +86,7 @@ public class ReviewView: UIView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.grayBG
+        backgroundColor = AppColor.background
         self.addComponents()
         self.constraints()
     }

@@ -71,7 +71,7 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     }
     
     func setupViews() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         view.addSubview(logoImage)
     }
     

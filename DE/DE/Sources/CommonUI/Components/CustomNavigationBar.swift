@@ -12,7 +12,7 @@ public class NavigationBarManager {
     public func addBackButton(to navigationItem: UINavigationItem, target: Any?, action: Selector) {
         let backButton = UIButton(type: .system)
         backButton.setImage(UIImage(systemName: "chevron.left"), for: .normal)
-        backButton.tintColor = AppColor.gray70!
+        backButton.tintColor = AppColor.gray70
         backButton.addTarget(target, action: action, for: .touchUpInside)
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)

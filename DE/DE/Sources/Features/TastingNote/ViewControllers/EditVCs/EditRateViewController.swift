@@ -32,7 +32,7 @@ public class EditRateViewController: UIViewController, FirebaseTrackable {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         setConstraints()
         setupActions()
         setupNavigationBar()
@@ -69,7 +69,7 @@ public class EditRateViewController: UIViewController, FirebaseTrackable {
             action: #selector(prevVC)
         )
         
-        self.navigationController?.navigationBar.backgroundColor = AppColor.bgGray
+        self.navigationController?.navigationBar.backgroundColor = AppColor.background
     }
     
     private func updateRatingLabel(with rating: Double) {

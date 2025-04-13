@@ -131,7 +131,7 @@ public class CustomStepSlider: UISlider {
         let circleView = UIView()
         circleView.layer.cornerRadius = 4
         circleView.layer.borderWidth = 1
-        circleView.layer.borderColor = AppColor.bgGray?.cgColor
+        circleView.layer.borderColor = AppColor.background.cgColor
         circleView.backgroundColor = AppColor.purple50
         return circleView
     }

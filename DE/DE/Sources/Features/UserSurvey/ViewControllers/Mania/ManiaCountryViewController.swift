@@ -22,7 +22,7 @@ class ManiaCountryViewController: UIViewController, FirebaseTrackable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         self.view = surveyKindView
         setupNavigationBar()
     }

@@ -25,7 +25,7 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
     }
     
     let contentView = UIView().then {
-        $0.backgroundColor = AppColor.bgGray
+        $0.backgroundColor = AppColor.background
     }
     public lazy var wineNameTitle = UILabel().then {
         $0.textColor = AppColor.black
@@ -78,7 +78,7 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
     }
     
     private func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         view.addSubview(scrollView)
         
         contentView.addSubview(wineNameTitle)

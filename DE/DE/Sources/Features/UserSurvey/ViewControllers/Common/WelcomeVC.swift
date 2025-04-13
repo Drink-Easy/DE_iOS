@@ -65,7 +65,7 @@ public class WelcomeVC: UIViewController, FirebaseTrackable {
     // MARK: - UI Setup
     
     private func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         view.addSubview(logoImageView)
         view.addSubview(titleLabel)
         view.addSubview(subtitleLabel)

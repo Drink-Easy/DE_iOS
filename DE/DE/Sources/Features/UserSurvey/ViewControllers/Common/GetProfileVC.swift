@@ -60,7 +60,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         
         setupUI()
         setupConstraints()

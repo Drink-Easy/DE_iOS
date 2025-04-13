@@ -62,7 +62,7 @@ class InquiryViewController: UIViewController, FirebaseTrackable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = AppColor.bgGray
+        self.view.backgroundColor = AppColor.background
         setupUI()
         setupTableView()
         setupNavigationBar()
@@ -107,7 +107,7 @@ class InquiryViewController: UIViewController, FirebaseTrackable {
         tableView.dataSource = self
         tableView.isScrollEnabled = false
         tableView.rowHeight = 50
-        tableView.backgroundColor = AppColor.bgGray
+        tableView.backgroundColor = AppColor.background
         tableView.register(InquiryMenuViewCell.self, forCellReuseIdentifier: InquiryMenuViewCell.identifier)
         
         view.addSubview(tableView)

@@ -23,7 +23,7 @@ class SurveySliderView: UIView {
         }
         
         super.init(frame: .zero)
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         self.addComponents()
         self.constraints()
     }

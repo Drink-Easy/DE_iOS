@@ -44,7 +44,7 @@ public class ChooseWineColorViewController: UIViewController, FirebaseTrackable 
     }
     
     func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         colorView.propertyHeader.setName(eng: "Color", kor: "색상")
         colorView.colorCollectionView.register(WineColorCollectionViewCell.self, forCellWithReuseIdentifier: "WineColorCollectionViewCell")
     }

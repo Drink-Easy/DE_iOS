@@ -15,7 +15,7 @@ class NoPageTopView: UIView {
 
     init(currentPage: Int, entirePage: Int) {
         super.init(frame: .zero)
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         
         self.addComponents()
         self.constraints()

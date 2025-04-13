@@ -22,7 +22,7 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.grayBG
+        view.backgroundColor = AppColor.background
 
         addView()
         constraints()

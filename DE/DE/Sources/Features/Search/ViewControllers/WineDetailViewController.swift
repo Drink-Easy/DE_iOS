@@ -29,7 +29,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.prefersLargeTitles = false
-        view.backgroundColor = AppColor.grayBG
+        view.backgroundColor = AppColor.background
     
         addView()
         constraints()

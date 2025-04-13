@@ -33,7 +33,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     }
     
     let contentView = UIView().then {
-        $0.backgroundColor = AppColor.bgGray
+        $0.backgroundColor = AppColor.background
     }
     
     let wineInfoView = WineInfoView()
@@ -97,7 +97,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     }
     
     private func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         view.addSubview(scrollView)
         scrollView.delegate = self
         scrollView.addSubview(contentView)
