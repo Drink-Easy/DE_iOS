@@ -5,14 +5,14 @@ import UIKit
 public func setNavBarAppearance(navigationController: UINavigationController?) {
     let standardAppearance = UINavigationBarAppearance()
     standardAppearance.configureWithOpaqueBackground()
-    standardAppearance.backgroundColor = AppColor.bgGray
-    standardAppearance.titleTextAttributes = [.foregroundColor: AppColor.black!]
+    standardAppearance.backgroundColor = AppColor.background
+    standardAppearance.titleTextAttributes = [.foregroundColor: AppColor.black]
     standardAppearance.shadowColor = .clear
     
     let scrollEdgeAppearance = UINavigationBarAppearance()
     scrollEdgeAppearance.configureWithOpaqueBackground()
-    scrollEdgeAppearance.backgroundColor = AppColor.bgGray
-    scrollEdgeAppearance.titleTextAttributes = [.foregroundColor: AppColor.black!]
+    scrollEdgeAppearance.backgroundColor = AppColor.background
+    scrollEdgeAppearance.titleTextAttributes = [.foregroundColor: AppColor.black]
     scrollEdgeAppearance.shadowColor = .clear
     
     navigationController?.navigationBar.standardAppearance = scrollEdgeAppearance

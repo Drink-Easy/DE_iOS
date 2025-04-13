@@ -227,5 +227,5 @@ let project = Project(
                 analyzeAction: .analyzeAction(configuration: .debug)
                )
     ],
-    fileHeaderTemplate: "Copyright © 2024 DRINKIG. All rights reserved"
+    fileHeaderTemplate: "Copyright © 2025 DRINKIG. All rights reserved"
 )

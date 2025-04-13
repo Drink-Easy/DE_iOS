@@ -15,7 +15,7 @@ public class WineDetailView: UIView {
         $0.layer.shadowOffset = CGSize(width: 0, height: 1)
         $0.layer.shadowRadius = 10.5
         $0.layer.shadowColor = AppColor.black?.cgColor
-        $0.clipsToBounds = false
+        $0.clipsToBonds = false
     }
     
     private lazy var imageBackground = UIView().then {
