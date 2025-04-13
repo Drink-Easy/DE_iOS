@@ -27,7 +27,7 @@ jobs:
           echo "reviewers=$REVIEWERS_CSV" >> $GITHUB_OUTPUT
 
       - name: Assign reviewers
-        uses: ahmadnassri/action-pr-reviewer@v1
+        uses: ahmadnassri/action-pr-reviewer@v2.6.6
         with:
           reviewers: ${{ steps.reviewers.outputs.reviewers }}
         env:
