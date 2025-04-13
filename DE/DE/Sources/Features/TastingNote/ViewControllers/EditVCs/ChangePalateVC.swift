@@ -29,7 +29,7 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
     }
     public lazy var wineNameTitle = UILabel().then {
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.font = UIFont.pretendard(.semiBold, size: 24)
         $0.numberOfLines = 0
     }
     private let recordGraphView = RecordGraphView()

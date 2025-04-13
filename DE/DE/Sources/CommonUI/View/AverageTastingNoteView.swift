@@ -10,7 +10,7 @@ public class AverageTastingNoteView: UIView {
     private lazy var noTastinNote = UILabel().then {
         $0.text = "작성된 테이스팅 노트가 없습니다."
         $0.textColor = AppColor.gray70
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
         $0.isHidden = true
     }
     
@@ -20,7 +20,7 @@ public class AverageTastingNoteView: UIView {
         return UILabel().then {
             $0.text = text
             $0.textColor = AppColor.black
-            $0.font = UIFont.ptdMediumFont(ofSize: 18)
+            $0.font = UIFont.pretendard(.medium, size: 18)
         }
     }
     
@@ -28,7 +28,7 @@ public class AverageTastingNoteView: UIView {
         return UILabel().then {
             $0.text = text
             $0.textColor = AppColor.black
-            $0.font = UIFont.ptdRegularFont(ofSize: 14)
+            $0.font = UIFont.pretendard(.regular, size: 14)
             $0.numberOfLines = 0
         }
     }

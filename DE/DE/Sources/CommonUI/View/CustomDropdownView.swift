@@ -46,7 +46,7 @@ public class CustomDropdownView: UIView {
     private func setupDropdownButton() {
         dropdownButton.setTitle(options.first ?? "Select", for: .normal)
         dropdownButton.setTitleColor(AppColor.gray50, for: .normal)
-        dropdownButton.titleLabel?.font = UIFont.ptdMediumFont(ofSize: 12)
+        dropdownButton.titleLabel?.font = UIFont.pretendard(.medium, size: 12)
         dropdownButton.setImage(UIImage(named: "down"), for: .normal)
         dropdownButton.tintColor = AppColor.gray50
         dropdownButton.semanticContentAttribute = .forceRightToLeft
@@ -82,7 +82,7 @@ public class CustomDropdownView: UIView {
             let optionLabel = UILabel()
             optionLabel.text = option
             optionLabel.textColor = AppColor.gray50
-            optionLabel.font = UIFont.ptdMediumFont(ofSize: 12)
+            optionLabel.font = UIFont.pretendard(.medium, size: 12)
             optionLabel.textAlignment = .left
             optionLabel.isUserInteractionEnabled = true
             optionLabel.tag = index
@@ -135,7 +135,7 @@ public class CustomDropdownView: UIView {
         
         for (idx, label) in optionLabels.enumerated() {
             label.textColor = (idx == index) ? AppColor.black : AppColor.gray50
-            label.font = (idx == index) ? UIFont.ptdSemiBoldFont(ofSize: 12) : UIFont.ptdMediumFont(ofSize: 12)
+            label.font = (idx == index) ? UIFont.pretendard(.semiBold, size: 12) : UIFont.pretendard(.medium, size: 12)
         }
     }
     

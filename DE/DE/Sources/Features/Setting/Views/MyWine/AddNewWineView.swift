@@ -16,9 +16,9 @@ public class AddNewWineView: UIView {
         paragraphStyle.lineHeightMultiple = 1.25 // 줄 간격 설정
         
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.ptdSemiBoldFont(ofSize: 24),
+            .font: UIFont.pretendard(.semiBold, size: 24),
             .paragraphStyle: paragraphStyle,
-            .foregroundColor: AppColor.DGblack ?? .black
+            .foregroundColor: AppColor.black
         ]
         $0.attributedText = NSAttributedString(string: text, attributes: attributes)
     }

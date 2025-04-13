@@ -15,7 +15,7 @@ public class WineDetailView: UIView {
         $0.layer.shadowOffset = CGSize(width: 0, height: 1)
         $0.layer.shadowRadius = 10.5
         $0.layer.shadowColor = AppColor.black.cgColor
-        $0.clipsToBonds = false
+        $0.clipsToBounds = false
     }
     
     private lazy var imageBackground = UIView().then {
@@ -46,7 +46,7 @@ public class WineDetailView: UIView {
         return UILabel().then {
             $0.text = text
             $0.textColor = AppColor.purple100
-            $0.font = UIFont.ptdSemiBoldFont(ofSize: 14)
+            $0.font = UIFont.pretendard(.semiBold, size: 14)
         }
     }
     
@@ -54,7 +54,7 @@ public class WineDetailView: UIView {
         return UILabel().then {
             $0.text = text
             $0.textColor = AppColor.black
-            $0.font = UIFont.ptdMediumFont(ofSize: 12)
+            $0.font = UIFont.pretendard(.medium, size: 12)
         }
     }
     

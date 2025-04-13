@@ -37,7 +37,7 @@ public final class SettingMenuViewController : UIViewController, UIGestureRecogn
     
     public let nameLabel = UILabel().then {
         $0.text = "드링키지"
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
+        $0.font = UIFont.pretendard(.semiBold, size: 16)
         $0.textAlignment = .center
         $0.textColor = AppColor.black
         $0.translatesAutoresizingMaskIntoConstraints = false
@@ -116,7 +116,7 @@ public final class SettingMenuViewController : UIViewController, UIGestureRecogn
     
     // MARK: - UI Setup
     private func setupNavigationBar() {
-        navigationBarManager.setTitle(to: navigationItem, title: "마이페이지", textColor: AppColor.black!)
+        navigationBarManager.setTitle(to: navigationItem, title: "마이페이지", textColor: AppColor.black)
     }
     
     private func setupUI(){

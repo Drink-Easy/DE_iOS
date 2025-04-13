@@ -24,7 +24,7 @@ class MoreLikelyWineViewController: UIViewController, FirebaseTrackable {
         super.viewDidLoad()
         view.backgroundColor = AppColor.background
         self.view = moreLikelyWineView
-        self.moreLikelyWineView.title.setPartialTextStyle(text: moreLikelyWineView.title.text ?? "", targetText: "\(userName)", color: AppColor.purple100 ?? .purple, font: UIFont.ptdSemiBoldFont(ofSize: 30))
+        self.moreLikelyWineView.title.setPartialTextStyle(text: moreLikelyWineView.title.text ?? "", targetText: "\(userName)", color: AppColor.purple100, font: UIFont.pretendard(.semiBold, size: 30))
         setupNavigationBar()
     }
     
@@ -70,7 +70,7 @@ class MoreLikelyWineViewController: UIViewController, FirebaseTrackable {
             text: moreLikelyWineView.title.text ?? "",
             targetText: "\(userName)",
             color: AppColor.purple100 ?? .purple,
-            font: UIFont.ptdSemiBoldFont(ofSize: 30)
+            font: UIFont.pretendard(.semiBold, size: 30)
         )
     }
 }

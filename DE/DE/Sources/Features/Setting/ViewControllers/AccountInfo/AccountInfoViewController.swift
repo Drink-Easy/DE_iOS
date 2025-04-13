@@ -35,13 +35,13 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
     private let logoutButton = UIButton().then {
         $0.setTitle("로그아웃   |", for: .normal)
         $0.setTitleColor(AppColor.gray50, for: .normal)
-        $0.titleLabel?.font = UIFont.ptdMediumFont(ofSize: 11)
+        $0.titleLabel?.font = UIFont.pretendard(.medium, size: 11)
     }
     
     private let deleteButton = UIButton().then {
         $0.setTitle("탈퇴하기", for: .normal)
         $0.setTitleColor(AppColor.gray50, for: .normal)
-        $0.titleLabel?.font = UIFont.ptdMediumFont(ofSize: 11)
+        $0.titleLabel?.font = UIFont.pretendard(.medium, size: 11)
     }
     
     //MARK: - View LifeCycle
@@ -73,7 +73,7 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
     //MARK: - UI Funcs
     
     private func setupNavigationBar() {
-        navigationBarManager.setTitle(to: navigationItem, title: "내 정보", textColor: AppColor.black!)
+        navigationBarManager.setTitle(to: navigationItem, title: "내 정보", textColor: AppColor.black)
         navigationBarManager.addLeftRightButtonsWithWeight(
             to: navigationItem,
             leftIcon: "chevron.left",
@@ -81,7 +81,7 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
             rightIcon: "pencil",
             rightAction: #selector(goToProfileEditView),
             target: self,
-            tintColor: AppColor.gray70 ?? .gray
+            tintColor: AppColor.gray70
         )
     }
     

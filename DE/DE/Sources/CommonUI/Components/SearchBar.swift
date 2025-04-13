@@ -26,7 +26,7 @@ public class SearchBar: UITextField {
             string: "와인 이름을 검색하세요 (한글/영문)",
             attributes: [
                 .foregroundColor: AppColor.gray70,
-                .font: UIFont.ptdRegularFont(ofSize: 14)
+                .font: UIFont.pretendard(.regular, size: 14)
             ]
         )
         self.textColor = AppColor.gray100

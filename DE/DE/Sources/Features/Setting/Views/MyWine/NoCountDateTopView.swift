@@ -35,11 +35,11 @@ class NoCountDateTopView: UIView {
     
     public func setTitleLabel(
         title: String,
-        titleColor: UIColor = AppColor.purple100!,
-        titleFont: UIFont = UIFont.ptdSemiBoldFont(ofSize: 24),
+        titleColor: UIColor = AppColor.purple100,
+        titleFont: UIFont = UIFont.pretendard(.semiBold, size: 24),
         description: String,
-        descriptionColor: UIColor = AppColor.black!,
-        descriptionFont: UIFont = UIFont.ptdSemiBoldFont(ofSize: 24),
+        descriptionColor: UIColor = AppColor.black,
+        descriptionFont: UIFont = UIFont.pretendard(.semiBold, size: 24),
         lineSpacing: CGFloat = 2
     ) {
         let fullText = "\(title)\n\(description)"

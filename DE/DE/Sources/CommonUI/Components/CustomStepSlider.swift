@@ -80,7 +80,7 @@ public class CustomStepSlider: UISlider {
         for (index, labelText) in stepLabels.enumerated() {
             let label = UILabel()
             label.text = labelText
-            label.font = UIFont.ptdRegularFont(ofSize: 12)
+            label.font = UIFont.pretendard(.regular, size: 12)
             label.textColor = AppColor.black
             label.textAlignment = .center
             stepLabelViews.append(label)
@@ -158,7 +158,7 @@ public class CustomStepSlider: UISlider {
         self.maximumTrackTintColor = AppColor.purple30
         
         let trackHeight: CGFloat = 2.0
-        let trackImage = UIImage.createImage(withColor: AppColor.purple30!, size: CGSize(width: 1, height: trackHeight))
+        let trackImage = UIImage.createImage(withColor: AppColor.purple30, size: CGSize(width: 1, height: trackHeight))
         self.setMinimumTrackImage(trackImage, for: .normal)
         self.setMaximumTrackImage(trackImage, for: .normal)
         

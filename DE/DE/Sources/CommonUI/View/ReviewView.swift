@@ -16,7 +16,7 @@ public class ReviewView: UIView {
     public lazy var noReviewLabel = UILabel().then {
         $0.text = "작성된 리뷰가 없습니다."
         $0.textColor = AppColor.gray70
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
         $0.isHidden = true
     }
     
@@ -30,7 +30,7 @@ public class ReviewView: UIView {
         attributedString.addAttributes(
             [
                 .foregroundColor: AppColor.gray70,
-                .font: UIFont.ptdRegularFont(ofSize: 12)
+                .font: UIFont.pretendard(.regular, size: 12)
             ],
             range: NSRange(location: 0, length: text.count)
         )
@@ -41,7 +41,7 @@ public class ReviewView: UIView {
             attributedString.addAttributes(
                 [
                     .foregroundColor: AppColor.purple100,
-                    .font: UIFont.ptdSemiBoldFont(ofSize: 18)
+                    .font: UIFont.pretendard(.semiBold, size: 18)
                 ],
                 range: nsRange
             )
@@ -65,7 +65,7 @@ public class ReviewView: UIView {
 
         // 타이틀 속성 설정
         let attributes: AttributeContainer = AttributeContainer([
-            .font: UIFont.ptdMediumFont(ofSize: 12), .foregroundColor: AppColor.gray50])
+            .font: UIFont.pretendard(.medium, size: 12), .foregroundColor: AppColor.gray50])
         configuration.attributedTitle = AttributedString("더보기", attributes: attributes)
         configuration.titleAlignment = .center
         configuration.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 2, bottom: 0, trailing: 0)

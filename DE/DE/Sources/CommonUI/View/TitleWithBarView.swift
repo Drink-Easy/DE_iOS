@@ -6,12 +6,12 @@ import Then
 
 public class TitleWithBarView: UIView {
     private let titleLabel = UILabel().then {
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 20)
+        $0.font = UIFont.pretendard(.semiBold, size: 20)
         $0.textColor = AppColor.black
     }
 
     private let subTitleLabel = UILabel().then {
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
         $0.textColor = AppColor.gray70
     }
 

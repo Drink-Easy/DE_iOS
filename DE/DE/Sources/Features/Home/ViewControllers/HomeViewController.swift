@@ -297,7 +297,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
             text: likeWineListView.title.text ?? "",
             targetText: "\(userName),",
             color: AppColor.purple100 ?? .purple,
-            font: UIFont.ptdSemiBoldFont(ofSize: 26)
+            font: UIFont.pretendard(.semiBold, size: 26)
         )
     }
     

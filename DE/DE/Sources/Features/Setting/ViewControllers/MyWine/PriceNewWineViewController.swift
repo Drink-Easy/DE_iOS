@@ -54,7 +54,7 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
     }
     
     private func setupNavigationBar() {
-        navigationBarManager.setTitle(to: navigationItem, title: "", textColor: AppColor.black!)
+        navigationBarManager.setTitle(to: navigationItem, title: "", textColor: AppColor.black)
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,

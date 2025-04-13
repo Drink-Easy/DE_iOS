@@ -48,12 +48,12 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
         // 설명 라벨 설정
         descriptionLabel.text = descriptionLabelText
         descriptionLabel.textColor = AppColor.black
-        descriptionLabel.font = UIFont.ptdSemiBoldFont(ofSize: 18)
+        descriptionLabel.font = UIFont.pretendard(.semiBold, size: 18)
         
         // 텍스트 필드 설정
         textField.placeholder = textFieldPlaceholder
         textField.borderStyle = .none
-        textField.font = UIFont.ptdSemiBoldFont(ofSize: 14)
+        textField.font = UIFont.pretendard(.semiBold, size: 14)
         textField.backgroundColor = AppColor.gray10
         
         textField.delegate = self
@@ -68,7 +68,7 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
         
         validationLabel.text = validationText
         validationLabel.textColor = AppColor.red
-        validationLabel.font = UIFont.ptdMediumFont(ofSize: 12)
+        validationLabel.font = UIFont.pretendard(.medium, size: 12)
         validationLabel.isHidden = true
         
         let placeholderColor = AppColor.gray70

@@ -7,7 +7,7 @@ import Then
 class RecomView: UIView {
     
     public lazy var title = UILabel().then {
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 22)
+        $0.font = UIFont.pretendard(.semiBold, size: 22)
         $0.textColor = AppColor.black
     }
     
@@ -15,7 +15,7 @@ class RecomView: UIView {
         
         var configuration = UIButton.Configuration.plain()
         // 이미지 설정
-        configuration.image = UIImage(systemName: "chevron.forward")?.withRenderingMode(.alwaysOriginal).withTintColor(AppColor.gray70 ?? .gray)
+        configuration.image = UIImage(systemName: "chevron.forward")?.withRenderingMode(.alwaysOriginal).withTintColor(AppColor.gray70)
         let symbolConfiguration = UIImage.SymbolConfiguration(pointSize: 10, weight: .regular) // 원하는 크기
         configuration.preferredSymbolConfigurationForImage = symbolConfiguration
         
@@ -24,7 +24,7 @@ class RecomView: UIView {
         
         // 타이틀 속성 설정
         let attributes: AttributeContainer = AttributeContainer([
-            .font: UIFont.ptdRegularFont(ofSize: 12), .foregroundColor: AppColor.gray70 ?? .gray])
+            .font: UIFont.pretendard(.regular, size: 12), .foregroundColor: AppColor.gray70])
         configuration.attributedTitle = AttributedString("더보기", attributes: attributes)
         configuration.titleAlignment = .center
         configuration.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 2, bottom: 0, trailing: 0)

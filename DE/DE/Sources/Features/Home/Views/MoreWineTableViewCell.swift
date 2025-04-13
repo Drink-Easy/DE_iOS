@@ -26,8 +26,8 @@ class MoreWineTableViewCell: UITableViewCell {
     }
     
     private lazy var name = UILabel().then {
-        $0.textColor = AppColor.DGblack
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 18)
+        $0.textColor = AppColor.black
+        $0.font = UIFont.pretendard(.semiBold, size: 18)
         $0.numberOfLines = 2
         $0.lineBreakMode = .byTruncatingTail
         $0.lineBreakStrategy = .standard
@@ -35,17 +35,17 @@ class MoreWineTableViewCell: UITableViewCell {
     
     private lazy var kind = UILabel().then {
         $0.textColor = AppColor.gray100
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
     }
     
     private lazy var score = UILabel().then {
         $0.textColor = AppColor.purple100
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
     }
     
     private lazy var price = UILabel().then {
         $0.textColor = AppColor.purple100
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
     }
 
     override func awakeFromNib() {
@@ -58,7 +58,7 @@ class MoreWineTableViewCell: UITableViewCell {
         if selected {
             borderLayer.cornerRadius = 8
             contentView.backgroundColor = AppColor.purple10 // 선택된 배경색
-            borderLayer.borderColor = AppColor.purple70?.cgColor // 선택된 테두리색
+            borderLayer.borderColor = AppColor.purple70.cgColor // 선택된 테두리색
             // 1초 후 기본 상태로 복원
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
                 guard let self = self else { return }

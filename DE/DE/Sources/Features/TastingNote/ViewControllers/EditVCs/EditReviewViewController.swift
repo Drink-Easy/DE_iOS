@@ -146,14 +146,14 @@ extension EditReviewViewController : UITextViewDelegate {
     public func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.text == textViewPlaceHolder {
             textView.text = nil
-            textView.textColor = AppColor.gray90!
+            textView.textColor = AppColor.gray90
         }
     }
     
     public func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             textView.text = textViewPlaceHolder
-            textView.textColor = AppColor.gray90!
+            textView.textColor = AppColor.gray90
         }
     }
     

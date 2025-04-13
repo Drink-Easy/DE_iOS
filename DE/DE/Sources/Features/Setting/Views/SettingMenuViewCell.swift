@@ -12,8 +12,8 @@ public class SettingMenuViewCell: UITableViewCell {
     public static let identifier = "SettingMenuViewCell"
 
     public lazy var title = UILabel().then {
-        $0.textColor = AppColor.DGblack
-        $0.font = UIFont.ptdRegularFont(ofSize: 16)
+        $0.textColor = AppColor.black
+        $0.font = UIFont.pretendard(.regular, size: 16)
         $0.numberOfLines = 1
     }
     

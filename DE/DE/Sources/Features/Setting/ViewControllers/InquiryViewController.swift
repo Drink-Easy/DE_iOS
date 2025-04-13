@@ -27,7 +27,7 @@ class InquiryViewController: UIViewController, FirebaseTrackable {
     private let inquiryLabel = UILabel().then {
         $0.text = "운영 시간 안내"
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdMediumFont(ofSize: 18)
+        $0.font = UIFont.pretendard(.medium, size: 18)
     }
     private let descriptionLabel = UILabel().then {
         let text = "접수시간 - 24시간 접수 가능\n답변시간 - 평일 10:00 - 18:00 (주말, 공휴일 제외)"
@@ -44,7 +44,7 @@ class InquiryViewController: UIViewController, FirebaseTrackable {
         
         $0.attributedText = attributedString
         $0.textColor = AppColor.gray70
-        $0.font = UIFont.ptdRegularFont(ofSize: 12)
+        $0.font = UIFont.pretendard(.regular, size: 12)
         $0.numberOfLines = 0
     }
     private var tableView = UITableView()

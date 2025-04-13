@@ -21,13 +21,13 @@ public class CustomAlertView: UIView {
     
     private let titleLabel = UILabel().then { label in
         label.textAlignment = .center
-        label.font = UIFont.ptdSemiBoldFont(ofSize: 18)
-        label.textColor = AppColor.DGblack
+        label.font = UIFont.pretendard(.semiBold, size: 18)
+        label.textColor = AppColor.black
         label.numberOfLines = 0
     }
     
     private let messageTextView = UITextView().then { textView in
-        textView.font = UIFont.ptdRegularFont(ofSize: 16)
+        textView.font = UIFont.pretendard(.regular, size: 16)
         textView.textAlignment = .center
         textView.textColor = AppColor.gray100
         textView.isEditable = false
@@ -40,7 +40,7 @@ public class CustomAlertView: UIView {
     private let confirmButton = UIButton().then { button in
         button.setTitle("확인", for: .normal)
         button.setTitleColor(AppColor.purple100, for: .normal)
-        button.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 20)
+        button.titleLabel?.font = UIFont.pretendard(.semiBold, size: 20)
         button.isUserInteractionEnabled = true
     }
     

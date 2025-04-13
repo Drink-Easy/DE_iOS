@@ -15,7 +15,7 @@ public class SearchHomeView: UIView {
         paragraphStyle.lineSpacing = 2
         
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.ptdSemiBoldFont(ofSize: 24),
+            .font: UIFont.pretendard(.semiBold, size: 24),
             .paragraphStyle: paragraphStyle,
             .foregroundColor: AppColor.black
         ]

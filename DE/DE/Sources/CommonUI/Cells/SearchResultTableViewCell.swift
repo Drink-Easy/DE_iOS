@@ -25,14 +25,14 @@ public class SearchResultTableViewCell: UITableViewCell {
     
     private lazy var name = UILabel().then {
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
+        $0.font = UIFont.pretendard(.semiBold, size: 16)
         $0.numberOfLines = 1
         $0.lineBreakMode = .byTruncatingTail
     }
     
     private lazy var kind = UILabel().then {
         $0.textColor = AppColor.gray100
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
     }
     
     private lazy var labelStackView = UIStackView(arrangedSubviews: [name, kind]).then {
@@ -45,7 +45,7 @@ public class SearchResultTableViewCell: UITableViewCell {
     private lazy var score = UILabel().then {
         //$0.text = "★ 4.0"
         $0.textColor = AppColor.purple100
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
     }
 
     public override func awakeFromNib() {

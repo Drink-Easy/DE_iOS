@@ -21,7 +21,7 @@ class MyWineTableViewCell: UITableViewCell {
     
     private lazy var name = UILabel().then {
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
+        $0.font = UIFont.pretendard(.semiBold, size: 16)
         $0.numberOfLines = 2
         $0.lineBreakMode = .byTruncatingTail
         $0.lineBreakStrategy = .standard
@@ -29,12 +29,12 @@ class MyWineTableViewCell: UITableViewCell {
     
     private lazy var price = UILabel().then {
         $0.textColor = AppColor.gray100
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
     }
     
     private lazy var buyDate = UILabel().then {
         $0.textColor = AppColor.purple100
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
         $0.textAlignment = .right
     }
     
@@ -87,7 +87,7 @@ class MyWineTableViewCell: UITableViewCell {
         }
         
         buyDate.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-6).priority(.required)
+            $0.trailing.equalToSuperview().offset(-6)
             $0.top.equalTo(name.snp.top)
             $0.width.equalTo(Constants.superViewWidth * 0.15)
         }

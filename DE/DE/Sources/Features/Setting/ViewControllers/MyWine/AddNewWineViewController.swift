@@ -107,8 +107,8 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
             textField.attributedPlaceholder = NSAttributedString(
                 string: placeholderText,
                 attributes: [
-                    .foregroundColor: AppColor.gray70 ?? .gray,
-                    .font: UIFont.ptdRegularFont(ofSize: 14)
+                    .foregroundColor: AppColor.gray70,
+                    .font: UIFont.pretendard(.regular, size: 14)
                 ]
             )
         }

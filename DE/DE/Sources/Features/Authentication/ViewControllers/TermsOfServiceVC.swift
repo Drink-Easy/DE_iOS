@@ -28,7 +28,7 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
         paragraphStyle.alignment = .left
         
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.ptdSemiBoldFont(ofSize: 24),
+            .font: UIFont.pretendard(.semiBold, size: 24),
             .paragraphStyle: paragraphStyle,
             .foregroundColor: AppColor.black
         ]
@@ -38,7 +38,7 @@ public class TermsOfServiceVC: UIViewController, UIDocumentInteractionController
     
     private let allTitleLabel = UILabel().then {
         $0.text = "전체 약관 동의"
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
+        $0.font = UIFont.pretendard(.semiBold, size: 16)
         $0.textColor = AppColor.black
     }
     

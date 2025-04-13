@@ -47,7 +47,7 @@ class SignUpVC: UIViewController, FirebaseTrackable {
     }
     
     private func setupNavigationBar() {
-        navigationBarManager.setTitle(to: navigationItem, title: "가입하기", textColor: AppColor.black!)
+        navigationBarManager.setTitle(to: navigationItem, title: "가입하기", textColor: AppColor.black)
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,

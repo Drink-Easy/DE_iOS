@@ -13,30 +13,30 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
     
     public lazy var nickname = UILabel().then {
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdMediumFont(ofSize: 16)
+        $0.font = UIFont.pretendard(.medium, size: 16)
     }
     
     public lazy var score = UILabel().then {
         $0.textColor = AppColor.purple100
-        $0.font = UIFont.ptdMediumFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.medium, size: 14)
     }
     
     public lazy var review = UILabel().then {
         $0.numberOfLines = 0
         $0.textColor = AppColor.gray70
-        $0.font = UIFont.ptdMediumFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.medium, size: 14)
         $0.numberOfLines = 2
         $0.setLineSpacingPercentage(0.3)
     }
     
     public lazy var date = UILabel().then {
         $0.textColor = AppColor.gray90
-        $0.font = UIFont.ptdRegularFont(ofSize: 12)
+        $0.font = UIFont.pretendard(.regular, size: 12)
     }
     
     private let toggleButton = UIButton().then {
         $0.setTitle("더보기", for: .normal)
-        $0.titleLabel?.font = UIFont.ptdMediumFont(ofSize: 13)
+        $0.titleLabel?.font = UIFont.pretendard(.medium, size: 13)
         $0.setTitleColor(AppColor.gray50, for: .normal)
         $0.isHidden = true
     }

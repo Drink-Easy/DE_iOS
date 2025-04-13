@@ -22,7 +22,7 @@ class TastingNoteCollectionViewCell: UICollectionViewCell {
     }
     
     private lazy var name = UILabel().then { l in
-        l.font = UIFont.ptdMediumFont(ofSize: 14)
+        l.font = UIFont.pretendard(.medium, size: 14)
         l.textColor = AppColor.gray100
         l.textAlignment = .center
         l.numberOfLines = 2

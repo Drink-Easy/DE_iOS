@@ -32,7 +32,7 @@ public class VivinoRateView: UIView {
             attributedString.addAttributes(
                 [
                     .foregroundColor: AppColor.gray70,
-                    .font: UIFont.ptdRegularFont(ofSize: 12)
+                    .font: UIFont.pretendard(.regular, size: 12)
                 ],
                 range: NSRange(location: 0, length: text.count)
             )
@@ -43,7 +43,7 @@ public class VivinoRateView: UIView {
                 attributedString.addAttributes(
                     [
                         .foregroundColor: AppColor.purple100,
-                        .font: UIFont.ptdSemiBoldFont(ofSize: 18)
+                        .font: UIFont.pretendard(.semiBold, size: 18)
                     ],
                     range: nsRange
                 )
@@ -57,7 +57,7 @@ public class VivinoRateView: UIView {
     private lazy var noRatingLabel = UILabel().then {
         $0.text = "비비노 평점이 없습니다."
         $0.textColor = AppColor.gray70
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
         $0.isHidden = true
     }
     

@@ -25,7 +25,7 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
         $0.numberOfLines = 0
         $0.text = "보유 와인에 담긴 와인이 없어요.\n구매한 와인을 직접 등록하고\n관리해 보세요!"
         $0.setLineSpacingPercentage(0.3)
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
         $0.textColor = AppColor.gray70
         $0.textAlignment = .center
     }
@@ -67,7 +67,7 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
         navigationBarManager.setTitle(
             to: navigationItem,
             title: "보유와인",
-            textColor: AppColor.black ?? .black
+            textColor: AppColor.black
         )
         
         navigationBarManager.addRightButton(
@@ -75,7 +75,7 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
             icon: "plus",
             target: self,
             action: #selector(addNewWine),
-            tintColor: AppColor.gray70!
+            tintColor: AppColor.gray70
         )
     }
     

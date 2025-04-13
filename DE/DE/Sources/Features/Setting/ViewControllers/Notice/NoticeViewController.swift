@@ -57,7 +57,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     private func setupNavigationBar() {
-        navigationBarManager.setTitle(to: navigationItem, title: "공지사항", textColor: AppColor.black!)
+        navigationBarManager.setTitle(to: navigationItem, title: "공지사항", textColor: AppColor.black)
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,

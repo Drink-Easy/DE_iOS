@@ -9,7 +9,7 @@ public class SimpleListView: UIView {
     // MARK: - Properties
     public lazy var titleLabel = UILabel().then {
         $0.textColor = AppColor.black
-        $0.font = .ptdSemiBoldFont(ofSize: 18)
+        $0.font = .pretendard(.semiBold, size: 18)
     }
     
     public lazy var backView = UIView().then {
@@ -23,7 +23,7 @@ public class SimpleListView: UIView {
             NSAttributedString(
                 string: "수정하기",
                 attributes: [
-                    .font: UIFont.ptdRegularFont(ofSize: 12), // 폰트 적용
+                    .font: UIFont.pretendard(.regular, size: 12), // 폰트 적용
                     .underlineStyle: NSUnderlineStyle.single.rawValue,    // 밑줄 스타일
                     .foregroundColor: AppColor.gray70
                 ]
@@ -148,7 +148,7 @@ public class SimpleListView: UIView {
     
     private func createLabel(title: String, isTitle: Bool) -> UILabel {
         let label = UILabel().then {
-            $0.font = .ptdRegularFont(ofSize: 14)
+            $0.font = .pretendard(.regular, size: 14)
             $0.textAlignment = isTitle ? .left : .right
             
             // "구매일"로 인덱싱해서 특정 컬러 적용

@@ -60,8 +60,8 @@ class SurveyTopView: UIView {
         let attributedText = NSMutableAttributedString(string: fullText)
         
         let slashIndex = (currentPage as NSString).length
-        attributedText.addAttribute(.foregroundColor, value: AppColor.purple70!, range: NSRange(location: 0, length: slashIndex))
-        attributedText.addAttribute(.foregroundColor, value: AppColor.gray70!, range: NSRange(location: slashIndex, length: fullText.count - slashIndex))
+        attributedText.addAttribute(.foregroundColor, value: AppColor.purple70, range: NSRange(location: 0, length: slashIndex))
+        attributedText.addAttribute(.foregroundColor, value: AppColor.gray70, range: NSRange(location: slashIndex, length: fullText.count - slashIndex))
         
         label.attributedText = attributedText
     }

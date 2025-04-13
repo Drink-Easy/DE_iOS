@@ -32,7 +32,7 @@ class AppInfoViewController : UIViewController, FirebaseTrackable {
     
     lazy var appVersionLabel = UILabel().then {
         $0.text = "버전 정보"
-        $0.font = UIFont.ptdRegularFont(ofSize: 12)
+        $0.font = UIFont.pretendard(.regular, size: 12)
         $0.textColor = AppColor.gray70
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
@@ -103,7 +103,7 @@ class AppInfoViewController : UIViewController, FirebaseTrackable {
     }
     
     private func setupNavigationBar() {
-        navigationBarManager.setTitle(to: navigationItem, title: "앱 정보", textColor: AppColor.black!)
+        navigationBarManager.setTitle(to: navigationItem, title: "앱 정보", textColor: AppColor.black)
         navigationBarManager.addBackButton(to: navigationItem, target: self, action: #selector(backButtonTapped))
     }
     

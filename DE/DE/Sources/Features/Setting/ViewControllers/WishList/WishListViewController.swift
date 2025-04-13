@@ -28,7 +28,7 @@ public class WishListViewController: UIViewController, FirebaseTrackable {
         $0.numberOfLines = 0
         $0.text = "위시리스트에 담긴 와인이 없어요.\n관심 있는 와인을 담아 보세요!"
         $0.setLineSpacingPercentage(0.3)
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
         $0.textColor = AppColor.gray70
         $0.textAlignment = .center
     }

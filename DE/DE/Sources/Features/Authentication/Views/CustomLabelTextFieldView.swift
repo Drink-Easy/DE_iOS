@@ -66,12 +66,12 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
         // 설명 라벨 설정
         descriptionLabel.text = descriptionLabelText
         descriptionLabel.textColor = AppColor.black
-        descriptionLabel.font = UIFont.ptdSemiBoldFont(ofSize: 14)
+        descriptionLabel.font = UIFont.pretendard(.semiBold, size: 14)
         
         // 텍스트 필드 설정
         textField.placeholder = textFieldPlaceholder
         textField.borderStyle = .none
-        textField.font = UIFont.ptdMediumFont(ofSize: 14)
+        textField.font = UIFont.pretendard(.medium, size: 14)
         textField.backgroundColor = AppColor.gray10
         textField.delegate = self
         textField.layer.borderColor = AppColor.gray10.cgColor
@@ -94,7 +94,7 @@ public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
         // 유효성 라벨 설정
         validationLabel.text = validationText
         validationLabel.textColor = AppColor.red
-        validationLabel.font = UIFont.ptdMediumFont(ofSize: 12)
+        validationLabel.font = UIFont.pretendard(.medium, size: 12)
         validationLabel.isHidden = true
         
         // UI 추가

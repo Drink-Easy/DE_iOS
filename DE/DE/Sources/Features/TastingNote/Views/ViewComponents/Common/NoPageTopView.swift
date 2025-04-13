@@ -9,7 +9,7 @@ import SnapKit
 class NoPageTopView: UIView {
     private lazy var title = UILabel().then {
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.font = UIFont.pretendard(.semiBold, size: 24)
         $0.numberOfLines = 0
     }
 

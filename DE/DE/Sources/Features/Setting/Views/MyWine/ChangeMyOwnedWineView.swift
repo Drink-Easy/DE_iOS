@@ -20,7 +20,7 @@ class ChangeMyOwnedWineView: UIView {
     public lazy var dateTitle = UILabel().then {
         $0.text = "구매 일자"
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 18)
+        $0.font = UIFont.pretendard(.semiBold, size: 18)
         $0.numberOfLines = 1
     }
     
