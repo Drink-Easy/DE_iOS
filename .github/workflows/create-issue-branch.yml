@@ -18,7 +18,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
 
   delete_merged_branch:
-        if: github.event.pull_request.merged == true
+        if: >
+          github.event.pull_request.merged == true &&
+          github.event.pull_request.head.ref != 'dev' &&
+          github.event.pull_request.head.ref != 'main' &&
+          !startsWith(github.event.pull_request.head.ref, 'release/')
         runs-on: ubuntu-latest
         steps:
           - name: Delete Merged Branch
