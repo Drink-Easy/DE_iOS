@@ -7,9 +7,11 @@ let releaseBundleFin = "drinkig"
 let minimunTarget = "17.0"
 let projectName = "DE"
 let releaseTargetName = "DRINKIG"
+
+// 버전 여기서 고치기
 let major = 1
 let minor = 0
-let patch = 4
+let patch = 5
 
 
 //let crashlyticsScript = TargetScript.post(

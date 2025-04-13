@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Assign reviewers (excluding author)
-        uses: peter-evans/reviewers@v3
+        uses: peter-evans/reviewers@v7.0.6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           reviewers: |
