@@ -188,6 +188,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.searchWineCellTapped, fileName: #file, cellID: "SearchResultTableViewCell")
+        
         let vc = BuyNewWineDateViewController()
         let selectedWine = wineResults[indexPath.row]
         MyOwnedWineManager.shared.setWineId(selectedWine.wineId)
