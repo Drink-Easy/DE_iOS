@@ -69,8 +69,6 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     private lazy var pageControlNumberView = PageControlNumberView()
     
     private lazy var likeWineListView = RecomView().then {
-        $0.title.text = "For \(userName),"
-        $0.title.setPartialTextStyle(text: $0.title.text ?? "", targetText: "\(userName),", color: AppColor.purple100, font: UIFont.pretendard(.semiBold, size: 26))
         $0.recomCollectionView.delegate = self
         $0.recomCollectionView.dataSource = self
         $0.recomCollectionView.tag = 1
@@ -294,13 +292,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     }
     
     private func updateLikeWineListView() {
-        likeWineListView.title.text = "For \(userName),"
-        likeWineListView.title.setPartialTextStyle(
-            text: likeWineListView.title.text ?? "",
-            targetText: "\(userName),",
-            color: AppColor.purple100,
-            font: UIFont.pretendard(.semiBold, size: 26)
-        )
+        likeWineListView.title.attributedText = "For \(userName),".styledTextWithPretendard(highlightText: "\(userName),", baseFont: .semiBold, baseSize: 24, highlightFont: .semiBold, highlightSize: 26, lineHeightMultiple: 1.45, letterSpacingPercent: -2.5, baseColor: AppColor.black, highlightColor: AppColor.purple100, alignment: .left)
     }
     
     func didTapSearchButton() {

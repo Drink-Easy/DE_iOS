@@ -17,7 +17,9 @@ class MoreLikelyWineViewController: UIViewController, FirebaseTrackable {
     
     public var userName: String = "" {
         didSet {
-            updateLikeWineListView()
+            DispatchQueue.main.async {
+                self.updateLikeWineListView()
+            }
         }
     }
     
@@ -27,7 +29,6 @@ class MoreLikelyWineViewController: UIViewController, FirebaseTrackable {
         super.viewDidLoad()
         view.backgroundColor = AppColor.background
         self.view = moreLikelyWineView
-        self.moreLikelyWineView.title.setPartialTextStyle(text: moreLikelyWineView.title.text ?? "", targetText: "\(userName)", color: AppColor.purple100, font: UIFont.pretendard(.semiBold, size: 30))
         setupNavigationBar()
     }
     
@@ -35,6 +36,7 @@ class MoreLikelyWineViewController: UIViewController, FirebaseTrackable {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         self.view.addSubview(indicator)
+        self.updateLikeWineListView()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -50,7 +52,6 @@ class MoreLikelyWineViewController: UIViewController, FirebaseTrackable {
     
     // MARK: - 네트워크 요청 처리
     private lazy var moreLikelyWineView = MoreRecomWineView().then {
-        $0.title.text = "\(userName)님을 위한 추천 와인"
         $0.moreWineTableView.dataSource = self
         $0.moreWineTableView.delegate = self
     }
@@ -68,13 +69,7 @@ class MoreLikelyWineViewController: UIViewController, FirebaseTrackable {
     }
     
     private func updateLikeWineListView() {
-        moreLikelyWineView.title.text = "\(userName)님을 위한 추천 와인"
-        moreLikelyWineView.title.setPartialTextStyle(
-            text: moreLikelyWineView.title.text ?? "",
-            targetText: "\(userName)",
-            color: AppColor.purple100,
-            font: UIFont.pretendard(.semiBold, size: 30)
-        )
+        moreLikelyWineView.title.attributedText = "\(userName) 님을 위한 추천 와인".styledTextWithPretendard(highlightText: "\(userName)", baseFont: .semiBold, baseSize: 24, highlightFont: .semiBold, highlightSize: 26, lineHeightMultiple: 1.45, letterSpacingPercent: -2.5, baseColor: AppColor.black, highlightColor: AppColor.purple100, alignment: .left)
     }
 }
 
