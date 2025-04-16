@@ -686,27 +686,3 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     public static let superViewWidth = UIScreen.main.bounds.width
     
 }
-
-public struct DynamicPadding {
-    private static var superViewHeight: CGFloat {
-        UIScreen.main.bounds.height
-    }
-    
-    private static var superViewWidth: CGFloat {
-        UIScreen.main.bounds.width
-    }
-    
-    public static var widthScaleFactor : CGFloat {
-        get {
-            return DynamicPadding.superViewWidth / 390
-        }
-    }
-    
-    public static func dynamicValue(_ baseValue: CGFloat) -> CGFloat {
-        return baseValue * (superViewHeight / 844)
-    }
-    
-    public static func dynamicValuebyWidth(_ baseValue: CGFloat) -> CGFloat {
-        return baseValue * (superViewWidth / 390)
-    }
-}

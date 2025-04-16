@@ -3,6 +3,7 @@
 import UIKit
 
 import NVActivityIndicatorView
+import DesignSystem
 
 let viewWidth: CGFloat = 40
 let viewHeight: CGFloat = 40

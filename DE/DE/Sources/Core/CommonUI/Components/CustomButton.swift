@@ -3,6 +3,7 @@
 import Foundation
 import UIKit
 import SnapKit
+import DesignSystem
 
 open class CustomButton: UIButton {
     public init(

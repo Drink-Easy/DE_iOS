@@ -1,6 +1,6 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
-import Foundation
+import DesignSystem
 import UIKit
 
 public class CustomPageControl: UIView {

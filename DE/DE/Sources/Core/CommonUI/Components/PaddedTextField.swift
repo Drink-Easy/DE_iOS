@@ -1,6 +1,7 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+import DesignSystem
 
 open class PaddedTextField: UITextField {
     public var padding: UIEdgeInsets

@@ -6,6 +6,7 @@ import SnapKit
 import Then
 
 import SDWebImage
+import DesignSystem
 
 public class SearchResultTableViewCell: UITableViewCell {
     

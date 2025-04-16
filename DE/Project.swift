@@ -139,7 +139,7 @@ let project = Project(
             launchArguments: [.launchArgument(name: "-FIRDebugEnabled", isEnabled: true)]
         ),
         
-        // module
+        // module - core
         .target(
             name: "CoreModule",
             destinations: .iOS,
@@ -157,9 +157,26 @@ let project = Project(
                 .external(name: "Cosmos"),
                 .external(name: "KakaoSDK"),
                 .target(name: "Network"),
+                .external(name: "AMPopTip"),
+                .target(name: "DesignSystem")
+            ]
+        ),
+        // module - designSys
+        .target(
+            name: "DesignSystem",
+            destinations: .iOS,
+            product: .staticFramework,
+            bundleId: "\(bundleId).\(bundleMid).DesignSystem",
+            deploymentTargets: .iOS(minimunTarget),
+            sources: ["DE/Sources/DesignSystem/**"],
+            resources: ["DE/Resources/**"],
+            dependencies: [
+                .external(name: "SnapKit"),
+                .external(name: "Then"),
                 .external(name: "AMPopTip")
             ]
         ),
+        // module - network
         .target(
             name: "Network",
             destinations: .iOS,
@@ -175,6 +192,7 @@ let project = Project(
                 .external(name: "FirebaseCrashlytics")
             ]
         ),
+        // module - feature
         .target(
             name: "Features",
             destinations: .iOS,
@@ -184,7 +202,8 @@ let project = Project(
             sources: ["DE/Sources/Features/**"],
             resources: ["DE/Resources/**"],
             dependencies: [
-                .target(name: "CoreModule"),
+                .target(name: "DesignSystem"),
+                .target(name: "CoreModule")
             ]
         ),
         // Tests

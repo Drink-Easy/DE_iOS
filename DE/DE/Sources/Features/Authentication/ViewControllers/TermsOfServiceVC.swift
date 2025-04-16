@@ -6,6 +6,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 
 public class TermsOfServiceVC: UIViewController, UIDocumentInteractionControllerDelegate, FirebaseTrackable {
     public var screenName: String = Tracking.VC.termsOfServiceVC

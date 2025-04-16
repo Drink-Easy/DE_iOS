@@ -4,6 +4,7 @@ import UIKit
 import CoreModule
 import SnapKit
 import Then
+import DesignSystem
 
 public class OnboardingVC: UIViewController, UICollectionViewDelegate, FirebaseTrackable {
     public var screenName: String = Tracking.VC.onboardingVC

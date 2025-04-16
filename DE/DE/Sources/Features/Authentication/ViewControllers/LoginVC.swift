@@ -8,6 +8,7 @@ import Then
 import CoreModule
 import Network
 import FirebaseAnalytics
+import DesignSystem
 
 class LoginVC: UIViewController, FirebaseTrackable {
     // struct 사용

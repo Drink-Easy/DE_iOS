@@ -12,8 +12,10 @@ import Then
 
 import Network
 import CoreModule
+import DesignSystem
 
 // SelectLoginTypeVC.keychain.getBool("isFirst")
+// 사용 안하는 뷰
 
 public class TestVC : UIViewController, FirebaseTrackable {
     public var screenName: String = Tracking.VC.splashVC

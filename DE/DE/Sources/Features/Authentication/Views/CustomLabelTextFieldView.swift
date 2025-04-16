@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 
 public class CustomLabelTextFieldView: UIView, UITextFieldDelegate {
     // MARK: - Properties

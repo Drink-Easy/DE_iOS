@@ -4,7 +4,7 @@ import UIKit
 
 import SnapKit
 import Then
-
+import DesignSystem
 import Cosmos
 
 public class VivinoRateView: UIView {

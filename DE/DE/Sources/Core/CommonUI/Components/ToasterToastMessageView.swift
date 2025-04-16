@@ -1,13 +1,14 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+import DesignSystem
 
 public final class ToasterToastMessageView: UIView {
     
     // MARK: - UI Components
     private let toastLabel = UILabel().then {
         $0.textColor = AppColor.white
-        $0.font = UIFont.ptdRegularFont(ofSize: 12)
+        $0.font = UIFont.pretendard(.regular, size: 12)
         $0.numberOfLines = 2
         $0.textAlignment = .center
     }

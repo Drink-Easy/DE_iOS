@@ -1,7 +1,7 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
-import Foundation
 import UIKit
+import DesignSystem
 
 public class NavigationBarManager {
     

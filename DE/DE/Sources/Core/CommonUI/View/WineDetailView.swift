@@ -4,7 +4,7 @@ import UIKit
 
 import SnapKit
 import Then
-
+import DesignSystem
 import SDWebImage
 
 public class WineDetailView: UIView {

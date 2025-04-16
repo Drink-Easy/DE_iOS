@@ -6,6 +6,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 
 class OnboardingCollectionViewCell: UICollectionViewCell {
     
@@ -14,14 +15,14 @@ class OnboardingCollectionViewCell: UICollectionViewCell {
     }
     
     private let label1 = UILabel().then {
-        $0.font = UIFont.ptdBoldFont(ofSize: 33)
+        $0.font = UIFont.pretendard(.bold, size: 33)
         $0.textColor = .white
         $0.textAlignment = .left
         $0.numberOfLines = 0
     }
     
     private let label2 = UILabel().then {
-        $0.font = UIFont.ptdMediumFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.medium, size: 14)
         $0.textColor = .white
         $0.textAlignment = .left
         $0.numberOfLines = 0

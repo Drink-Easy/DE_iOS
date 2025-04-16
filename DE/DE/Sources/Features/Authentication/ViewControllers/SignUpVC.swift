@@ -6,6 +6,7 @@ import SnapKit
 
 import CoreModule
 import Network
+import DesignSystem
 
 class SignUpVC: UIViewController, FirebaseTrackable {
     var screenName: String = Tracking.VC.signUpVC
