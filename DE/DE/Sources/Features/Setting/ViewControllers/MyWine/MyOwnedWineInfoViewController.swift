@@ -6,6 +6,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 import Network
 
 public class MyOwnedWineInfoViewController: UIViewController, ChildViewControllerDelegate, FirebaseTrackable {

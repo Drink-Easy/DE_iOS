@@ -3,6 +3,7 @@
 import UIKit
 import Then
 import CoreModule
+import DesignSystem
 import Network
 
 class WineDetailViewController: UIViewController, UIScrollViewDelegate, FirebaseTrackable {

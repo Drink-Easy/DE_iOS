@@ -8,6 +8,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 
 class InquiryViewController: UIViewController, FirebaseTrackable {
     var screenName: String = Tracking.VC.inquiryVC

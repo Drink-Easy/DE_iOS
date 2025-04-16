@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 
 class MyWineTableViewCell: UITableViewCell {
     

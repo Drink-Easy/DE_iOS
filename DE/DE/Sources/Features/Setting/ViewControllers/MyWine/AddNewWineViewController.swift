@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Network
 import SnapKit
 import Then

@@ -7,6 +7,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 import CoreLocation
 import Network
 

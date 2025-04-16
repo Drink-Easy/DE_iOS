@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Then
 import Network
 // 기기대응 완료

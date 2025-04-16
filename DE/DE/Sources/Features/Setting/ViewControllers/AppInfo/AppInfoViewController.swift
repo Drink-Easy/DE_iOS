@@ -8,6 +8,7 @@ import Then
 import SDWebImage
 
 import CoreModule
+import DesignSystem
 import Network
 
 class AppInfoViewController : UIViewController, FirebaseTrackable {

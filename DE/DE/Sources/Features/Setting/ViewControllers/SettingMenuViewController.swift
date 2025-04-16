@@ -7,6 +7,7 @@ import Then
 import SDWebImage
 
 import CoreModule
+import DesignSystem
 import Network
 
 public final class SettingMenuViewController : UIViewController, UIGestureRecognizerDelegate, FirebaseTrackable {

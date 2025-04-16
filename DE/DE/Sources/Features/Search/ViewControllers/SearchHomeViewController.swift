@@ -1,9 +1,11 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
-import CoreModule
 import SnapKit
 import Then
+
+import CoreModule
+import DesignSystem
 import Network
 
 public class SearchHomeViewController : UIViewController, UITextFieldDelegate, FirebaseTrackable {

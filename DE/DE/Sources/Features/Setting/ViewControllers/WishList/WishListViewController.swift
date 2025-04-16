@@ -4,6 +4,7 @@ import UIKit
 import SnapKit
 import Then
 import CoreModule
+import DesignSystem
 import Network
 
 public class WishListViewController: UIViewController, FirebaseTrackable {
@@ -70,7 +71,7 @@ public class WishListViewController: UIViewController, FirebaseTrackable {
         navigationBarManager.setTitle(
             to: navigationItem,
             title: "위시리스트",
-            textColor: AppColor.black ?? .black
+            textColor: AppColor.black
         )
     }
     

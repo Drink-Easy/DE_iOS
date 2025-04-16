@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Network
 // 기기대응 완료
 // 보유와인 날짜 선택

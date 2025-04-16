@@ -5,6 +5,7 @@ import UIKit
 import SnapKit
 import Then
 import CoreModule
+import DesignSystem
 import Network
 
 public class NoticeTableViewCell: UITableViewCell {

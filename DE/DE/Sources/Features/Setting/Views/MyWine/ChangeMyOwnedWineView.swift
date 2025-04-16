@@ -5,6 +5,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 // 기기대응 완료
 
 class ChangeMyOwnedWineView: UIView {

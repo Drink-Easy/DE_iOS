@@ -3,6 +3,7 @@
 import UIKit
 import Then
 import CoreModule
+import DesignSystem
 import SnapKit
 
 // 기기대응 완료
