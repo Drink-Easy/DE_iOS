@@ -65,7 +65,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
             title: "완료",
             target: self,
             action: #selector(editCompleteTapped),
-            tintColor: AppColor.gray70 ?? .gray,
+            tintColor: AppColor.gray70,
             font: UIFont.pretendard(.semiBold, size: 16)
         )
     }

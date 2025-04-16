@@ -4,6 +4,7 @@ import UIKit
 import SnapKit
 import Then
 import CoreModule
+import DesignSystem
 import SwiftyToaster
 
 class NewbieFoodViewController: UIViewController, FirebaseTrackable {

@@ -4,6 +4,7 @@ import UIKit
 import SnapKit
 import Then
 import CoreModule
+import DesignSystem
 
 class SurveyFoodView: UIView {
 

@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Then
 
 class PageControlNumberView: UIView {
@@ -28,7 +29,7 @@ class PageControlNumberView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.backgroundColor = AppColor.gray100?.withAlphaComponent(0.7)
+        self.backgroundColor = AppColor.gray100.withAlphaComponent(0.7)
         self.layer.cornerRadius = DynamicPadding.dynamicValue(15)
         self.layer.masksToBounds = true
         self.addComponents()
@@ -55,14 +56,14 @@ class PageControlNumberView: UIView {
 
         // 현재 페이지를 white로 설정
         let currentPageRange = (text as NSString).range(of: "\(currentPage)")
-        attributedString.addAttribute(.foregroundColor, value: AppColor.white!, range: currentPageRange)
+        attributedString.addAttribute(.foregroundColor, value: AppColor.white, range: currentPageRange)
 
         // 나머지를 white 50% 로 설정
         let totalPagesRange = (text as NSString).range(of: "/ \(totalPages)")
-        attributedString.addAttribute(.foregroundColor, value: AppColor.white!.withAlphaComponent(0.5), range: totalPagesRange)
+        attributedString.addAttribute(.foregroundColor, value: AppColor.white.withAlphaComponent(0.5), range: totalPagesRange)
 
         // 폰트 설정 (선택 사항)
-        attributedString.addAttribute(.font, value: UIFont.ptdMediumFont(ofSize: 14), range: NSRange(location: 0, length: text.count))
+        attributedString.addAttribute(.font, value: UIFont.pretendard(.medium, size: 14), range: NSRange(location: 0, length: text.count))
 
         pageNumber.attributedText = attributedString
     }

@@ -6,6 +6,7 @@ import Network
 import SnapKit
 import Then
 import SDWebImage
+import DesignSystem
 
 class MoreWineTableViewCell: UITableViewCell {
     

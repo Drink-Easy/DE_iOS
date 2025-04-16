@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Then
 import SnapKit
 
@@ -11,7 +12,7 @@ class SurveyFoodCollectionViewCell: UICollectionViewCell {
     
     public lazy var contents = UILabel().then {
         $0.textColor = AppColor.gray90
-        $0.font = UIFont.ptdMediumFont(ofSize: 20)
+        $0.font = UIFont.pretendard(.medium, size: 20)
         $0.numberOfLines = 0
     }
     
@@ -45,9 +46,9 @@ class SurveyFoodCollectionViewCell: UICollectionViewCell {
     
     func updateAppearance(isSelected: Bool) {
         contentView.layer.borderWidth = isSelected ? 1 : 0
-        contentView.layer.borderColor = isSelected ? AppColor.purple70?.cgColor : AppColor.gray10?.cgColor
+        contentView.layer.borderColor = isSelected ? AppColor.purple70.cgColor : AppColor.gray10.cgColor
         contentView.backgroundColor = isSelected ? AppColor.purple10 : AppColor.gray10
         contents.textColor = isSelected ? AppColor.purple100 : AppColor.gray90
-        contents.font = isSelected ? UIFont.ptdSemiBoldFont(ofSize: 20) : UIFont.ptdMediumFont(ofSize: 20)
+        contents.font = isSelected ? UIFont.pretendard(.semiBold, size: 20) : UIFont.pretendard(.medium, size: 20)
     }
 }

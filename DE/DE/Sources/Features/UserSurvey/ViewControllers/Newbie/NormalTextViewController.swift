@@ -4,6 +4,7 @@ import UIKit
 import SnapKit
 import Then
 import CoreModule
+import DesignSystem
 import SwiftyToaster
 import Network
 
@@ -149,14 +150,14 @@ public class NormalTextViewController: UIViewController, FirebaseTrackable {
         paragraphStyle.lineSpacing = lineSpacing // ✅ 행간 추가
         
         let mainAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.ptdSemiBoldFont(ofSize: mainFontSize),
-            .foregroundColor: AppColor.purple70!,
+            .font: UIFont.pretendard(.semiBold, size: mainFontSize),
+            .foregroundColor: AppColor.purple70,
             .paragraphStyle: paragraphStyle // ✅ 모든 텍스트에 행간 적용
         ]
         
         let highlightAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.ptdRegularFont(ofSize: highlightFontSize),
-            .foregroundColor: AppColor.black!,
+            .font: UIFont.pretendard(.regular, size: highlightFontSize),
+            .foregroundColor: AppColor.black,
             .paragraphStyle: paragraphStyle // ✅ 모든 텍스트에 행간 적용
         ]
         

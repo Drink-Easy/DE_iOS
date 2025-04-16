@@ -5,6 +5,7 @@ import Then
 import SnapKit
 import CoreModule
 import SDWebImage
+import DesignSystem
 
 class RecomCollectionViewCell: UICollectionViewCell {
     
@@ -17,17 +18,17 @@ class RecomCollectionViewCell: UICollectionViewCell {
     
     public lazy var scoreNprice = UILabel().then {
         $0.textColor = AppColor.purple100
-        $0.font = UIFont.ptdMediumFont(ofSize: 12)
+        $0.font = UIFont.pretendard(.medium, size: 12)
     }
     
     public lazy var name = UILabel().then {
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdMediumFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.medium, size: 14)
     }
     
     public lazy var kind = UILabel().then {
         $0.textColor = AppColor.gray70
-        $0.font = UIFont.ptdRegularFont(ofSize: 10)
+        $0.font = UIFont.pretendard(.regular, size: 10)
     }
     
     override init(frame: CGRect) {
@@ -47,7 +48,7 @@ class RecomCollectionViewCell: UICollectionViewCell {
     }
 
     private func configureShadow() {
-        self.layer.shadowColor = AppColor.black?.cgColor // 그림자 색상
+        self.layer.shadowColor = AppColor.black.cgColor // 그림자 색상
         self.layer.shadowOpacity = 0.1 // 그림자 투명도 (0.0 ~ 1.0)
         self.layer.shadowOffset = CGSize(width: 0, height: 2) // 그림자의 위치 (x, y)
         self.layer.shadowRadius = 4 // 그림자 흐림 정도

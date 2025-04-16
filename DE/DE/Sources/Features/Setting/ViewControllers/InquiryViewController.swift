@@ -85,7 +85,7 @@ class InquiryViewController: UIViewController, FirebaseTrackable {
         navigationBarManager.setTitle(
             to: navigationItem,
             title: "문의하기",
-            textColor: AppColor.black ?? .black
+            textColor: AppColor.black
         )
     }
     

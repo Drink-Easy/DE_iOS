@@ -4,6 +4,7 @@ import UIKit
 import CoreModule
 import SnapKit
 import Then
+import DesignSystem
 
 class MoreRecomWineView: UIView {
     

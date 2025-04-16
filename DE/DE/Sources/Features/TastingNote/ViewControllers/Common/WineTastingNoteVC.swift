@@ -87,12 +87,12 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
             rightIcon: "trash",
             rightAction: #selector(deleteTapped),
             target: self,
-            tintColor: AppColor.gray70 ?? .gray)
+            tintColor: AppColor.gray70)
         
         smallTitleLabel = navigationBarManager.setNReturnTitle(
             to: navigationItem,
             title: wineName,
-            textColor: AppColor.black ?? .black
+            textColor: AppColor.black
         )
         smallTitleLabel.isHidden = true
     }

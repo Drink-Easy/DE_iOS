@@ -145,7 +145,7 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
         smallTitleLabel = navigationBarManager.setNReturnTitle(
             to: navigationItem,
             title: wineData.wineName,
-            textColor: AppColor.black ?? .black
+            textColor: AppColor.black
         )
         smallTitleLabel.isHidden = true
     }

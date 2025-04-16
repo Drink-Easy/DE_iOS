@@ -4,6 +4,7 @@ import UIKit
 
 import CoreModule
 import Network
+import DesignSystem
 
 final class ValidationManager {
     

@@ -3,6 +3,7 @@
 import UIKit
 import CoreModule
 import Then
+import DesignSystem
 
 class RecomView: UIView {
     

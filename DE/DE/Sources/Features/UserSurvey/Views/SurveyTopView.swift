@@ -3,6 +3,7 @@
 import UIKit
 import Then
 import CoreModule
+import DesignSystem
 import SnapKit
 
 class SurveyTopView: UIView {
@@ -11,12 +12,12 @@ class SurveyTopView: UIView {
     var entirePage: Int?
     
     private lazy var page = UILabel().then {
-        $0.font = UIFont.ptdMediumFont(ofSize: 16)
+        $0.font = UIFont.pretendard(.medium, size: 16)
     }
     
     private lazy var title = UILabel().then {
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.font = UIFont.pretendard(.semiBold, size: 24)
         $0.numberOfLines = 0
     }
     
@@ -25,8 +26,8 @@ class SurveyTopView: UIView {
         paragraphStyle.lineSpacing = lineSpacing
 
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: title.font ?? UIFont.ptdSemiBoldFont(ofSize: 24), // ✅ 기존 폰트 유지
-            .foregroundColor: title.textColor ?? AppColor.black!,    // ✅ 기존 색상 유지
+            .font: title.font ?? UIFont.pretendard(.semiBold, size: 24), // ✅ 기존 폰트 유지
+            .foregroundColor: title.textColor ?? AppColor.black,    // ✅ 기존 색상 유지
             .paragraphStyle: paragraphStyle
         ]
         

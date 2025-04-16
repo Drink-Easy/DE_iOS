@@ -4,6 +4,7 @@ import UIKit
 import SnapKit
 import Then
 import CoreModule
+import DesignSystem
 import SwiftyToaster
 
 class ManiaKindViewController: UIViewController, FirebaseTrackable {
@@ -107,7 +108,7 @@ extension ManiaKindViewController: UICollectionViewDelegateFlowLayout, UICollect
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         let title = cellData[indexPath.row]
-        let font = UIFont.ptdMediumFont(ofSize: 16)
+        let font = UIFont.pretendard(.medium, size: 16)
         let size = title.size(withAttributes: [.font: font])
         
         let padding: CGFloat = DynamicPadding.dynamicValue(40.0)

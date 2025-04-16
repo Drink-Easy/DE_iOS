@@ -1,6 +1,7 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+import DesignSystem
 
 //좌측 정렬이 가능한 UICollectionViewFlowLayout, 첫째줄과 셋째줄부터는 3개, 둘째줄에는 너비 넉넉하면 4개의 cell 들어감
 class LeftAlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {

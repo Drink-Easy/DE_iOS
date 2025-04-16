@@ -1,6 +1,7 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+import DesignSystem
 
 extension UILabel {
     /// 텍스트의 특정 부분의 색상과 크기를 변경합니다.
@@ -50,7 +51,7 @@ extension UILabel {
     /// - Parameters:
     ///   - lineSpacing: 원하는 행간 (기본값: 4)
     ///   - alignment: 텍스트 정렬 방식 (기본값: `.left`)
-    public func setLineSpacing(lineSpacing: CGFloat = 4, alignment: NSTextAlignment = .left, font: UIFont = .ptdRegularFont(ofSize: 16)) {
+    public func setLineSpacing(lineSpacing: CGFloat = 4, alignment: NSTextAlignment = .left, font: UIFont = .pretendard(.regular, size: 16)) {
         guard let text = self.text, !text.isEmpty else { return }
         
         let paragraphStyle = NSMutableParagraphStyle()

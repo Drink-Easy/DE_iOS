@@ -38,7 +38,7 @@ public class ProfileView: UIView {
     public let checkDuplicateButton = UIButton().then {
         $0.setTitle("중복 확인", for: .normal)
         $0.setTitleColor(AppColor.gray70, for: .normal)
-        $0.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 12)
+        $0.titleLabel?.font = UIFont.pretendard(.semiBold, size: 12)
     }
     
     public let myLocationTextField = CustomTextFieldView(

@@ -72,7 +72,7 @@ class MoreLikelyWineViewController: UIViewController, FirebaseTrackable {
         moreLikelyWineView.title.setPartialTextStyle(
             text: moreLikelyWineView.title.text ?? "",
             targetText: "\(userName)",
-            color: AppColor.purple100 ?? .purple,
+            color: AppColor.purple100,
             font: UIFont.pretendard(.semiBold, size: 30)
         )
     }
