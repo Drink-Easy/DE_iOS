@@ -6,6 +6,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 import Network
 
 public class MyOwnedWineInfoViewController: UIViewController, ChildViewControllerDelegate, FirebaseTrackable {
@@ -64,7 +65,7 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     
     // MARK: - Setup Methods
     private func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         [header, wineDetailView, deleteButton].forEach{
             view.addSubview($0)
         }

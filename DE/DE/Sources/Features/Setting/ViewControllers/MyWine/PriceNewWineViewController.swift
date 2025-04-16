@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import SnapKit
 import Then
 import Network
@@ -42,7 +43,7 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
     }
     
     func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         priceNewWineView.setWineName(MyOwnedWineManager.shared.getWineName())
         
         view.addSubview(priceNewWineView)
@@ -54,7 +55,7 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
     }
     
     private func setupNavigationBar() {
-        navigationBarManager.setTitle(to: navigationItem, title: "", textColor: AppColor.black!)
+        navigationBarManager.setTitle(to: navigationItem, title: "", textColor: AppColor.black)
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,

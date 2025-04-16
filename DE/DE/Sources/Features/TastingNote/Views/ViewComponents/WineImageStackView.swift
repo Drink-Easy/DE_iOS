@@ -3,6 +3,7 @@
 import UIKit
 import SnapKit
 import CoreModule
+import DesignSystem
 
 protocol WineSortDelegate: AnyObject {
     func didTapSortButton(for type: WineSortType)
@@ -26,7 +27,7 @@ class WineImageStackContainerView: UIView {
     
     private let wineLabel = UILabel().then {
         $0.text = "전체 0병"
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 20)
+        $0.font = .pretendard(.semiBold, size: 20)
         $0.textColor = AppColor.black
     }
     
@@ -97,7 +98,7 @@ class WineImageStackContainerView: UIView {
             imageView.contentMode = .scaleAspectFill
             imageView.layer.cornerRadius = 10
             imageView.layer.borderWidth = 2
-            imageView.layer.borderColor = (selectedCategory == category) ? AppColor.purple100?.cgColor : UIColor.clear.cgColor
+            imageView.layer.borderColor = (selectedCategory == category) ? AppColor.purple100.cgColor : UIColor.clear.cgColor
             imageView.clipsToBounds = true
             imageView.isUserInteractionEnabled = true
             imageView.accessibilityLabel = category
@@ -111,14 +112,14 @@ class WineImageStackContainerView: UIView {
             let coloredText = "\(count)"
             let attributedString = NSMutableAttributedString(
                 string: fullText,
-                attributes: [.font: UIFont.ptdRegularFont(ofSize: 12)]
+                attributes: [.font: UIFont.pretendard(.regular, size: 12)]
             )
             
             if let range = fullText.range(of: coloredText) {
                 let nsRange = NSRange(range, in: fullText)
                 attributedString.addAttributes([
-                    .font: UIFont.ptdSemiBoldFont(ofSize: 16),
-                    .foregroundColor: AppColor.purple100!
+                    .font: UIFont.pretendard(.semiBold, size: 16),
+                    .foregroundColor: AppColor.purple100
                 ], range: nsRange)
             }
             
@@ -171,7 +172,7 @@ class WineImageStackContainerView: UIView {
             selectedImageView?.layer.borderColor = UIColor.clear.cgColor
                 selectedImageView?.layer.borderWidth = 0 // 추가
                 
-                tappedImageView.layer.borderColor = AppColor.purple100?.cgColor
+                tappedImageView.layer.borderColor = AppColor.purple100.cgColor
                 tappedImageView.layer.borderWidth = 2
             selectedCategory = category
             selectedImageView = tappedImageView

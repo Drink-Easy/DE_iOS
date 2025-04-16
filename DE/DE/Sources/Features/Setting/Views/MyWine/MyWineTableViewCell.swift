@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 
 class MyWineTableViewCell: UITableViewCell {
     
@@ -10,7 +11,7 @@ class MyWineTableViewCell: UITableViewCell {
     private lazy var imageBackground = UIView().then {
         $0.layer.cornerRadius = 5
         $0.layer.masksToBounds = true
-        $0.backgroundColor = AppColor.winebg
+        $0.backgroundColor = AppColor.wineBackground
     }
     
     private lazy var image = UIImageView().then {
@@ -21,7 +22,7 @@ class MyWineTableViewCell: UITableViewCell {
     
     private lazy var name = UILabel().then {
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 16)
+        $0.font = UIFont.pretendard(.semiBold, size: 16)
         $0.numberOfLines = 2
         $0.lineBreakMode = .byTruncatingTail
         $0.lineBreakStrategy = .standard
@@ -29,12 +30,12 @@ class MyWineTableViewCell: UITableViewCell {
     
     private lazy var price = UILabel().then {
         $0.textColor = AppColor.gray100
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
     }
     
     private lazy var buyDate = UILabel().then {
         $0.textColor = AppColor.purple100
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
         $0.textAlignment = .right
     }
     
@@ -64,7 +65,7 @@ class MyWineTableViewCell: UITableViewCell {
     
     private func setupView() {
         // 기본 셀 스타일 설정
-        contentView.backgroundColor = AppColor.bgGray
+        contentView.backgroundColor = AppColor.background
         selectionStyle = .none // 기본 선택 스타일 제거
     }
     
@@ -87,7 +88,7 @@ class MyWineTableViewCell: UITableViewCell {
         }
         
         buyDate.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-6).priority(.required)
+            $0.trailing.equalToSuperview().offset(-6)
             $0.top.equalTo(name.snp.top)
             $0.width.equalTo(Constants.superViewWidth * 0.15)
         }

@@ -8,6 +8,7 @@ import Then
 import CoreModule
 import Network
 import FirebaseAnalytics
+import DesignSystem
 
 class LoginVC: UIViewController, FirebaseTrackable {
     // struct 사용
@@ -27,7 +28,7 @@ class LoginVC: UIViewController, FirebaseTrackable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         validationManager.isEmailDuplicate = false
         setupUI()
         setupActions()
@@ -58,7 +59,7 @@ class LoginVC: UIViewController, FirebaseTrackable {
         navigationBarManager.setTitle(
             to: navigationItem,
             title: "로그인",
-            textColor: AppColor.black!
+            textColor: AppColor.black
         )
         navigationBarManager.addBackButton(
             to: navigationItem,

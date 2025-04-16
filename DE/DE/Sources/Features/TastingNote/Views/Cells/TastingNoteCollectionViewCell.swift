@@ -6,13 +6,14 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 
 class TastingNoteCollectionViewCell: UICollectionViewCell {
     
     private lazy var imageBackground = UIView().then {
         $0.layer.cornerRadius = 8
         $0.layer.masksToBounds = true
-        $0.backgroundColor = AppColor.winebg
+        $0.backgroundColor = AppColor.wineBackground
     }
     
     private lazy var image = UIImageView().then {
@@ -22,7 +23,7 @@ class TastingNoteCollectionViewCell: UICollectionViewCell {
     }
     
     private lazy var name = UILabel().then { l in
-        l.font = UIFont.ptdMediumFont(ofSize: 14)
+        l.font = UIFont.pretendard(.medium, size: 14)
         l.textColor = AppColor.gray100
         l.textAlignment = .center
         l.numberOfLines = 2

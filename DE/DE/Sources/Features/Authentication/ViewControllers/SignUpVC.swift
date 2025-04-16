@@ -6,6 +6,7 @@ import SnapKit
 
 import CoreModule
 import Network
+import DesignSystem
 
 class SignUpVC: UIViewController, FirebaseTrackable {
     var screenName: String = Tracking.VC.signUpVC
@@ -22,7 +23,7 @@ class SignUpVC: UIViewController, FirebaseTrackable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         setupUI()
         setupActions()
         setupNavigationBar()
@@ -47,7 +48,7 @@ class SignUpVC: UIViewController, FirebaseTrackable {
     }
     
     private func setupNavigationBar() {
-        navigationBarManager.setTitle(to: navigationItem, title: "가입하기", textColor: AppColor.black!)
+        navigationBarManager.setTitle(to: navigationItem, title: "가입하기", textColor: AppColor.black)
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,

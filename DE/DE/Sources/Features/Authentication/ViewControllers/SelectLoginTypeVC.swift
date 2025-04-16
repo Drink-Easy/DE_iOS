@@ -8,6 +8,7 @@ import KeychainSwift
 
 import Network
 import CoreModule
+import DesignSystem
 
 import AuthenticationServices
 import KakaoSDKUser
@@ -38,7 +39,7 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable, UIGestureRe
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         setupActions()
         view.addSubview(indicator)
     }

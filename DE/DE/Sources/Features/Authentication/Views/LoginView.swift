@@ -6,6 +6,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 
 final class LoginView: UIView {
     
@@ -35,7 +36,7 @@ final class LoginView: UIView {
     let idSearchButton = UIButton().then {
         $0.setTitle("아이디 / 비밀번호 찾기", for: .normal)
         $0.setTitleColor(AppColor.black, for: .normal)
-        $0.titleLabel?.font = UIFont.ptdMediumFont(ofSize: 14)
+        $0.titleLabel?.font = UIFont.pretendard(.medium, size: 14)
     }
     
     let loginButton = CustomButton(

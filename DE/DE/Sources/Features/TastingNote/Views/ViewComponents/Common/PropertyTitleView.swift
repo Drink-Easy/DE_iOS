@@ -3,6 +3,7 @@
 import UIKit
 import Then
 import CoreModule
+import DesignSystem
 import SnapKit
 
 protocol PropertyHeaderDelegate: AnyObject {
@@ -26,13 +27,13 @@ class PropertyTitleView: UIView {
     
     private lazy var engTitle = UILabel().then {
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 22)
+        $0.font = UIFont.pretendard(.semiBold, size: 22)
         $0.textAlignment = .left
     }
     
     private lazy var korTitle = UILabel().then {
         $0.textColor = AppColor.gray90
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
         $0.textAlignment = .left
     }
     
@@ -43,9 +44,9 @@ class PropertyTitleView: UIView {
             NSAttributedString(
                 string: "수정하기",
                 attributes: [
-                    .font: UIFont.ptdRegularFont(ofSize: 12), // 폰트 적용
+                    .font: UIFont.pretendard(.regular, size: 12), // 폰트 적용
                     .underlineStyle: NSUnderlineStyle.single.rawValue,    // 밑줄 스타일
-                    .foregroundColor: AppColor.gray90!                // 텍스트 색상 (필요 시)
+                    .foregroundColor: AppColor.gray90                // 텍스트 색상 (필요 시)
                 ]
             ),
             for: .normal
@@ -56,11 +57,11 @@ class PropertyTitleView: UIView {
     
     private lazy var dateLabel = UILabel().then {
         $0.textColor = AppColor.gray90
-        $0.font = UIFont.ptdRegularFont(ofSize: 12)
+        $0.font = UIFont.pretendard(.regular, size: 12)
     }
     
     /// 기본 컬러가 보라50임
-    init(type: PropertyType, barColor: UIColor = AppColor.purple50!) {
+    init(type: PropertyType, barColor: UIColor = AppColor.purple50) {
         self.propertyType = type
         super.init(frame: .zero)
         self.backgroundColor = .clear

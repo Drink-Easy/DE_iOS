@@ -2,6 +2,7 @@
 
 import UIKit
 import SnapKit
+import DesignSystem
 
 extension UIViewController {
     /// 커스텀 얼럿 뷰를 현재 뷰 컨트롤러에 추가하는 함수

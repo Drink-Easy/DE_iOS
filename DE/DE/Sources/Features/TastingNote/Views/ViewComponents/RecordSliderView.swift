@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import AMPopTip
 
 // 와인 당도 등등 슬라이더 설정
@@ -67,7 +68,7 @@ class RecordSliderView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         setupUI()
     }
     

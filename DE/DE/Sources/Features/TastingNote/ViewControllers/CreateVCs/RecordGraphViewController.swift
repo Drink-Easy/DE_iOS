@@ -5,6 +5,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 
 // 4번 선택 뷰컨 테이스팅 노트 : 팔레트 선택
 
@@ -22,7 +23,7 @@ public class RecordGraphViewController: UIViewController, UIScrollViewDelegate, 
     }
     
     let contentView = UIView().then {
-        $0.backgroundColor = AppColor.bgGray
+        $0.backgroundColor = AppColor.background
     }
     
     let header = TopView(currentPage: 4, entirePage: 5)
@@ -63,7 +64,7 @@ public class RecordGraphViewController: UIViewController, UIScrollViewDelegate, 
     }
     
     private func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         view.addSubview(scrollView)
         scrollView.delegate = self
         
@@ -121,7 +122,7 @@ public class RecordGraphViewController: UIViewController, UIScrollViewDelegate, 
         smallTitleLabel = navigationBarManager.setNReturnTitle(
             to: navigationItem,
             title: wineData.wineName,
-            textColor: AppColor.black ?? .black
+            textColor: AppColor.black
         )
         smallTitleLabel.isHidden = true
     }

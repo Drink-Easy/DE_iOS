@@ -7,6 +7,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 import Network
 
 import SafariServices
@@ -22,7 +23,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     private lazy var noticeListView = UITableView().then {
         $0.register(NoticeTableViewCell.self, forCellReuseIdentifier: NoticeTableViewCell.identifier)
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        $0.backgroundColor = AppColor.grayBG
+        $0.backgroundColor = AppColor.background
         $0.showsVerticalScrollIndicator = false
         $0.separatorStyle = .singleLine
         $0.rowHeight = 50
@@ -33,7 +34,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = AppColor.bgGray
+        self.view.backgroundColor = AppColor.background
         setupNavigationBar()
         setupUI()
         callNoticeAPI()
@@ -57,7 +58,7 @@ class NoticeViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     private func setupNavigationBar() {
-        navigationBarManager.setTitle(to: navigationItem, title: "공지사항", textColor: AppColor.black!)
+        navigationBarManager.setTitle(to: navigationItem, title: "공지사항", textColor: AppColor.black)
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,

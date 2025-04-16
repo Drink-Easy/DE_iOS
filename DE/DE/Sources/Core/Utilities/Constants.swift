@@ -32,32 +32,6 @@ public struct Constants {
         
     }
     
-    public struct AppColor {
-        static public let grayBG = UIColor(named: "background")
-        static public let DGblack = UIColor(named: "Dblack")
-        static public let winebg = UIColor(named: "winebg")
-        static public let tooltipbg = UIColor(named: "tooltipbg")
-        static public let tnbg = UIColor(named: "tnbg")
-        
-        static public let purple100 = UIColor(named: "purple100")
-        static public let purple70 = UIColor(named: "purple70")
-        static public let purple50 = UIColor(named: "purple50")
-        static public let purple30 = UIColor(named: "purple30")
-        static public let purple10 = UIColor(named: "purple10")
-        
-        static public let gray100 = UIColor(named: "gray100")
-        static public let gray90 = UIColor(named: "gray90")
-        static public let gray70 = UIColor(named: "gray70")
-        static public let gray50 = UIColor(named: "gray50")
-        static public let gray30 = UIColor(named: "gray30")
-        static public let gray10 = UIColor(named: "gray10")
-        
-        static public let black = UIColor(named: "Dblack")
-        static public let white = UIColor(named: "Dwhite")
-        static public let bgGray = UIColor(named: "background")
-        static public let red = UIColor(named: "red")
-    }
-    
     public struct Policy {
         //MARK: - Copyright
         public static let copyright = """
@@ -711,28 +685,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     public static let superViewHeight = UIScreen.main.bounds.height
     public static let superViewWidth = UIScreen.main.bounds.width
     
-}
-
-public struct DynamicPadding {
-    private static var superViewHeight: CGFloat {
-        UIScreen.main.bounds.height
-    }
-    
-    private static var superViewWidth: CGFloat {
-        UIScreen.main.bounds.width
-    }
-    
-    public static var widthScaleFactor : CGFloat {
-        get {
-            return DynamicPadding.superViewWidth / 390
-        }
-    }
-    
-    public static func dynamicValue(_ baseValue: CGFloat) -> CGFloat {
-        return baseValue * (superViewHeight / 844)
-    }
-    
-    public static func dynamicValuebyWidth(_ baseValue: CGFloat) -> CGFloat {
-        return baseValue * (superViewWidth / 390)
-    }
 }

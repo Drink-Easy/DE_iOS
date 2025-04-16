@@ -8,6 +8,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 import CoreLocation
 import Network
 
@@ -34,7 +35,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     private let headerLabel = UILabel().then {
         $0.text = "프로필을 만들어 보세요!"
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.font = UIFont.pretendard(.semiBold, size: 24)
         $0.textAlignment = .left
         $0.numberOfLines = 0
         $0.textColor = AppColor.black
@@ -60,7 +61,7 @@ public class GetProfileVC: UIViewController, UIImagePickerControllerDelegate, UI
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         
         setupUI()
         setupConstraints()

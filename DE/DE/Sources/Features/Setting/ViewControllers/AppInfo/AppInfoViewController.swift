@@ -8,6 +8,7 @@ import Then
 import SDWebImage
 
 import CoreModule
+import DesignSystem
 import Network
 
 class AppInfoViewController : UIViewController, FirebaseTrackable {
@@ -32,14 +33,14 @@ class AppInfoViewController : UIViewController, FirebaseTrackable {
     
     lazy var appVersionLabel = UILabel().then {
         $0.text = "버전 정보"
-        $0.font = UIFont.ptdRegularFont(ofSize: 12)
+        $0.font = UIFont.pretendard(.regular, size: 12)
         $0.textColor = AppColor.gray70
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         appVersionLabel.text = "Version \(appVersion)"
         setupTableView()
         setupUI()
@@ -71,7 +72,7 @@ class AppInfoViewController : UIViewController, FirebaseTrackable {
         tableView.dataSource = self
         tableView.isScrollEnabled = false
         tableView.rowHeight = rowHeight
-        tableView.backgroundColor = AppColor.bgGray
+        tableView.backgroundColor = AppColor.background
         tableView.register(SettingMenuViewCell.self, forCellReuseIdentifier: SettingMenuViewCell.identifier)
 
         view.addSubview(tableView)
@@ -103,7 +104,7 @@ class AppInfoViewController : UIViewController, FirebaseTrackable {
     }
     
     private func setupNavigationBar() {
-        navigationBarManager.setTitle(to: navigationItem, title: "앱 정보", textColor: AppColor.black!)
+        navigationBarManager.setTitle(to: navigationItem, title: "앱 정보", textColor: AppColor.black)
         navigationBarManager.addBackButton(to: navigationItem, target: self, action: #selector(backButtonTapped))
     }
     

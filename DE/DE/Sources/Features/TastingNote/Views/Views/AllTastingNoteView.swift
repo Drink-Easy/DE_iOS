@@ -6,18 +6,19 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 
 class AllTastingNoteView: UIView {
     
     // MARK: - UI Components
     let titleLabel = UILabel().then {
         $0.text = "노트 보관함"
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 22)
+        $0.font = UIFont.pretendard(.semiBold, size: 22)
         $0.textColor = AppColor.black
     }
     //TODO: 내 노트 검색
     let searchButton = UIButton().then {
-        $0.setImage(UIImage(named: "searchBarIcon")?.withTintColor(AppColor.gray70 ?? .black, renderingMode: .alwaysOriginal), for: .normal)
+        $0.setImage(UIImage(named: "searchBarIcon")?.withTintColor(AppColor.gray70, renderingMode: .alwaysOriginal), for: .normal)
         $0.contentMode = .scaleAspectFill
         $0.clipsToBounds = true
     }
@@ -27,14 +28,14 @@ class AllTastingNoteView: UIView {
     let wineImageStackView = WineImageStackContainerView()
     let tnLabel = UILabel().then {
         $0.text = "내 테이스팅 노트"
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 20)
+        $0.font = UIFont.pretendard(.semiBold, size: 20)
         $0.textColor = AppColor.black
     }
     lazy var noTastingNoteLabel = UILabel().then {
         $0.numberOfLines = 0
         $0.text = "작성된 테이스팅 노트가 없어요.\n나의 경험을 기록해 보세요!"
         $0.setLineSpacingPercentage(0.3)
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
         $0.textColor = AppColor.gray70
         $0.textAlignment = .center
         $0.isHidden = true

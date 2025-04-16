@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import SnapKit
 import Then
 
@@ -13,13 +14,13 @@ class SurveyResultTextView: UIView {
         let label = UILabel()
 
         let nicknameAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.ptdSemiBoldFont(ofSize: 34),
-            .foregroundColor: AppColor.purple70!
+            .font: UIFont.pretendard(.semiBold, size: 34),
+            .foregroundColor: AppColor.purple70
         ]
 
         let textAttributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.ptdMediumFont(ofSize: 26),
-            .foregroundColor: AppColor.black!
+            .font: UIFont.pretendard(.medium, size: 26),
+            .foregroundColor: AppColor.black
         ]
 
         let fullText = "\(result) \(text)"

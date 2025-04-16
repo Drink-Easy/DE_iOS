@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Network
 import SnapKit
 import Then
@@ -25,7 +26,7 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.isNavigationBarHidden = false
-        view.backgroundColor = AppColor.grayBG
+        view.backgroundColor = AppColor.background
         self.view = searchHomeView
         searchHomeView.noSearchResultLabel.isHidden = true
         searchHomeView.searchResultTableView.dataSource = self
@@ -51,7 +52,7 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
     }
     
     private func setupNavigationBar() {
-        navigationBarManager.setTitle(to: navigationItem, title: "", textColor: AppColor.black!)
+        navigationBarManager.setTitle(to: navigationItem, title: "", textColor: AppColor.black)
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
@@ -95,8 +96,8 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
             textField.attributedPlaceholder = NSAttributedString(
                 string: placeholderText,
                 attributes: [
-                    .foregroundColor: AppColor.gray70 ?? .gray,
-                    .font: UIFont.ptdRegularFont(ofSize: 14)
+                    .foregroundColor: AppColor.gray70,
+                    .font: UIFont.pretendard(.regular, size: 14)
                 ]
             )
         }

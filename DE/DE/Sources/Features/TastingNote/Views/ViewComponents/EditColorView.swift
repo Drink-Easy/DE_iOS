@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 
 import SnapKit
 import Then
@@ -9,7 +10,7 @@ import Then
 class EditColorView: UIView {
     public lazy var header = UILabel().then {
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.font = UIFont.pretendard(.semiBold, size: 24)
         $0.numberOfLines = 0
     }
     public lazy var infoView = WineDetailView()

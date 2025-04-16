@@ -1,6 +1,7 @@
 import UIKit
 import SnapKit
 import CoreModule
+import DesignSystem
 
 class TermsAgreeView: UIView {
     
@@ -29,7 +30,7 @@ class TermsAgreeView: UIView {
     
     // MARK: - UI Setup
     private func setupUI() {
-        titleLabel.font = UIFont.ptdSemiBoldFont(ofSize: 16)
+        titleLabel.font = UIFont.pretendard(.semiBold, size: 16)
         titleLabel.numberOfLines = 1
         titleLabel.textColor = AppColor.black
         titleLabel.isUserInteractionEnabled = true
@@ -39,7 +40,7 @@ class TermsAgreeView: UIView {
         
         moreButton.setTitle("보기", for: .normal)
         moreButton.setTitleColor(AppColor.gray50, for: .normal)
-        moreButton.titleLabel?.font = UIFont.ptdSemiBoldFont(ofSize: 12)
+        moreButton.titleLabel?.font = UIFont.pretendard(.semiBold, size: 12)
         moreButton.addTarget(self, action: #selector(showDetailVC), for: .touchUpInside)
         
         toggleButton.tintColor = AppColor.gray30

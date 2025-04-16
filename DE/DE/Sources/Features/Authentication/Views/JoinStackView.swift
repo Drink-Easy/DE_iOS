@@ -4,6 +4,7 @@ import UIKit
 import Then
 import SnapKit
 import CoreModule
+import DesignSystem
 
 public class JoinStackView: UIView {
     private let label = UILabel().then {

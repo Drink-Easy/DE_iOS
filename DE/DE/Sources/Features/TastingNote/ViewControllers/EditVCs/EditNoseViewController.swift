@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Network
 
 class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTrackable {
@@ -49,7 +50,7 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         setupUI()
         setupCollectionView()
         setupActions()
@@ -144,7 +145,7 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
         smallTitleLabel = navigationBarManager.setNReturnTitle(
             to: navigationItem,
             title: wineData.wineName,
-            textColor: AppColor.black ?? .black
+            textColor: AppColor.black
         )
         smallTitleLabel.isHidden = true
     }
@@ -233,7 +234,7 @@ extension EditNoseViewController : UICollectionViewDelegate, UICollectionViewDat
             if item.isSelected { // 선택 항목 -> 컬러 넣어주기
                 cell.menuView.backgroundColor = AppColor.purple10
                 cell.menuLabel.textColor = AppColor.purple100
-                cell.menuView.layer.borderColor = AppColor.purple70?.cgColor
+                cell.menuView.layer.borderColor = AppColor.purple70.cgColor
             } else { // 선택되지 않은 항목
                 cell.menuView.backgroundColor = AppColor.gray10
                 cell.menuLabel.textColor = AppColor.gray100
@@ -245,7 +246,7 @@ extension EditNoseViewController : UICollectionViewDelegate, UICollectionViewDat
             
             cell.menuView.backgroundColor = AppColor.purple10
             cell.menuLabel.textColor = AppColor.purple100
-            cell.menuView.layer.borderColor = AppColor.purple70?.cgColor
+            cell.menuView.layer.borderColor = AppColor.purple70.cgColor
         }
         
         return cell

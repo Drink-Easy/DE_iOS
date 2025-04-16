@@ -5,6 +5,7 @@ import UIKit
 import SnapKit
 import Then
 import CoreModule
+import DesignSystem
 
 class RecordGraphView: UIView {
     
@@ -24,7 +25,7 @@ class RecordGraphView: UIView {
     }
     
     private func setupUI() {
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         
         [chartHeaderView, chartView, recordSliderView].forEach {
             addSubview($0)

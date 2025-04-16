@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Network
 
 // 와인 시음 날짜 선택 1번
@@ -32,7 +33,7 @@ public class TastedDateViewController: UIViewController, FirebaseTrackable {
     }
     
     func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         
         view.addSubview(tastedDateView)
         tastedDateView.snp.makeConstraints { make in

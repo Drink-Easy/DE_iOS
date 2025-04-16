@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Network
 
 // 5번 선택 뷰컨 테이스팅 노트 : 레이팅, 리뷰
@@ -43,7 +44,7 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         setConstraints()
         setupActions()
         
@@ -60,7 +61,7 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
     private func addExtendedBackgroundView() {
         // 네비게이션 바와 Safe Area를 포함한 배경 뷰 추가
         let backgroundView = UIView()
-        backgroundView.backgroundColor = AppColor.bgGray
+        backgroundView.backgroundColor = AppColor.background
         view.addSubview(backgroundView)
         
         backgroundView.snp.makeConstraints { make in
@@ -97,7 +98,7 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
             action: #selector(prevVC)
         )
         
-        self.navigationController?.navigationBar.backgroundColor = AppColor.bgGray
+        self.navigationController?.navigationBar.backgroundColor = AppColor.background
     }
     
     private func updateRatingLabel(with rating: Double) {
@@ -168,14 +169,14 @@ extension RatingWineViewController : UITextViewDelegate {
     public func textViewDidBeginEditing(_ textView: UITextView) {
         if textView.text == textViewPlaceHolder {
             textView.text = nil
-            textView.textColor = AppColor.gray90!
+            textView.textColor = AppColor.gray90
         }
     }
     
     public func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             textView.text = textViewPlaceHolder
-            textView.textColor = AppColor.gray90!
+            textView.textColor = AppColor.gray90
         }
     }
     

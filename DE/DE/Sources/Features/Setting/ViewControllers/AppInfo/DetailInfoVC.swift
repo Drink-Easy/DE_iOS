@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 
 class DetailInfoVC: UIViewController {
     
@@ -9,7 +10,7 @@ class DetailInfoVC: UIViewController {
     private let navigationBarManager = NavigationBarManager()
     
     private let textView = UITextView().then {
-        $0.font = UIFont.ptdRegularFont(ofSize: 16)
+        $0.font = UIFont.pretendard(.regular, size: 16)
         $0.textColor = AppColor.gray100
         $0.backgroundColor = .clear
         $0.isEditable = false // 읽기 전용
@@ -34,7 +35,7 @@ class DetailInfoVC: UIViewController {
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         setupNavigationBar(itemTitleString: itemTitle ?? "앱 정보")
         setNavBarAppearance(navigationController: self.navigationController)
         setupUI()
@@ -53,7 +54,7 @@ class DetailInfoVC: UIViewController {
     
     // MARK: - Setup Navigation Bar
     private func setupNavigationBar(itemTitleString: String) {
-        navigationBarManager.setTitle(to: navigationItem, title: itemTitleString, textColor: AppColor.black!)
+        navigationBarManager.setTitle(to: navigationItem, title: itemTitleString, textColor: AppColor.black)
         navigationBarManager.addBackButton(to: navigationItem, target: self, action: #selector(backButtonTapped))
     }
     

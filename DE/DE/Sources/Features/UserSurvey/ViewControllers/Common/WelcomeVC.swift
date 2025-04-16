@@ -6,6 +6,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 
 public class WelcomeVC: UIViewController, FirebaseTrackable {
     public var screenName: String = Tracking.VC.WelcomeVC
@@ -18,7 +19,7 @@ public class WelcomeVC: UIViewController, FirebaseTrackable {
     
     private let titleLabel = UILabel().then {
         $0.text = "드링키지에 온 걸 환영해요."
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 28)
+        $0.font = UIFont.pretendard(.semiBold, size: 28)
         $0.textColor = AppColor.black
         $0.textAlignment = .center
         $0.numberOfLines = 0
@@ -32,8 +33,8 @@ public class WelcomeVC: UIViewController, FirebaseTrackable {
         paragraphStyle.alignment = .center  // ✅ 가운데 정렬
 
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.ptdMediumFont(ofSize: 18),
-            .foregroundColor: AppColor.gray70!,
+            .font: UIFont.pretendard(.medium, size: 18),
+            .foregroundColor: AppColor.gray70,
             .paragraphStyle: paragraphStyle
         ]
         
@@ -65,7 +66,7 @@ public class WelcomeVC: UIViewController, FirebaseTrackable {
     // MARK: - UI Setup
     
     private func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         view.addSubview(logoImageView)
         view.addSubview(titleLabel)
         view.addSubview(subtitleLabel)

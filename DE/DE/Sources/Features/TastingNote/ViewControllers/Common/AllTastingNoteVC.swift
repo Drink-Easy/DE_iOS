@@ -3,6 +3,7 @@
 import UIKit
 
 import CoreModule
+import DesignSystem
 import Network
 
 //테이스팅노트 메인 노트 보관함 뷰
@@ -62,7 +63,7 @@ public class AllTastingNoteVC: UIViewController, WineSortDelegate, UIGestureReco
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         setupCollectionView()
         tastingNoteView.searchButton.addTarget(self, action: #selector(noteSearchTapped), for: .touchUpInside)
         floatingButton.addTarget(self, action: #selector(newNoteTapped), for: .touchUpInside)

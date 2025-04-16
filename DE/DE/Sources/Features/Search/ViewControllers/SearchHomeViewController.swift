@@ -1,9 +1,11 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
-import CoreModule
 import SnapKit
 import Then
+
+import CoreModule
+import DesignSystem
 import Network
 
 public class SearchHomeViewController : UIViewController, UITextFieldDelegate, FirebaseTrackable {
@@ -29,7 +31,7 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate, F
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.grayBG
+        view.backgroundColor = AppColor.background
         self.view = searchHomeView
         searchHomeView.noSearchResultLabel.isHidden = true
         setupNavigationBar()
@@ -88,8 +90,8 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate, F
             textField.attributedPlaceholder = NSAttributedString(
                 string: placeholderText,
                 attributes: [
-                    .foregroundColor: AppColor.gray70 ?? .gray,
-                    .font: UIFont.ptdRegularFont(ofSize: 14)
+                    .foregroundColor: AppColor.gray70,
+                    .font: UIFont.pretendard(.regular, size: 14)
                 ]
             )
         }

@@ -5,6 +5,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 // 기기대응 완료
 
 class ChangeMyOwnedWineView: UIView {
@@ -20,7 +21,7 @@ class ChangeMyOwnedWineView: UIView {
     public lazy var dateTitle = UILabel().then {
         $0.text = "구매 일자"
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 18)
+        $0.font = UIFont.pretendard(.semiBold, size: 18)
         $0.numberOfLines = 1
     }
     
@@ -63,7 +64,7 @@ class ChangeMyOwnedWineView: UIView {
     }
     
     func setupUI() {
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         calendarContainer.addSubview(calender)
         [priceTextField, dateTitle, calendarContainer, nextButton].forEach{ addSubview($0) }
         

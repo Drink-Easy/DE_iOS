@@ -3,6 +3,7 @@
 import UIKit
 import Then
 import CoreModule
+import DesignSystem
 import SnapKit
 
 /// 페이지네이션 + 빅타이틀
@@ -12,18 +13,18 @@ class TopView: UIView {
     var entirePage: Int?
     
     private lazy var page = UILabel().then {
-        $0.font = UIFont.ptdMediumFont(ofSize: 16)
+        $0.font = UIFont.pretendard(.medium, size: 16)
     }
     
     private lazy var title = UILabel().then {
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.font = UIFont.pretendard(.semiBold, size: 24)
         $0.numberOfLines = 0
     }
 
     init(currentPage: Int, entirePage: Int) {
         super.init(frame: .zero)
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         self.currentPage = currentPage
         self.entirePage = entirePage
         
@@ -42,8 +43,8 @@ class TopView: UIView {
         paragraphStyle.lineSpacing = lineSpacing
 
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: title.font ?? UIFont.ptdSemiBoldFont(ofSize: 24), // ✅ 기존 폰트 유지
-            .foregroundColor: title.textColor ?? AppColor.black!,    // ✅ 기존 색상 유지
+            .font: title.font ?? UIFont.pretendard(.semiBold, size: 24),
+            .foregroundColor: title.textColor ?? AppColor.black,
             .paragraphStyle: paragraphStyle
         ]
         
@@ -61,8 +62,8 @@ class TopView: UIView {
         let attributedText = NSMutableAttributedString(string: fullText)
         
         let slashIndex = (currentPage as NSString).length
-        attributedText.addAttribute(.foregroundColor, value: AppColor.purple70!, range: NSRange(location: 0, length: slashIndex))
-        attributedText.addAttribute(.foregroundColor, value: AppColor.gray70!, range: NSRange(location: slashIndex, length: fullText.count - slashIndex))
+        attributedText.addAttribute(.foregroundColor, value: AppColor.purple70, range: NSRange(location: 0, length: slashIndex))
+        attributedText.addAttribute(.foregroundColor, value: AppColor.gray70, range: NSRange(location: slashIndex, length: fullText.count - slashIndex))
         
         label.attributedText = attributedText
     }

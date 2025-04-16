@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Network
 
 // 2번 선택 뷰컨 테이스팅 노트 : 색상 선택
@@ -44,7 +45,7 @@ public class ChooseWineColorViewController: UIViewController, FirebaseTrackable 
     }
     
     func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         colorView.propertyHeader.setName(eng: "Color", kor: "색상")
         colorView.colorCollectionView.register(WineColorCollectionViewCell.self, forCellWithReuseIdentifier: "WineColorCollectionViewCell")
     }

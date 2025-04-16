@@ -3,6 +3,7 @@
 import UIKit
 import Then
 import CoreModule
+import DesignSystem
 import SnapKit
 
 /// 날짜 있는 쪽에만 쓰는 페이지네이션 + 빅타이틀
@@ -12,7 +13,7 @@ class DateTopView: UIView {
     var entirePage: Int?
     
     private lazy var page = UILabel().then {
-        $0.font = UIFont.ptdMediumFont(ofSize: 16)
+        $0.font = UIFont.pretendard(.medium, size: 16)
     }
     
     public lazy var titleLabel = UILabel().then {
@@ -44,11 +45,11 @@ class DateTopView: UIView {
     ///   - lineSpacing: 행간 (기본값: `2`)
     public func setTitleLabel(
         title: String,
-        titleColor: UIColor = AppColor.purple100!,
-        titleFont: UIFont = UIFont.ptdSemiBoldFont(ofSize: 24),
+        titleColor: UIColor = AppColor.purple100,
+        titleFont: UIFont = UIFont.pretendard(.semiBold, size: 24),
         description: String,
-        descriptionColor: UIColor = AppColor.black!,
-        descriptionFont: UIFont = UIFont.ptdSemiBoldFont(ofSize: 24),
+        descriptionColor: UIColor = AppColor.black,
+        descriptionFont: UIFont = UIFont.pretendard(.semiBold, size: 24),
         lineSpacing: CGFloat = 2
     ) {
         let fullText = "\(title)\n\(description)"
@@ -77,7 +78,7 @@ class DateTopView: UIView {
 
     init(currentPage: Int, entirePage: Int) {
         super.init(frame: .zero)
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         self.currentPage = currentPage
         self.entirePage = entirePage
         
@@ -100,8 +101,8 @@ class DateTopView: UIView {
         let attributedText = NSMutableAttributedString(string: fullText)
         
         let slashIndex = (currentPage as NSString).length
-        attributedText.addAttribute(.foregroundColor, value: AppColor.purple70!, range: NSRange(location: 0, length: slashIndex))
-        attributedText.addAttribute(.foregroundColor, value: AppColor.gray70!, range: NSRange(location: slashIndex, length: fullText.count - slashIndex))
+        attributedText.addAttribute(.foregroundColor, value: AppColor.purple70, range: NSRange(location: 0, length: slashIndex))
+        attributedText.addAttribute(.foregroundColor, value: AppColor.gray70, range: NSRange(location: slashIndex, length: fullText.count - slashIndex))
         
         label.attributedText = attributedText
     }

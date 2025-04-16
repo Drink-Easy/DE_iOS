@@ -4,13 +4,14 @@ import UIKit
 import SnapKit
 import Cosmos
 import CoreModule
+import DesignSystem
 import Then
 
 class OnlyReviewView: UIView {
     // 탑 - 와인 정보
     public lazy var header = UILabel().then {
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.font = UIFont.pretendard(.semiBold, size: 24)
         $0.numberOfLines = 0
     }
     public lazy var infoView = WineDetailView()
@@ -22,8 +23,8 @@ class OnlyReviewView: UIView {
         let r = UITextView()
         r.layer.cornerRadius = 10
         r.text = textViewPlaceHolder
-        r.textColor = AppColor.gray90!
-        r.font = .ptdMediumFont(ofSize: 14)
+        r.textColor = AppColor.gray90
+        r.font = UIFont.pretendard(.medium, size: 14)
         r.backgroundColor = AppColor.gray10
         r.isScrollEnabled = true
         r.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)

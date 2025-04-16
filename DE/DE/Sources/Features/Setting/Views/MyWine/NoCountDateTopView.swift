@@ -3,6 +3,7 @@
 import UIKit
 import Then
 import CoreModule
+import DesignSystem
 import SnapKit
 
 // 기기대응 완료
@@ -27,7 +28,7 @@ class NoCountDateTopView: UIView {
 
     init() {
         super.init(frame: .zero)
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         
         self.addComponents()
         self.constraints()
@@ -35,11 +36,11 @@ class NoCountDateTopView: UIView {
     
     public func setTitleLabel(
         title: String,
-        titleColor: UIColor = AppColor.purple100!,
-        titleFont: UIFont = UIFont.ptdSemiBoldFont(ofSize: 24),
+        titleColor: UIColor = AppColor.purple100,
+        titleFont: UIFont = UIFont.pretendard(.semiBold, size: 24),
         description: String,
-        descriptionColor: UIColor = AppColor.black!,
-        descriptionFont: UIFont = UIFont.ptdSemiBoldFont(ofSize: 24),
+        descriptionColor: UIColor = AppColor.black,
+        descriptionFont: UIFont = UIFont.pretendard(.semiBold, size: 24),
         lineSpacing: CGFloat = 2
     ) {
         let fullText = "\(title)\n\(description)"

@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 
 // 향 선택 뷰컨
 
@@ -52,7 +53,7 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackab
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         setupUI()
         setupCollectionView()
         setupActions()
@@ -131,7 +132,7 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackab
         smallTitleLabel = navigationBarManager.setNReturnTitle(
             to: navigationItem,
             title: wineData.wineName,
-            textColor: AppColor.black ?? .black
+            textColor: AppColor.black
         )
         smallTitleLabel.isHidden = true
     }
@@ -201,7 +202,7 @@ extension NoseTestVC : UICollectionViewDelegate, UICollectionViewDataSource {
             if item.isSelected { // 선택 항목 -> 컬러 넣어주기
                 cell.menuView.backgroundColor = AppColor.purple10
                 cell.menuLabel.textColor = AppColor.purple100
-                cell.menuView.layer.borderColor = AppColor.purple70?.cgColor
+                cell.menuView.layer.borderColor = AppColor.purple70.cgColor
             } else { // 선택되지 않은 항목
                 cell.menuView.backgroundColor = AppColor.gray10
                 cell.menuLabel.textColor = AppColor.gray100
@@ -213,7 +214,7 @@ extension NoseTestVC : UICollectionViewDelegate, UICollectionViewDataSource {
             
             cell.menuView.backgroundColor = AppColor.purple10
             cell.menuLabel.textColor = AppColor.purple100
-            cell.menuView.layer.borderColor = AppColor.purple70?.cgColor
+            cell.menuView.layer.borderColor = AppColor.purple70.cgColor
         }
         
         return cell

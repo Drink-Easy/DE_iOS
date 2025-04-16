@@ -4,6 +4,7 @@ import UIKit
 import SnapKit
 import Cosmos
 import CoreModule
+import DesignSystem
 import Then
 
 class RatingWineView: UIView {
@@ -23,14 +24,14 @@ class RatingWineView: UIView {
         
         let ratingRange = (fullText as NSString).range(of: "\(ratingValue)")
         attributedString.addAttributes([
-            .font: UIFont.ptdSemiBoldFont(ofSize: 18),
-            .foregroundColor: AppColor.purple100!
+            .font: UIFont.pretendard(.semiBold, size: 18),
+            .foregroundColor: AppColor.purple100
         ], range: ratingRange)
         
         let defaultRange = (fullText as NSString).range(of: "/ 5.0")
         attributedString.addAttributes([
-            .font: UIFont.ptdRegularFont(ofSize: 12),
-            .foregroundColor: AppColor.gray90!
+            .font: UIFont.pretendard(.regular, size: 12),
+            .foregroundColor: AppColor.gray90
         ], range: defaultRange)
         
         r.attributedText = attributedString
@@ -45,8 +46,8 @@ class RatingWineView: UIView {
         r.settings.filledBorderColor = .clear
         r.settings.starSize = 20
         r.settings.starMargin = 5
-        r.settings.filledColor = AppColor.purple100!
-        r.settings.emptyColor = AppColor.gray30!
+        r.settings.filledColor = AppColor.purple100
+        r.settings.emptyColor = AppColor.gray30
         return r
     }()
     
@@ -57,8 +58,8 @@ class RatingWineView: UIView {
         let r = UITextView()
         r.layer.cornerRadius = 10
         r.text = textViewPlaceHolder
-        r.textColor = AppColor.gray90!
-        r.font = .ptdMediumFont(ofSize: 14)
+        r.textColor = AppColor.gray90
+        r.font = UIFont.pretendard(.medium, size: 14)
         r.backgroundColor = AppColor.gray10
         r.isScrollEnabled = true
         r.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
@@ -95,15 +96,15 @@ class RatingWineView: UIView {
         // rate 스타일 설정
         let ratingRange = (fullText as NSString).range(of: "\(rate)")
         attributedString.addAttributes([
-            .font: UIFont.ptdSemiBoldFont(ofSize: 18),
-            .foregroundColor: AppColor.purple100!
+            .font: UIFont.pretendard(.semiBold, size: 18),
+            .foregroundColor: AppColor.purple100
         ], range: ratingRange)
         
         // 나머지 텍스트 스타일 설정
         let defaultRange = (fullText as NSString).range(of: "/ 5.0")
         attributedString.addAttributes([
-            .font: UIFont.ptdRegularFont(ofSize: 12),
-            .foregroundColor: AppColor.gray90!
+            .font: UIFont.pretendard(.regular, size: 12),
+            .foregroundColor: AppColor.gray90
         ], range: defaultRange)
         
         ratingLabel.attributedText = attributedString

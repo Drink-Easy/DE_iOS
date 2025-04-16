@@ -4,24 +4,25 @@ import UIKit
 import CoreModule
 import SnapKit
 import Then
+import DesignSystem
 
 class MoreRecomWineView: UIView {
     
     public lazy var title = UILabel().then {
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.font = UIFont.pretendard(.semiBold, size: 24)
     }
     
     public lazy var moreWineTableView = UITableView().then {
         $0.register(MoreWineTableViewCell.self, forCellReuseIdentifier: "MoreWineTableViewCell")
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        $0.backgroundColor = AppColor.grayBG
+        $0.backgroundColor = AppColor.background
         $0.showsVerticalScrollIndicator = false
     }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         self.addComponents()
         self.constraints()
     }

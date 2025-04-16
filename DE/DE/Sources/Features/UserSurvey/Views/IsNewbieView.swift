@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import SnapKit
 import Then
 
@@ -9,7 +10,7 @@ class IsNewbieView: UIView {
     
     private lazy var title = UILabel().then {
         $0.text = "드링키지에게 알려주세요!"
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.font = UIFont.pretendard(.semiBold, size: 24)
         $0.textColor = AppColor.black
     }
     
@@ -33,7 +34,7 @@ class IsNewbieView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         self.addComponents()
         self.constraints()
     }

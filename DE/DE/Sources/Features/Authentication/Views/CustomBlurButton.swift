@@ -4,6 +4,7 @@ import UIKit
 
 import SnapKit
 import Then
+import DesignSystem
 
 public class CustomBlurButton: UIButton {
     private let blurEffectView = UIVisualEffectView().then {

@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Network
 // 기기대응 완료
 // 보유와인 날짜 선택
@@ -48,7 +49,7 @@ public class BuyNewWineDateViewController: UIViewController, FirebaseTrackable {
     }
     
     func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         
         view.addSubview(tastedDateView)
         tastedDateView.snp.makeConstraints { make in

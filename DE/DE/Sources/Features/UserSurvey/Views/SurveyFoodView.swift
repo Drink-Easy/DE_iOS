@@ -4,6 +4,7 @@ import UIKit
 import SnapKit
 import Then
 import CoreModule
+import DesignSystem
 
 class SurveyFoodView: UIView {
 
@@ -32,7 +33,7 @@ class SurveyFoodView: UIView {
         }
         
         super.init(frame: .zero)
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         self.addComponents()
         self.constraints()
     }

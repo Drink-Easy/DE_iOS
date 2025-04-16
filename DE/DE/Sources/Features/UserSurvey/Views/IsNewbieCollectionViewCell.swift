@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Then
 import SnapKit
 
@@ -11,12 +12,12 @@ class IsNewbieCollectionViewCell: UICollectionViewCell {
     
     public lazy var contents = UILabel().then {
         $0.textColor = AppColor.gray90
-        $0.font = UIFont.ptdMediumFont(ofSize: 20)
+        $0.font = UIFont.pretendard(.medium, size: 20)
         $0.numberOfLines = 0
     }
     
     private lazy var emoji = UILabel().then {
-        $0.font = UIFont.ptdBoldFont(ofSize: 38)
+        $0.font = UIFont.pretendard(.bold, size: 38)
     }
     
     override init(frame: CGRect) {
@@ -54,8 +55,8 @@ class IsNewbieCollectionViewCell: UICollectionViewCell {
         paragraphStyle.alignment = .left
 
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.ptdMediumFont(ofSize: 20),
-            .foregroundColor: AppColor.gray90!,
+            .font: UIFont.pretendard(.medium, size: 20),
+            .foregroundColor: AppColor.gray90,
             .paragraphStyle: paragraphStyle
         ]
         
@@ -66,36 +67,11 @@ class IsNewbieCollectionViewCell: UICollectionViewCell {
         emoji.text = model.emoji
     }
     
-//    public func configure(model: IsNewbieModel) {
-//        contents.text = model.contents
-//        emoji.text = model.emoji
-//        
-//        contents = UILabel().then({
-//            let text = model.contents
-//            
-//            let paragraphStyle = NSMutableParagraphStyle()
-//            paragraphStyle.lineSpacing = 4
-//            paragraphStyle.alignment = .left
-//
-//            let attributes: [NSAttributedString.Key: Any] = [
-//                .font: UIFont.ptdMediumFont(ofSize: 20),
-//                .foregroundColor: AppColor.gray90!,
-//                .paragraphStyle: paragraphStyle
-//            ]
-//            
-//            let attributedText = NSAttributedString(string: text, attributes: attributes)
-//            
-//            $0.attributedText = attributedText
-//            $0.numberOfLines = 0
-//        })
-//        
-//    }
-    
     public func updateSelectionState(isSelected: Bool) {
         contentView.backgroundColor = isSelected ? AppColor.purple10 : AppColor.gray10
         contentView.layer.borderWidth = isSelected ? 1 : 0
-        contentView.layer.borderColor = isSelected ? AppColor.purple70?.cgColor : AppColor.gray10?.cgColor
-        self.contents.font = isSelected ? UIFont.ptdSemiBoldFont(ofSize: 20) : UIFont.ptdMediumFont(ofSize: 20)
+        contentView.layer.borderColor = isSelected ? AppColor.purple70.cgColor : AppColor.gray10.cgColor
+        self.contents.font = isSelected ? UIFont.pretendard(.semiBold, size: 20) : UIFont.pretendard(.medium, size: 20)
         self.contents.textColor = isSelected ? AppColor.purple100 : AppColor.gray90
     }
     
@@ -103,18 +79,10 @@ class IsNewbieCollectionViewCell: UICollectionViewCell {
         super.prepareForReuse()
         self.backgroundColor = AppColor.gray10
         self.layer.borderWidth = 0
-        self.layer.borderColor = AppColor.gray10?.cgColor
-        self.contents.font = UIFont.ptdMediumFont(ofSize: 20)
+        self.layer.borderColor = AppColor.gray10.cgColor
+        self.contents.font = UIFont.pretendard(.medium, size: 20)
         self.contents.textColor = AppColor.gray90
-        self.contents.attributedText = nil // ✅ 기존 AttributedText 초기화
+        self.contents.attributedText = nil
     }
-    
-//    override func prepareForReuse() {
-//        super.prepareForReuse()
-//        self.backgroundColor = AppColor.gray10
-//        self.layer.borderWidth = 0
-//        self.layer.borderColor = AppColor.gray10?.cgColor
-//        self.contents.font = UIFont.ptdMediumFont(ofSize: 20)
-//        self.contents.textColor = AppColor.gray90
-//    }
+
 }

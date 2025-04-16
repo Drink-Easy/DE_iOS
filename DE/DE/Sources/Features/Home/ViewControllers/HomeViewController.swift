@@ -2,6 +2,8 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
+
 import Then
 import Network
 import SafariServices
@@ -68,7 +70,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     
     private lazy var likeWineListView = RecomView().then {
         $0.title.text = "For \(userName),"
-        $0.title.setPartialTextStyle(text: $0.title.text ?? "", targetText: "\(userName),", color: AppColor.purple100 ?? .purple, font: UIFont.ptdSemiBoldFont(ofSize: 26))
+        $0.title.setPartialTextStyle(text: $0.title.text ?? "", targetText: "\(userName),", color: AppColor.purple100, font: UIFont.pretendard(.semiBold, size: 26))
         $0.recomCollectionView.delegate = self
         $0.recomCollectionView.dataSource = self
         $0.recomCollectionView.tag = 1
@@ -114,7 +116,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         addComponents()
         constraints()
         startAutoScrolling()
@@ -296,8 +298,8 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
         likeWineListView.title.setPartialTextStyle(
             text: likeWineListView.title.text ?? "",
             targetText: "\(userName),",
-            color: AppColor.purple100 ?? .purple,
-            font: UIFont.ptdSemiBoldFont(ofSize: 26)
+            color: AppColor.purple100,
+            font: UIFont.pretendard(.semiBold, size: 26)
         )
     }
     

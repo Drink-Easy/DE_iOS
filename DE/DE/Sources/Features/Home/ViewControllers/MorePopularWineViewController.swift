@@ -2,8 +2,11 @@
 
 import UIKit
 import SnapKit
+
 import CoreModule
+import DesignSystem
 import Network
+
 import Then
 
 class MorePopularWineViewController: UIViewController, FirebaseTrackable {
@@ -14,7 +17,7 @@ class MorePopularWineViewController: UIViewController, FirebaseTrackable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         self.view = morePopularWineView
         
         setupNavigationBar()

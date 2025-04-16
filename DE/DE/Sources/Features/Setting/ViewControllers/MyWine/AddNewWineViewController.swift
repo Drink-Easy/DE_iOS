@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Network
 import SnapKit
 import Then
@@ -22,7 +23,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     public override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.isNavigationBarHidden = false
-        view.backgroundColor = AppColor.grayBG
+        view.backgroundColor = AppColor.background
         self.view = searchHomeView
         searchHomeView.noSearchResultLabel.isHidden = true
         searchHomeView.searchResultTableView.dataSource = self
@@ -107,8 +108,8 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
             textField.attributedPlaceholder = NSAttributedString(
                 string: placeholderText,
                 attributes: [
-                    .foregroundColor: AppColor.gray70 ?? .gray,
-                    .font: UIFont.ptdRegularFont(ofSize: 14)
+                    .foregroundColor: AppColor.gray70,
+                    .font: UIFont.pretendard(.regular, size: 14)
                 ]
             )
         }

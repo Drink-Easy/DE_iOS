@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Then
 import Network
 // 기기대응 완료
@@ -35,7 +36,7 @@ class MyWinePriceView: UIView {
     }
     
     func setupUI() {
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         [topView, priceTextField, nextButton].forEach{ addSubview($0) }
     }
     

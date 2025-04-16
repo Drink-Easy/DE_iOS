@@ -1,6 +1,7 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+import DesignSystem
 
 class NewLeftAlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {

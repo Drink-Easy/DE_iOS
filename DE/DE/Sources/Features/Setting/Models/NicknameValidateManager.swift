@@ -4,6 +4,7 @@ import UIKit
 
 import CoreModule
 import Network
+import DesignSystem
 
 public class NicknameValidateManager {
     
@@ -130,8 +131,8 @@ public class NicknameValidateManager {
     public func showValidationError(_ view: CustomTextFieldView, message: String) {
         DispatchQueue.main.async {
             view.updateValidationText(message, isHidden: false, color: AppColor.red)
-            view.textField.layer.borderColor = AppColor.red?.cgColor
-            view.textField.backgroundColor = AppColor.red?.withAlphaComponent(0.1)
+            view.textField.layer.borderColor = AppColor.red.cgColor
+            view.textField.backgroundColor = AppColor.red.withAlphaComponent(0.1)
             view.textField.textColor = AppColor.red
         }
     }
@@ -139,7 +140,7 @@ public class NicknameValidateManager {
     public func hideValidationError(_ view: CustomTextFieldView, message: String) {
         DispatchQueue.main.async {
             view.updateValidationText(message, isHidden: false, color: AppColor.purple100)
-            view.textField.layer.borderColor = AppColor.purple100?.cgColor
+            view.textField.layer.borderColor = AppColor.purple100.cgColor
             view.textField.backgroundColor = AppColor.purple10
             view.textField.textColor = AppColor.purple100
         }

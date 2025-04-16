@@ -6,6 +6,7 @@ import Network
 import SnapKit
 import Then
 import SDWebImage
+import DesignSystem
 
 class MoreWineTableViewCell: UITableViewCell {
     
@@ -14,7 +15,7 @@ class MoreWineTableViewCell: UITableViewCell {
     private lazy var imageBackground = UIView().then {
         $0.layer.cornerRadius = 5
         $0.layer.masksToBounds = true
-        $0.backgroundColor = AppColor.winebg
+        $0.backgroundColor = AppColor.wineBackground
         $0.layer.borderColor = UIColor.clear.cgColor
     }
     
@@ -26,8 +27,8 @@ class MoreWineTableViewCell: UITableViewCell {
     }
     
     private lazy var name = UILabel().then {
-        $0.textColor = AppColor.DGblack
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 18)
+        $0.textColor = AppColor.black
+        $0.font = UIFont.pretendard(.semiBold, size: 18)
         $0.numberOfLines = 2
         $0.lineBreakMode = .byTruncatingTail
         $0.lineBreakStrategy = .standard
@@ -35,17 +36,17 @@ class MoreWineTableViewCell: UITableViewCell {
     
     private lazy var kind = UILabel().then {
         $0.textColor = AppColor.gray100
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
     }
     
     private lazy var score = UILabel().then {
         $0.textColor = AppColor.purple100
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
     }
     
     private lazy var price = UILabel().then {
         $0.textColor = AppColor.purple100
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
     }
 
     override func awakeFromNib() {
@@ -58,15 +59,15 @@ class MoreWineTableViewCell: UITableViewCell {
         if selected {
             borderLayer.cornerRadius = 8
             contentView.backgroundColor = AppColor.purple10 // 선택된 배경색
-            borderLayer.borderColor = AppColor.purple70?.cgColor // 선택된 테두리색
+            borderLayer.borderColor = AppColor.purple70.cgColor // 선택된 테두리색
             // 1초 후 기본 상태로 복원
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
                 guard let self = self else { return }
-                self.contentView.backgroundColor = AppColor.grayBG // 기본 배경색
+                self.contentView.backgroundColor = AppColor.background // 기본 배경색
                 self.borderLayer.borderColor = UIColor.clear.cgColor // 기본 테두리 없음
             }
         } else {
-            contentView.backgroundColor = AppColor.grayBG // 기본 배경색
+            contentView.backgroundColor = AppColor.background // 기본 배경색
             borderLayer.borderColor = UIColor.clear.cgColor // 기본 테두리 없음
         }
     }
@@ -93,7 +94,7 @@ class MoreWineTableViewCell: UITableViewCell {
     
     private func setupView() {
         // 기본 셀 스타일 설정
-        contentView.backgroundColor = AppColor.grayBG
+        contentView.backgroundColor = AppColor.background
         selectionStyle = .none // 기본 선택 스타일 제거
         
         // 테두리 설정

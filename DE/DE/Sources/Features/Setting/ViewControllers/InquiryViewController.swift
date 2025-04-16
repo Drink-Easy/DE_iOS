@@ -8,6 +8,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 
 class InquiryViewController: UIViewController, FirebaseTrackable {
     var screenName: String = Tracking.VC.inquiryVC
@@ -27,7 +28,7 @@ class InquiryViewController: UIViewController, FirebaseTrackable {
     private let inquiryLabel = UILabel().then {
         $0.text = "운영 시간 안내"
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdMediumFont(ofSize: 18)
+        $0.font = UIFont.pretendard(.medium, size: 18)
     }
     private let descriptionLabel = UILabel().then {
         let text = "접수시간 - 24시간 접수 가능\n답변시간 - 평일 10:00 - 18:00 (주말, 공휴일 제외)"
@@ -44,7 +45,7 @@ class InquiryViewController: UIViewController, FirebaseTrackable {
         
         $0.attributedText = attributedString
         $0.textColor = AppColor.gray70
-        $0.font = UIFont.ptdRegularFont(ofSize: 12)
+        $0.font = UIFont.pretendard(.regular, size: 12)
         $0.numberOfLines = 0
     }
     private var tableView = UITableView()
@@ -62,7 +63,7 @@ class InquiryViewController: UIViewController, FirebaseTrackable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = AppColor.bgGray
+        self.view.backgroundColor = AppColor.background
         setupUI()
         setupTableView()
         setupNavigationBar()
@@ -84,7 +85,7 @@ class InquiryViewController: UIViewController, FirebaseTrackable {
         navigationBarManager.setTitle(
             to: navigationItem,
             title: "문의하기",
-            textColor: AppColor.black ?? .black
+            textColor: AppColor.black
         )
     }
     
@@ -107,7 +108,7 @@ class InquiryViewController: UIViewController, FirebaseTrackable {
         tableView.dataSource = self
         tableView.isScrollEnabled = false
         tableView.rowHeight = 50
-        tableView.backgroundColor = AppColor.bgGray
+        tableView.backgroundColor = AppColor.background
         tableView.register(InquiryMenuViewCell.self, forCellReuseIdentifier: InquiryMenuViewCell.identifier)
         
         view.addSubview(tableView)

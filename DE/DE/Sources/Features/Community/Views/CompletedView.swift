@@ -7,6 +7,7 @@ import Then
 
 import SwiftyToaster
 import CoreModule
+import DesignSystem
 
 class CompletedVC: UIViewController {
     

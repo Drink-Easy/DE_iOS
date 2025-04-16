@@ -5,6 +5,7 @@ import UIKit
 import SnapKit
 import Then
 import CoreModule
+import DesignSystem
 import Network
 
 public class NoticeTableViewCell: UITableViewCell {
@@ -12,14 +13,14 @@ public class NoticeTableViewCell: UITableViewCell {
     public static let identifier = "NoticeTableViewCell"
 
     public lazy var title = UILabel().then {
-        $0.textColor = AppColor.DGblack
-        $0.font = UIFont.ptdMediumFont(ofSize: 16)
+        $0.textColor = AppColor.black
+        $0.font = UIFont.pretendard(.medium, size: 16)
         $0.numberOfLines = 1
     }
     
     public lazy var date = UILabel().then {
         $0.textColor = AppColor.gray70
-        $0.font = UIFont.ptdRegularFont(ofSize: 12)
+        $0.font = UIFont.pretendard(.regular, size: 12)
         $0.numberOfLines = 1
     }
     
@@ -30,7 +31,7 @@ public class NoticeTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.backgroundColor = AppColor.bgGray
+        contentView.backgroundColor = AppColor.background
         contentView.layer.masksToBounds = true
         self.addComponents()
         self.constraints()

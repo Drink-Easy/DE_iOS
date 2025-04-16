@@ -7,6 +7,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 import CoreLocation
 import Network
 
@@ -41,7 +42,7 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         setupUI()
         setupConstraints()
         setupNavigationBar()
@@ -57,15 +58,15 @@ class ProfileEditVC: UIViewController, UIImagePickerControllerDelegate, UINaviga
     
     // MARK: - 네비게이션 바 설정
     func setupNavigationBar() {
-        navigationBarManager.setTitle(to: navigationItem, title: "프로필 수정", textColor: AppColor.black!)
+        navigationBarManager.setTitle(to: navigationItem, title: "프로필 수정", textColor: AppColor.black)
         navigationBarManager.addBackButton(to: navigationItem, target: self, action: #selector(backButtonTapped))
         navigationBarManager.addRightButton(
             to: navigationItem,
             title: "완료",
             target: self,
             action: #selector(editCompleteTapped),
-            tintColor: AppColor.gray70 ?? .gray,
-            font: UIFont.ptdSemiBoldFont(ofSize: 16)
+            tintColor: AppColor.gray70,
+            font: UIFont.pretendard(.semiBold, size: 16)
         )
     }
     

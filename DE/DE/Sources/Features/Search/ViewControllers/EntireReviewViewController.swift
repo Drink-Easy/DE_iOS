@@ -2,7 +2,9 @@
 
 import UIKit
 import Then
+
 import CoreModule
+import DesignSystem
 import Network
 
 class EntireReviewViewController: UIViewController, FirebaseTrackable {
@@ -22,7 +24,7 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.grayBG
+        view.backgroundColor = AppColor.background
 
         addView()
         constraints()
@@ -77,9 +79,9 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
         paragraphStyle.lineSpacing = 2
         
         let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.ptdSemiBoldFont(ofSize: 24),
+            .font: UIFont.pretendard(.semiBold, size: 24),
             .paragraphStyle: paragraphStyle,
-            .foregroundColor: AppColor.black!
+            .foregroundColor: AppColor.black
         ]
         
         $0.attributedText = NSAttributedString(string: text, attributes: attributes)
@@ -204,7 +206,7 @@ extension EntireReviewViewController: UICollectionViewDataSource, UICollectionVi
         let isExpanded = expandedCells[indexPath.item]
         
         // 텍스트 높이 계산 + 패딩
-        let labelFont = UIFont.ptdMediumFont(ofSize: 14)
+        let labelFont = UIFont.pretendard(.medium, size: 14)
         let lineSpacing = labelFont.pointSize * 0.3
         let labelWidth = width - 30
         //let estimatedHeight = text.heightWithConstrainedWidth(width: labelWidth, font: labelFont)

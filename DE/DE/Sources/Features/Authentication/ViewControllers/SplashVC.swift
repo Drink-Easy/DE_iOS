@@ -12,6 +12,7 @@ import Then
 
 import Network
 import CoreModule
+import DesignSystem
 import FirebaseAnalytics
 
 public class SplashVC : UIViewController, FirebaseTrackable {
@@ -71,7 +72,7 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     }
     
     func setupViews() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         view.addSubview(logoImage)
     }
     

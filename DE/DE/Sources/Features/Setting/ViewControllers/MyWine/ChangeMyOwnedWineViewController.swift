@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Network
 import SnapKit
 import Then
@@ -43,7 +44,7 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         setupUI()
         setupNavigationBar()
         setupActions()
@@ -84,7 +85,7 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
         navigationBarManager.setTitle(
             to: navigationItem,
             title: "정보 수정하기",
-            textColor: AppColor.black ?? .black
+            textColor: AppColor.black
         )
         
         navigationBarManager.addRightButton(
@@ -92,7 +93,7 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
             icon: "trash",
             target: self,
             action: #selector(deleteNewWine),
-            tintColor: AppColor.gray70 ?? .gray
+            tintColor: AppColor.gray70
         )
     }
     

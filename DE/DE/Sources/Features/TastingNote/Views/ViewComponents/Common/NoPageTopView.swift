@@ -3,19 +3,20 @@
 import UIKit
 import Then
 import CoreModule
+import DesignSystem
 import SnapKit
 
 /// 페이지네이션 + 빅타이틀
 class NoPageTopView: UIView {
     private lazy var title = UILabel().then {
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.font = UIFont.pretendard(.semiBold, size: 24)
         $0.numberOfLines = 0
     }
 
     init(currentPage: Int, entirePage: Int) {
         super.init(frame: .zero)
-        backgroundColor = AppColor.bgGray
+        backgroundColor = AppColor.background
         
         self.addComponents()
         self.constraints()

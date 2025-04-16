@@ -4,6 +4,7 @@ import UIKit
 import SnapKit
 import Then
 import CoreModule
+import DesignSystem
 import Network
 
 public class WishListViewController: UIViewController, FirebaseTrackable {
@@ -18,7 +19,7 @@ public class WishListViewController: UIViewController, FirebaseTrackable {
     private lazy var searchResultTableView = UITableView().then {
         $0.register(SearchResultTableViewCell.self, forCellReuseIdentifier: "SearchResultTableViewCell")
         $0.separatorInset = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
-        $0.backgroundColor = AppColor.grayBG
+        $0.backgroundColor = AppColor.background
         $0.dataSource = self
         $0.delegate = self
         $0.showsVerticalScrollIndicator = false
@@ -28,14 +29,14 @@ public class WishListViewController: UIViewController, FirebaseTrackable {
         $0.numberOfLines = 0
         $0.text = "위시리스트에 담긴 와인이 없어요.\n관심 있는 와인을 담아 보세요!"
         $0.setLineSpacingPercentage(0.3)
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = UIFont.pretendard(.regular, size: 14)
         $0.textColor = AppColor.gray70
         $0.textAlignment = .center
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         setupNavigationBar()
         addComponents()
         setConstraints()
@@ -70,7 +71,7 @@ public class WishListViewController: UIViewController, FirebaseTrackable {
         navigationBarManager.setTitle(
             to: navigationItem,
             title: "위시리스트",
-            textColor: AppColor.black ?? .black
+            textColor: AppColor.black
         )
     }
     

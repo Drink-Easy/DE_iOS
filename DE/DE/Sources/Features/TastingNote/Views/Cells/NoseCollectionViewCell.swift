@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 
 class NoseCollectionViewCell: UICollectionViewCell {
     
@@ -20,7 +21,7 @@ class NoseCollectionViewCell: UICollectionViewCell {
         let m = UILabel()
         m.text = ""
         m.textColor = AppColor.gray100
-        m.font = .ptdMediumFont(ofSize: 14)
+        m.font = UIFont.pretendard(.medium, size: 14)
         m.textAlignment = .center
         return m
     }()

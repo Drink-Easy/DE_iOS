@@ -8,6 +8,7 @@ import Then
 
 import CoreModule
 import Network
+import DesignSystem
 
 // 테이스팅노트 상세 보기 뷰
 public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScrollViewDelegate, FirebaseTrackable {
@@ -33,7 +34,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     }
     
     let contentView = UIView().then {
-        $0.backgroundColor = AppColor.bgGray
+        $0.backgroundColor = AppColor.background
     }
     
     let wineInfoView = WineInfoView()
@@ -86,18 +87,18 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
             rightIcon: "trash",
             rightAction: #selector(deleteTapped),
             target: self,
-            tintColor: AppColor.gray70 ?? .gray)
+            tintColor: AppColor.gray70)
         
         smallTitleLabel = navigationBarManager.setNReturnTitle(
             to: navigationItem,
             title: wineName,
-            textColor: AppColor.black ?? .black
+            textColor: AppColor.black
         )
         smallTitleLabel.isHidden = true
     }
     
     private func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         view.addSubview(scrollView)
         scrollView.delegate = self
         scrollView.addSubview(contentView)

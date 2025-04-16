@@ -3,6 +3,7 @@
 import UIKit
 import CoreModule
 import Network
+import DesignSystem
 import SDWebImage
 
 // 색상 변경
@@ -50,7 +51,7 @@ public class EditWineColorViewController: UIViewController, FirebaseTrackable {
     }
     
     func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         colorView.propertyHeader.setName(eng: "Color", kor: "색상")
         colorView.colorCollectionView.register(WineColorCollectionViewCell.self, forCellWithReuseIdentifier: "WineColorCollectionViewCell")
     }

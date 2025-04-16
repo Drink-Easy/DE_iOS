@@ -5,6 +5,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 import Network
 
 //// 테이스팅 노트 palate 수정
@@ -25,11 +26,11 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
     }
     
     let contentView = UIView().then {
-        $0.backgroundColor = AppColor.bgGray
+        $0.backgroundColor = AppColor.background
     }
     public lazy var wineNameTitle = UILabel().then {
         $0.textColor = AppColor.black
-        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
+        $0.font = UIFont.pretendard(.semiBold, size: 24)
         $0.numberOfLines = 0
     }
     private let recordGraphView = RecordGraphView()
@@ -78,7 +79,7 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
     }
     
     private func setupUI() {
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         view.addSubview(scrollView)
         
         contentView.addSubview(wineNameTitle)
@@ -131,7 +132,7 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
         smallTitleLabel = navigationBarManager.setNReturnTitle(
             to: navigationItem,
             title: wineData.wineName,
-            textColor: AppColor.black ?? .black
+            textColor: AppColor.black
         )
         smallTitleLabel.isHidden = true
     }

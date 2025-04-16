@@ -3,6 +3,7 @@
 import SwiftUI
 
 import CoreModule
+import DesignSystem
 import Charts
 
 struct PalateChartView: View {

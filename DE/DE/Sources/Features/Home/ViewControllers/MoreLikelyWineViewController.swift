@@ -2,8 +2,11 @@
 
 import UIKit
 import SnapKit
+
 import CoreModule
+import DesignSystem
 import Network
+
 import Then
 
 class MoreLikelyWineViewController: UIViewController, FirebaseTrackable {
@@ -22,9 +25,9 @@ class MoreLikelyWineViewController: UIViewController, FirebaseTrackable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = AppColor.bgGray
+        view.backgroundColor = AppColor.background
         self.view = moreLikelyWineView
-        self.moreLikelyWineView.title.setPartialTextStyle(text: moreLikelyWineView.title.text ?? "", targetText: "\(userName)", color: AppColor.purple100 ?? .purple, font: UIFont.ptdSemiBoldFont(ofSize: 30))
+        self.moreLikelyWineView.title.setPartialTextStyle(text: moreLikelyWineView.title.text ?? "", targetText: "\(userName)", color: AppColor.purple100, font: UIFont.pretendard(.semiBold, size: 30))
         setupNavigationBar()
     }
     
@@ -69,8 +72,8 @@ class MoreLikelyWineViewController: UIViewController, FirebaseTrackable {
         moreLikelyWineView.title.setPartialTextStyle(
             text: moreLikelyWineView.title.text ?? "",
             targetText: "\(userName)",
-            color: AppColor.purple100 ?? .purple,
-            font: UIFont.ptdSemiBoldFont(ofSize: 30)
+            color: AppColor.purple100,
+            font: UIFont.pretendard(.semiBold, size: 30)
         )
     }
 }

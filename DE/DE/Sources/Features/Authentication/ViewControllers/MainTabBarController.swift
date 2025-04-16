@@ -4,6 +4,7 @@ import UIKit
 import CoreModule
 
 import Firebase
+import DesignSystem
 
 public class MainTabBarController: UITabBarController {
     
