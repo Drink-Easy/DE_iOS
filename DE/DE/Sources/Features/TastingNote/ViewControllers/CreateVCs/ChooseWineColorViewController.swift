@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Network
 
 // 2번 선택 뷰컨 테이스팅 노트 : 색상 선택

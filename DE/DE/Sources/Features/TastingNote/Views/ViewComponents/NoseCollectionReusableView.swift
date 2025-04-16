@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Then
 import SnapKit
 
@@ -14,7 +15,7 @@ class NoseCollectionReusableView: UICollectionReusableView {
     
     // 타이틀 레이블
     private let titleLabel = UILabel().then { label in
-        label.font = .ptdSemiBoldFont(ofSize: 18)
+        label.font = .pretendard(.semiBold, size: 18)
         label.textColor = AppColor.black
     }
     

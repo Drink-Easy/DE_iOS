@@ -4,6 +4,7 @@ import UIKit
 import SwiftUI
 
 import CoreModule
+import DesignSystem
 
 import SnapKit
 import Then

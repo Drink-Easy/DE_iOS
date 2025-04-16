@@ -5,6 +5,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 
 // 4번 선택 뷰컨 테이스팅 노트 : 팔레트 선택
 

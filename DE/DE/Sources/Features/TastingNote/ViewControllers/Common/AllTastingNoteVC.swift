@@ -3,6 +3,7 @@
 import UIKit
 
 import CoreModule
+import DesignSystem
 import Network
 
 //테이스팅노트 메인 노트 보관함 뷰

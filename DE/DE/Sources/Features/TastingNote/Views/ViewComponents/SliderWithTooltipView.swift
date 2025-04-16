@@ -3,6 +3,7 @@
 import UIKit
 
 import CoreModule
+import DesignSystem
 
 import SnapKit
 import Then
@@ -16,7 +17,7 @@ class SliderWithTooltipView: UIView {
     let titleLabel = UILabel().then {
         $0.textColor = AppColor.black
         $0.textAlignment = .left
-        $0.font = UIFont.ptdMediumFont(ofSize: 18)
+        $0.font = .pretendard(.medium, size: 18)
     }
 
     let tooltipImage = UIImageView().then {
@@ -102,7 +103,7 @@ class SliderWithTooltipView: UIView {
         let buttonFrame = self.convert(tooltipImage.frame.offsetBy(dx: 0, dy: 55), to: superview)
 
         // 기본 폰트 적용 (폰트는 원하는 대로 교체 가능)
-        let font = UIFont.ptdMediumFont(ofSize: 12)
+        let font = UIFont.pretendard(.medium, size: 12)
         let textColor = UIColor.white
 
         // NSAttributedString 생성

@@ -3,6 +3,7 @@
 import UIKit
 import Then
 import CoreModule
+import DesignSystem
 import SnapKit
 
 /// 날짜 있는 쪽에만 쓰는 페이지네이션 + 빅타이틀

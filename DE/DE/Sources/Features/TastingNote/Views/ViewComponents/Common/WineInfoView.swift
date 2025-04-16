@@ -6,6 +6,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 import Cosmos
 import Network
 
@@ -63,7 +64,7 @@ public class WineInfoView: UIView {
         $0.layer.cornerRadius = 6
     }
     lazy var colorLabel = UILabel().then {
-        $0.font = .ptdMediumFont(ofSize: 14)
+        $0.font = .pretendard(.medium, size: 14)
         $0.textColor = AppColor.gray90
     }
     
@@ -77,7 +78,7 @@ public class WineInfoView: UIView {
     let noseHeaderView = PropertyTitleView(type: .nose)
     let noseView = UILabel().then {
         $0.text = ""
-        $0.font = .ptdMediumFont(ofSize: 14)
+        $0.font = .pretendard(.medium, size: 14)
         $0.textColor = AppColor.gray90
         $0.numberOfLines = 0
     }
@@ -107,14 +108,14 @@ public class WineInfoView: UIView {
         
         let ratingRange = (fullText as NSString).range(of: "\(ratingValue)")
         attributedString.addAttributes([
-            .font: UIFont.ptdSemiBoldFont(ofSize: 18),
-            .foregroundColor: AppColor.purple100!
+            .font: UIFont.pretendard(.semiBold, size: 18),
+            .foregroundColor: AppColor.purple100
         ], range: ratingRange)
         
         let defaultRange = (fullText as NSString).range(of: "/ 5.0")
         attributedString.addAttributes([
-            .font: UIFont.ptdRegularFont(ofSize: 12),
-            .foregroundColor: AppColor.gray90!
+            .font: UIFont.pretendard(.regular, size: 12),
+            .foregroundColor: AppColor.gray90
         ], range: defaultRange)
         
         ratingLabel.attributedText = attributedString
@@ -128,14 +129,14 @@ public class WineInfoView: UIView {
         
         let ratingRange = (fullText as NSString).range(of: "\(ratingValue)")
         attributedString.addAttributes([
-            .font: UIFont.ptdSemiBoldFont(ofSize: 18),
-            .foregroundColor: AppColor.purple100!
+            .font: UIFont.pretendard(.semiBold, size: 18),
+            .foregroundColor: AppColor.purple100
         ], range: ratingRange)
         
         let defaultRange = (fullText as NSString).range(of: "/ 5.0")
         attributedString.addAttributes([
-            .font: UIFont.ptdRegularFont(ofSize: 12),
-            .foregroundColor: AppColor.gray90!
+            .font: UIFont.pretendard(.regular, size: 12),
+            .foregroundColor: AppColor.gray90
         ], range: defaultRange)
         
         r.attributedText = attributedString
@@ -151,8 +152,8 @@ public class WineInfoView: UIView {
         r.settings.filledBorderColor = .clear
         r.settings.starSize = 24
         r.settings.starMargin = 6
-        r.settings.filledColor = AppColor.purple100!
-        r.settings.emptyColor = AppColor.gray30!
+        r.settings.filledColor = AppColor.purple100
+        r.settings.emptyColor = AppColor.gray30
 
         return r
     }()
@@ -166,13 +167,13 @@ public class WineInfoView: UIView {
     }
     let reviewHeaderView = PropertyTitleView(type: .review)
     let dateView = UILabel().then {
-        $0.font = .ptdMediumFont(ofSize: 14)
+        $0.font = .pretendard(.medium, size: 14)
         $0.textColor = AppColor.gray90
         $0.numberOfLines = 0
         $0.lineBreakStrategy = .standard // 줄바꿈 전략 선택(한글모드 안함)
     }
     let reviewView = UILabel().then {
-        $0.font = .ptdMediumFont(ofSize: 14)
+        $0.font = .pretendard(.medium, size: 14)
         $0.textColor = AppColor.gray90
         $0.numberOfLines = 0
         $0.lineBreakStrategy = .standard // 줄바꿈 전략 선택(한글모드 안함)

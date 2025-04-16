@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import SnapKit
 
 // 계열 선택 뷰

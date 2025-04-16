@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import SnapKit
 
 // 향 상단 뷰 pageCount ~ 향 설명까지
@@ -11,14 +12,14 @@ class NoseTopView: UIView {
     public lazy var propertyHeader = PropertyTitleView(type: .nose)
     private let noseDescription = UILabel().then {
         $0.text = "와인을 시음하기 전, 향을 맡아보세요! 와인 잔을 천천히 돌려 잔의 표면에 와인을 묻히면 잔 속에 향이 풍부하게 느껴져요."
-        $0.font = UIFont.ptdRegularFont(ofSize: 14)
+        $0.font = .pretendard(.regular, size: 14)
         $0.textColor = AppColor.gray90
         $0.numberOfLines = 0
     }
     
     private let selectedLabel = UILabel().then {
         $0.text = "선택된 항목"
-        $0.font = .ptdSemiBoldFont(ofSize: 18)
+        $0.font = .pretendard(.semiBold, size: 18)
         $0.textColor = AppColor.purple100
     }
     

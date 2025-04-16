@@ -6,6 +6,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 
 class WineColorCollectionViewCell: UICollectionViewCell {
     
@@ -60,7 +61,7 @@ class WineColorCollectionViewCell: UICollectionViewCell {
     func configure(colorhex: UIColor?, isSelected: Bool, isLight: Bool) {
         if isSelected {
             colorView.backgroundColor = colorhex
-            colorView.layer.borderColor = isLight ? AppColor.purple100?.cgColor ?? UIColor.clear.cgColor : AppColor.purple30?.cgColor ?? UIColor.clear.cgColor
+            colorView.layer.borderColor = isLight ? AppColor.purple100.cgColor : AppColor.purple30.cgColor
             checkmark.tintColor = isLight ? AppColor.purple100 : AppColor.purple30
             checkmark.isHidden = false
         } else {

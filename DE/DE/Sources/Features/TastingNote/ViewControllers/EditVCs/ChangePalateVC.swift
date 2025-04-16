@@ -5,6 +5,7 @@ import SnapKit
 import Then
 
 import CoreModule
+import DesignSystem
 import Network
 
 //// 테이스팅 노트 palate 수정

@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import Network
 
 // 5번 선택 뷰컨 테이스팅 노트 : 레이팅, 리뷰

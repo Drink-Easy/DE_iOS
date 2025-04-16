@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 import AMPopTip
 
 // 와인 당도 등등 슬라이더 설정
