@@ -45,8 +45,8 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
     }
     
     private lazy var searchHomeView = SearchHomeView(
-        titleText: "검색하고 싶은\n와인을 입력해주세요",
-        placeholder: "와인 이름을 검색하세요 (한글/영문)"
+        titleText: SearchConstants.titleText,
+        placeholder: SearchConstants.textFieldPlaceholder
     ).then {
         $0.searchBar.delegate = self
     }
@@ -64,35 +64,42 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
         super.touchesBegan(touches, with: event)
         self.view.endEditing(true)  //firstresponder가 전부 사라짐
     }
-    
+
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let query = searchHomeView.searchBar.text, query.count >= 2 {
-            self.view.showBlockingView()
-            DispatchQueue.main.async {
-                // 강제로 맨위로 올리기
+        defer { textField.resignFirstResponder() }
+        
+        guard let query = searchHomeView.searchBar.text, query.count >= 2 else {
+            showCharacterLimitAlert()
+            return true
+        }
+        
+        Task {
+            await MainActor.run {
                 self.searchHomeView.searchResultTableView.setContentOffset(.zero, animated: true)
+                self.view.showBlockingView()
             }
-            Task {
-                do {
-                    try await callSearchAPI(query: query, startPage: 0)
+
+            do {
+                try await callSearchAPI(query: query, startPage: 0)
+
+                await MainActor.run {
                     searchHomeView.noSearchResultLabel.isHidden = !wineResults.isEmpty
                     self.view.hideBlockingView()
-                } catch {
+                }
+            } catch {
+                await MainActor.run {
                     self.view.hideBlockingView()
+                    self.errorHandler.handleNetworkError(error, in: self)
                 }
             }
-            textField.resignFirstResponder()
-            return true
-        } else {
-            showCharacterLimitAlert()
-            textField.resignFirstResponder()
         }
+        
         return true
     }
     
     public func textFieldDidBeginEditing(_ textField: UITextField) {
         if textField.text?.isEmpty ?? true {
-            let placeholderText = "와인 이름을 검색하세요 (한글/영문)"
+            let placeholderText = SearchConstants.textFieldPlaceholder
             textField.attributedPlaceholder = NSAttributedString(
                 string: placeholderText,
                 attributes: [
@@ -108,21 +115,6 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
         alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
-    
-//    @objc
-//    private func textFieldDidChange(_ textField: UITextField) {
-//        let query = textField.text ?? ""
-//        filterSuggestions(with: query)
-//    }
-//    
-//    func filterSuggestions(with query: String) {
-//        if query.isEmpty {
-//            wineResults = [] // 배열 초기화 -> 이전에 보낸 요청의 query가 달라졌을 때만,
-//            self.searchHomeView.searchResultTableView.reloadData()
-//        } else {
-//            callSearchAPI(query: query)
-//        }
-//    }
     
     func callSearchAPI(query: String, startPage: Int) async throws {
         
