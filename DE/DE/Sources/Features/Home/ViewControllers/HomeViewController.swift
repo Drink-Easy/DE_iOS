@@ -2,6 +2,8 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
+
 import Then
 import Network
 import SafariServices

@@ -2,6 +2,7 @@
 
 import UIKit
 import CoreModule
+import DesignSystem
 
 /// 홈 뷰컨트롤러 내부 세그먼트 컨트롤러
 class HomeSegmentControl: UISegmentedControl {
@@ -109,7 +110,7 @@ extension HomeSegmentControl {
     /// - Returns: 선택된 세그먼트 텍스트 사이즈 값 반환
     private func calculateLabelWidth(for index: Int) -> CGFloat {
            guard let title = titleForSegment(at: index) else { return 0 }
-           let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.ptdSemiBoldFont(ofSize: 17)]
+        let attributes: [NSAttributedString.Key: Any] = [.font: UIFont.pretendard(.semiBold, size: 17)]
            let textSize = (title as NSString).size(withAttributes: attributes)
            return textSize.width
        }

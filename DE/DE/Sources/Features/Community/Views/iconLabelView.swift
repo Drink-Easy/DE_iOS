@@ -3,6 +3,7 @@
 import Foundation
 import UIKit
 import CoreModule
+import DesignSystem
 
 class IconLabelView: UIView {
     private let iconView: UIImageView = {
@@ -13,7 +14,7 @@ class IconLabelView: UIView {
     
     private let descriptionLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.ptdSemiBoldFont(ofSize: 12)
+        label.font = UIFont.pretendard(.semiBold, size: 12)
         label.textColor = AppColor.black // HEX 컬러 초기값 설정
         return label
     }()
@@ -28,7 +29,7 @@ class IconLabelView: UIView {
     }
     
     func configure(systemName: String, labelText: String) {
-        if let image = UIImage(systemName: systemName)?.withTintColor(AppColor.black ?? .black, renderingMode: .alwaysOriginal) {
+        if let image = UIImage(systemName: systemName)?.withTintColor(AppColor.black, renderingMode: .alwaysOriginal) {
             iconView.image = image
         }
         descriptionLabel.text = labelText
