@@ -20,59 +20,40 @@ class DateTopView: UIView {
         $0.numberOfLines = 0
     }
     
-//
-//    public lazy var title = UILabel().then {
-//        $0.textColor = AppColor.purple100
-//        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
-//        $0.numberOfLines = 0
-//    }
-//    
-//    private lazy var desp = UILabel().then {
-//        $0.text = "시음 시기를 선택해주세요"
-//        $0.textColor = AppColor.black
-//        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
-//        $0.numberOfLines = 1
-//    }
-    
-    /// 제목과 설명을 하나의 라벨에서 관리
-    /// - Parameters:
-    ///   - title: 메인 제목
-    ///   - titleColor: 메인 제목 색상 (기본값: `AppColor.purple100`)
-    ///   - titleFont: 메인 제목 폰트 (기본값: `UIFont.ptdSemiBoldFont(ofSize: 24)`)
-    ///   - description: 설명 텍스트
-    ///   - descriptionColor: 설명 텍스트 색상 (기본값: `AppColor.black`)
-    ///   - descriptionFont: 설명 텍스트 폰트 (기본값: `UIFont.ptdMediumFont(ofSize: 18)`)
-    ///   - lineSpacing: 행간 (기본값: `2`)
     public func setTitleLabel(
         title: String,
-        titleColor: UIColor = AppColor.purple100,
-        titleFont: UIFont = UIFont.pretendard(.semiBold, size: 24),
+        titleStyle: TextStyle,
+        titleColor: UIColor,
         description: String,
-        descriptionColor: UIColor = AppColor.black,
-        descriptionFont: UIFont = UIFont.pretendard(.semiBold, size: 24),
+        descriptionStyle: TextStyle,
+        descriptionColor: UIColor,
         lineSpacing: CGFloat = 2
     ) {
         let fullText = "\(title)\n\(description)"
         
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = lineSpacing
-        
+        paragraphStyle.minimumLineHeight = titleStyle.fontSize * titleStyle.lineHeightMultiple
+        paragraphStyle.maximumLineHeight = titleStyle.fontSize * titleStyle.lineHeightMultiple
+
         let attributedString = NSMutableAttributedString(string: fullText)
-        
+
         let titleRange = (fullText as NSString).range(of: title)
         attributedString.addAttributes([
-            .font: titleFont,
+            .font: titleStyle.font,
             .foregroundColor: titleColor,
-            .paragraphStyle: paragraphStyle
+            .paragraphStyle: paragraphStyle,
+            .kern: titleStyle.fontSize * (titleStyle.letterSpacingPercent / 100)
         ], range: titleRange)
         
         let descriptionRange = (fullText as NSString).range(of: description)
         attributedString.addAttributes([
-            .font: descriptionFont,
+            .font: descriptionStyle.font,
             .foregroundColor: descriptionColor,
-            .paragraphStyle: paragraphStyle
+            .paragraphStyle: paragraphStyle,
+            .kern: descriptionStyle.fontSize * (descriptionStyle.letterSpacingPercent / 100)
         ], range: descriptionRange)
-        
+
         titleLabel.attributedText = attributedString
     }
 

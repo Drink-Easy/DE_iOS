@@ -9,6 +9,7 @@ import Network
 // 와인 날짜 선택 뷰
 
 class MyWineDateView: UIView {
+    let despText = "구매 일자를 선택해 주세요"
     public lazy var topView = NoCountDateTopView()
     
     lazy var calendarContainer = UIView().then {
@@ -47,9 +48,12 @@ class MyWineDateView: UIView {
     }
     
     func setWineName(_ name: String) {
-        topView.setTitleLabel(title: name, description: "구매 일자를 선택해주세요")
-//        self.topView.title.text = name
-//        self.topView.desp.text = "구매 일자를 선택해주세요"
+        topView.setTitleLabel(title: name,
+                              titleStyle: AppTextStyle.KR.subtitle1,
+                              titleColor: AppColor.purple100,
+                              description: despText,
+                              descriptionStyle: AppTextStyle.KR.head,
+                              descriptionColor: AppColor.black)
     }
     
     func setupUI() {

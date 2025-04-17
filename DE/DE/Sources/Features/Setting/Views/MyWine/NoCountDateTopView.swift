@@ -33,37 +33,41 @@ class NoCountDateTopView: UIView {
         self.addComponents()
         self.constraints()
     }
-    
+
     public func setTitleLabel(
         title: String,
-        titleColor: UIColor = AppColor.purple100,
-        titleFont: UIFont = UIFont.pretendard(.semiBold, size: 24),
+        titleStyle: TextStyle,
+        titleColor: UIColor,
         description: String,
-        descriptionColor: UIColor = AppColor.black,
-        descriptionFont: UIFont = UIFont.pretendard(.semiBold, size: 24),
+        descriptionStyle: TextStyle,
+        descriptionColor: UIColor,
         lineSpacing: CGFloat = 2
     ) {
         let fullText = "\(title)\n\(description)"
         
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = lineSpacing
-        
+        paragraphStyle.minimumLineHeight = titleStyle.fontSize * titleStyle.lineHeightMultiple
+        paragraphStyle.maximumLineHeight = titleStyle.fontSize * titleStyle.lineHeightMultiple
+
         let attributedString = NSMutableAttributedString(string: fullText)
-        
+
         let titleRange = (fullText as NSString).range(of: title)
         attributedString.addAttributes([
-            .font: titleFont,
+            .font: titleStyle.font,
             .foregroundColor: titleColor,
-            .paragraphStyle: paragraphStyle
+            .paragraphStyle: paragraphStyle,
+            .kern: titleStyle.fontSize * (titleStyle.letterSpacingPercent / 100)
         ], range: titleRange)
         
         let descriptionRange = (fullText as NSString).range(of: description)
         attributedString.addAttributes([
-            .font: descriptionFont,
+            .font: descriptionStyle.font,
             .foregroundColor: descriptionColor,
-            .paragraphStyle: paragraphStyle
+            .paragraphStyle: paragraphStyle,
+            .kern: descriptionStyle.fontSize * (descriptionStyle.letterSpacingPercent / 100)
         ], range: descriptionRange)
-        
+
         titleLabel.attributedText = attributedString
     }
     
