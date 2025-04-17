@@ -10,6 +10,14 @@ class RecordSliderView: UIView {
     
     public lazy var propertyHeader = PropertyTitleView(type: .none)
     
+    public lazy var descriptionText = UILabel().then {
+        $0.text = "와인잔을 슬라이드해 기록해 보세요\n기록한 내용은 상단 팔레트에 반영돼요"
+        $0.textColor = AppColor.gray90
+        $0.font = UIFont.pretendard(.semiBold, size: 14)
+        $0.textAlignment = .left
+        $0.numberOfLines = 0
+    }
+    
     let sweetnessView = SliderWithTooltipView()
     let acidityView = SliderWithTooltipView()
     let tanninView = SliderWithTooltipView()
@@ -18,7 +26,7 @@ class RecordSliderView: UIView {
     
 
     func setupUI() {
-        [propertyHeader, sweetnessView, acidityView, tanninView, bodyView, alcoholView].forEach {
+        [propertyHeader, descriptionText, sweetnessView, acidityView, tanninView, bodyView, alcoholView].forEach {
             addSubview($0)
         }
         
@@ -38,11 +46,15 @@ class RecordSliderView: UIView {
             make.leading.trailing.equalToSuperview()
             make.height.greaterThanOrEqualTo(30)
         }
-        
-        sweetnessView.snp.makeConstraints { make in
+        descriptionText.snp.makeConstraints { make in
             make.top.equalTo(propertyHeader.snp.bottom)
             make.leading.trailing.equalToSuperview()
-            make.height.equalTo(70)
+            make.height.greaterThanOrEqualTo(60)
+        }
+        sweetnessView.snp.makeConstraints { make in
+            make.top.equalTo(descriptionText.snp.bottom)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(60)
         }
         alcoholView.snp.makeConstraints { make in
             make.top.equalTo(sweetnessView.snp.bottom)
