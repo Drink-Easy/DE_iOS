@@ -46,7 +46,7 @@ class RecordGraphView: UIView {
         recordSliderView.snp.makeConstraints { make in
             make.top.equalTo(chartView.snp.bottom)
             make.leading.trailing.equalToSuperview()
-            make.height.greaterThanOrEqualTo(400)
+            make.height.greaterThanOrEqualTo(450)
         }
     }
     
