@@ -41,7 +41,7 @@ class NoCountDateTopView: UIView {
         description: String,
         descriptionStyle: TextStyle,
         descriptionColor: UIColor,
-        lineSpacing: CGFloat = 2
+        lineSpacing: CGFloat = 0
     ) {
         let fullText = "\(title)\n\(description)"
         

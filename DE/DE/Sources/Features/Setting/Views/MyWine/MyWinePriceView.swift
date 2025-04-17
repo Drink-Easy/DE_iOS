@@ -12,7 +12,7 @@ class MyWinePriceView: UIView {
     public lazy var topView = NoCountDateTopView()
     public let priceTextField = CustomTextFieldView(
         descriptionLabelText: "구매 가격",
-        textFieldPlaceholder: "가격을 입력해주세요",
+        textFieldPlaceholder: "가격을 입력해 주세요",
         validationText: ""
     ).then { t in
         t.textField.keyboardType = .numberPad
@@ -29,10 +29,9 @@ class MyWinePriceView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    let despText = "구매 가격을 입력해 주세요"
     func setWineName(_ name: String) {
-        topView.setTitleLabel(title: name, description: "구매 가격을 입력해주세요")
-//        self.topView.title.text = name
-//        self.topView.desp.text = "구매 가격을 입력해주세요"
+        topView.setTitleLabel(title: name, titleStyle: AppTextStyle.KR.subtitle1, titleColor: AppColor.purple100, description: despText, descriptionStyle: AppTextStyle.KR.head, descriptionColor: AppColor.black)
     }
     
     func setupUI() {

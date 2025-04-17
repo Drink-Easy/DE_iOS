@@ -85,7 +85,7 @@ class RatingWineView: UIView {
     }
     
     public func setWineName(_ name: String) {
-        self.header.setTitleLabel(name)
+        self.header.setTitleLabel(title: name)
     }
     
     public func setRate(_ rate: Double) {

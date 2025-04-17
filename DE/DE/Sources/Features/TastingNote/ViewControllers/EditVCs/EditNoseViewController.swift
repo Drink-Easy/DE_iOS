@@ -21,7 +21,7 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
         $0.backgroundColor = .clear
     }
     
-    let topView = NoseTopView() // 기본 상단 뷰
+    let topView = NoseEditTopView()
     let middleView = NoseBottomView(title: "저장하기", isEnabled: false) // 중간 뷰
 //    let middleView = OnlyScrollView()
     let navigationBarManager = NavigationBarManager()
@@ -36,7 +36,7 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
         NoseManager.shared.resetSelectedScents()
         NoseManager.shared.collapseAllSections()
         
-        topView.header.setTitleLabel(wineData.wineName)
+        topView.setWineName(wineData.wineName)
         
         scentNames = tnManager.nose
         NoseManager.shared.applySelectedScents(from: scentNames)
@@ -79,13 +79,12 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
     }
     
     private func setupUI() {
+        topView.setWineName(wineData.wineName)
         topView.propertyHeader.setName(eng: "Nose", kor: "향")
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         scrollView.delegate = self
         [middleView, topView].forEach { contentView.addSubview($0) }
-        
-        topView.header.setTitleLabel(wineData.wineName)
         
         scrollView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)

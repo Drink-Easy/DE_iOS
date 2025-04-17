@@ -9,10 +9,9 @@ import Then
 
 class EditColorView: UIView {
     public lazy var header = UILabel().then {
-        $0.textColor = AppColor.black
-        $0.font = UIFont.pretendard(.semiBold, size: 24)
         $0.numberOfLines = 0
     }
+    
     public lazy var infoView = WineDetailView()
     public lazy var propertyHeader = PropertyTitleView(type: .color)
     public lazy var colorCollectionView = UICollectionView(
@@ -45,7 +44,7 @@ class EditColorView: UIView {
     }
     
     public func setWineName(_ name: String) {
-        self.header.text = name
+        AppTextStyle.KR.head.apply(to: self.header, text: name, color: AppColor.black)
     }
     
     private func addComponents() {

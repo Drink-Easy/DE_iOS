@@ -41,7 +41,7 @@ class SelectColorView: UIView {
     }
     
     public func setWineName(_ name: String) {
-        self.header.setTitleLabel(name)
+        self.header.setTitleLabel(title: name)
     }
     
     private func addComponents() {

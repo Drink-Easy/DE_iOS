@@ -53,7 +53,7 @@ public class BuyNewWineDateViewController: UIViewController, FirebaseTrackable {
         
         view.addSubview(tastedDateView)
         tastedDateView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10.0))
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(5.0))
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
             make.bottom.equalToSuperview()
         }

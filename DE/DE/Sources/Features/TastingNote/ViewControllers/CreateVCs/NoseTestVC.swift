@@ -41,7 +41,7 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackab
             }
         }
         
-        topView.header.setTitleLabel(wineData.wineName)
+        topView.header.setTitleLabel(title: wineData.wineName)
         
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
@@ -73,7 +73,7 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackab
         scrollView.addSubview(contentView)
         [middleView, topView].forEach { contentView.addSubview($0) }
         
-        topView.header.setTitleLabel(wineData.wineName)
+        topView.header.setTitleLabel(title: wineData.wineName)
         
         scrollView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
