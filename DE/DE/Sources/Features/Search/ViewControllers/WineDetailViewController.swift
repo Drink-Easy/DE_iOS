@@ -11,7 +11,13 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     
     let navigationBarManager = NavigationBarManager()
     public var wineId: Int = 0
-    var wineName: String = "Default Name"
+    var wineName: String = "" {
+        didSet {
+            AppTextStyle.KR.head.apply(to: largeTitleLabel, text: wineName, color: AppColor.black)
+        }
+    }
+    var wineInfoForTN : WineDetailInfoModel?
+    
     var isLiked: Bool = false {
         didSet {
             DispatchQueue.main.async {
@@ -31,12 +37,12 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
         super.viewDidLoad()
         self.navigationController?.navigationBar.prefersLargeTitles = false
         view.backgroundColor = AppColor.background
-    
+        
+        addButtonTarget()
         addView()
         constraints()
         setupNavigationBar()
         setNavBarAppearance(navigationController: self.navigationController)
-//        callWineDetailAPI(wineId: self.wineId)
         showLiked()
     }
     
@@ -82,7 +88,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
         
         navigationBarManager.addRightButton(
             to: navigationItem,
-            icon: "heart",
+            icon: SearchConstants.emptyHeartIcon,
             target: self,
             action: #selector(tappedLiked),
             tintColor: AppColor.purple100
@@ -111,33 +117,17 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     
     private func updateHeartButton(button: UIButton) {
         let heartImage = button.isSelected
-        ? UIImage(systemName: "heart.fill")?.withTintColor(AppColor.purple100, renderingMode: .alwaysOriginal)
-        : UIImage(systemName: "heart")?.withTintColor(AppColor.purple100, renderingMode: .alwaysOriginal)
+        ? UIImage(systemName: SearchConstants.fillHeartIcon)?
+            .withTintColor(AppColor.purple100, renderingMode: .alwaysOriginal)
+        : UIImage(systemName: SearchConstants.emptyHeartIcon)?
+            .withTintColor(AppColor.purple100, renderingMode: .alwaysOriginal)
 
         button.setImage(heartImage, for: .normal)
         button.tintColor = .clear
     }
     
-//    private lazy var largeTitleLabel = UILabel().then {
-//        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
-//        $0.numberOfLines = 0
-//        $0.textColor = AppColor.black
-//    }
-    
     private lazy var largeTitleLabel = UILabel().then {
-        let text = wineName
         $0.numberOfLines = 0
-        
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 2
-        
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.pretendard(.semiBold, size: 24),
-            .paragraphStyle: paragraphStyle,
-            .foregroundColor: AppColor.black
-        ]
-        
-        $0.attributedText = NSAttributedString(string: text, attributes: attributes)
     }
     
     private var smallTitleLabel = UILabel()
@@ -167,12 +157,42 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     private lazy var reviewView = ReviewView().then {
         $0.reviewCollectionView.delegate = self
         $0.reviewCollectionView.dataSource = self
-        $0.moreBtn.addTarget(self, action: #selector(goToEntireReview), for: .touchUpInside)
+    }
+    
+    private func addButtonTarget() {
+        averageTastingNoteView.writeNewTastingNoteBtn.addTarget(self, action: #selector(goToTastingNote), for: .touchUpInside)
+        reviewView.moreBtn.addTarget(self, action: #selector(goToEntireReview), for: .touchUpInside)
+    }
+    
+    @objc
+    private func goToTastingNote() {
+        // 배정이 안되서 일단 비활성화 해둠!!
+        // TODO : 나중에 파이어베이스
+//        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.moreBtnTapped, fileName: #file)
+        
+        let vc = TastedDateViewController()
+        vc.hidesBottomBarWhenPushed = true
+        
+        guard let wineInfo = wineInfoForTN else {
+            self.showToastMessage(message: "테이스팅 노트 작성을 위한 와인 데이터를 생성하는데 실패했습니다.", yPosition: view.frame.height * 0.75)
+            return
+        }
+        
+        TNWineDataManager.shared.updateWineData(wineId: self.wineId,
+                                                wineName: self.wineName,
+                                                sort: wineInfo.sort,
+                                                country: wineInfo.country,
+                                                region: wineInfo.region,
+                                                imageUrl: wineInfo.image,
+                                                variety: wineInfo.variety
+        )
+        navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc
     private func goToEntireReview() {
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.moreBtnTapped, fileName: #file)
+        
         let vc = EntireReviewViewController()
         vc.wineId = self.wineId
         vc.wineName = self.wineName
@@ -259,9 +279,9 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
 
         let tastingNoteString = noseNotes.joined(separator: ", ")
         
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
             //self.setupNavigationBar() // 제목 및 좋아요 설정
-            self.updateReviewView()
+            self?.updateReviewView()
         }
         
         let infoData = WineDetailInfoModel(image: wineResponse.imageUrl, sort: wineResponse.sort, country: wineResponse.country, region: wineResponse.region, variety: wineResponse.variety)
@@ -281,7 +301,10 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
             }
             expandedCells = Array(repeating: false, count: self.reviewData.count)
         }
+        
         DispatchQueue.main.async {
+//            AppTextStyle.KR.head.apply(to: self.largeTitleLabel, text: self.wineName, color: AppColor.black)
+            self.wineInfoForTN = infoData // 테이스팅 노트 작성을 위한 데이터 저장
             self.wineDetailView.configure(infoData)
             self.vivinoRateView.configure(rateData)
             self.averageTastingNoteView.configure(avgData)
