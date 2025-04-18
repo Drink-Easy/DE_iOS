@@ -42,8 +42,8 @@ public class CustomBlurButton: UIButton {
     
     public func configure(
         title: String,
-        titleColor: UIColor,
-        blurStyle: UIBlurEffect.Style
+        titleColor: UIColor = .white,
+        blurStyle: UIBlurEffect.Style = .systemUltraThinMaterial
     ) {
         self.setTitle(title, for: .normal)
         self.setTitleColor(titleColor, for: .normal)

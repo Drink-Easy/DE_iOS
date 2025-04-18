@@ -15,7 +15,7 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate, FirebaseT
     }
     
     private let startButton = CustomBlurButton(
-        title: "시작하기",
+        title: "다음으로",
         titleColor: .white,
         blurStyle: .systemUltraThinMaterial
     ).then {
@@ -28,7 +28,6 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate, FirebaseT
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = AppColor.background
         setupUI()
-        
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -60,11 +59,39 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate, FirebaseT
         pageControl.layoutIfNeeded()
     }
     
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        pageControl.setNeedsLayout()
+        pageControl.layoutIfNeeded()
+    }
+    
     @objc private func startButtonTapped() {
+        let currentPage = pageControl.currentPage
+        let isLast = currentPage == OnboardingSlide.allCases.count - 1
+        print("스크롤 디버깅: 마지막인가요? \(isLast)")
+        
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.startBtnTapped, fileName: #file)
         
-        let selectLoginViewController = SelectLoginTypeVC()
-        navigationController?.pushViewController(selectLoginViewController, animated: true)
+        if isLast {
+            let selectLoginViewController = SelectLoginTypeVC()
+            navigationController?.pushViewController(selectLoginViewController, animated: true)
+        } else {
+            let nextIndex = currentPage + 1
+            let indexPath = IndexPath(item: nextIndex, section: 0)
+            print("스크롤 디버깅: \(indexPath.item)번 슬라이드")
+            onboardingCollectionView.isPagingEnabled = false
+            onboardingCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+            
+//            pageControl.currentPage = nextIndex
+//            updateStartButtonTitle(for: nextIndex)
+            onboardingCollectionView.isPagingEnabled = true
+        }
+    }
+    
+    private func updateStartButtonTitle(for index: Int) {
+        let isLast = index == OnboardingSlide.allCases.count - 1
+        let title = isLast ? "시작하기" : "다음으로"
+        startButton.configure(title: title)
     }
     
     lazy var onboardingCollectionView: UICollectionView = {
@@ -75,7 +102,8 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate, FirebaseT
         layout.minimumInteritemSpacing = 0 // 아이템 간 간격 없음
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.isPagingEnabled = true // 페이지 단위 스크롤
+        collectionView.isPagingEnabled = true
+        collectionView.isScrollEnabled = false
         collectionView.showsHorizontalScrollIndicator = false // 가로 스크롤바 숨김
         collectionView.backgroundColor = .clear
         collectionView.register(OnboardingCollectionViewCell.self, forCellWithReuseIdentifier: "OnboardingCollectionViewCell")
@@ -86,10 +114,8 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate, FirebaseT
 }
 
 extension OnboardingVC: UIScrollViewDelegate {
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-        let pageIndex = Int(scrollView.contentOffset.x / view.frame.width)
-        pageControl.currentPage = pageIndex
+    public func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        let pageIndex = Int(scrollView.contentOffset.x / scrollView.frame.width)
         
         if pageIndex == 0 && scrollView.contentOffset.x < 0 {
             scrollView.contentOffset.x = 0
@@ -100,6 +126,10 @@ extension OnboardingVC: UIScrollViewDelegate {
                 scrollView.contentOffset.x = maxOffsetX
             }
         }
+        
+        pageControl.currentPage = pageIndex
+        updateStartButtonTitle(for: pageIndex)
+        print("스크롤 디버깅 : \(pageIndex)")
     }
 }
 
@@ -108,13 +138,15 @@ extension OnboardingVC: UICollectionViewDataSource, UICollectionViewDelegateFlow
         pageControl.numberOfPages = OnboardingSlide.allCases.count
         return OnboardingSlide.allCases.count
     }
+    
     public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "OnboardingCollectionViewCell", for: indexPath) as? OnboardingCollectionViewCell else {
             fatalError("Could not dequeue cell with identifier OnboardingCollectionViewCell")
         }
-        let slide = OnboardingSlide.allCases[indexPath.item]
         
-        cell.configure(imageName: slide.imageName, label1: slide.title, label2: slide.description)
+        let slide = OnboardingSlide.allCases[indexPath.item]
+        cell.configure(imageName: slide.imageName, titleText: slide.title, despText: slide.description)
+        
         return cell
     }
     

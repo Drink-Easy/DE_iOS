@@ -40,7 +40,7 @@ class OnboardingCollectionViewCell: UICollectionViewCell {
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(Constants.superViewHeight * 0.6)
+            make.top.equalToSuperview().inset(Constants.superViewHeight * 0.5)
             make.leading.equalTo(DynamicPadding.dynamicValue(32.0))
         }
         
