@@ -9,10 +9,7 @@ import DesignSystem
 public class OnboardingVC: UIViewController, UICollectionViewDelegate, FirebaseTrackable {
     public var screenName: String = Tracking.VC.onboardingVC
     
-    lazy var pageControl = CustomPageControl(indicatorColor: .white, currentIndicatorColor: AppColor.purple50).then {
-        $0.numberOfPages = OnboardingSlide.allCases.count
-        $0.currentPage = 0
-    }
+    var pageControl = CustomPageControl(indicatorColor: .white, currentIndicatorColor: AppColor.purple50)
     
     private let startButton = CustomBlurButton(
         title: "다음으로",
@@ -28,6 +25,12 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate, FirebaseT
         self.navigationController?.isNavigationBarHidden = true
         view.backgroundColor = AppColor.background
         setupUI()
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        pageControl.numberOfPages = OnboardingSlide.allCases.count
+        pageControl.currentPage = 0
     }
     
     public override func viewDidAppear(_ animated: Bool) {
