@@ -11,10 +11,6 @@ class RecordSliderView: UIView {
     public lazy var propertyHeader = PropertyTitleView(type: .none)
     
     public lazy var descriptionText = UILabel().then {
-        $0.text = "와인잔을 슬라이드해 기록해 보세요\n기록한 내용은 상단 팔레트에 반영돼요"
-        $0.textColor = AppColor.gray90
-        $0.font = UIFont.pretendard(.semiBold, size: 14)
-        $0.textAlignment = .left
         $0.numberOfLines = 0
     }
     
@@ -24,11 +20,15 @@ class RecordSliderView: UIView {
     let bodyView = SliderWithTooltipView()
     let alcoholView = SliderWithTooltipView()
     
+    let despText = "와인잔을 슬라이드해 기록해 보세요\n기록한 내용은 상단 팔레트에 반영돼요"
+    
 
     func setupUI() {
         [propertyHeader, descriptionText, sweetnessView, acidityView, tanninView, bodyView, alcoholView].forEach {
             addSubview($0)
         }
+        
+        AppTextStyle.KR.body2.apply(to: descriptionText, text: despText, color: AppColor.gray90)
         
         sweetnessView.titleLabel.text = "당도"
         sweetnessView.tooltipText = "와인이 달콤하면 당도가 높고, 달지 않으면 드라이(dry)한 와인이라고 해요. 혀끝에서 단 맛이 나는지 느껴보세요!"

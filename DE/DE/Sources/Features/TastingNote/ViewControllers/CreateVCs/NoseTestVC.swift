@@ -26,6 +26,8 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackab
     private var smallTitleLabel = UILabel()
     let navigationBarManager = NavigationBarManager()
     
+    let despText = "향을 선택해 주세요"
+    
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -41,7 +43,12 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackab
             }
         }
         
-        topView.header.setTitleLabel(title: wineData.wineName)
+        topView.header.setTitleLabel(title: wineData.wineName,
+                                     titleStyle: AppTextStyle.KR.subtitle1,
+                                     titleColor: AppColor.purple100,
+                                     description: despText,
+                                     descriptionStyle: AppTextStyle.KR.head,
+                                     descriptionColor: AppColor.black)
         
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
@@ -73,7 +80,12 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackab
         scrollView.addSubview(contentView)
         [middleView, topView].forEach { contentView.addSubview($0) }
         
-        topView.header.setTitleLabel(title: wineData.wineName)
+        topView.header.setTitleLabel(title: wineData.wineName,
+                                     titleStyle: AppTextStyle.KR.subtitle1,
+                                     titleColor: AppColor.purple100,
+                                     description: despText,
+                                     descriptionStyle: AppTextStyle.KR.head,
+                                     descriptionColor: AppColor.black)
         
         scrollView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)

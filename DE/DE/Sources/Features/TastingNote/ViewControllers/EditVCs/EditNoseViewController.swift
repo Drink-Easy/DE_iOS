@@ -29,6 +29,8 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
     var scentNames: [String] = []
     private var smallTitleLabel = UILabel()
     
+    let despText = "향을 선택해 주세요"
+    
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.view.addSubview(indicator)
@@ -36,7 +38,12 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
         NoseManager.shared.resetSelectedScents()
         NoseManager.shared.collapseAllSections()
         
-        topView.setWineName(wineData.wineName)
+        topView.setTitleLabel(title: wineData.wineName,
+                              titleStyle: AppTextStyle.KR.subtitle1,
+                              titleColor: AppColor.purple100,
+                              description: despText,
+                              descriptionStyle: AppTextStyle.KR.head,
+                              descriptionColor: AppColor.black)
         
         scentNames = tnManager.nose
         NoseManager.shared.applySelectedScents(from: scentNames)
@@ -63,6 +70,11 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
         logScreenView(fileName: #file)
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NoseManager.shared.resetAllScents() // 업데이트 안하고 나갈 때도 초기화
+    }
+    
     public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -79,7 +91,13 @@ class EditNoseViewController: UIViewController, UIScrollViewDelegate, FirebaseTr
     }
     
     private func setupUI() {
-        topView.setWineName(wineData.wineName)
+        topView.setTitleLabel(title: wineData.wineName,
+                              titleStyle: AppTextStyle.KR.subtitle1,
+                              titleColor: AppColor.purple100,
+                              description: despText,
+                              descriptionStyle: AppTextStyle.KR.head,
+                              descriptionColor: AppColor.black)
+        
         topView.propertyHeader.setName(eng: "Nose", kor: "향")
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
