@@ -24,13 +24,7 @@ public class WineInfoView: UIView {
     
     //디테일 뷰 담을 껍데기
     let backgroundView = UIView().then {
-        $0.backgroundColor = AppColor.tastingNoteBackground
-        $0.layer.cornerRadius = 10
-        
-        $0.layer.shadowColor = UIColor.black.cgColor  // 그림자 색상
-        $0.layer.shadowOpacity = 0.1                 // 그림자 투명도 (0 ~ 1)
-        $0.layer.shadowOffset = CGSize(width: 0, height: 4) // 그림자 위치 (x, y)
-        $0.layer.shadowRadius = 10                   // 그림자 퍼짐 정도
+        $0.backgroundColor = .clear
     }
     
     private let detailContentView = UIStackView().then {

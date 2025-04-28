@@ -70,10 +70,12 @@ public class CustomStepSlider: UISlider {
         
         for _ in 0..<stepCounts {
             let steps = createCircleView()
-            steps.snp.makeConstraints { make in
-                make.width.height.equalTo(8)
-            }
             stepStackView.addArrangedSubview(steps)
+            steps.snp.makeConstraints { make in
+//                make.width.height.equalTo(10)
+                make.width.height.equalTo(8)
+                make.centerY.equalTo(stepStackView)
+            }
         }
     }
     
@@ -133,7 +135,7 @@ public class CustomStepSlider: UISlider {
         circleView.layer.cornerRadius = 4
         circleView.layer.borderWidth = 1
         circleView.layer.borderColor = AppColor.background.cgColor
-        circleView.backgroundColor = AppColor.purple50
+        circleView.backgroundColor = AppColor.gray70
         return circleView
     }
     
@@ -155,11 +157,11 @@ public class CustomStepSlider: UISlider {
     }
     
     private func setupTrack() {
-        self.minimumTrackTintColor = AppColor.purple30
-        self.maximumTrackTintColor = AppColor.purple30
+        self.minimumTrackTintColor = AppColor.gray70
+        self.maximumTrackTintColor = AppColor.gray70
         
-        let trackHeight: CGFloat = 2.0
-        let trackImage = UIImage.createImage(withColor: AppColor.purple30, size: CGSize(width: 1, height: trackHeight))
+        let trackHeight: CGFloat = 1.5
+        let trackImage = UIImage.createImage(withColor: AppColor.gray70, size: CGSize(width: 1, height: trackHeight))
         self.setMinimumTrackImage(trackImage, for: .normal)
         self.setMaximumTrackImage(trackImage, for: .normal)
         
@@ -198,7 +200,7 @@ public class CustomStepSlider: UISlider {
         let updateBlock = {
             self.customThumbView.snp.remakeConstraints { make in
                 make.centerX.equalTo(targetCircleView.snp.centerX)
-                make.bottom.equalTo(firstCircleView.snp.bottom).offset(8)
+                make.bottom.equalTo(firstCircleView.snp.bottom).offset(6)
                 make.width.equalTo(27)
                 make.height.equalTo(62)
             }
