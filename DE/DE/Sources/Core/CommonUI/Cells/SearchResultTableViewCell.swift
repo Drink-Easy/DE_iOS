@@ -56,19 +56,18 @@ public class SearchResultTableViewCell: UITableViewCell {
 
     public override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
+        borderLayer.borderColor = UIColor.clear.cgColor // 기본 테두리 없음
+        
         if selected {
             borderLayer.cornerRadius = 8
-            contentView.backgroundColor = AppColor.purple10 // 선택된 배경색
-            borderLayer.borderColor = AppColor.purple70.cgColor // 선택된 테두리색
+            contentView.backgroundColor = AppColor.gray10
             // 1초 후 기본 상태로 복원
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
                 guard let self = self else { return }
                 self.contentView.backgroundColor = AppColor.background // 기본 배경색
-                self.borderLayer.borderColor = UIColor.clear.cgColor // 기본 테두리 없음
             }
         } else {
             contentView.backgroundColor = AppColor.background // 기본 배경색
-            borderLayer.borderColor = UIColor.clear.cgColor // 기본 테두리 없음
         }
     }
     

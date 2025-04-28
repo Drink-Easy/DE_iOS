@@ -14,10 +14,18 @@ public class TastedDateViewController: UIViewController, FirebaseTrackable {
     let wineData = TNWineDataManager.shared
     var selectedDate: DateComponents?
     let navigationBarManager = NavigationBarManager()
+    
+    let despText = "시음 시기를 선택해 주세요"
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        tastedDateView.topView.setTitleLabel(title: self.wineData.wineName, description: "시음 시기를 선택해주세요")
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        tastedDateView.topView.setTitleLabel(title: self.wineData.wineName,
+                                             titleStyle: AppTextStyle.KR.subtitle1,
+                                             titleColor: AppColor.purple100,
+                                             description: despText,
+                                             descriptionStyle: AppTextStyle.KR.head,
+                                             descriptionColor: AppColor.black)
     }
     
     public override func viewDidLoad() {
@@ -37,7 +45,7 @@ public class TastedDateViewController: UIViewController, FirebaseTrackable {
         
         view.addSubview(tastedDateView)
         tastedDateView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(5))
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10.0))
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
             make.bottom.equalToSuperview()
         }

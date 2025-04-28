@@ -10,8 +10,6 @@ import Then
 class OnlyReviewView: UIView {
     // 탑 - 와인 정보
     public lazy var header = UILabel().then {
-        $0.textColor = AppColor.black
-        $0.font = UIFont.pretendard(.semiBold, size: 24)
         $0.numberOfLines = 0
     }
     public lazy var infoView = WineDetailView()
@@ -49,7 +47,7 @@ class OnlyReviewView: UIView {
     }
     
     public func setWineName(_ name: String) {
-        self.header.text = name
+        AppTextStyle.KR.head.apply(to: self.header, text: name, color: AppColor.black)
     }
     
     private func addComponents() {

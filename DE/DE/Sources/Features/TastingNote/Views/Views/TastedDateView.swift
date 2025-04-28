@@ -9,7 +9,7 @@ import Network
 // 와인 날짜 선택 뷰
 
 class TastedDateView: UIView {
-    public lazy var topView = DateTopView(currentPage: 1, entirePage: 5)
+    public lazy var topView = TopView(currentPage: 1, entirePage: 5)
     
     lazy var calendarContainer = UIView().then {
         $0.backgroundColor = AppColor.white
@@ -56,17 +56,17 @@ class TastedDateView: UIView {
         topView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview()
-            make.height.greaterThanOrEqualTo(100)
+            make.height.greaterThanOrEqualTo(64)
         }
         
         calender.snp.makeConstraints {
             $0.verticalEdges.equalToSuperview()
-            $0.horizontalEdges.equalToSuperview().inset(16)
+            $0.horizontalEdges.equalToSuperview().inset(DynamicPadding.dynamicValue(16))
         }
         
         calendarContainer.snp.makeConstraints { make in
-            make.top.equalTo(topView.snp.bottom).offset(DynamicPadding.dynamicValue(8)) // 동적 기기 대응
-            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(8))
+            make.top.equalTo(topView.snp.bottom).offset(DynamicPadding.dynamicValue(16)) // 동적 기기 대응
+            make.leading.trailing.equalToSuperview()
             make.height.equalTo(calendarContainer.snp.width).multipliedBy(1.15)
         }
         

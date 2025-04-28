@@ -14,17 +14,11 @@ class OnboardingCollectionViewCell: UICollectionViewCell {
         $0.contentMode = .scaleAspectFill
     }
     
-    private let label1 = UILabel().then {
-        $0.font = UIFont.pretendard(.bold, size: 33)
-        $0.textColor = .white
-        $0.textAlignment = .left
+    private let titleLabel = UILabel().then {
         $0.numberOfLines = 0
     }
     
-    private let label2 = UILabel().then {
-        $0.font = UIFont.pretendard(.medium, size: 14)
-        $0.textColor = .white
-        $0.textAlignment = .left
+    private let despLabel = UILabel().then {
         $0.numberOfLines = 0
     }
     
@@ -38,25 +32,28 @@ class OnboardingCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupUI() {
-        [imageView, label1, label2].forEach { addSubview($0) }
+        addSubviews(imageView, titleLabel, despLabel)
         
         imageView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(-Constants.superViewHeight * 0.1)
             make.leading.trailing.bottom.equalToSuperview()
         }
-        label1.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(Constants.superViewHeight * 0.6)
+        
+        titleLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(Constants.superViewHeight * 0.5)
             make.leading.equalTo(DynamicPadding.dynamicValue(32.0))
         }
-        label2.snp.makeConstraints { make in
-            make.top.equalTo(label1.snp.bottom).offset(20)
+        
+        despLabel.snp.makeConstraints { make in
+            make.top.equalTo(titleLabel.snp.bottom).offset(DynamicPadding.dynamicValue(18.0))
             make.leading.equalTo(DynamicPadding.dynamicValue(32.0))
         }
     }
     
-    func configure(imageName: String, label1: String, label2: String) {
+    func configure(imageName: String, titleText: String, despText: String) {
         imageView.image = UIImage(named: imageName)
-        self.label1.text = label1
-        self.label2.text = label2
+        titleLabel.attributedText = .pretendard(titleText, font: .bold, size: 34, lineHeightMultiple: 1.4, letterSpacingPercent: -2.5, color: .white, alignment: .left)
+        AppTextStyle.KR.body1.apply(to: despLabel, text: despText, color: .white)
     }
+    
 }

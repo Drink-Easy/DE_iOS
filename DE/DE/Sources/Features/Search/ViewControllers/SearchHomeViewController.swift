@@ -20,26 +20,25 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate, F
     var totalPage = 0
     
     private lazy var searchHomeView = SearchHomeView(
-        titleText: "검색하고 싶은\n와인을 입력해주세요",
-        placeholder: "와인 이름을 검색하세요 (한글/영문)"
+        titleText: SearchConstants.titleText,
+        placeholder: SearchConstants.textFieldPlaceholder
     ).then {
         $0.searchResultTableView.dataSource = self
         $0.searchResultTableView.delegate = self
         $0.searchBar.delegate = self
-        //$0.searchBar.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.background
         self.view = searchHomeView
-        searchHomeView.noSearchResultLabel.isHidden = true
         setupNavigationBar()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.view.addSubview(indicator)
+        searchHomeView.noSearchResultLabel.isHidden = true
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -55,38 +54,44 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate, F
     
     public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        self.view.endEditing(true)  //firstresponder가 전부 사라짐
+        self.view.endEditing(true)
     }
     
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let query = searchHomeView.searchBar.text, query.count >= 2 {
-            DispatchQueue.main.async {
-                // 강제로 맨위로 올리기
+        defer { textField.resignFirstResponder() }
+        
+        guard let query = searchHomeView.searchBar.text, query.count >= 2 else {
+            showCharacterLimitAlert()
+            return true
+        }
+        
+        Task {
+            await MainActor.run {
                 self.searchHomeView.searchResultTableView.setContentOffset(.zero, animated: true)
+                self.view.showBlockingView()
             }
-            Task {
-                do {
-                    self.view.showBlockingView()
-                    try await callSearchAPI(query: query, startPage: 0)
-                    searchHomeView.noSearchResultLabel.isHidden = !wineResults.isEmpty
+
+            do {
+                try await callSearchAPI(query: query, startPage: 0)
+
+                await MainActor.run {
+                    self.searchHomeView.noSearchResultLabel.isHidden = !self.wineResults.isEmpty
                     self.view.hideBlockingView()
-                } catch {
+                }
+            } catch {
+                await MainActor.run {
                     self.view.hideBlockingView()
-                    errorHandler.handleNetworkError(error, in: self)
+                    self.errorHandler.handleNetworkError(error, in: self)
                 }
             }
-            textField.resignFirstResponder()
-            return true
-        } else {
-            showCharacterLimitAlert()
-            textField.resignFirstResponder()
         }
+        
         return true
     }
     
     public func textFieldDidBeginEditing(_ textField: UITextField) {
         if textField.text?.isEmpty ?? true {
-            let placeholderText = "와인 이름을 검색하세요 (한글/영문)"
+            let placeholderText = SearchConstants.textFieldPlaceholder
             textField.attributedPlaceholder = NSAttributedString(
                 string: placeholderText,
                 attributes: [
@@ -102,22 +107,6 @@ public class SearchHomeViewController : UIViewController, UITextFieldDelegate, F
         alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }
-    
-//    @objc
-//    private func textFieldDidChange(_ textField: UITextField) {
-//        let query = textField.text ?? ""
-//        filterSuggestions(with: query)
-//    }
-//
-//    func filterSuggestions(with query: String) {
-//        if query.isEmpty {
-//            wineResults = []
-//            self.searchHomeView.searchResultTableView.reloadData()
-//        } else {
-//            callSearchAPI(query: query)
-//    self.searchHomeView.searchResultTableView.reloadData()
-//        }
-//    }
     
     private func setupNavigationBar() {
         navigationBarManager.addBackButton(
@@ -182,6 +171,7 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.searchWineCellTapped, fileName: #file, cellID: "SearchResultTableViewCell")
+        
         let vc = WineDetailViewController()
         vc.wineId = wineResults[indexPath.row].wineId
         vc.wineName = wineResults[indexPath.row].name
@@ -199,8 +189,7 @@ extension SearchHomeViewController: UITableViewDelegate, UITableViewDataSource, 
         let contentHeight = scrollView.contentSize.height
         let scrollViewHeight = scrollView.frame.size.height
         
-        // Check if user has scrolled to the bottom
-        if contentOffsetY > contentHeight - scrollViewHeight { // Trigger when arrive the bottom
+        if contentOffsetY > contentHeight - scrollViewHeight {
             guard !isLoading, currentPage + 1 < totalPage else { return }
             isLoading = true
             self.view.showBlockingView()

@@ -16,6 +16,7 @@ public class AverageTastingNoteView: UIView {
     }
     
     private let title = TitleWithBarView(title: "Tasting Note", subTitle: "테이스팅 노트")
+    public let writeNewTastingNoteBtn = TextIconButton(title: "작성하러 가기")
     
     private func createTitle(text: String) ->  UILabel {
         return UILabel().then {
@@ -51,13 +52,19 @@ public class AverageTastingNoteView: UIView {
     }
     
     private func addComponents() {
-        [title, nose, palate, noseContents, palateContents, noTastinNote].forEach{ self.addSubview($0) }
+        self.addSubviews(title, writeNewTastingNoteBtn, nose, palate, noseContents, palateContents, noTastinNote)
+    
     }
     
     private func constraints() {
         title.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide)
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
+        }
+        
+        writeNewTastingNoteBtn.snp.makeConstraints {
+            $0.centerY.equalTo(title)
+            $0.trailing.equalTo(safeAreaLayoutGuide).inset(24)
         }
         
         nose.snp.makeConstraints {
@@ -102,7 +109,7 @@ public class AverageTastingNoteView: UIView {
             }
             noTastinNote.isHidden = false
         } else {
-            [title, nose, palate, noseContents, palateContents].forEach{ self.addSubview($0) }
+            [title, writeNewTastingNoteBtn, nose, palate, noseContents, palateContents].forEach{ self.addSubview($0) }
             noseContents.text = model.wineNoseText
             palateContents.text = "\(model.sugarContentDescription()), \(model.acidityDescription()), \(model.tanninDescription()),\n\(model.bodyDescription()), \(model.alcoholDescription())"
         }

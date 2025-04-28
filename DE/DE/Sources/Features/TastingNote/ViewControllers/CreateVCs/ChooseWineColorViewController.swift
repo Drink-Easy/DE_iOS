@@ -23,7 +23,7 @@ public class ChooseWineColorViewController: UIViewController, FirebaseTrackable 
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        colorView.header.setTitleLabel(wineData.wineName)
+        colorView.header.setTitleLabel(title: wineData.wineName)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         colorView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         colorView.infoView.countryContents.text = wineData.country + ", " + wineData.region
@@ -53,7 +53,7 @@ public class ChooseWineColorViewController: UIViewController, FirebaseTrackable 
     func setConstraints() {
         view.addSubview(colorView)
         colorView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10))
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10.0))
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
             make.bottom.equalToSuperview()
         }

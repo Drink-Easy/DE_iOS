@@ -5,11 +5,15 @@ import CoreModule
 import DesignSystem
 import SnapKit
 
-// 향 상단 뷰 pageCount ~ 향 설명까지
+// 수정화면 : 향 상단 뷰 ~ 향 설명까지
 
-class NoseTopView: UIView {
-    public lazy var header = TopView(currentPage: 3, entirePage: 5)
+class NoseEditTopView: UIView {
+    public lazy var header = UILabel().then {
+        $0.numberOfLines = 0
+    }
+    
     public lazy var propertyHeader = PropertyTitleView(type: .nose)
+    
     private let noseDescription = UILabel().then {
 //        $0.text = "와인을 시음하기 전, 향을 맡아보세요! 와인 잔을 천천히 돌려 잔의 표면에 와인을 묻히면 잔 속에 향이 풍부하게 느껴져요."
 //        $0.font = .pretendard(.regular, size: 14)
@@ -58,10 +62,11 @@ class NoseTopView: UIView {
         header.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview()
+            make.height.greaterThanOrEqualTo(36)
         }
         
         propertyHeader.snp.makeConstraints { make in
-            make.top.equalTo(header.snp.bottom).offset(DynamicPadding.dynamicValue(40))
+            make.top.equalTo(header.snp.bottom).offset(DynamicPadding.dynamicValue(36))
             make.leading.trailing.equalToSuperview()
             make.height.greaterThanOrEqualTo(30)
         }
@@ -82,6 +87,47 @@ class NoseTopView: UIView {
             make.height.equalTo(DynamicPadding.dynamicValue(20))
             make.bottom.equalToSuperview()
         }
+    }
+    
+    public func setTitleLabel(
+        title: String,
+        titleStyle: TextStyle = AppTextStyle.KR.head,
+        titleColor: UIColor = AppColor.black,
+        description: String? = nil,
+        descriptionStyle: TextStyle? = nil,
+        descriptionColor: UIColor? = nil,
+        lineSpacing: CGFloat = 0
+    ) {
+        let fullText = description != nil ? "\(title)\n\(description!)" : title
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = lineSpacing
+        paragraphStyle.minimumLineHeight = titleStyle.fontSize * titleStyle.lineHeightMultiple
+        paragraphStyle.maximumLineHeight = titleStyle.fontSize * titleStyle.lineHeightMultiple
+
+        let attributedString = NSMutableAttributedString(string: fullText)
+
+        let titleRange = (fullText as NSString).range(of: title)
+        attributedString.addAttributes([
+            .font: titleStyle.font,
+            .foregroundColor: titleColor,
+            .paragraphStyle: paragraphStyle,
+            .kern: titleStyle.fontSize * (titleStyle.letterSpacingPercent / 100)
+        ], range: titleRange)
+
+        if let description = description,
+           let descriptionStyle = descriptionStyle,
+           let descriptionColor = descriptionColor {
+            let descriptionRange = (fullText as NSString).range(of: description)
+            attributedString.addAttributes([
+                .font: descriptionStyle.font,
+                .foregroundColor: descriptionColor,
+                .paragraphStyle: paragraphStyle,
+                .kern: descriptionStyle.fontSize * (descriptionStyle.letterSpacingPercent / 100)
+            ], range: descriptionRange)
+        }
+
+        header.attributedText = attributedString
     }
     
     public func updateTopViewHeight() {

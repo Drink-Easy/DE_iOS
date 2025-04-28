@@ -29,8 +29,6 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
         $0.backgroundColor = AppColor.background
     }
     public lazy var wineNameTitle = UILabel().then {
-        $0.textColor = AppColor.black
-        $0.font = UIFont.pretendard(.semiBold, size: 24)
         $0.numberOfLines = 0
     }
     private let recordGraphView = RecordGraphView()
@@ -75,7 +73,7 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
     }
     
     public func setWineName(_ name: String) {
-        self.wineNameTitle.text = name
+        AppTextStyle.KR.head.apply(to: self.wineNameTitle, text: name, color: AppColor.black)
     }
     
     private func setupUI() {
@@ -101,16 +99,17 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
         }
         
         wineNameTitle.snp.makeConstraints { make in
-            make.top.equalToSuperview()
+            make.top.equalToSuperview().offset(DynamicPadding.dynamicValue(10.0))
             make.leading.trailing.equalToSuperview().inset(24)
             make.height.greaterThanOrEqualTo(62)
         }
         
         recordGraphView.snp.makeConstraints { make in
-            make.top.equalTo(wineNameTitle.snp.bottom).offset(20)
+            make.top.equalTo(wineNameTitle.snp.bottom).offset(36)
             make.leading.trailing.equalToSuperview().inset(24)
             make.height.equalTo(Constants.superViewHeight * 0.5 + 460)
         }
+        
         nextButton.snp.makeConstraints { make in
             make.top.equalTo(recordGraphView.snp.bottom).offset(50)
             make.leading.trailing.equalToSuperview().inset(24)

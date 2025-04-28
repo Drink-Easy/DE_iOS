@@ -21,9 +21,9 @@ class NoseCollectionReusableView: UICollectionReusableView {
     
     // 화살표 아이콘 - 열려있을 떄만 보이게. 기본 값이 안보기에
     private let iconImageView = UIImageView().then { imageView in
-        imageView.image = UIImage(systemName: "chevron.up") // 시스템 아이콘
+        imageView.image = UIImage(systemName: "chevron.up") // 고정 아이콘
         imageView.tintColor = AppColor.gray90
-        imageView.isHidden = true // 기본 상태에서 숨김 처리
+        imageView.isHidden = false // 항상 보이도록 설정
     }
 
     // 분리선
@@ -70,9 +70,14 @@ class NoseCollectionReusableView: UICollectionReusableView {
         titleLabel.text = title
         self.section = section
         self.delegate = delegate
-        
-        iconImageView.isHidden = !isExpanded
+
         separatorView.isHidden = isExpanded
+
+        // 회전 애니메이션
+        let angle: CGFloat = isExpanded ? 0 : .pi
+        UIView.animate(withDuration: 0.2) {
+            self.iconImageView.transform = CGAffineTransform(rotationAngle: angle)
+        }
     }
     
     // MARK: - 액션 처리

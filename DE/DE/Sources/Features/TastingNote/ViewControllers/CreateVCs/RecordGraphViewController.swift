@@ -41,7 +41,7 @@ public class RecordGraphViewController: UIViewController, UIScrollViewDelegate, 
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         recordGraphView.updateLabels()
-        header.setTitleLabel(wineData.wineName)
+        header.setTitleLabel(title: wineData.wineName)
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -74,7 +74,7 @@ public class RecordGraphViewController: UIViewController, UIScrollViewDelegate, 
         contentView.addSubview(nextButton)
         scrollView.addSubview(contentView)
         
-        header.setTitleLabel(wineData.wineName)
+        header.setTitleLabel(title: wineData.wineName)
         
         scrollView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -86,7 +86,7 @@ public class RecordGraphViewController: UIViewController, UIScrollViewDelegate, 
         }
         
         header.snp.makeConstraints { make in
-            make.top.equalToSuperview()
+            make.top.equalToSuperview().offset(DynamicPadding.dynamicValue(10.0))
             make.leading.trailing.equalToSuperview().inset(24)
             make.height.greaterThanOrEqualTo(62)
         }
@@ -94,7 +94,7 @@ public class RecordGraphViewController: UIViewController, UIScrollViewDelegate, 
         recordGraphView.snp.makeConstraints { make in
             make.top.equalTo(header.snp.bottom).offset(24)
             make.leading.trailing.equalToSuperview().inset(24)
-            make.height.equalTo(Constants.superViewHeight * 0.5 + 460)
+            make.height.equalTo(Constants.superViewHeight * 0.5 + 510)
         }
         
         nextButton.snp.makeConstraints { make in

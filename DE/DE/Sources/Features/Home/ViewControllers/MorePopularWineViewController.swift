@@ -40,7 +40,7 @@ class MorePopularWineViewController: UIViewController, FirebaseTrackable {
     }
     
     private lazy var morePopularWineView = MoreRecomWineView().then {
-        $0.title.text = "지금 가장 인기있는 와인 🔥"
+        $0.title.attributedText = .pretendard("지금 가장 인기있는 와인 🔥", font: .semiBold, size: 24, lineHeightMultiple: 1.45, letterSpacingPercent: -2.5, color: AppColor.black)
         
         $0.moreWineTableView.dataSource = self
         $0.moreWineTableView.delegate = self
