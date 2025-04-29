@@ -241,7 +241,7 @@ public class WineInfoView: UIView {
         }
         
         detailContentView.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(16) // 내부 여백 16pt
+            make.edges.equalToSuperview()
         }
         
         [chartHeaderView, colorHeaderView, noseHeaderView, ratingHeaderView, reviewHeaderView].forEach {
