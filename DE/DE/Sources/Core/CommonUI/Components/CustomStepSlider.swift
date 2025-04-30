@@ -115,7 +115,7 @@ public class CustomStepSlider: UISlider {
         // ThumbLabel의 위치와 크기 설정
         thumbLabel.snp.makeConstraints { make in
             make.bottom.equalTo(customThumbView.snp.bottom).inset(20)
-            make.height.equalTo(customThumbView).inset(5) // Thumb 이미지 내부에 적절한 여백 추가
+            make.height.equalTo(customThumbView).inset(9) // Thumb 이미지 내부에 적절한 여백 추가
             make.leading.trailing.equalTo(customThumbView)
         }
         
