@@ -22,22 +22,44 @@ struct PalateChartView: View {
             let sides = viewModel.stats.count
             
             // 데이터 레이어
-            PolygonShape(
-                sides: sides,
-                scale: 1.0,
-                values: dataValues
-            )
-            .fill(
-                RadialGradient(
-                    gradient: Gradient(colors: [
-                        Color("palateTop").opacity(0.5),
-                        Color("palateBtm").opacity(0.5)
-                    ]),
-                    center: .center, // 중심 위치
-                    startRadius: 10, // 그라디언트가 시작하는 반지름
-                    endRadius: Constants.superViewWidth * 0.35  // 그라디언트가 끝나는 반지름
+//            PolygonShape(
+//                sides: sides,
+//                scale: 1.0,
+//                values: dataValues
+//            )
+//            .fill(
+//                RadialGradient(
+//                    gradient: Gradient(colors: [
+//                        Color("palateTop").opacity(0.5),
+//                        Color("palateBtm").opacity(0.5)
+//                    ]),
+//                    center: .center, // 중심 위치
+//                    startRadius: 10, // 그라디언트가 시작하는 반지름
+//                    endRadius: Constants.superViewWidth * 0.35  // 그라디언트가 끝나는 반지름
+//                )
+//            )
+            GeometryReader { geometry in
+                let frame = geometry.frame(in: .local)
+                let center = CGPoint(x: frame.midX, y: frame.midY)
+                let dynamicEndRadius = min(frame.size.width, frame.size.height) / 2
+
+                PolygonShape(
+                    sides: sides,
+                    scale: 1.0,
+                    values: dataValues
                 )
-            )
+                .fill(
+                    RadialGradient(
+                        gradient: Gradient(colors: [
+                            Color("palateTop").opacity(0.5),
+                            Color("palateBtm").opacity(0.5)
+                        ]),
+                        center: .center,
+                        startRadius: 0,
+                        endRadius: dynamicEndRadius
+                    )
+                )
+            }
             
             // 단계별 다각형과 레이블
             ForEach(1...levels, id: \.self) { level in
