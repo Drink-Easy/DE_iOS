@@ -28,10 +28,14 @@ struct PalateChartView: View {
                 values: dataValues
             )
             .fill(
-                LinearGradient(
-                    gradient: Gradient(colors: [Color("palateTop").opacity(0.5), Color("palateBtm").opacity(0.5)]),
-                    startPoint: .top,
-                    endPoint: .bottom
+                RadialGradient(
+                    gradient: Gradient(colors: [
+                        Color("palateTop").opacity(0.5),
+                        Color("palateBtm").opacity(0.5)
+                    ]),
+                    center: .center, // 중심 위치
+                    startRadius: 10, // 그라디언트가 시작하는 반지름
+                    endRadius: Constants.superViewWidth * 0.35  // 그라디언트가 끝나는 반지름
                 )
             )
             
