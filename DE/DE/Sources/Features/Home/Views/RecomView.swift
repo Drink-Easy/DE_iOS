@@ -37,7 +37,7 @@ class RecomView: UIView {
     public lazy var recomCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
         $0.minimumInteritemSpacing = 12
         $0.scrollDirection = .horizontal
-        $0.sectionInset = UIEdgeInsets(top: 15, left: 24, bottom: 15, right: 24)
+        $0.sectionInset = UIEdgeInsets(top: 16, left: 24, bottom: 16, right: 24)
     }).then {
         $0.register(RecomCollectionViewCell.self, forCellWithReuseIdentifier: RecomCollectionViewCell.identifier)
         $0.backgroundColor = .clear
@@ -72,9 +72,9 @@ class RecomView: UIView {
         }
         
         recomCollectionView.snp.makeConstraints {
-            $0.top.equalTo(title.snp.bottom).offset(DynamicPadding.dynamicValue(16.0))
+            $0.top.equalTo(title.snp.bottom)
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
-            $0.height.equalTo(220)
+            $0.height.equalTo(247)
             $0.bottom.equalToSuperview()
         }
     }
