@@ -1,29 +1,14 @@
-name: Auto Assign Reviewers and Assignees
+name: Review Assign
 
 on:
   pull_request:
-    types: [opened]
+    types: [opened, ready_for_review]
 
 jobs:
-  assign-reviewers-and-assignees:
+  assign:
     runs-on: ubuntu-latest
     steps:
-      - name: Assign reviewers (excluding author)
-        uses: peter-evans/reviewers@v7.0.6
+      - uses: hkusu/review-assign-action@v1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          reviewers: |
-            doyeonk429
-            yeseonglee
-            dlguszoo
-          filter-author: true
-
-      - name: Assign assignees (including author if needed)
-        uses: peter-evans/auto-assign@v2
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          assignees: |
-            doyeonk429
-            yeseonglee
-            dlguszoo
-          filter-author: false  # true로 하면 PR 작성자는 제외됨
+          assignees: ${{ github.actor }} # assign pull request author
+          reviewers: doyeonk429, yeseonglee, dlguszoo
