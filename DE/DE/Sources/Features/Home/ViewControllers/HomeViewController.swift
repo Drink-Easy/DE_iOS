@@ -162,7 +162,7 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
         contentView.snp.makeConstraints {
             $0.edges.equalTo(scrollView) // 스크롤뷰의 모든 가장자리에 맞춰 배치
             $0.width.equalTo(scrollView.snp.width) // 가로 스크롤을 방지, 스크롤뷰와 같은 너비로 설정
-            $0.bottom.equalTo(popularWineListView.snp.bottom).offset(DynamicPadding.dynamicValue(35))
+            $0.bottom.equalTo(popularWineListView.snp.bottom).offset(DynamicPadding.dynamicValue(45))
         }
         
         adCollectionView.snp.makeConstraints {
@@ -178,12 +178,12 @@ public class HomeViewController: UIViewController, HomeTopViewDelegate, UIGestur
         }
         
         likeWineListView.snp.makeConstraints {
-            $0.top.equalTo(adCollectionView.snp.bottom).offset(DynamicPadding.dynamicValue(35))
+            $0.top.equalTo(adCollectionView.snp.bottom).offset(DynamicPadding.dynamicValue(30))
             $0.horizontalEdges.equalToSuperview()
         }
         
         popularWineListView.snp.makeConstraints {
-            $0.top.equalTo(likeWineListView.snp.bottom).offset(DynamicPadding.dynamicValue(40))
+            $0.top.equalTo(likeWineListView.snp.bottom).offset(DynamicPadding.dynamicValue(25))
             $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalToSuperview()
         }
@@ -418,7 +418,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         if collectionView.tag == 0 {
             return CGSize(width: collectionView.frame.width, height: collectionView.frame.height)
         } else if collectionView.tag == 1 || collectionView.tag == 2 {
-            return CGSize(width: 166, height: 205)
+            return CGSize(width: 166, height: 215)
         }
         return CGSize.zero
     }
