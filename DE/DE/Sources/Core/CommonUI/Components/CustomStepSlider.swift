@@ -53,7 +53,7 @@ public class CustomStepSlider: UISlider {
     }
     
     private lazy var stepBarView = UIView().then { s in
-        s.backgroundColor = AppColor.gray70
+        s.backgroundColor = AppColor.sliderBackground
     }
     
     private lazy var stepStackView = UIStackView().then { s in
@@ -70,7 +70,7 @@ public class CustomStepSlider: UISlider {
         stepBarView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.centerY.equalToSuperview()
-            make.height.equalTo(1.5)
+            make.height.equalTo(2)
         }
         stepStackView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
@@ -143,7 +143,7 @@ public class CustomStepSlider: UISlider {
         circleView.layer.cornerRadius = 4
         circleView.layer.borderWidth = 1
         circleView.layer.borderColor = AppColor.background.cgColor
-        circleView.backgroundColor = AppColor.gray70
+        circleView.backgroundColor = AppColor.sliderStep
         return circleView
     }
     
