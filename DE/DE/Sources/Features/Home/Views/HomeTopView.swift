@@ -13,10 +13,12 @@ class HomeTopView: UIView {
     private lazy var icon = UIImageView().then {
         $0.image = UIImage(named: "DGIcon")
         $0.backgroundColor = .clear
+        $0.layer.cornerRadius = DynamicPadding.dynamicValue(3) // 원하는 radius 값으로 설정
+        $0.clipsToBounds = true
     }
     
     private lazy var logo = UIImageView().then {
-        $0.image = UIImage(named: "homeLogo")
+        $0.image = UIImage(named: "logo")
         $0.contentMode = .scaleAspectFit
         $0.backgroundColor = .clear
     }
@@ -47,14 +49,14 @@ class HomeTopView: UIView {
         icon.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(10.0))
             $0.leading.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(26.0))
-            $0.width.height.equalTo(DynamicPadding.dynamicValue(39.0))
+            $0.width.height.equalTo(DynamicPadding.dynamicValue(27))
             $0.bottom.equalToSuperview().inset(DynamicPadding.dynamicValue(8.0))
         }
         
         logo.snp.makeConstraints {
             $0.centerY.equalTo(icon)
             $0.leading.equalTo(icon.snp.trailing).offset(DynamicPadding.dynamicValue(10.0))
-            $0.width.equalTo(DynamicPadding.dynamicValue(74))
+            $0.width.equalTo(DynamicPadding.dynamicValue(95))
         }
         
         searchBtn.snp.makeConstraints {
