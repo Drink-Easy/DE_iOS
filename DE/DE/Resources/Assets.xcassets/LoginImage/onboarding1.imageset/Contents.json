@@ -1,7 +1,27 @@
 {
   "images" : [
     {
-      "filename" : "onboarding1.pdf",
+      "filename" : "ob1light.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "light"
+        }
+      ],
+      "filename" : "ob1light 1.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "ob1dark.pdf",
       "idiom" : "universal"
     }
   ],
