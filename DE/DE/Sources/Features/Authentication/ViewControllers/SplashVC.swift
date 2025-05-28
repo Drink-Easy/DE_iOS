@@ -160,7 +160,7 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     func setConstraints() {
         logoImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(Constants.superViewHeight * 0.4)
+            make.top.equalTo(Constants.superViewHeight * 0.45)
             make.width.equalTo(Constants.superViewWidth * 0.6)
         }
     }
