@@ -7,6 +7,9 @@ import Then
 import DesignSystem
 
 public final class VintageTableViewCell: UITableViewCell {
+
+    static let identifier = "VintageTableViewCell"
+    
     // MARK: - Components
     private var year = UILabel().then {
         $0.textColor = AppColor.black
