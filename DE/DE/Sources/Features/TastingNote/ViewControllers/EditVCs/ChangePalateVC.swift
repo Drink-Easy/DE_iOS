@@ -107,7 +107,7 @@ public class ChangePalateVC: UIViewController, UIScrollViewDelegate, FirebaseTra
         recordGraphView.snp.makeConstraints { make in
             make.top.equalTo(wineNameTitle.snp.bottom).offset(36)
             make.leading.trailing.equalToSuperview().inset(24)
-            make.height.equalTo(Constants.superViewHeight * 0.5 + 460)
+            make.height.equalTo(Constants.superViewHeight * 0.5 + 510)
         }
         
         nextButton.snp.makeConstraints { make in

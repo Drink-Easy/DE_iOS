@@ -39,13 +39,12 @@ public class CustomStepSlider: UISlider {
     }
     
     // MARK: - Setup UI
-    private let customThumbView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "thumbImage"))
+    private let customThumbView = UIImageView().then { imageView in
+        imageView.image = UIImage(named: "thumbImage")
         imageView.contentMode = .scaleAspectFit
         imageView.layer.zPosition = 1
         imageView.isUserInteractionEnabled = true
-        return imageView
-    }()
+    }
     
     private let thumbLabel = UILabel().then { label in
         label.textAlignment = .center
@@ -53,27 +52,38 @@ public class CustomStepSlider: UISlider {
         label.textColor = .white
     }
     
+    private lazy var stepBarView = UIView().then { s in
+        s.backgroundColor = AppColor.sliderBackground
+    }
+    
     private lazy var stepStackView = UIStackView().then { s in
         s.axis = .horizontal
         s.alignment = .center
         s.distribution = .equalSpacing
+        s.backgroundColor = .clear
     }
     
     private func setupUI() {
-        
+        addSubview(stepBarView)
         addSubview(customThumbView)
         addSubview(stepStackView)
-        stepStackView.snp.makeConstraints { make in
+        stepBarView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.centerY.equalToSuperview()
+            make.height.equalTo(2)
+        }
+        stepStackView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.centerY.equalTo(stepBarView)
         }
         
         for _ in 0..<stepCounts {
             let steps = createCircleView()
+            stepStackView.addArrangedSubview(steps)
             steps.snp.makeConstraints { make in
                 make.width.height.equalTo(8)
+                make.centerY.equalTo(stepStackView)
             }
-            stepStackView.addArrangedSubview(steps)
         }
     }
     
@@ -105,7 +115,7 @@ public class CustomStepSlider: UISlider {
         // ThumbLabel의 위치와 크기 설정
         thumbLabel.snp.makeConstraints { make in
             make.bottom.equalTo(customThumbView.snp.bottom).inset(20)
-            make.height.equalTo(customThumbView).inset(5) // Thumb 이미지 내부에 적절한 여백 추가
+            make.height.equalTo(customThumbView).inset(9) // Thumb 이미지 내부에 적절한 여백 추가
             make.leading.trailing.equalTo(customThumbView)
         }
         
@@ -133,7 +143,7 @@ public class CustomStepSlider: UISlider {
         circleView.layer.cornerRadius = 4
         circleView.layer.borderWidth = 1
         circleView.layer.borderColor = AppColor.background.cgColor
-        circleView.backgroundColor = AppColor.purple50
+        circleView.backgroundColor = AppColor.sliderStep
         return circleView
     }
     
@@ -155,13 +165,11 @@ public class CustomStepSlider: UISlider {
     }
     
     private func setupTrack() {
-        self.minimumTrackTintColor = AppColor.purple30
-        self.maximumTrackTintColor = AppColor.purple30
+        self.minimumTrackTintColor = .clear
+        self.maximumTrackTintColor = .clear
         
-        let trackHeight: CGFloat = 2.0
-        let trackImage = UIImage.createImage(withColor: AppColor.purple30, size: CGSize(width: 1, height: trackHeight))
-        self.setMinimumTrackImage(trackImage, for: .normal)
-        self.setMaximumTrackImage(trackImage, for: .normal)
+        self.setMinimumTrackImage(UIImage(), for: .normal)
+        self.setMaximumTrackImage(UIImage(), for: .normal)
         
         minimumValue = stepValues.first ?? 20
         maximumValue = stepValues.last ?? 100
@@ -198,7 +206,7 @@ public class CustomStepSlider: UISlider {
         let updateBlock = {
             self.customThumbView.snp.remakeConstraints { make in
                 make.centerX.equalTo(targetCircleView.snp.centerX)
-                make.bottom.equalTo(firstCircleView.snp.bottom).offset(8)
+                make.bottom.equalTo(firstCircleView.snp.bottom).offset(5)
                 make.width.equalTo(27)
                 make.height.equalTo(62)
             }
@@ -228,17 +236,5 @@ public class CustomStepSlider: UISlider {
     private func snapToStep() {
         let closestValue = stepValues.min(by: { abs($0 - value) < abs($1 - value) }) ?? value
         value = closestValue
-    }
-}
-
-extension UIImage {
-    static func createImage(withColor color: UIColor, size: CGSize) -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-        color.setFill()
-        let rect = CGRect(origin: .zero, size: size)
-        UIRectFill(rect)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return image ?? UIImage()
     }
 }
