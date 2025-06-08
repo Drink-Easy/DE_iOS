@@ -26,6 +26,7 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     
     private lazy var logoImage = UIImageView().then { logoImage in
         logoImage.image = UIImage(named: "logo")
+        logoImage.contentMode = .scaleAspectFit
     }
     
     public override func viewDidLoad() {
