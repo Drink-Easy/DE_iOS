@@ -9,6 +9,11 @@ public enum AppColor {
     public static let wineBackground = UIColor(named: "winebg")!
     public static let tooltipBackground = UIColor(named: "tooltipbg")!
     public static let tastingNoteBackground = UIColor(named: "tnbg")!
+    public static let sliderBackground = UIColor(named: "slider")!
+    public static let sliderStep = UIColor(named: "sliderStep")!
+    
+    public static let graphTop = UIColor(named: "graphTop")!
+    public static let graphBottom = UIColor(named: "graphBottom")!
     
     // MARK: - Primary
     public static let purple100 = UIColor(named: "purple100")!
@@ -29,4 +34,6 @@ public enum AppColor {
     public static let black = UIColor(named: "Dblack")!
     public static let white = UIColor(named: "Dwhite")!
     public static let red = UIColor(named: "red")!
+    
+    
 }
