@@ -8,7 +8,7 @@ import DesignSystem
 open class CustomButton: UIButton {
     public init(
         title: String = "",
-        titleColor: UIColor = .white,
+        titleColor: UIColor = UIColor(hex: "FFFFFF")!,
         isEnabled: Bool = true
     ) {
         super.init(frame: .zero)
