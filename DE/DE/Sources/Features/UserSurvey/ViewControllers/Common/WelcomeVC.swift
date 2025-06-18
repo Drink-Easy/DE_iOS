@@ -13,8 +13,8 @@ public class WelcomeVC: UIViewController, FirebaseTrackable {
     
     // MARK: - UI Components
     private let logoImageView = UIImageView().then {
-        $0.image = UIImage(named: "logo")
-        $0.contentMode = .scaleAspectFit
+        $0.image = UIImage(named: "welcomeImage")
+        $0.contentMode = .scaleAspectFill
     }
     
     private let titleLabel = UILabel().then {
@@ -78,17 +78,17 @@ public class WelcomeVC: UIViewController, FirebaseTrackable {
     private func setupConstraints() {
         logoImageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(Constants.superViewHeight * 0.3)
-            make.width.height.equalTo(DynamicPadding.dynamicValue(100.0))
+            make.top.equalTo(Constants.superViewHeight * 0.35)
+            make.width.equalTo(Constants.superViewWidth * 0.3)
         }
         
         titleLabel.snp.makeConstraints { make in
-            make.top.equalTo(logoImageView.snp.bottom).offset(DynamicPadding.dynamicValue(48.0))
+            make.top.equalTo(logoImageView.snp.bottom).offset(DynamicPadding.dynamicValue(Constants.superViewHeight * 0.1))
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
         }
         
         subtitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(titleLabel.snp.bottom).offset(DynamicPadding.dynamicValue(32.0))
+            make.top.equalTo(titleLabel.snp.bottom).offset(DynamicPadding.dynamicValue(16))
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24.0))
         }
         
