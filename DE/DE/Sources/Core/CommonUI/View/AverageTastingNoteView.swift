@@ -42,7 +42,7 @@ public class AverageTastingNoteView: UIView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.background
+        backgroundColor = AppColor.white
         self.addComponents()
         self.constraints()
     }
@@ -58,7 +58,7 @@ public class AverageTastingNoteView: UIView {
     
     private func constraints() {
         title.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide)
+            $0.top.equalTo(safeAreaLayoutGuide).inset(23)
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
         }
         
@@ -88,13 +88,13 @@ public class AverageTastingNoteView: UIView {
             $0.leading.equalTo(noseContents.snp.leading)
             $0.trailing.equalTo(safeAreaLayoutGuide).offset(-26)
             //$0.height.equalTo(50)
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(25)
         }
         
         noTastinNote.snp.makeConstraints { 
             $0.top.equalTo(title.snp.bottom).offset(16)
             $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(25)
         }
     }
     

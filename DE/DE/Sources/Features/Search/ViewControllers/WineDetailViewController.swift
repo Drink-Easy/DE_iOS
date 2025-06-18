@@ -216,7 +216,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
         contentView.snp.makeConstraints {
             $0.edges.equalTo(scrollView)
             $0.width.equalTo(scrollView.snp.width)
-            $0.bottom.equalTo(reviewView.snp.bottom).offset(40)
+            $0.bottom.equalTo(reviewView.snp.bottom)
         }
         
         largeTitleLabel.snp.makeConstraints {
@@ -230,19 +230,19 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
         }
         
         vivinoRateView.snp.makeConstraints {
-            $0.top.equalTo(wineDetailView.snp.bottom).offset(54)
+            $0.top.equalTo(wineDetailView.snp.bottom).offset(8)
             $0.horizontalEdges.equalToSuperview()
         }
         
         averageTastingNoteView.snp.makeConstraints { 
-            $0.top.equalTo(vivinoRateView.snp.bottom).offset(70)
+            $0.top.equalTo(vivinoRateView.snp.bottom).offset(8)
             $0.horizontalEdges.equalToSuperview()
         }
         
         reviewView.snp.makeConstraints {
-            $0.top.equalTo(averageTastingNoteView.snp.bottom).offset(55)
+            $0.top.equalTo(averageTastingNoteView.snp.bottom).offset(8)
             $0.horizontalEdges.equalToSuperview()
-            $0.bottom.equalToSuperview().offset(-40)
+            $0.bottom.equalToSuperview()
         }
     }
     

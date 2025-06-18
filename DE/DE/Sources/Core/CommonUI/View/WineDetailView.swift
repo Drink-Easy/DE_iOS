@@ -78,7 +78,7 @@ public class WineDetailView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.background
+        backgroundColor = AppColor.white
         self.addComponents()
         self.constraints()
     }

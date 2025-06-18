@@ -61,7 +61,7 @@ public class VivinoRateView: UIView {
         $0.isHidden = true
     }
     
-    private let title = TitleWithBarView(title: "Vivino Rate", subTitle: "비비노 평점")
+    private let title = TitleWithBarView(title: "Vivino Grade", subTitle: "비비노 평점")
     
     public lazy var scoreLabel = UILabel()
     
@@ -79,7 +79,7 @@ public class VivinoRateView: UIView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.background
+        backgroundColor = AppColor.white
         self.addComponents()
         self.constraints()
     }
@@ -94,7 +94,7 @@ public class VivinoRateView: UIView {
     
     private func constraints() {
         title.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide)
+            $0.top.equalTo(safeAreaLayoutGuide).inset(23)
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
         }
         
@@ -106,12 +106,13 @@ public class VivinoRateView: UIView {
         scoreStar.snp.makeConstraints {
             $0.centerY.equalTo(scoreLabel)
             $0.leading.equalTo(scoreLabel.snp.trailing).offset(26)
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(25)
         }
         
         noRatingLabel.snp.makeConstraints {
             $0.top.equalTo(title.snp.bottom).offset(16)
             $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
+            $0.bottom.equalToSuperview().inset(25)
         }
     }
     

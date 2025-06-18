@@ -87,7 +87,7 @@ public class ReviewView: UIView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.background
+        backgroundColor = AppColor.white
         self.addComponents()
         self.constraints()
     }
@@ -103,7 +103,7 @@ public class ReviewView: UIView {
     
     private func constraints() {
         title.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide)
+            $0.top.equalTo(safeAreaLayoutGuide).inset(23)
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
         }
         
