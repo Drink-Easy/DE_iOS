@@ -1,6 +1,7 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import UIKit
+import Combine
 import SnapKit
 import Then
 import SwiftyToaster
@@ -18,13 +19,24 @@ import FirebaseAnalytics
 public class SelectLoginTypeVC: UIViewController, FirebaseTrackable, UIGestureRecognizerDelegate {
     public var screenName: String = Tracking.VC.selectLoginTypeVC
     
-    public static let keychain = KeychainSwift()
-    lazy var kakaoAuthVM: KakaoAuthVM = KakaoAuthVM()
-    public var appleLoginDto : AppleLoginRequestDTO?
-    let networkService = AuthService()
+    public static let keychain = KeychainSwift() // 더 앞에서 만들어주자 -> 이동 예정
     let errorHandler = NetworkErrorHandler()
+    let networkService = AuthService()
+    var appleLoginDto : AppleLoginRequestDTO?
+    
+    var viewModel: SelectLoginViewModel
+    private var cancellables = Set<AnyCancellable>()
     
     private let mainView = SelectLoginTypeView()
+    
+    init(viewModel: SelectLoginViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - Life Cycle
     public override func viewWillAppear(_ animated: Bool) {
@@ -42,11 +54,33 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable, UIGestureRe
         view.backgroundColor = AppColor.background
         setupActions()
         view.addSubview(indicator)
+        
+        viewModel.bind()       // ViewModel 입력 바인딩
+        bindViewModel()        // ViewModel 출력 바인딩
     }
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         logScreenView(fileName: #file)
+    }
+    
+    func bindViewModel() {
+        viewModel.output
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] event in
+                switch event {
+                case let .loading(turnOn):
+                    turnOn ? self?.view.showBlockingView() : self?.view.hideBlockingView()
+                
+                case let .failed(error):
+                    self?.errorHandler.handleNetworkError(error, in: self!)
+                    
+                case let .success(isFirst):
+                    self?.goToNextView(isFirst)
+                default: break
+                }
+            }
+            .store(in: &cancellables)
     }
     
     // MARK: - Setup Methods
@@ -59,59 +93,21 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable, UIGestureRe
     // MARK: - Actions
     @objc private func kakaoButtonTapped() {
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.kakaoBtnTapped, fileName: #file)
-        self.kakaoAuthVM.kakaoLogin { success in
-            if success {
-                UserApi.shared.me { (user, error) in
-                    if let error = error {
-                        return
-                    }
-                    
-                    guard let userID = user?.id else {
-                        return
-                    }
-                    guard let userEmail = user?.kakaoAccount?.email else {
-                        return
-                    }
-                    let userIDString = String(userID)
-                    
-                    self.kakaoLoginProceed(userIDString, userEmail: userEmail)
-                }
-            }
-        }
+        
+        // 뷰모델에 카카오 버튼이 눌렸다는 걸 알려주기 -> Input
+        viewModel.input.send(.kakaoLogin)
     }
     
     @objc private func appleButtonTapped() {
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.appleBtnTapped, fileName: #file)
+        
+        // 뷰모델에 애플로그인 버튼이 눌렸다는 걸 알려주기 -> input
         startAppleLoginProcess()
-    }
-    
-    private func kakaoLoginProceed(_ userIDString: String, userEmail: String) {
-        let kakaoDTO = self.networkService.makeKakaoDTO(username: userIDString, email: userEmail)
-        self.view.showBlockingView()
-        Task {
-            do {
-                let response = try await networkService.kakaoLogin(data: kakaoDTO)
-                Analytics.setUserID("\(response.id)") // 유저 아이디
-                DispatchQueue.main.async {
-                    self.view.hideBlockingView()
-                    SelectLoginTypeVC.keychain.set(response.isFirst, forKey: "isFirst")
-                    self.goToNextView(response.isFirst)
-                }
-            } catch {
-                self.view.hideBlockingView()
-                errorHandler.handleNetworkError(error, in: self)
-            }
-        }
     }
     
     @objc private func goToLoginVC() {
         let loginViewController = LoginVC()
         navigationController?.pushViewController(loginViewController, animated: true)
-    }
-    
-    @objc private func joinButtonTapped() {
-        let joinViewController = SignUpVC()
-        navigationController?.pushViewController(joinViewController, animated: true)
     }
     
     func goToNextView(_ isFirstLogin: Bool) {

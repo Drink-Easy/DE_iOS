@@ -26,7 +26,11 @@ public class NetworkErrorHandler {
     /// ✅ 인증 만료 에러 처리 (로그인 화면 이동)
     private func handleTokenExpirationError(_ userMessage: String, in viewController: UIViewController) {
         let action = UIAlertAction(title: "로그인 하러가기", style: .default) { _ in
-            self.redirectToScreen(to: SelectLoginTypeVC(), in: viewController)
+            let viewModel = SelectLoginViewModel(
+                kakaoAuthVM: KakaoAuthVM(),
+                networkService: AuthService()
+            )
+            self.redirectToScreen(to: SelectLoginTypeVC(viewModel: viewModel), in: viewController)
         }
         presentAlertView("인증 만료", message: userMessage, alertActions: action, in: viewController)
     }

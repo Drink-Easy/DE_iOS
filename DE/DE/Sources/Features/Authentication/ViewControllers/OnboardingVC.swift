@@ -5,6 +5,7 @@ import CoreModule
 import SnapKit
 import Then
 import DesignSystem
+import Network
 
 public class OnboardingVC: UIViewController, UICollectionViewDelegate, FirebaseTrackable {
     public var screenName: String = Tracking.VC.onboardingVC
@@ -72,7 +73,13 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate, FirebaseT
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.startBtnTapped, fileName: #file)
         
         if isLast {
-            let selectLoginViewController = SelectLoginTypeVC()
+            // 코디네이터로 나중에 이동
+            let viewModel = SelectLoginViewModel(
+                kakaoAuthVM: KakaoAuthVM(),
+                networkService: AuthService()
+            )
+            let selectLoginViewController = SelectLoginTypeVC(viewModel: viewModel)
+            
             navigationController?.pushViewController(selectLoginViewController, animated: true)
         } else {
             let nextIndex = currentPage + 1
