@@ -17,20 +17,14 @@ public class CustomAlertView: UIView {
     }
     
     private lazy var logoImage = UIImageView().then { logoImage in
-        logoImage.image = UIImage(named: "logo")
+        logoImage.image = UIImage(named: "DGIcon")
     }
     
     private let titleLabel = UILabel().then { label in
-        label.textAlignment = .center
-        label.font = UIFont.pretendard(.semiBold, size: 18)
-        label.textColor = AppColor.black
         label.numberOfLines = 0
     }
     
     private let messageTextView = UITextView().then { textView in
-        textView.font = UIFont.pretendard(.regular, size: 16)
-        textView.textAlignment = .center
-        textView.textColor = AppColor.gray100
         textView.isEditable = false
         textView.isScrollEnabled = false
         textView.showsVerticalScrollIndicator = true
@@ -80,13 +74,13 @@ public class CustomAlertView: UIView {
     private func setupConstraints() {
         containerView.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.width.equalTo(Constants.superViewWidth * 0.7)
+            make.width.equalTo(Constants.superViewWidth * 0.75)
             make.height.lessThanOrEqualTo(Constants.superViewHeight * 0.7)
         }
         
         logoImage.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(24)
-            make.width.height.equalTo(24)
+            make.top.equalToSuperview().offset(32)
+            make.width.height.equalTo(32)
             make.centerX.equalToSuperview()
         }
         
@@ -115,10 +109,9 @@ public class CustomAlertView: UIView {
     
     // MARK: - Public Configuration Method
     public func configure(title: String, message: String) {
-        titleLabel.text = title
-        messageTextView.text = message
-
-        // 강제 레이아웃 업데이트
+        AppTextStyle.KR.head.apply(to: titleLabel, text: title, color: AppColor.black, alignment: .center)
+        
+        messageTextView.attributedText = .pretendard(message, font: .regular, size: 16, lineHeightMultiple: 1.5, color: AppColor.gray100, alignment: .center)
         layoutIfNeeded()
     }
     

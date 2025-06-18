@@ -82,7 +82,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             if status == .success {
                 remoteConfig.activate { (changed, error) in
                     print(changed)
-                    let isNeedUpdate = remoteConfig["isNeedUpdate"].numberValue
+//                    let isNeedUpdate = remoteConfig["isNeedUpdate"].numberValue
+                    let isNeedUpdate = true
                     UserDefaults.standard.set(isNeedUpdate, forKey: "isNeedUpdate")
                     UserDefaults.standard.synchronize()
                     let jsonString = remoteConfig["serverSign"].stringValue
@@ -91,12 +92,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     // ✅ JSON 디코딩
                     do {
                         let data = try JSONDecoder().decode(JsonTest.self, from: jsonData)
-                        UserDefaults.standard.set(data.showStopSign, forKey: "showStopSign")
+//                        UserDefaults.standard.set(data.showStopSign, forKey: "showStopSign")
+                        UserDefaults.standard.set(true, forKey: "showStopSign")
                         UserDefaults.standard.synchronize()
                         if data.showStopSign {
                             UserDefaults.standard.set(data.stopDate, forKey: "signDate")
                             UserDefaults.standard.synchronize()
                         } else {
+                            UserDefaults.standard.set(data.stopDate, forKey: "signDate")
+                            UserDefaults.standard.synchronize()
                             print("✅ 점검 중이 아닙니다.")
                         }
                     } catch {
