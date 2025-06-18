@@ -95,7 +95,7 @@ class SelectLoginTypeView: UIView {
         }
         appleButton.snp.makeConstraints { make in
             make.top.equalTo(kakaoButton.snp.bottom).offset(DynamicPadding.dynamicValue(16.0))
-            make.height.equalTo(50)
+            make.height.equalTo(56)
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
         }
         loginButton.snp.makeConstraints { make in
