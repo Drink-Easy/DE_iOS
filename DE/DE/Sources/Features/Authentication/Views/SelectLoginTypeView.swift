@@ -83,11 +83,10 @@ class SelectLoginTypeView: UIView {
     }
     
     private func setupConstraints() {
-        let topLocation: CGFloat = (Constants.superViewHeight - 250) / 2
         imageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.centerY.equalTo(topLocation)
-            make.width.lessThanOrEqualTo(Constants.superViewWidth * 0.3)
+            make.centerY.equalTo(DynamicPadding.dynamicValue(280.0))
+            make.width.lessThanOrEqualTo(Constants.superViewWidth * 0.7)
         }
         kakaoButton.snp.makeConstraints { make in
             make.top.equalTo(imageView.snp.bottom).offset(DynamicPadding.dynamicValue(200.0))
