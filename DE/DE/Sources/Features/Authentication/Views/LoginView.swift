@@ -30,7 +30,6 @@ final class LoginView: UIView {
         $0.textField.textContentType = .newPassword
     }
     
-    let joinStackView = JoinStackView()
     lazy var idSaveCheckBox = CustomCheckSquareButton(title: "아이디 저장하기")
     
     let idSearchButton = UIButton().then {
@@ -58,7 +57,7 @@ final class LoginView: UIView {
     
     // MARK: - UI 설정
     private func setupUI() {
-        [usernameField, passwordField, idSaveCheckBox, idSearchButton, joinStackView, loginButton].forEach {
+        [usernameField, passwordField, idSaveCheckBox, idSearchButton, loginButton].forEach {
             addSubview($0)
         }
     }
@@ -84,10 +83,6 @@ final class LoginView: UIView {
         loginButton.snp.makeConstraints { make in
             make.top.equalTo(idSaveCheckBox.snp.bottom).offset(DynamicPadding.dynamicValue(32.0) * 2)
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
-        }
-        joinStackView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-50)
         }
     }
 }

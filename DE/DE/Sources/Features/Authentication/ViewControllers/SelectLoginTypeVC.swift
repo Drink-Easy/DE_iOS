@@ -54,7 +54,6 @@ public class SelectLoginTypeVC: UIViewController, FirebaseTrackable, UIGestureRe
         mainView.kakaoButton.addTarget(self, action: #selector(kakaoButtonTapped), for: .touchUpInside)
         mainView.appleButton.addTarget(self, action: #selector(appleButtonTapped), for: .touchUpInside)
         mainView.loginButton.addTarget(self, action: #selector(goToLoginVC), for: .touchUpInside)
-        mainView.joinStackView.setJoinButtonAction(target: self, action: #selector(joinButtonTapped))
     }
     
     // MARK: - Actions

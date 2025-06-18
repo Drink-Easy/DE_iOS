@@ -20,9 +20,9 @@ class SelectLoginTypeView: UIView {
     let kakaoButton = UIButton().then {
         $0.backgroundColor = UIColor(hex: "#FEE500")
         $0.setTitle("카카오로 시작하기", for: .normal)
-        $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        $0.titleLabel?.font = .pretendard(.semiBold, size: 16)
         $0.setTitleColor(UIColor(hex: "#191919"), for: .normal)
-        $0.layer.cornerRadius = 15
+        $0.layer.cornerRadius = 8
         
         $0.imageEdgeInsets = UIEdgeInsets(top: 0, left: -8, bottom: 0, right: 8)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
@@ -31,9 +31,9 @@ class SelectLoginTypeView: UIView {
     let appleButton = UIButton().then {
         $0.backgroundColor = UIColor(hex: "#000000")
         $0.setTitle("Apple로 시작하기", for: .normal)
-        $0.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        $0.titleLabel?.font = .pretendard(.semiBold, size: 16)
         $0.setTitleColor(UIColor(hex: "#FFFFFF"), for: .normal)
-        $0.layer.cornerRadius = 15
+        $0.layer.cornerRadius = 8
         
         $0.imageEdgeInsets = UIEdgeInsets(top: 0, left: -8, bottom: 0, right: 8)
         $0.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
@@ -44,8 +44,6 @@ class SelectLoginTypeView: UIView {
         titleColor: .white,
         isEnabled: true
     )
-    
-    let joinStackView = JoinStackView()
     
     // MARK: - Initializer
     override init(frame: CGRect) {
@@ -60,9 +58,8 @@ class SelectLoginTypeView: UIView {
     
     // MARK: - Setup Methods
     private func setupUI() {
-        [imageView, kakaoButton, appleButton, loginButton, joinStackView].forEach {
-            addSubview($0)
-        }
+        
+        addSubviews(imageView, kakaoButton, appleButton, loginButton)
         
         if let image = UIImage(named: "kakao")?.withRenderingMode(.alwaysOriginal) {
             let resizedImage = resizeImage(image: image, targetHeight: 24)
@@ -93,23 +90,18 @@ class SelectLoginTypeView: UIView {
             make.width.lessThanOrEqualTo(Constants.superViewWidth * 0.3)
         }
         kakaoButton.snp.makeConstraints { make in
-            make.bottom.equalTo(appleButton.snp.top).inset(-DynamicPadding.dynamicValue(10.0))
+            make.top.equalTo(imageView.snp.bottom).offset(DynamicPadding.dynamicValue(200.0))
+            make.height.equalTo(56)
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
-            make.height.equalTo(50)
         }
         appleButton.snp.makeConstraints { make in
-            make.bottom.equalTo(loginButton.snp.top).inset(-DynamicPadding.dynamicValue(10.0))
+            make.top.equalTo(kakaoButton.snp.bottom).offset(DynamicPadding.dynamicValue(16.0))
             make.height.equalTo(50)
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
         }
         loginButton.snp.makeConstraints { make in
-            make.bottom.equalTo(joinStackView.snp.top).inset(-DynamicPadding.dynamicValue(20.0))
-            make.height.equalTo(50)
+            make.top.equalTo(appleButton.snp.bottom).offset(DynamicPadding.dynamicValue(16.0))
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
-        }
-        joinStackView.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalTo(safeAreaLayoutGuide).offset(-DynamicPadding.dynamicValue(20.0))
         }
     }
 }

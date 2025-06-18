@@ -16,8 +16,8 @@ open class CustomButton: UIButton {
         self.setTitleColor(titleColor, for: .normal)
         self.backgroundColor = isEnabled ? AppColor.purple100 : AppColor.gray30
         
-        self.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
-        self.layer.cornerRadius = 15
+        AppTextStyle.KR.body1.apply(to: self.titleLabel!, text: title, color: titleColor, alignment: .center)
+        self.layer.cornerRadius = 8
         
         self.isEnabled = isEnabled
         self.snp.makeConstraints { make in
