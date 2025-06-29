@@ -148,6 +148,11 @@ extension VintageTableViewController: UITableViewDelegate {
         return UIView()
     }
     
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedYear = sections[indexPath.section].items[indexPath.row].year
+        print("\(selectedYear)년 선택")
+    }
+    
 }
 
 // MARK: - ExpandableHeaderViewDelegate
