@@ -8,7 +8,7 @@ import DesignSystem
 
 public final class VintageTableViewCell: UITableViewCell {
 
-    static let identifier = "VintageTableViewCell"
+    public static let identifier = "VintageTableViewCell"
     
     // MARK: - Components
     private var year = UILabel().then {
@@ -24,6 +24,11 @@ public final class VintageTableViewCell: UITableViewCell {
         $0.font = UIFont.pretendard(.regular, size: 14)
         $0.setLineSpacingPercentage(0.2)
     }
+    
+    private let underLine = UIView().then {
+        $0.backgroundColor = AppColor.gray10
+    }
+
     
     // MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -49,7 +54,7 @@ public final class VintageTableViewCell: UITableViewCell {
     }
     
     private func addComponents() {
-        addSubviews(year, score)
+        addSubviews(year, score, underLine)
     }
     
     private func constraints() {
@@ -61,6 +66,12 @@ public final class VintageTableViewCell: UITableViewCell {
         score.snp.makeConstraints {
             $0.trailing.equalToSuperview().inset(20)
             $0.centerY.equalTo(year)
+        }
+        
+        underLine.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview()
+            $0.height.equalTo(1)
         }
     }
     

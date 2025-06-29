@@ -11,33 +11,15 @@ import DesignSystem
 import SnapKit
 import Then
 
-// MARK: - Section Model
-// 제네릭을 사용해 다양한 타입의 아이템을 담을 수 있도록 확장
-protocol SectionItem {
-    var displayText: String { get }
-    var accessoryText: String? { get }
-}
-
-struct Section<Item: SectionItem> {
-    var title: String
-    var isExpanded: Bool
-    var items: [Item]
-}
-
-// 기본 String 타입을 위한 Extension
-extension String: SectionItem {
-    var displayText: String { self }
-    var accessoryText: String? { nil }
-}
-
 // MARK: - ExpandableHeaderViewDelegate
-// 헤더뷰의 이벤트를 처리하기 위한 델리게이트 프로토콜
-protocol ExpandableHeaderViewDelegate: AnyObject {
+/// 헤더뷰의 이벤트를 처리하기 위한 델리게이트 프로토콜
+public protocol ExpandableHeaderViewDelegate: AnyObject {
     func expandableHeaderView(_ headerView: ExpandableHeaderView, didTapSection section: Int)
 }
 
-final class ExpandableHeaderView: UITableViewHeaderFooterView {
-    static let identifier = "ExpandableHeaderView"
+// MARK: - ExpandableHeaderView
+public final class ExpandableHeaderView: UITableViewHeaderFooterView {
+    public static let identifier = "ExpandableHeaderView"
     
     // MARK: - UI Components 선언
     private let titleLabel = UILabel().then {
@@ -53,15 +35,13 @@ final class ExpandableHeaderView: UITableViewHeaderFooterView {
         $0.isHidden = false
     }
     
-    // 백그라운드 뷰 (탭 효과를 위한)
-    private let backgroundEffectView = UIView().then {
+    private let underLine = UIView().then {
         $0.backgroundColor = AppColor.gray10
-        $0.alpha = 0
     }
     
     // MARK: - Properties
     var section: Int = 0
-    weak var delegate: ExpandableHeaderViewDelegate?
+    public weak var delegate: ExpandableHeaderViewDelegate?
     
     // 애니메이션 설정
     private var animationDuration: TimeInterval = 0.3
@@ -80,18 +60,12 @@ final class ExpandableHeaderView: UITableViewHeaderFooterView {
     
     // MARK: - Setup UI
     private func setupUI() {
-        // UI 요소 추가
-        contentView.addSubview(backgroundEffectView)
-        contentView.addSubviews(titleLabel, chevronImageView)
+        contentView.addSubviews(titleLabel, chevronImageView, underLine)
         contentView.backgroundColor = AppColor.background
     }
     
     // MARK: - Setup Layout
     private func setupLayout() {
-        backgroundEffectView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
-        }
-        
         titleLabel.snp.makeConstraints {
             $0.top.bottom.equalToSuperview().inset(16)
             $0.leading.equalToSuperview().offset(20)
@@ -102,11 +76,16 @@ final class ExpandableHeaderView: UITableViewHeaderFooterView {
             $0.centerY.equalToSuperview()
             $0.width.height.equalTo(20)
         }
+        
+        underLine.snp.makeConstraints {
+            $0.leading.trailing.equalToSuperview()
+            $0.bottom.equalToSuperview()
+            $0.height.equalTo(1)
+        }
     }
     
     // MARK: - Setup Gesture
     private func setupGesture() {
-        // 탭 제스처 추가
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
         contentView.addGestureRecognizer(tapGesture)
     }
@@ -118,7 +97,7 @@ final class ExpandableHeaderView: UITableViewHeaderFooterView {
 }
 
 // MARK: - Configure with Section
-extension ExpandableHeaderView {
+public extension ExpandableHeaderView {
     /// Section 객체를 직접 받아서 헤더뷰를 구성합니다
     /// - Parameters:
     ///   - section: 섹션 데이터 객체
