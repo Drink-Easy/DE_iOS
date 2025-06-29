@@ -43,3 +43,6 @@ public struct TextStyle {
         label.attributedText = attributed(text, color: color, alignment: alignment)
     }
 }
+
+// 사용법
+// AppTextStyle.KR.head.apply(to: largeTitleLabel, text: wineName, color: AppColor.black)

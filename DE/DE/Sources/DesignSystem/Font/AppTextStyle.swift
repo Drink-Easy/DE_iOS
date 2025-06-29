@@ -31,6 +31,20 @@ public enum AppTextStyle {
             lineHeightMultiple: 1.5,
             letterSpacingPercent: -2.5
         )
+        
+        public static let body3 = TextStyle(
+            font: UIFont.pretendard(.regular, size: 14),
+            fontSize: 14,
+            lineHeightMultiple: 1.5,
+            letterSpacingPercent: -2.5
+        )
+        
+        public static let caption1 = TextStyle(
+            font: UIFont.pretendard(.regular, size: 12),
+            fontSize: 12,
+            lineHeightMultiple: 1.5,
+            letterSpacingPercent: -2.5
+        )
     }
 
     public enum EN {
