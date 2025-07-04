@@ -10,6 +10,7 @@ public final class VintageTableViewController: UIViewController {
     
     // MARK: - Properties
     private var sections: [Section<VintageItem>] = []
+    private let navigationBarManager = NavigationBarManager()
     
     // MARK: - UI Components
     private let tableView = UITableView(frame: .zero, style: .grouped).then {
@@ -28,6 +29,16 @@ public final class VintageTableViewController: UIViewController {
         setupDummyData()
     }
     
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
+    public override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
+    }
+    
     // MARK: - Setup
     private func setupUI() {
         view.backgroundColor = AppColor.background
@@ -38,6 +49,11 @@ public final class VintageTableViewController: UIViewController {
         tableView.snp.makeConstraints {
             $0.edges.equalTo(view.safeAreaLayoutGuide)
         }
+    }
+    
+    private func setupNavigationBar() {
+        navigationBarManager.setTitle(to: navigationItem, title: "빈티지 선택하기", textColor: AppColor.black)
+        navigationBarManager.addBackButton(to: navigationItem, target: self, action: #selector(backButtonTapped))
     }
     
     private func setupTableView() {
@@ -76,7 +92,7 @@ public final class VintageTableViewController: UIViewController {
                 .map { year in
                     VintageItem(
                         year: year,
-                        score: Double.random(in: 3.0...5.0)
+                        score: 0.0
                     )
                 }
             
@@ -89,7 +105,10 @@ public final class VintageTableViewController: UIViewController {
         
         tableView.reloadData()
     }
-
+    
+    @objc private func backButtonTapped() {
+        navigationController?.popViewController(animated: true)
+    }
     
 }
 
