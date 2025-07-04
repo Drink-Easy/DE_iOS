@@ -19,11 +19,11 @@ public final class VintageTableViewCell: UITableViewCell {
         $0.setLineSpacingPercentage(0.5)
     }
     
-    private var score = UILabel().then {
-        $0.textColor = AppColor.purple100
-        $0.font = UIFont.pretendard(.regular, size: 14)
-        $0.setLineSpacingPercentage(0.2)
-    }
+//    private var score = UILabel().then {
+//        $0.textColor = AppColor.purple100
+//        $0.font = UIFont.pretendard(.regular, size: 14)
+//        $0.setLineSpacingPercentage(0.2)
+//    }
     
     private let underLine = UIView().then {
         $0.backgroundColor = AppColor.gray10
@@ -45,7 +45,7 @@ public final class VintageTableViewCell: UITableViewCell {
     public override func prepareForReuse() {
         super.prepareForReuse()
         self.year.text = nil
-        self.score.text = nil
+//        self.score.text = nil
     }
     
     // MARK: - SetUp
@@ -54,7 +54,7 @@ public final class VintageTableViewCell: UITableViewCell {
     }
     
     private func addComponents() {
-        addSubviews(year, score, underLine)
+        addSubviews(year, underLine)
     }
     
     private func constraints() {
@@ -63,10 +63,10 @@ public final class VintageTableViewCell: UITableViewCell {
             $0.leading.equalToSuperview().offset(20)
         }
         
-        score.snp.makeConstraints {
-            $0.trailing.equalToSuperview().inset(20)
-            $0.centerY.equalTo(year)
-        }
+//        score.snp.makeConstraints {
+//            $0.trailing.equalToSuperview().inset(20)
+//            $0.centerY.equalTo(year)
+//        }
         
         underLine.snp.makeConstraints {
             $0.leading.trailing.equalToSuperview()
@@ -78,7 +78,7 @@ public final class VintageTableViewCell: UITableViewCell {
     // MARK: - Configure
     public func configure(year: Int, score: Double) {
         self.year.text = "\(year)"
-        self.score.text = "★ \(String(format: "%.1f", score))"
+//        self.score.text = "★ \(String(format: "%.1f", score))"
     }
     
 }
