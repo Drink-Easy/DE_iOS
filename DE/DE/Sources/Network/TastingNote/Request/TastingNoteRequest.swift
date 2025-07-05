@@ -4,6 +4,7 @@ import Foundation
 
 public struct TastingNoteRequestDTO : Codable {
     let wineId : Int
+    let vintageYear: Int?
     let color : String
     let tasteDate : String
     let sweetness: Int
@@ -11,15 +12,29 @@ public struct TastingNoteRequestDTO : Codable {
     let tannin : Int
     let body : Int
     let alcohol : Int
-    let nose : [String]
+    let nose : [String]?
     let rating : Double
-    let review : String
+    let review : String?
     
-    public init(wineId: Int, color: String, tasteDate: String, sugarContent: Int, acidity: Int, tannin: Int, body: Int, alcohol: Int, nose: [String], rating: Double, review: String) {
+    public init(
+        wineId: Int,
+        vintageYear: Int?,
+        color: String,
+        tasteDate: String,
+        sweetness: Int,
+        acidity: Int,
+        tannin: Int,
+        body: Int,
+        alcohol: Int,
+        nose: [String]?,
+        rating: Double,
+        review: String?
+    ) {
         self.wineId = wineId
+        self.vintageYear = vintageYear
         self.color = color
         self.tasteDate = tasteDate
-        self.sweetness = sugarContent
+        self.sweetness = sweetness
         self.acidity = acidity
         self.tannin = tannin
         self.body = body
