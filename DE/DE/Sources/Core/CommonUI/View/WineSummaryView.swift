@@ -61,8 +61,8 @@ public class WineSummaryView: UIView {
     
     private lazy var sort = createTitle(text: "종류")
     private lazy var country = createTitle(text: "생산국")
-    public lazy var noseContents = createContents(text: "")
-    public lazy var palateContents = createContents(text: "")
+    public lazy var sortContents = createContents(text: "")
+    public lazy var countryContents = createContents(text: "")
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -76,7 +76,7 @@ public class WineSummaryView: UIView {
     }
     
     private func addComponents() {
-        self.addSubviews(largeTitleLabel, scoreStar, ratingLabel, sort, country, noseContents, palateContents)
+        self.addSubviews(largeTitleLabel, scoreStar, ratingLabel, sort, country, sortContents, countryContents)
     
     }
     
@@ -103,18 +103,18 @@ public class WineSummaryView: UIView {
             $0.leading.equalTo(sort.snp.leading)
         }
         
-        noseContents.snp.makeConstraints {
+        sortContents.snp.makeConstraints {
             $0.centerY.equalTo(sort)
             $0.leading.equalTo(safeAreaLayoutGuide).offset(89)
             $0.trailing.equalTo(safeAreaLayoutGuide).offset(-26)
         }
         
-        palateContents.snp.makeConstraints {
+        countryContents.snp.makeConstraints {
             $0.top.equalTo(country.snp.top)
-            $0.leading.equalTo(noseContents.snp.leading)
+            $0.leading.equalTo(sortContents.snp.leading)
             $0.trailing.equalTo(safeAreaLayoutGuide).offset(-26)
             //$0.height.equalTo(50)
-            $0.bottom.equalToSuperview().inset(25)
+            $0.bottom.equalToSuperview()
         }
     
     }
@@ -122,8 +122,8 @@ public class WineSummaryView: UIView {
     public func configure(_ model: WineDetailInfoModel) {
         self.wineName = model.wineName
         self.score = model.rating
-        noseContents.text = model.sort
-        palateContents.text = model.country
+        sortContents.text = model.sort
+        countryContents.text = model.country
         self.layoutIfNeeded()
     }
 }
