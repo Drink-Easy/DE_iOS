@@ -103,7 +103,7 @@ public class ReviewView: UIView {
     
     private func constraints() {
         title.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).inset(23)
+            $0.top.equalTo(safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(24))
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
         }
         

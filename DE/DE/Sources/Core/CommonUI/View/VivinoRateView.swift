@@ -106,13 +106,13 @@ public class VivinoRateView: UIView {
         scoreStar.snp.makeConstraints {
             $0.centerY.equalTo(scoreLabel)
             $0.leading.equalTo(scoreLabel.snp.trailing).offset(26)
-            $0.bottom.equalToSuperview().inset(25)
+            $0.bottom.equalToSuperview().inset(DynamicPadding.dynamicValue(25))
         }
         
         noRatingLabel.snp.makeConstraints {
             $0.top.equalTo(title.snp.bottom).offset(16)
             $0.leading.equalTo(safeAreaLayoutGuide)
-            $0.bottom.equalToSuperview().inset(25)
+            $0.bottom.equalToSuperview().inset(DynamicPadding.dynamicValue(25))
         }
     }
     

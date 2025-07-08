@@ -52,12 +52,12 @@ public class WineDetailsView: UIView {
     
     private func constraints() {
         title.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).inset(23)
+            $0.top.equalTo(safeAreaLayoutGuide).inset(24)
             $0.leading.trailing.equalToSuperview()
         }
         
         sort.snp.makeConstraints {
-            $0.top.equalTo(title.snp.bottom).offset(17)
+            $0.top.equalTo(title.snp.bottom).offset(16)
             $0.leading.equalToSuperview()
         }
         
@@ -85,7 +85,7 @@ public class WineDetailsView: UIView {
             $0.leading.equalTo(sortContents.snp.leading)
             $0.trailing.equalToSuperview()
             //$0.height.equalTo(50)
-            $0.bottom.equalToSuperview().inset(25)
+            $0.bottom.equalToSuperview().inset(24)
         }
     }
     
