@@ -21,7 +21,7 @@ open class CustomButton: UIButton {
         
         self.isEnabled = isEnabled
         self.snp.makeConstraints { make in
-            make.height.equalTo(56)
+            make.height.equalTo(DynamicPadding.dynamicValue(56))
         }
     }
     
