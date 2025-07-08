@@ -83,11 +83,11 @@ public class WineSummaryView: UIView {
     private func constraints() {
         largeTitleLabel.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide).inset(23)
-            $0.leading.equalTo(safeAreaLayoutGuide).inset(24)
+            $0.leading.equalTo(safeAreaLayoutGuide)
         }
         scoreStar.snp.makeConstraints {
             $0.top.equalTo(largeTitleLabel.snp.bottom).offset(6)
-            $0.leading.equalTo(safeAreaLayoutGuide).inset(24)
+            $0.leading.equalTo(safeAreaLayoutGuide)
         }
         ratingLabel.snp.makeConstraints {
             $0.centerY.equalTo(scoreStar)
@@ -95,7 +95,7 @@ public class WineSummaryView: UIView {
         }
         sort.snp.makeConstraints {
             $0.top.equalTo(scoreStar.snp.bottom).offset(20)
-            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
+            $0.leading.equalTo(safeAreaLayoutGuide)
         }
         
         country.snp.makeConstraints {
@@ -106,13 +106,13 @@ public class WineSummaryView: UIView {
         sortContents.snp.makeConstraints {
             $0.centerY.equalTo(sort)
             $0.leading.equalTo(safeAreaLayoutGuide).offset(89)
-            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-26)
+            $0.trailing.equalTo(safeAreaLayoutGuide)
         }
         
         countryContents.snp.makeConstraints {
             $0.top.equalTo(country.snp.top)
             $0.leading.equalTo(sortContents.snp.leading)
-            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-26)
+            $0.trailing.equalTo(safeAreaLayoutGuide)
             //$0.height.equalTo(50)
             $0.bottom.equalToSuperview()
         }

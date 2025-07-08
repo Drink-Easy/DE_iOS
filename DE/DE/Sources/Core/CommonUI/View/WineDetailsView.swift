@@ -53,12 +53,12 @@ public class WineDetailsView: UIView {
     private func constraints() {
         title.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide).inset(23)
-            $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
+            $0.leading.trailing.equalToSuperview()
         }
         
         sort.snp.makeConstraints {
             $0.top.equalTo(title.snp.bottom).offset(17)
-            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
+            $0.leading.equalToSuperview()
         }
         
         variety.snp.makeConstraints {
@@ -72,18 +72,18 @@ public class WineDetailsView: UIView {
         
         sortContents.snp.makeConstraints {
             $0.centerY.equalTo(sort)
-            $0.leading.equalTo(safeAreaLayoutGuide).offset(89) //TODO: 수정 필요
-            $0.trailing.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(24))
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(89)
+            $0.trailing.equalToSuperview()
         }
         varietyContents.snp.makeConstraints {
             $0.centerY.equalTo(variety)
             $0.leading.equalTo(sortContents.snp.leading)
-            $0.trailing.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(24))
+            $0.trailing.equalToSuperview()
         }
         countryContents.snp.makeConstraints {
             $0.centerY.equalTo(country)
             $0.leading.equalTo(sortContents.snp.leading)
-            $0.trailing.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(24))
+            $0.trailing.equalToSuperview()
             //$0.height.equalTo(50)
             $0.bottom.equalToSuperview().inset(25)
         }

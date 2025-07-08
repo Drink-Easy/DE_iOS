@@ -100,7 +100,7 @@ public class VivinoRateView: UIView {
         
         scoreLabel.snp.makeConstraints {
             $0.top.equalTo(title.snp.bottom).offset(26)
-            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
+            $0.leading.equalTo(safeAreaLayoutGuide)
         }
         
         scoreStar.snp.makeConstraints {
@@ -111,7 +111,7 @@ public class VivinoRateView: UIView {
         
         noRatingLabel.snp.makeConstraints {
             $0.top.equalTo(title.snp.bottom).offset(16)
-            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
+            $0.leading.equalTo(safeAreaLayoutGuide)
             $0.bottom.equalToSuperview().inset(25)
         }
     }

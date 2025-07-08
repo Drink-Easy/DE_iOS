@@ -228,26 +228,26 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
         
         wineInfoView.snp.makeConstraints {
             $0.top.equalToSuperview()
-            $0.horizontalEdges.equalToSuperview()
+            $0.horizontalEdges.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
         }
         
         vivinoRateView.snp.makeConstraints {
             $0.top.equalTo(wineInfoView.snp.bottom).offset(8)
-            $0.horizontalEdges.equalToSuperview()
+            $0.horizontalEdges.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
         }
         wineDetailsView.snp.makeConstraints {
             $0.top.equalTo(vivinoRateView.snp.bottom).offset(8)
-            $0.horizontalEdges.equalToSuperview()
+            $0.horizontalEdges.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
         }
         averageTastingNoteView.snp.makeConstraints {
             $0.top.equalTo(wineDetailsView.snp.bottom).offset(8)
-            $0.horizontalEdges.equalToSuperview()
+            $0.horizontalEdges.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
         }
         
         reviewView.snp.makeConstraints {
             $0.top.equalTo(averageTastingNoteView.snp.bottom).offset(8)
-            $0.horizontalEdges.equalToSuperview()
-            $0.bottom.equalToSuperview()
+            $0.horizontalEdges.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
+            $0.bottom.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
         }
     }
     

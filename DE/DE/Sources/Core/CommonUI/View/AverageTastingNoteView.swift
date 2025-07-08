@@ -64,12 +64,12 @@ public class AverageTastingNoteView: UIView {
         
         writeNewTastingNoteBtn.snp.makeConstraints {
             $0.centerY.equalTo(title)
-            $0.trailing.equalTo(safeAreaLayoutGuide).inset(24)
+            $0.trailing.equalTo(safeAreaLayoutGuide)
         }
         
         nose.snp.makeConstraints {
             $0.top.equalTo(title.snp.bottom).offset(26)
-            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
+            $0.leading.equalTo(safeAreaLayoutGuide)
         }
         
         palate.snp.makeConstraints {
@@ -80,20 +80,20 @@ public class AverageTastingNoteView: UIView {
         noseContents.snp.makeConstraints {
             $0.centerY.equalTo(nose)
             $0.leading.equalTo(safeAreaLayoutGuide).offset(89)
-            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-26)
+            $0.trailing.equalTo(safeAreaLayoutGuide)
         }
         
         palateContents.snp.makeConstraints {
             $0.top.equalTo(palate.snp.top)
             $0.leading.equalTo(noseContents.snp.leading)
-            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-26)
+            $0.trailing.equalTo(safeAreaLayoutGuide)
             //$0.height.equalTo(50)
             $0.bottom.equalToSuperview().inset(25)
         }
         
         noTastinNote.snp.makeConstraints { 
             $0.top.equalTo(title.snp.bottom).offset(16)
-            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
+            $0.leading.equalTo(safeAreaLayoutGuide)
             $0.bottom.equalToSuperview().inset(25)
         }
     }

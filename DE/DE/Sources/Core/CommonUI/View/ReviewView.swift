@@ -120,13 +120,13 @@ public class ReviewView: UIView {
         reviewCollectionView.snp.makeConstraints {
             $0.top.equalTo(moreBtn.snp.bottom).offset(8)
             $0.height.equalTo(332)
-            $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(24)
+            $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
             $0.bottom.equalToSuperview()
         }
         
         noReviewLabel.snp.makeConstraints {
             $0.top.equalTo(title.snp.bottom).offset(16)
-            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
+            $0.leading.equalTo(safeAreaLayoutGuide)
         }
         noReviewLabel.sizeToFit()
     }
