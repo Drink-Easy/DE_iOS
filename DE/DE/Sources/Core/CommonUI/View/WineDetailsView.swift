@@ -72,18 +72,18 @@ public class WineDetailsView: UIView {
         
         sortContents.snp.makeConstraints {
             $0.centerY.equalTo(sort)
-            $0.leading.equalTo(safeAreaLayoutGuide).offset(89)
-            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-26)
+            $0.leading.equalTo(safeAreaLayoutGuide).offset(89) //TODO: 수정 필요
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(24))
         }
         varietyContents.snp.makeConstraints {
             $0.centerY.equalTo(variety)
             $0.leading.equalTo(sortContents.snp.leading)
-            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-26)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(24))
         }
         countryContents.snp.makeConstraints {
             $0.centerY.equalTo(country)
             $0.leading.equalTo(sortContents.snp.leading)
-            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-26)
+            $0.trailing.equalTo(safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(24))
             //$0.height.equalTo(50)
             $0.bottom.equalToSuperview().inset(25)
         }
