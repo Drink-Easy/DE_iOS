@@ -61,7 +61,7 @@ class PropertyTitleView: UIView {
     }
     
     /// 기본 컬러가 보라50임
-    init(type: PropertyType, barColor: UIColor = AppColor.purple50) {
+    init(type: PropertyType, barColor: UIColor = AppColor.gray30) {
         self.propertyType = type
         super.init(frame: .zero)
         self.backgroundColor = .clear
@@ -105,7 +105,7 @@ class PropertyTitleView: UIView {
         line.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.top.equalTo(engTitle.snp.bottom).offset(6)
-            make.height.equalTo(1)
+            make.height.equalTo(1.5)
         }
         
         editButton.snp.makeConstraints { make in
