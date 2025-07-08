@@ -13,8 +13,6 @@ public class BuyNewWineDateViewController: UIViewController, FirebaseTrackable {
     let tastedDateView = MyWineDateView()
     var selectedDate: DateComponents?
     let navigationBarManager = NavigationBarManager()
-    
-    let wineData = TNWineDataManager.shared
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
