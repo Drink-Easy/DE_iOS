@@ -7,6 +7,7 @@ import Then
 import DesignSystem
 import SDWebImage
 
+//legacy design
 public class WineDetailView: UIView {
     
     // 이미지 그림자 전용 뷰 (그림자만 표시)

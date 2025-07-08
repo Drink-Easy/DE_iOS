@@ -128,6 +128,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     
     private lazy var largeTitleLabel = UILabel().then {
         $0.numberOfLines = 0
+        $0.isHidden = true
     }
     
     private var smallTitleLabel = UILabel()
@@ -140,8 +141,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     //largeTitle -> smallTitle
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-        let largeTitleBottom = largeTitleLabel.frame.maxY + 5
-        
+        let largeTitleBottom = wineDetailView.wineInfo.largeTitleLabel.frame.maxY + 5
         UIView.animate(withDuration: 0.1) {
             self.largeTitleLabel.alpha = offsetY > largeTitleBottom ? 0 : 1
             self.smallTitleLabel.isHidden = !(offsetY > largeTitleBottom)
@@ -150,7 +150,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     
     private lazy var contentView = UIView()
     
-    private var wineDetailView = WineDetailView()
+    private var wineDetailView = NewWineInfoView()
     private var vivinoRateView = VivinoRateView()
     private var averageTastingNoteView = AverageTastingNoteView()
     
@@ -216,17 +216,17 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
         contentView.snp.makeConstraints {
             $0.edges.equalTo(scrollView)
             $0.width.equalTo(scrollView.snp.width)
-            $0.bottom.equalTo(reviewView.snp.bottom)
+            $0.bottom.equalTo(reviewView.snp.bottom).offset(40)
         }
         
         largeTitleLabel.snp.makeConstraints {
             $0.horizontalEdges.equalToSuperview().inset(25)
-            $0.top.equalToSuperview().offset(10)
+//            $0.top.equalToSuperview().offset(10)
         }
         
         wineDetailView.snp.makeConstraints {
-            $0.top.equalTo(largeTitleLabel.snp.bottom).offset(21)
-            $0.horizontalEdges.equalToSuperview().inset(24)
+            $0.top.equalToSuperview()
+            $0.horizontalEdges.equalToSuperview()
         }
         
         vivinoRateView.snp.makeConstraints {
@@ -284,7 +284,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
             self?.updateReviewView()
         }
         
-        let infoData = WineDetailInfoModel(image: wineResponse.imageUrl, sort: wineResponse.sort, country: wineResponse.country, region: wineResponse.region, variety: wineResponse.variety)
+        let infoData = WineDetailInfoModel(wineName:wineResponse.name, rating:wineResponse.avgMemberRating, image: wineResponse.imageUrl, sort: wineResponse.sort, country: wineResponse.country, region: wineResponse.region, variety: wineResponse.variety)
         let rateData = WineViVinoRatingModel(vivinoRating: wineResponse.vivinoRating)
         let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString, avgSugarContent: wineResponse.avgSweetness, avgAcidity: wineResponse.avgAcidity, avgTannin: wineResponse.avgTannin, avgBody: wineResponse.avgBody, avgAlcohol: wineResponse.avgAlcohol)
         let roundedAvgMemberRating = (wineResponse.avgMemberRating * 10).rounded() / 10

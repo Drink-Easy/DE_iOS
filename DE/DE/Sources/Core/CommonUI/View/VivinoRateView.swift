@@ -79,7 +79,7 @@ public class VivinoRateView: UIView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.white
+        backgroundColor = .clear
         self.addComponents()
         self.constraints()
     }
