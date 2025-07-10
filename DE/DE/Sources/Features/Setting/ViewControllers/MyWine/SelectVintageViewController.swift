@@ -55,6 +55,30 @@ final class SelectVintageViewController: UIViewController {
             self?.vintageView.nextButton.isEnabled(isEnabled: true)
         }
         
+        
+        vintageView.yearPicker.onLabelTapped = { [weak self] in
+            guard let self else { return }
+            let modal = YearPickerModalViewController(
+                minYear: vintageView.yearPicker.minYear,
+                maxYear: vintageView.yearPicker.maxYear,
+            )
+
+            modal.onYearConfirmed = { [weak self] selected in
+                self?.vintageView.yearPicker.setSelectedYear(selected) // 아래 확장으로 지원
+                self?.vintageView.nextButton.isEnabled = true
+            }
+            
+            modal.modalPresentationStyle = .pageSheet
+
+            if let sheet = modal.sheetPresentationController {
+                sheet.detents = [.medium()]
+                sheet.prefersGrabberVisible = true
+                sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+            }
+
+            self.present(modal, animated: true)
+        }
+        
     }
     
     private func setupNavigationBar() {
