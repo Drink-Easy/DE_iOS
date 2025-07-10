@@ -9,6 +9,7 @@ final class YearPickerView: UIView {
     public var maxYear: Int
 
     public var onYearSelected: ((Int) -> Void)?
+    public var onLabelTapped: (() -> Void)?
 
     public private(set) var selectedYear: Int? {
         didSet {
@@ -21,10 +22,6 @@ final class YearPickerView: UIView {
         }
     }
 
-
-    private var years: [Int] = []
-
-    private let pickerView = UIPickerView()
     private let selectedYearLabel = UILabel()
 
     init(minYear: Int = 1970, maxYear: Int = 2100, defaultYear: Int? = nil) {
@@ -33,9 +30,7 @@ final class YearPickerView: UIView {
         let current = Calendar.current.component(.year, from: Date())
         self.selectedYear = defaultYear ?? current
         super.init(frame: .zero)
-        configureYears()
         setupUI()
-        setDefaultSelection()
     }
 
     required init?(coder: NSCoder) {
@@ -43,58 +38,36 @@ final class YearPickerView: UIView {
         self.maxYear = 2100
         self.selectedYear = Calendar.current.component(.year, from: Date())
         super.init(coder: coder)
-        configureYears()
         setupUI()
-        setDefaultSelection()
-    }
-
-    // MARK: - Setup
-
-    private func configureYears() {
-        years = Array(minYear...maxYear)
     }
 
     private func setupUI() {
-        pickerView.do {
-            $0.dataSource = self
-            $0.delegate = self
-        }
-
         selectedYearLabel.do {
             $0.textAlignment = .center
-            $0.font = .systemFont(ofSize: 18, weight: .medium)
+            $0.font = .pretendard(.regular, size: 18)
+            $0.text = "빈티지 연도를 선택해주세요."
+            $0.isUserInteractionEnabled = true
+            let tap = UITapGestureRecognizer(target: self, action: #selector(labelTapped))
+            $0.addGestureRecognizer(tap)
         }
 
-        let stack = UIStackView(arrangedSubviews: [pickerView, selectedYearLabel]).then {
-            $0.axis = .vertical
-            $0.spacing = 16
-            $0.alignment = .fill
-            $0.distribution = .fill
-        }
-
-        addSubview(stack)
-        stack.snp.makeConstraints {
+        addSubview(selectedYearLabel)
+        selectedYearLabel.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
     }
-
-    private func setDefaultSelection() {
-        selectedYear = nil
-    }
-}
-
-extension YearPickerView: UIPickerViewDataSource, UIPickerViewDelegate {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int { 1 }
-
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        years.count
+    
+    private func updateLabel() {
+        selectedYearLabel.text = selectedYear.map { "선택된 연도: \($0)" } ?? "선택된 연도: -"
     }
 
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        "\(years[row])년"
+    @objc private func labelTapped() {
+        onLabelTapped?()
     }
 
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        selectedYear = years[row]
+    public func setSelectedYear(_ year: Int) {
+        guard (minYear...maxYear).contains(year) else { return }
+        selectedYear = year
     }
+
 }
