@@ -9,6 +9,7 @@ public enum TastingNoteEndpoint {
     case deleteNote(noteId : Int)
     case patchNote(data : TastingNotePatchRequestDTO)
     case getAllNotes(sort : String, page: Int, size: Int = 10)
+    case searchNote(searchName: String, page: Int, size: Int = 10)
 }
 
 extension TastingNoteEndpoint: TargetType {
@@ -29,6 +30,8 @@ extension TastingNoteEndpoint: TargetType {
             return "/\(data.noteId)"
         case .getAllNotes:
             return "/all"
+        default:
+            return ""
         }
     }
     
@@ -56,10 +59,17 @@ extension TastingNoteEndpoint: TargetType {
         case .patchNote(let data):
             return .requestJSONEncodable(data.body)
         case .getAllNotes(let sort, let page, let size):
-            return .requestParameters(parameters: ["sort" : sort,
-                                                   "page" : page,
-                                                   "size" : size
-                                                  ], encoding: URLEncoding.queryString)
+            return .requestParameters(
+                parameters: ["sort" : sort,
+                             "page" : page,
+                             "size" : size],
+                encoding: URLEncoding.queryString)
+        case .searchNote(let searchName, let page, let size):
+            return .requestParameters(
+                parameters: ["SearchName" : searchName,
+                             "page" : page,
+                             "size" : size],
+                encoding: URLEncoding.queryString)
         }
     }
     

@@ -27,13 +27,17 @@ public struct WineDetailTopModel {
 }
 
 public struct WineDetailInfoModel {
+    public let wineName: String
+    public let rating: Double
     public let image: String
     public let sort: String
     public let country: String
     public let region: String
     public let variety: String
     
-    public init(image: String, sort: String, country: String, region: String, variety: String) {
+    public init(wineName: String, rating: Double, image: String, sort: String, country: String, region: String, variety: String) {
+        self.wineName = wineName
+        self.rating = rating
         self.image = image
         self.sort = sort
         self.country = country

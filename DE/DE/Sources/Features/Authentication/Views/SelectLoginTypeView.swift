@@ -86,25 +86,24 @@ class SelectLoginTypeView: UIView {
     }
     
     private func setupConstraints() {
-        let topLocation: CGFloat = (Constants.superViewHeight - 250) / 2
         imageView.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.centerY.equalTo(topLocation)
-            make.width.lessThanOrEqualTo(Constants.superViewWidth * 0.3)
+            make.centerY.equalTo(DynamicPadding.dynamicValue(280.0))
+            make.width.lessThanOrEqualTo(Constants.superViewWidth * 0.7)
         }
         kakaoButton.snp.makeConstraints { make in
-            make.bottom.equalTo(appleButton.snp.top).inset(-DynamicPadding.dynamicValue(10.0))
+            make.bottom.equalTo(appleButton.snp.top).inset(-DynamicPadding.dynamicValue(16.0))
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
             make.height.equalTo(50)
         }
         appleButton.snp.makeConstraints { make in
-            make.bottom.equalTo(loginButton.snp.top).inset(-DynamicPadding.dynamicValue(10.0))
+            make.bottom.equalTo(loginButton.snp.top).inset(-DynamicPadding.dynamicValue(16.0))
             make.height.equalTo(50)
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
         }
         loginButton.snp.makeConstraints { make in
-            make.bottom.equalTo(joinStackView.snp.top).inset(-DynamicPadding.dynamicValue(20.0))
-            make.height.equalTo(50)
+            make.bottom.equalTo(joinStackView.snp.top).inset(-DynamicPadding.dynamicValue(130.0))
+            make.height.equalTo(60)
             make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(32.0))
         }
         joinStackView.snp.makeConstraints { make in

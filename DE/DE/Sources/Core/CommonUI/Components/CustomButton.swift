@@ -8,7 +8,7 @@ import DesignSystem
 open class CustomButton: UIButton {
     public init(
         title: String = "",
-        titleColor: UIColor = .white,
+        titleColor: UIColor = UIColor(hex: "FFFFFF")!,
         isEnabled: Bool = true
     ) {
         super.init(frame: .zero)
@@ -16,12 +16,12 @@ open class CustomButton: UIButton {
         self.setTitleColor(titleColor, for: .normal)
         self.backgroundColor = isEnabled ? AppColor.purple100 : AppColor.gray30
         
-        self.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
-        self.layer.cornerRadius = 15
+        self.titleLabel?.font = UIFont.boldSystemFont(ofSize: 16)
+        self.layer.cornerRadius = 8
         
         self.isEnabled = isEnabled
         self.snp.makeConstraints { make in
-            make.height.equalTo(60)
+            make.height.equalTo(DynamicPadding.dynamicValue(56))
         }
     }
     

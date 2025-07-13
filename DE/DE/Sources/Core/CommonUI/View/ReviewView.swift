@@ -21,7 +21,7 @@ public class ReviewView: UIView {
         $0.isHidden = true
     }
     
-    private let title = TitleWithBarView(title: "Review", subTitle: "리뷰")
+    private let title = TitleWithoutBarView(title: "Review", subTitle: "리뷰")
     
     public func updateScore() {
         let text = "\(score) / 5.0"
@@ -87,7 +87,7 @@ public class ReviewView: UIView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.background
+        backgroundColor = .clear
         self.addComponents()
         self.constraints()
     }
@@ -103,8 +103,9 @@ public class ReviewView: UIView {
     
     private func constraints() {
         title.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide)
+            $0.top.equalTo(safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(24))
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
+            $0.height.equalTo(30)
         }
         
         scoreLabel.snp.makeConstraints {
@@ -120,13 +121,13 @@ public class ReviewView: UIView {
         reviewCollectionView.snp.makeConstraints {
             $0.top.equalTo(moreBtn.snp.bottom).offset(8)
             $0.height.equalTo(332)
-            $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(24)
+            $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
             $0.bottom.equalToSuperview()
         }
         
         noReviewLabel.snp.makeConstraints {
             $0.top.equalTo(title.snp.bottom).offset(16)
-            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
+            $0.leading.equalTo(safeAreaLayoutGuide)
         }
         noReviewLabel.sizeToFit()
     }

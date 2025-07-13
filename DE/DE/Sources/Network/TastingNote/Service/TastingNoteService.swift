@@ -12,7 +12,7 @@ public final class TastingNoteService: NetworkManager {
         // 플러그인 추가
         let plugins: [PluginType] = [
             CookiePlugin(),
-//            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)) // 로그 플러그인
+            //            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)) // 로그 플러그인
         ]
         
         // provider 초기화
@@ -23,16 +23,16 @@ public final class TastingNoteService: NetworkManager {
     /// 새 노트 작성을 위한 DTO 생성 함수
     /// 모든 항목이 required임
     public func makePostNoteDTO(wineId : Int,
-                         color: String,
-                         tasteDate : String,
-                         sugarContent: Int,
-                         acidity : Int,
-                         tannin : Int,
-                         body : Int,
-                         alcohol : Int,
-                         nose : [String],
-                         rating : Double,
-                         review : String
+                                color: String,
+                                tasteDate : String,
+                                sugarContent: Int,
+                                acidity : Int,
+                                tannin : Int,
+                                body : Int,
+                                alcohol : Int,
+                                nose : [String],
+                                rating : Double,
+                                review : String
     ) -> TastingNoteRequestDTO {
         return TastingNoteRequestDTO(wineId: wineId, color: color, tasteDate: tasteDate, sugarContent: sugarContent, acidity: acidity, tannin: tannin, body: body, alcohol: alcohol, nose: nose, rating: rating, review: review)
     }
@@ -40,7 +40,7 @@ public final class TastingNoteService: NetworkManager {
     /// 노트 수정을 위한 DTO 생성 함수
     /// 모든 항목이 required임
     public func makeUpdateNoteDTO(noteId : Int,
-                           body : TastingNoteUpdateRequestDTO) -> TastingNotePatchRequestDTO {
+                                  body : TastingNoteUpdateRequestDTO) -> TastingNotePatchRequestDTO {
         return TastingNotePatchRequestDTO(noteId: noteId, body: body)
     }
     
@@ -84,7 +84,16 @@ public final class TastingNoteService: NetworkManager {
     
     /// 모든 노트 정보 조회 API -> 기본이 0
     public func fetchAllNotes(sort: String, page: Int = 0) async throws -> AllTastingNoteResponseDTO {
-        try await requestAsync(target: .getAllNotes(sort: sort, page: page), decodingType: AllTastingNoteResponseDTO.self)
+        try await requestAsync(
+            target: .getAllNotes(sort: sort, page: page),
+            decodingType: AllTastingNoteResponseDTO.self)
+    }
+    
+    /// 검색을 통핸 노트 정보 조회 API
+    public func searchNote(searchName: String, page: Int = 0) async throws -> AllTastingNoteResponseDTO {
+        try await requestAsync(
+            target: .searchNote(searchName: searchName, page: page),
+            decodingType: AllTastingNoteResponseDTO.self)
     }
     
 }

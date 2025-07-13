@@ -7,6 +7,7 @@ import Then
 import DesignSystem
 import SDWebImage
 
+//legacy design
 public class WineDetailView: UIView {
     
     // 이미지 그림자 전용 뷰 (그림자만 표시)
@@ -16,6 +17,9 @@ public class WineDetailView: UIView {
         $0.layer.shadowRadius = 10.5
         $0.layer.shadowColor = AppColor.black.cgColor
         $0.clipsToBounds = false
+        if UITraitCollection.current.userInterfaceStyle == .dark {
+            $0.layer.shadowOpacity = 0 // 또는 $0.layer.shadowColor = nil
+        }
     }
     
     private lazy var imageBackground = UIView().then {
@@ -40,6 +44,9 @@ public class WineDetailView: UIView {
         $0.layer.shadowOffset = CGSize(width: 0, height: 1)
         $0.layer.shadowRadius = 10.5
         $0.layer.masksToBounds = false
+        if UITraitCollection.current.userInterfaceStyle == .dark {
+            $0.layer.shadowOpacity = 0 // 또는 $0.layer.shadowColor = nil
+        }
     }
     
     private func createTitle(text: String) ->  UILabel {
@@ -78,7 +85,7 @@ public class WineDetailView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.background
+        backgroundColor = AppColor.white
         self.addComponents()
         self.constraints()
     }

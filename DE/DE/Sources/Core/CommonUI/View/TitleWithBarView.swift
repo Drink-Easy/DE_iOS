@@ -17,12 +17,12 @@ public class TitleWithBarView: UIView {
     }
 
     private let separatorView = UIView().then {
-        $0.backgroundColor = AppColor.purple50
+        $0.backgroundColor = AppColor.gray30
     }
 
     public init(title: String, subTitle: String) {
         super.init(frame: .zero)
-        backgroundColor = AppColor.background
+        backgroundColor = .clear
         setupView()
         setupConstraints()
 
@@ -41,7 +41,7 @@ public class TitleWithBarView: UIView {
     private func setupConstraints() {
         titleLabel.snp.makeConstraints { make in
             make.top.equalTo(safeAreaLayoutGuide)
-            make.leading.equalTo(safeAreaLayoutGuide).offset(24)
+            make.leading.equalTo(safeAreaLayoutGuide)
         }
 
         subTitleLabel.snp.makeConstraints { make in
@@ -51,7 +51,7 @@ public class TitleWithBarView: UIView {
 
         separatorView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(6)
-            make.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(24)
+            make.horizontalEdges.equalTo(safeAreaLayoutGuide )
             make.height.equalTo(1)
             make.bottom.equalToSuperview()
         }
