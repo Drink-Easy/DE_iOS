@@ -26,6 +26,7 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     
     private lazy var logoImage = UIImageView().then { logoImage in
         logoImage.image = UIImage(named: "logo")
+        logoImage.contentMode = .scaleAspectFit
     }
     
     public override func viewDidLoad() {
@@ -160,8 +161,8 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     func setConstraints() {
         logoImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.top.equalTo(Constants.superViewHeight * 0.4)
-            make.width.height.equalTo(Constants.superViewWidth * 0.3)
+            make.top.equalTo(Constants.superViewHeight * 0.45)
+            make.width.equalTo(Constants.superViewWidth * 0.6)
         }
     }
     

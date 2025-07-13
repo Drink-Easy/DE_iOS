@@ -15,7 +15,7 @@ public class AverageTastingNoteView: UIView {
         $0.isHidden = true
     }
     
-    private let title = TitleWithBarView(title: "Tasting Note", subTitle: "테이스팅 노트")
+    private let title = TitleWithoutBarView(title: "Tasting Note", subTitle: "테이스팅 노트")
     public let writeNewTastingNoteBtn = TextIconButton(title: "작성하러 가기")
     
     private func createTitle(text: String) ->  UILabel {
@@ -42,7 +42,7 @@ public class AverageTastingNoteView: UIView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.background
+        backgroundColor = .clear
         self.addComponents()
         self.constraints()
     }
@@ -58,18 +58,19 @@ public class AverageTastingNoteView: UIView {
     
     private func constraints() {
         title.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide)
+            $0.top.equalTo(safeAreaLayoutGuide).inset(23)
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
+            $0.height.equalTo(30)
         }
         
         writeNewTastingNoteBtn.snp.makeConstraints {
             $0.centerY.equalTo(title)
-            $0.trailing.equalTo(safeAreaLayoutGuide).inset(24)
+            $0.trailing.equalTo(safeAreaLayoutGuide)
         }
         
         nose.snp.makeConstraints {
             $0.top.equalTo(title.snp.bottom).offset(26)
-            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
+            $0.leading.equalTo(safeAreaLayoutGuide)
         }
         
         palate.snp.makeConstraints {
@@ -80,21 +81,21 @@ public class AverageTastingNoteView: UIView {
         noseContents.snp.makeConstraints {
             $0.centerY.equalTo(nose)
             $0.leading.equalTo(safeAreaLayoutGuide).offset(89)
-            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-26)
+            $0.trailing.equalTo(safeAreaLayoutGuide)
         }
         
         palateContents.snp.makeConstraints {
             $0.top.equalTo(palate.snp.top)
             $0.leading.equalTo(noseContents.snp.leading)
-            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-26)
+            $0.trailing.equalTo(safeAreaLayoutGuide)
             //$0.height.equalTo(50)
-            $0.bottom.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(25)
         }
         
         noTastinNote.snp.makeConstraints { 
             $0.top.equalTo(title.snp.bottom).offset(16)
-            $0.leading.equalTo(safeAreaLayoutGuide).offset(24)
-            $0.bottom.equalToSuperview()
+            $0.leading.equalTo(safeAreaLayoutGuide)
+            $0.bottom.equalToSuperview().inset(25)
         }
     }
     

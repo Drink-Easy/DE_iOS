@@ -29,6 +29,7 @@ public enum AppColor {
     public static let gray50 = UIColor(named: "gray50")!
     public static let gray30 = UIColor(named: "gray30")!
     public static let gray10 = UIColor(named: "gray10")!
+    public static let gray05 = UIColor(named: "gray05")!
 
     // MARK: - Semantic
     public static let black = UIColor(named: "Dblack")!

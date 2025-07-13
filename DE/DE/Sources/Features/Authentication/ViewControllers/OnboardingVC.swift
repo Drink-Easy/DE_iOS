@@ -9,13 +9,9 @@ import DesignSystem
 public class OnboardingVC: UIViewController, UICollectionViewDelegate, FirebaseTrackable {
     public var screenName: String = Tracking.VC.onboardingVC
     
-    var pageControl = CustomPageControl(indicatorColor: .white, currentIndicatorColor: AppColor.purple50)
+    var pageControl = CustomPageControl(indicatorColor: AppColor.gray50, currentIndicatorColor: AppColor.purple50)
     
-    private let startButton = CustomBlurButton(
-        title: "다음으로",
-        titleColor: .white,
-        blurStyle: .systemUltraThinMaterial
-    ).then {
+    private let startButton = CustomButton(title: "다음으로").then {
         $0.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
     }
     
@@ -94,7 +90,7 @@ public class OnboardingVC: UIViewController, UICollectionViewDelegate, FirebaseT
     private func updateStartButtonTitle(for index: Int) {
         let isLast = index == OnboardingSlide.allCases.count - 1
         let title = isLast ? "시작하기" : "다음으로"
-        startButton.configure(title: title)
+        startButton.configure(title: title, titleColor: .white, isEnabled: true)
     }
     
     lazy var onboardingCollectionView: UICollectionView = {

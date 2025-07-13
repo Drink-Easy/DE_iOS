@@ -8,7 +8,7 @@ import DesignSystem
 
 public class EntireReviewView: UIView {
     
-    private let title = TitleWithBarView(title: "리뷰 전체보기", subTitle: "")
+    private let title = TitleWithoutBarView(title: "전체 리뷰", subTitle: "")
     public let dropdownView = CustomDropdownView(options: ["최신 순", "오래된 순", "별점 높은 순", "별점 낮은 순"])
     
     public lazy var reviewCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout().then {
@@ -43,6 +43,7 @@ public class EntireReviewView: UIView {
         title.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide)
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
+            $0.height.equalTo(30)
         }
         
         dropdownView.snp.makeConstraints {

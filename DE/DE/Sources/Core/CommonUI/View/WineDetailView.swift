@@ -7,6 +7,7 @@ import Then
 import DesignSystem
 import SDWebImage
 
+//legacy design
 public class WineDetailView: UIView {
     
     // 이미지 그림자 전용 뷰 (그림자만 표시)
@@ -84,7 +85,7 @@ public class WineDetailView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = AppColor.background
+        backgroundColor = AppColor.white
         self.addComponents()
         self.constraints()
     }
