@@ -61,7 +61,7 @@ public class VivinoRateView: UIView {
         $0.isHidden = true
     }
     
-    private let title = TitleWithBarView(title: "Vivino Grade", subTitle: "비비노 평점")
+    private let title = TitleWithoutBarView(title: "Vivino Grade", subTitle: "비비노 평점")
     
     public lazy var scoreLabel = UILabel()
     
@@ -94,8 +94,9 @@ public class VivinoRateView: UIView {
     
     private func constraints() {
         title.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).inset(23)
+            $0.top.equalTo(safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(24))
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
+            $0.height.equalTo(30)
         }
         
         scoreLabel.snp.makeConstraints {

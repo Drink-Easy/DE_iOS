@@ -15,7 +15,7 @@ public class AverageTastingNoteView: UIView {
         $0.isHidden = true
     }
     
-    private let title = TitleWithBarView(title: "Tasting Note", subTitle: "테이스팅 노트")
+    private let title = TitleWithoutBarView(title: "Tasting Note", subTitle: "테이스팅 노트")
     public let writeNewTastingNoteBtn = TextIconButton(title: "작성하러 가기")
     
     private func createTitle(text: String) ->  UILabel {
@@ -60,6 +60,7 @@ public class AverageTastingNoteView: UIView {
         title.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide).inset(23)
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
+            $0.height.equalTo(30)
         }
         
         writeNewTastingNoteBtn.snp.makeConstraints {

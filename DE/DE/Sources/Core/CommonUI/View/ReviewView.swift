@@ -21,7 +21,7 @@ public class ReviewView: UIView {
         $0.isHidden = true
     }
     
-    private let title = TitleWithBarView(title: "Review", subTitle: "리뷰")
+    private let title = TitleWithoutBarView(title: "Review", subTitle: "리뷰")
     
     public func updateScore() {
         let text = "\(score) / 5.0"
@@ -105,6 +105,7 @@ public class ReviewView: UIView {
         title.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(24))
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
+            $0.height.equalTo(30)
         }
         
         scoreLabel.snp.makeConstraints {

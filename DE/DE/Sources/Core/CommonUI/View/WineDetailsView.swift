@@ -8,7 +8,7 @@ import DesignSystem
 
 public class WineDetailsView: UIView {
     
-    private let title = TitleWithBarView(title: "Details", subTitle: "상세 와인 정보")
+    private let title = TitleWithoutBarView(title: "Details", subTitle: "상세 와인 정보")
     
     private func createTitle(text: String) ->  UILabel {
         return UILabel().then {
@@ -52,8 +52,9 @@ public class WineDetailsView: UIView {
     
     private func constraints() {
         title.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).inset(24)
+            $0.top.equalTo(safeAreaLayoutGuide).inset(DynamicPadding.dynamicValue(24))
             $0.leading.trailing.equalToSuperview()
+            $0.height.equalTo(30)
         }
         
         sort.snp.makeConstraints {
