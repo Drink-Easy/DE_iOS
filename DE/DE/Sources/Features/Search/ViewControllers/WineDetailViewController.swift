@@ -152,14 +152,20 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     private lazy var contentView = UIView()
     
     private var wineInfoView = NewWineInfoView()
-    private var vivinoRateView = VivinoRateView()
+    private var vintageInfoView = VintageInfoView(tabAction: {
+        print("빈티지 버튼 클릭")
+    })
     private var wineDetailsView = WineDetailsView()
     private var averageTastingNoteView = AverageTastingNoteView()
-    
     private lazy var reviewView = ReviewView().then {
         $0.reviewCollectionView.delegate = self
         $0.reviewCollectionView.dataSource = self
     }
+    
+    let divider1 = DividerFactory.make()
+    let divider2 = DividerFactory.make()
+    let divider3 = DividerFactory.make()
+    let thinDivider = DividerFactory.make()
     
     private func addButtonTarget() {
         averageTastingNoteView.writeNewTastingNoteBtn.addTarget(self, action: #selector(goToTastingNote), for: .touchUpInside)
@@ -205,11 +211,11 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
         scrollView.delegate = self
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-        [largeTitleLabel, wineInfoView, vivinoRateView, wineDetailsView, averageTastingNoteView, reviewView].forEach{ contentView.addSubview($0) }
+        
+        contentView.addSubviews(largeTitleLabel, wineInfoView, vintageInfoView, wineDetailsView, averageTastingNoteView, reviewView, divider1, divider2, divider3, thinDivider)
     }
     
     private func constraints() {
-        
         scrollView.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide)
             $0.horizontalEdges.bottom.equalTo(view.safeAreaLayoutGuide)
@@ -231,17 +237,43 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
             $0.horizontalEdges.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
         }
         
-        vivinoRateView.snp.makeConstraints {
-            $0.top.equalTo(wineInfoView.snp.bottom).offset(8)
+        divider1.snp.makeConstraints {
+            $0.top.equalTo(wineInfoView.snp.bottom)
+            $0.height.equalTo(8)
+            $0.horizontalEdges.equalToSuperview()
+        }
+        
+        vintageInfoView.snp.makeConstraints {
+            $0.top.equalTo(divider1)
             $0.horizontalEdges.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
         }
+        
+        divider2.snp.makeConstraints {
+            $0.top.equalTo(vintageInfoView.snp.bottom)
+            $0.height.equalTo(8)
+            $0.horizontalEdges.equalToSuperview()
+        }
+        
         wineDetailsView.snp.makeConstraints {
-            $0.top.equalTo(vivinoRateView.snp.bottom).offset(8)
+            $0.top.equalTo(divider2.snp.bottom).offset(8)
             $0.horizontalEdges.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
         }
-        averageTastingNoteView.snp.makeConstraints {
-            $0.top.equalTo(wineDetailsView.snp.bottom).offset(8)
+        
+        thinDivider.snp.makeConstraints {
+            $0.top.equalTo(wineDetailsView.snp.bottom)
+            $0.height.equalTo(1)
             $0.horizontalEdges.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
+        }
+        
+        averageTastingNoteView.snp.makeConstraints {
+            $0.top.equalTo(thinDivider.snp.bottom)
+            $0.horizontalEdges.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
+        }
+        
+        divider3.snp.makeConstraints {
+            $0.top.equalTo(averageTastingNoteView.snp.bottom)
+            $0.height.equalTo(8)
+            $0.horizontalEdges.equalToSuperview()
         }
         
         reviewView.snp.makeConstraints {
@@ -294,6 +326,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
         let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString, avgSugarContent: wineResponse.avgSweetness, avgAcidity: wineResponse.avgAcidity, avgTannin: wineResponse.avgTannin, avgBody: wineResponse.avgBody, avgAlcohol: wineResponse.avgAlcohol)
         let roundedAvgMemberRating = (wineResponse.avgMemberRating * 10).rounded() / 10
         let reviewData = WineAverageReviewModel(avgMemberRating: roundedAvgMemberRating)
+        
         if let reviewResponse = responseData.recentReviews {
             for data in reviewResponse {
                 if let name = data.name,
@@ -311,7 +344,6 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
 //            AppTextStyle.KR.head.apply(to: self.largeTitleLabel, text: self.wineName, color: AppColor.black)
             self.wineInfoForTN = infoData // 테이스팅 노트 작성을 위한 데이터 저장
             self.wineInfoView.configure(infoData)
-            self.vivinoRateView.configure(rateData)
             self.wineDetailsView.configure(infoData)
             self.averageTastingNoteView.configure(avgData)
             self.reviewView.configure(reviewData)
