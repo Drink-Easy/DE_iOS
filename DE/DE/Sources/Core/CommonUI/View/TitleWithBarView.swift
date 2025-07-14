@@ -56,4 +56,12 @@ public class TitleWithBarView: UIView {
             make.bottom.equalToSuperview()
         }
     }
+    
+    public func setTitleColor(_ color: UIColor = AppColor.black) {
+        titleLabel.textColor = color
+    }
+    
+    public func setSubTitleColor(_ color: UIColor = AppColor.black) {
+        subTitleLabel.textColor = color
+    }
 }
