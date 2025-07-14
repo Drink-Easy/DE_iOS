@@ -38,4 +38,8 @@ public class TitleWithoutBarView: UIView {
             $0.centerY.equalToSuperview()
         }
     }
+    
+    public func setTitleColor(_ color: UIColor = AppColor.black) {
+        titleLabel.textColor = color
+    }
 }
