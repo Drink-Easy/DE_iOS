@@ -42,4 +42,8 @@ public class TitleWithoutBarView: UIView {
     public func setTitleColor(_ color: UIColor = AppColor.black) {
         titleLabel.textColor = color
     }
+    
+    public func setSubTitleColor(_ color: UIColor = AppColor.black) {
+        subTitleLabel.textColor = color
+    }
 }
