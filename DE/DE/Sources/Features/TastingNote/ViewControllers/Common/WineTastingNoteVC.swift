@@ -44,11 +44,11 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let adjustedTopInset = scrollView.adjustedContentInset.top
         let offsetY = scrollView.contentOffset.y + adjustedTopInset
-        let largeTitleBottom = wineInfoView.header.header.frame.maxY
-        UIView.animate(withDuration: 0.1) {
-            self.wineInfoView.header.header.alpha = offsetY > largeTitleBottom ? 0 : 1
-            self.smallTitleLabel.isHidden = !(offsetY > largeTitleBottom)
-        }
+//        let largeTitleBottom = wineInfoView.header.header.frame.maxY
+//        UIView.animate(withDuration: 0.1) {
+//            self.wineInfoView.header.header.alpha = offsetY > largeTitleBottom ? 0 : 1
+//            self.smallTitleLabel.isHidden = !(offsetY > largeTitleBottom)
+//        }
     }
     
     //MARK: Initializers
@@ -69,6 +69,7 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         wineInfoView.delegate = self
         setupUI()
         setupNavigationBar()
+        setupActions()
         setNavBarAppearance(navigationController: self.navigationController)
     }
     
@@ -114,9 +115,14 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         }
         wineInfoView.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.equalToSuperview().inset(24)
-            make.trailing.equalToSuperview().inset(24)
+            make.leading.trailing.equalToSuperview()
         }
+    }
+    
+    private func setupActions(){
+        wineInfoView.wineImageView.isUserInteractionEnabled = true
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(gotoWineDetailView))
+        wineInfoView.wineImageView.addGestureRecognizer(tapGesture)
     }
     
     func didTapEditButton(for type: PropertyType) {
@@ -210,13 +216,10 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
     }
     
     private func setWineData() {
-        wineInfoView.header.setWineName(wineName)
+        let infoData = WineDetailInfoModel(wineName:wineData.wineName, rating:tnManager.rating, image: wineData.imageUrl, sort: wineData.sort, country: wineData.country, region: wineData.region, variety: wineData.variety)
         
-        wineInfoView.header.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
-        wineInfoView.header.infoView.kindContents.text = "\(wineData.sort)"
-        wineInfoView.header.infoView.typeContents.text = wineData.variety.replacingOccurrences(of: " ,", with: ",")
-        wineInfoView.header.infoView.countryContents.text = "\(wineData.country), \(wineData.region)"
-        
+        wineInfoView.header.configure(infoData)
+        wineInfoView.wineImageView.configure(imageURL: wineData.imageUrl)
         //차트 뷰 데이터 로드
         wineInfoView.chartView.viewModel.loadSavedValues(sweetness: Double(tnManager.sugarContent), alcohol: Double(tnManager.alcohol), tannin: Double(tnManager.tannin), body: Double(tnManager.body), acidity: Double(tnManager.acidity))
         
@@ -226,15 +229,21 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         wineInfoView.colorLabel.text = WineColorManager().getColorName(for: tnManager.color) ?? "색상 이름 없음"
         
         wineInfoView.ratingValue = tnManager.rating
-        wineInfoView.ratingButton.rating = tnManager.rating
+        wineInfoView.scoreStar.rating = tnManager.rating
 
         if tnManager.review.isEmpty {
-            wineInfoView.dateView.text = "\(tnManager.tasteDate)에 기록되었어요."
+            wineInfoView.dateView.text = "\(tnManager.tasteDate)"
             wineInfoView.reviewView.text = "작성된 리뷰가 없습니다."
         } else {
-            wineInfoView.dateView.text = "\(tnManager.tasteDate)에 작성되었어요."
+            wineInfoView.dateView.text = "\(tnManager.tasteDate)"
             wineInfoView.reviewView.text = tnManager.review
         }
         
+    }
+    
+    @objc private func gotoWineDetailView(){
+        let vc = TNWineDetailViewController()
+        vc.wineId = wineData.wineId
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
