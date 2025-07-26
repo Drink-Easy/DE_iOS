@@ -21,7 +21,7 @@ struct PalateChartView: View {
             let dataValues = viewModel.stats.map { $0.value / maxValue }
             let sides = viewModel.stats.count
             
-            // 데이터 레이어
+//             데이터 레이어
 //            PolygonShape(
 //                sides: sides,
 //                scale: 1.0,
@@ -30,8 +30,8 @@ struct PalateChartView: View {
 //            .fill(
 //                RadialGradient(
 //                    gradient: Gradient(colors: [
-//                        Color("palateTop").opacity(0.5),
-//                        Color("palateBtm").opacity(0.5)
+//                        Color("graphTop").opacity(0.5),
+//                        Color("graphTop").opacity(0.1)
 //                    ]),
 //                    center: .center, // 중심 위치
 //                    startRadius: 10, // 그라디언트가 시작하는 반지름
@@ -48,7 +48,7 @@ struct PalateChartView: View {
             LinearGradient(
               colors: [
                 Color(AppColor.graphTop).opacity(0.5),
-                Color(AppColor.graphBottom).opacity(0.5)
+                Color(AppColor.graphTop).opacity(0.1)
             ],
               startPoint: .top,
               endPoint: .bottom)
