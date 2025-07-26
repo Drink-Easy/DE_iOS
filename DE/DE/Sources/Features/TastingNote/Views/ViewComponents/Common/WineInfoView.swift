@@ -22,27 +22,6 @@ public class WineInfoView: UIView {
     // MARK: - UI Components
     lazy var header = WineSummaryView()
     
-    private func createTitle(text: String) ->  UILabel {
-        return UILabel().then {
-            $0.text = text
-            $0.textColor = AppColor.gray70
-            $0.font = UIFont.pretendard(.semiBold, size: 14)
-        }
-    }
-    
-    private func createContents(text: String) ->  UILabel {
-        return UILabel().then {
-            $0.text = text
-            $0.textColor = AppColor.black
-            $0.font = UIFont.pretendard(.medium, size: 12)
-            $0.numberOfLines = 0
-        }
-    }
-    
-    public lazy var largeTitleLabel = UILabel().then {
-        $0.numberOfLines = 0
-    }
-    
     lazy var wineImageView = WineImageView()
     //디테일 뷰 담을 껍데기
     let backgroundView = UIView().then {
@@ -230,16 +209,20 @@ public class WineInfoView: UIView {
             make.edges.equalToSuperview()
         }
         
-        [chartHeaderView, colorHeaderView, noseHeaderView, reviewHeaderView].forEach {
+        [colorHeaderView, noseHeaderView, reviewHeaderView].forEach {
             $0.snp.makeConstraints { make in
                 make.height.greaterThanOrEqualTo(30) // 고정 높이
             }
         }
-        [chartStackView, colorStackView, noseStackView, reviewStackView].forEach {
+        [colorStackView, noseStackView, reviewStackView].forEach {
             $0.snp.makeConstraints { make in
                 make.leading.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
                 make.trailing.equalToSuperview().offset(DynamicPadding.dynamicValue(24))
             }
+        }
+        chartHeaderView.snp.makeConstraints { make in
+            make.height.greaterThanOrEqualTo(30)
+            make.leading.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
         }
         chartView.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()

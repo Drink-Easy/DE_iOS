@@ -39,7 +39,7 @@ class PolygonChartView: UIView {
         
         hostingController.view.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(16)
+            make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview().offset(-16) // 아래 여백
         }
     }
