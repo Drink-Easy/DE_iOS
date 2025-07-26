@@ -102,13 +102,13 @@ struct PalateChartView: View {
                     let y = center.y + sin(angle * .pi / 180) * textDistance
                     
                     Text("\(viewModel.stats[index].label)")
-                        .font(.system(size: 14, weight: .bold))
+                        .font(.system(size: 14, weight: .medium))
                         .multilineTextAlignment(.center)
                         .foregroundColor(Color("Dblack"))
                         .frame(width: 60)
                         .position(x: x, y: y)
                     Text("\(Int(viewModel.stats[index].value * 100))%")
-                        .font(.system(size: 12, weight: .medium))
+                        .font(.system(size: 12, weight: .regular))
                         .multilineTextAlignment(.center)
                         .foregroundColor(Color("purple100"))
                         .frame(width: 60)
