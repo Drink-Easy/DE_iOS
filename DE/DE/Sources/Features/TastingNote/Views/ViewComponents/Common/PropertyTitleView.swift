@@ -37,7 +37,7 @@ class PropertyTitleView: UIView {
         $0.textAlignment = .left
     }
     
-    private lazy var line = UIView()
+//    private lazy var line = UIView()
     
     private lazy var editButton = UIButton().then {
         $0.setAttributedTitle(
@@ -67,7 +67,7 @@ class PropertyTitleView: UIView {
         self.backgroundColor = .clear
         self.addComponents()
         self.constraints()
-        self.line.backgroundColor = barColor // barColor 적용
+//        self.line.backgroundColor = barColor // barColor 적용
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -88,7 +88,7 @@ class PropertyTitleView: UIView {
     }
     
     private func addComponents() {
-        [engTitle, korTitle, line, editButton, dateLabel].forEach{ self.addSubview($0) }
+        [engTitle, korTitle, editButton, dateLabel].forEach{ self.addSubview($0) }
     }
     
     private func constraints() {
@@ -102,15 +102,15 @@ class PropertyTitleView: UIView {
             make.leading.equalTo(engTitle.snp.trailing).offset(6) // 폰트 사이즈 변화 없어서 6 고정
         }
         
-        line.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.top.equalTo(engTitle.snp.bottom).offset(6)
-            make.height.equalTo(1.5)
-        }
+//        line.snp.makeConstraints { make in
+//            make.leading.trailing.equalToSuperview()
+//            make.top.equalTo(engTitle.snp.bottom).offset(6)
+//            make.height.equalTo(1.5)
+//        }
         
         editButton.snp.makeConstraints { make in
             make.bottom.equalTo(engTitle.snp.bottom).offset(2)
-            make.trailing.equalToSuperview()
+            make.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
         }
         
         dateLabel.snp.makeConstraints { make in

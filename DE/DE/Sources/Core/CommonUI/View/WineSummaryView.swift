@@ -82,7 +82,7 @@ public class WineSummaryView: UIView {
     
     private func constraints() {
         largeTitleLabel.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).inset(23)
+            $0.top.equalTo(safeAreaLayoutGuide)
             $0.leading.equalTo(safeAreaLayoutGuide)
         }
         scoreStar.snp.makeConstraints {
@@ -124,6 +124,28 @@ public class WineSummaryView: UIView {
         self.score = model.rating
         sortContents.text = model.sort
         countryContents.text = model.country
+        self.layoutIfNeeded()
+    }
+    
+    public func setforTN(){
+        self.scoreStar.isHidden = true
+        self.ratingLabel.isHidden = true
+        
+        self.largeTitleLabel.lineBreakMode = .byTruncatingTail
+        self.scoreStar.snp.removeConstraints()
+        self.ratingLabel.snp.removeConstraints()
+        
+        self.largeTitleLabel.snp.remakeConstraints {
+            $0.top.equalTo(safeAreaLayoutGuide)
+            $0.leading.equalTo(safeAreaLayoutGuide)
+            $0.width.equalTo(DynamicPadding.dynamicValue(230))
+        }
+        
+        self.sort.snp.remakeConstraints {
+            $0.top.equalTo(largeTitleLabel.snp.bottom).offset(20)
+            $0.leading.equalTo(safeAreaLayoutGuide)
+        }
+        self.setNeedsLayout()
         self.layoutIfNeeded()
     }
 }

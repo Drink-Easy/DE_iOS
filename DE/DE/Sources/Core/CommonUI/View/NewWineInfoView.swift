@@ -37,7 +37,7 @@ public class NewWineInfoView: UIView {
             $0.centerX.equalToSuperview()
         }
         wineInfo.snp.makeConstraints {
-            $0.top.equalTo(wineImage.snp.bottom)
+            $0.top.equalTo(wineImage.snp.bottom).offset(23)
             $0.leading.trailing.equalToSuperview()
             $0.bottom.equalToSuperview().inset(23)
         }

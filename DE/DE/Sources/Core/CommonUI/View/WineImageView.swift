@@ -6,7 +6,7 @@ import Then
 
 import DesignSystem
 
-final class WineImageView: UIView {
+public class WineImageView: UIView {
     
     // MARK: - UI Components 선언
     private lazy var imageBackground = UIView().then {
