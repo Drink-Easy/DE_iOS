@@ -13,7 +13,6 @@ public enum AppColor {
     public static let sliderStep = UIColor(named: "sliderStep")!
     
     public static let graphTop = UIColor(named: "graphTop")!
-    public static let graphBottom = UIColor(named: "graphBottom")!
     
     // MARK: - Primary
     public static let purple100 = UIColor(named: "purple100")!
