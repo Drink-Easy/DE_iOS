@@ -16,7 +16,8 @@ class TNWineDetailViewController: UIViewController, UIScrollViewDelegate, Fireba
             AppTextStyle.KR.head.apply(to: largeTitleLabel, text: wineName, color: AppColor.black)
         }
     }
-    var wineInfoForTN : WineDetailInfoModel?
+    let wineData = TNWineDataManager.shared
+    let tnManager = NewTastingNoteManager.shared
     
     var isLiked: Bool = false {
         didSet {
@@ -26,7 +27,6 @@ class TNWineDetailViewController: UIViewController, UIScrollViewDelegate, Fireba
         }
     }
     var originalIsLiked: Bool = false
-    let wineNetworkService = WineService()
     let likedNetworkService = WishlistService()
     private let errorHandler = NetworkErrorHandler()
     
@@ -49,7 +49,7 @@ class TNWineDetailViewController: UIViewController, UIScrollViewDelegate, Fireba
         super.viewWillAppear(animated)
         self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        callWineDetailAPI(wineId: self.wineId)
+        self.transformResponseData()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -226,66 +226,23 @@ class TNWineDetailViewController: UIViewController, UIScrollViewDelegate, Fireba
         }
     }
 
-    func transformResponseData(_ responseData : WineResponseWithThreeReviewsDTO) {
-        let wineResponse = responseData.wineInfoResponse
+    func transformResponseData() {
+        let wineResponse = wineData
+        let tnResponse = tnManager
         self.wineId = wineResponse.wineId
-        self.wineName = wineResponse.name
-        self.isLiked = wineResponse.liked
-        self.originalIsLiked = wineResponse.liked
-        let noseNotes = [
-            wineResponse.nose1,
-            wineResponse.nose2,
-            wineResponse.nose3
-        ].compactMap { $0 }
+        self.wineName = wineResponse.wineName
+        let noseNotes = formatNoseList(tnManager.nose)
 
-        let tastingNoteString = noseNotes.joined(separator: ", ")
+        let infoData = WineDetailInfoModel(wineName:wineResponse.wineName, rating:tnResponse.rating, image: wineResponse.imageUrl, sort: wineResponse.sort, country: wineResponse.country, region: wineResponse.region, variety: wineResponse.variety)
+        let rateData = WineViVinoRatingModel(vivinoRating: tnResponse.rating)
+        let avgData = WineAverageTastingNoteModel(wineNoseText: noseNotes, avgSugarContent: Double(tnResponse.sugarContent), avgAcidity: Double(tnResponse.acidity), avgTannin: Double(tnResponse.tannin), avgBody: Double(tnResponse.body), avgAlcohol: Double(tnResponse.alcohol))
 
-        let infoData = WineDetailInfoModel(wineName:wineResponse.name, rating:wineResponse.vivinoRating, image: wineResponse.imageUrl, sort: wineResponse.sort, country: wineResponse.country, region: wineResponse.region, variety: wineResponse.variety)
-        let rateData = WineViVinoRatingModel(vivinoRating: wineResponse.vivinoRating)
-        let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString, avgSugarContent: wineResponse.avgSweetness, avgAcidity: wineResponse.avgAcidity, avgTannin: wineResponse.avgTannin, avgBody: wineResponse.avgBody, avgAlcohol: wineResponse.avgAlcohol)
-        let roundedAvgMemberRating = (wineResponse.avgMemberRating * 10).rounded() / 10
-        
-        if let reviewResponse = responseData.recentReviews {
-            for data in reviewResponse {
-                if let name = data.name,
-                   let review = data.review,
-                   let rating = data.rating,
-                   let createdAt = data.createdAt {
-                    let reviewModel = WineReviewModel(name: name, contents: review, rating: rating, createdAt: createdAt)
-                    self.reviewData.append(reviewModel)
-                }
-            }
-            expandedCells = Array(repeating: false, count: self.reviewData.count)
-        }
-        
         DispatchQueue.main.async {
-//            AppTextStyle.KR.head.apply(to: self.largeTitleLabel, text: self.wineName, color: AppColor.black)
-            self.wineInfoForTN = infoData // 테이스팅 노트 작성을 위한 데이터 저장
             self.wineInfoView.configure(infoData)
             self.wineDetailsView.configure(infoData)
             self.averageTastingNoteView.configure(avgData)
         }
     }
-    
-    func callWineDetailAPI(wineId: Int) {
-        self.view.showColorBlockingView()
-        Task {
-            do {
-                let responseData = try await wineNetworkService.fetchWineInfo(wineId: wineId)
-                DispatchQueue.main.async {
-                    self.reviewData.removeAll()
-                    if let data = responseData {
-                        self.transformResponseData(data)
-                    }
-                    self.view.hideBlockingView()
-                }
-            } catch {
-                self.view.hideBlockingView()
-                errorHandler.handleNetworkError(error, in: self)
-            }
-        }
-    }
-    
     
     func callLikeAPI(wineId: Int) async {
         self.view.showBlockingView()
