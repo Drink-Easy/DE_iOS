@@ -94,13 +94,13 @@ let project = Project(
                     //                        "UIImageRespectsSafeAreaInsets" : true
                     //                    ],
                     // 카카오 로그인 설정
-                    "KAKAO_NATIVE_APP_KEY" : "180ebe6367eb8ee6eafe439aa551744a",
+                    "KAKAO_NATIVE_APP_KEY" : "$(KAKAO_NATIVE_APP_KEY)",
                     "LSApplicationQueriesSchemes" : ["kakaokompassauth" , "kakaolink", "kakaoplus"],
                     "CFBundleURLTypes" : [
                         [
                             "CFBundleTypeRole" : "Editor",
                             "CFBundleURLName" : "kakaologin",
-                            "CFBundleURLSchemes" : ["kakao180ebe6367eb8ee6eafe439aa551744a"]
+                            "CFBundleURLSchemes" : ["kakao$(KAKAO_NATIVE_APP_KEY)"]
                         ],
                     ],
                     "ITSAppUsesNonExemptEncryption" : false,
@@ -136,6 +136,15 @@ let project = Project(
                 .external(name: "KeychainSwift"),
                 .external(name: "KakaoSDK")
             ],
+            settings: .settings(
+                configurations: [
+                    .debug(
+                        name: "DebugConfig",
+                        xcconfig: .relativeToRoot("SupportingFiles/DebugConfig.xcconfig")
+                    ),
+                    .release(name: "ReleaseConfig", xcconfig: .relativeToRoot("SupportingFiles/ReleaseConfig.xcconfig"))
+                ]
+            ) ,
             launchArguments: [.launchArgument(name: "-FIRDebugEnabled", isEnabled: true)]
         ),
         
