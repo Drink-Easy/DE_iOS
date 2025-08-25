@@ -14,7 +14,7 @@ extension NoticeEndpoint: TargetType {
     public var baseURL: URL {
         switch self {
         case .getBanner:
-            guard let url = URL(string: API.baseURL) else {
+            guard let url = URL(string: API.authURL) else {
                 fatalError("잘못된 URL")
             }
             return url
