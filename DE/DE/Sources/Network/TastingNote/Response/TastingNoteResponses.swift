@@ -5,7 +5,7 @@ import Foundation
 public struct TastingNoteResponsesDTO: Decodable {
     public let noteId: Int
     public let wineId: Int
-    public let vintageYear: Int
+    public let vintageYear: Int?
     public let wineName: String
     public let sort: String
     public let country: String
@@ -48,7 +48,7 @@ public struct TastingNotePreviewResponseDTO: Decodable {
     public let noteId: Int
     public let tasteDate: String
     public let wineName: String
-    public let vintageYear: Int
+    public let vintageYear: Int?
     public let imageUrl: String
     public let sort: String
 }

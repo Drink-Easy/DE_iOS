@@ -67,7 +67,18 @@ public struct TastingNoteUpdateRequestDTO : Codable {
     let rating : Double?
     let review : String?
     
-    public init(color: String?, tastingDate: String?, sugarContent: Int?, acidity: Int?, tannin: Int?, body: Int?, alcohol: Int?, updateNoseList: [String]?, rating: Double?, review: String?) {
+    public init(
+        color: String?,
+        tastingDate: String?,
+        sugarContent: Int?,
+        acidity: Int?,
+        tannin: Int?,
+        body: Int?,
+        alcohol: Int?,
+        updateNoseList: [String]?,
+        rating: Double?,
+        review: String?
+    ) {
         self.color = color
         self.tastingDate = tastingDate
         self.sweetness = sugarContent
