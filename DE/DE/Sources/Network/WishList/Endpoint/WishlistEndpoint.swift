@@ -5,8 +5,8 @@ import Moya
 
 public enum WishlistEndpoint {
     case getWishList
-    case postWishList(wineId: Int)
-    case deleteWineLike(wineId: Int)
+    case postWishList(wineId: Int, vintageYear: Int?)
+    case deleteWineLike(wineId: Int, vintageYear: Int?)
 }
 
 extension WishlistEndpoint: TargetType {
@@ -19,9 +19,9 @@ extension WishlistEndpoint: TargetType {
     
     public  var path: String {
         switch self {
-        case .postWishList(let wineId):
+        case let .postWishList(wineId, _):
             return "/\(wineId)"
-        case .deleteWineLike(let wineId):
+        case let .deleteWineLike(wineId, _):
             return "/\(wineId)"
         default:
             return ""
@@ -43,10 +43,20 @@ extension WishlistEndpoint: TargetType {
         switch self {
         case .getWishList:
             return .requestPlain
-        case .postWishList(_):
-            return .requestPlain
-        case .deleteWineLike(_):
-            return .requestPlain
+            
+        case let .postWishList(_, vintageYear):
+            var parameters: [String: Any] = [:]
+            if let vintageYear = vintageYear {
+                parameters["vintageYear"] = vintageYear
+            }
+            return .requestParameters(parameters: parameters, encoding: URLEncoding.queryString)
+            
+        case let .deleteWineLike(_, vintageYear):
+            var parameters: [String: Any] = [:]
+            if let vintageYear = vintageYear {
+                parameters["vintageYear"] = vintageYear
+            }
+            return .requestParameters(parameters: parameters, encoding: URLEncoding.queryString)
         }
     }
     

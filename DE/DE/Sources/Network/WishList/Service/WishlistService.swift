@@ -13,7 +13,7 @@ public final class WishlistService: NetworkManager {
         // 플러그인 추가
         let plugins: [PluginType] = [
             CookiePlugin(),
-//            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)) // 로그 플러그인
+            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)) // 로그 플러그인
         ]
         
         // provider 초기화
@@ -24,17 +24,19 @@ public final class WishlistService: NetworkManager {
     
     /// 위시리스트 조회 API
     public func fetchWishlist() async throws-> [WinePreviewResponse]?{
-        return try await requestOptionalAsync(target: .getWishList, decodingType: [WinePreviewResponse].self)
+        return try await requestOptionalAsync(
+            target: .getWishList,
+            decodingType: [WinePreviewResponse].self
+        )
     }
     
     /// 위시리스트 등록 API
     /// - Parameter wineId: 위시리스트에 추가할 와인의 ID
     /// - Throws: NetworkError
     /// - Returns: 성공 메시지 (`String`)
-    public func postWishlist(wineId: Int) async throws -> String {
+    public func postWishlist(wineId: Int, vintageYear: Int? = nil) async throws -> String {
         return try await requestAsync(
-            target: .postWishList(wineId: wineId),
-            decodingType: String.self
+            target: .postWishList(wineId: wineId, vintageYear: vintageYear)
         )
     }
 
@@ -42,10 +44,9 @@ public final class WishlistService: NetworkManager {
     /// - Parameter wineId: 위시리스트에서 삭제할 와인의 ID
     /// - Throws: NetworkError
     /// - Returns: 성공 메시지 (`String`)
-    public func deleteWishlist(wineId: Int) async throws -> String {
+    public func deleteWishlist(wineId: Int, vintageYear: Int? = nil) async throws -> String {
         return try await requestAsync(
-            target: .deleteWineLike(wineId: wineId),
-            decodingType: String.self
+            target: .deleteWineLike(wineId: wineId, vintageYear: vintageYear)
         )
     }
 }

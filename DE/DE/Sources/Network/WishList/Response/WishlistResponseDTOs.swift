@@ -13,8 +13,21 @@ public struct WinePreviewResponse : Decodable {
     public let variety : String
     public let vivinoRating : Double
     public let price : Int
+    public let vintageYear: Int
     
-    public init(wineId: Int, name: String, nameEng: String, imageUrl: String, sort: String, country: String, region: String, variety: String, vivinoRating: Double, price: Int) {
+    public init(
+        wineId: Int,
+        name: String,
+        nameEng: String,
+        imageUrl: String,
+        sort: String,
+        country: String,
+        region: String,
+        variety: String,
+        vivinoRating: Double,
+        price: Int,
+        vintageYear: Int
+    ) {
         self.wineId = wineId
         self.name = name
         self.nameEng = nameEng
@@ -25,5 +38,6 @@ public struct WinePreviewResponse : Decodable {
         self.variety = variety
         self.vivinoRating = vivinoRating
         self.price = price
+        self.vintageYear = vintageYear
     }
 }
