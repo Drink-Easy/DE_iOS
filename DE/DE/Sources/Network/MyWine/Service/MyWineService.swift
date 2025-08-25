@@ -13,7 +13,7 @@ public final class MyWineService : NetworkManager {
         // 플러그인 추가
         let plugins: [PluginType] = [
             CookiePlugin(),
-//            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)) // 로그 플러그인
+            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)) // 로그 플러그인
         ]
         
         // provider 초기화
@@ -34,12 +34,18 @@ public final class MyWineService : NetworkManager {
     
     /// 보유와인 가져오기 API
     public func fetchAllMyWines() async throws -> [MyWineResponse]? {
-        return try await requestOptionalAsync(target: .getMyWines, decodingType: [MyWineResponse].self)
+        return try await requestOptionalAsync(
+            target: .getMyWines,
+            decodingType: [MyWineResponse].self
+        )
     }
     
     /// 하나의 보유와인 가져오기 API
     public func fetchMyWine(myWineId: Int) async throws -> MyWineResponse {
-        return try await requestAsync(target: .getOneMyWine(myWineId: myWineId), decodingType: MyWineResponse.self)
+        return try await requestAsync(
+            target: .getOneMyWine(myWineId: myWineId),
+            decodingType: MyWineResponse.self
+        )
     }
     
     /// 새 보유와인 등록하기 API
@@ -49,7 +55,9 @@ public final class MyWineService : NetworkManager {
     
     /// 보유와인 정보 업데이트 API
     public func updateMyWine(myWineId: Int, data: MyWineUpdateRequest) async throws -> String {
-        return try await requestAsync(target: .patchMyWine(myWineId: myWineId, data: data))
+        return try await requestAsync(
+            target: .patchMyWine(myWineId: myWineId, data: data)
+        )
     }
     
     /// 보유와인 삭제하기 API
