@@ -5,8 +5,8 @@ import Moya
 
 public enum WineEndpoint {
     case getWines(searchName: String, page: Int)
-    case getWineInfo(wineId: Int)
-    case getWineReview(wineId: Int, sortType: String, page: Int)
+    case getWineInfo(wineId: Int, vintageYear: Int?)
+    case getWineReview(wineId: Int, vintageYear: Int?, sortType: String, page: Int)
     case getRecommendWines
     case getMostLikedWines
 }
@@ -23,9 +23,9 @@ extension WineEndpoint: TargetType {
         switch self {
             case .getWines:
                 return ""
-        case .getWineInfo(let wineId):
+        case let .getWineInfo(wineId, _):
             return "/\(wineId)"
-        case .getWineReview(let wineId, _, _):
+        case let .getWineReview(wineId, _, _, _):
             return "/review/\(wineId)"
         case .getRecommendWines:
             return "/recommend"
@@ -41,11 +41,35 @@ extension WineEndpoint: TargetType {
     public var task: Moya.Task {
         switch self {
         case .getWines(let searchName, let page) :
-            return .requestParameters(parameters: ["searchName": searchName, "page" : page, "size": 10], encoding: URLEncoding.queryString)
-        case .getWineInfo, .getRecommendWines, .getMostLikedWines:
+            return .requestParameters(
+                parameters: [
+                    "searchName": searchName,
+                    "page" : page,
+                    "size": 10
+                ],
+                encoding: URLEncoding.queryString
+            )
+            
+        case let .getWineInfo(_, vintageYear):
+            var parameters: [String: Any] = [:]
+            if let vintageYear = vintageYear {
+                parameters["vintageYear"] = vintageYear
+            }
+            return .requestParameters(parameters: parameters, encoding: URLEncoding.queryString)
+            
+        case .getRecommendWines, .getMostLikedWines:
             return .requestPlain
-        case .getWineReview(_, let sortType, let page):
-            return .requestParameters(parameters: ["sortType": sortType, "page" : page, "size": 10], encoding: URLEncoding.default)
+            
+        case let .getWineReview(_, vintageYear, sortType, page):
+            var parameters: [String: Any] = [:]
+            parameters["sortType"] = sortType
+            parameters["page"] = page
+            parameters["size"] = 10
+            
+            if let vintageYear = vintageYear {
+                parameters["vintageYear"] = vintageYear
+            }
+            return .requestParameters(parameters: parameters, encoding: URLEncoding.queryString)
         }
     }
     
@@ -54,6 +78,4 @@ extension WineEndpoint: TargetType {
             "Content-type": "application/json"
         ]
     }
-    
-    
 }
