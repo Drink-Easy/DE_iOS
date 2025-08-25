@@ -51,6 +51,7 @@ let project = Project(
             deploymentTargets: .iOS(minimunTarget),
             infoPlist: .extendingDefault(
                 with: [
+                    "API_BASE_URL" : "$(API_BASE_URL)",
                     "CFBundleShortVersionString" : "\(major).\(minor).\(patch)",
                     "CFBundleVersion" : "1",
                     "UISupportedInterfaceOrientations" : ["UIInterfaceOrientationPortrait"], // 화면 방향 세로 고정
