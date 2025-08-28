@@ -11,9 +11,13 @@ public final class AuthService : NetworkManager {
     
     public init(provider: MoyaProvider<AuthorizationEndpoints>? = nil) {
         // 플러그인 추가
-        let plugins: [PluginType] = [
-//            NetworkLoggerPlugin(configuration: .init(logOptions: .verbose)) // 로그 플러그인
-        ]
+        let plugins: [PluginType] = {
+            var p: [PluginType] = []
+#if DEBUG
+            p.append(NetworkLoggerPlugin(configuration: .init(logOptions: .verbose))) // 로그 플러그인
+#endif
+            return p
+        }()
         
         // provider 초기화
         self.provider = provider ?? MoyaProvider<AuthorizationEndpoints>(plugins: plugins)
