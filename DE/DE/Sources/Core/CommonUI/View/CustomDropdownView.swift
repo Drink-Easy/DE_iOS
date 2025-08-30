@@ -64,18 +64,18 @@ public class CustomDropdownView: UIView {
     
     private func setupDropdownMenu() {
         dropdownMenu.backgroundColor = AppColor.white
-        dropdownMenu.layer.cornerRadius = 8
-        dropdownMenu.layer.shadowColor = AppColor.black.cgColor
+        dropdownMenu.layer.cornerRadius = 6
+        dropdownMenu.layer.shadowColor = UIColor(hex: "111111")?.cgColor
         dropdownMenu.layer.shadowOpacity = 0.1
-        dropdownMenu.layer.shadowOffset = CGSize(width: 0, height: 2)
-        dropdownMenu.layer.shadowRadius = 8
+        dropdownMenu.layer.shadowOffset = CGSize(width: 0, height: 1)
+        dropdownMenu.layer.shadowRadius = 10
         dropdownMenu.isHidden = true
         dropdownMenu.alpha = 0.0
         addSubview(dropdownMenu)
         
         dropdownMenu.snp.makeConstraints {
             $0.top.equalTo(dropdownButton.snp.bottom).offset(8)
-            $0.horizontalEdges.equalTo(dropdownButton).inset(5)
+            $0.trailing.equalTo(dropdownButton.snp.trailing).inset(16)
             $0.height.equalTo(35 * options.count)
         }
         
@@ -83,7 +83,7 @@ public class CustomDropdownView: UIView {
             let optionLabel = UILabel()
             optionLabel.text = option
             optionLabel.textColor = AppColor.gray50
-            optionLabel.font = UIFont.pretendard(.medium, size: 12)
+            optionLabel.font = UIFont.pretendard(.semiBold, size: 12)
             optionLabel.textAlignment = .left
             optionLabel.isUserInteractionEnabled = true
             optionLabel.tag = index
@@ -94,7 +94,8 @@ public class CustomDropdownView: UIView {
             
             dropdownMenu.addSubview(optionLabel)
             optionLabel.snp.makeConstraints {
-                $0.centerX.equalToSuperview()
+                $0.leading.equalToSuperview().inset(12)
+                $0.trailing.equalToSuperview().inset(12)
                 $0.height.equalTo(35)
                 if index == 0 {
                     $0.top.equalToSuperview()

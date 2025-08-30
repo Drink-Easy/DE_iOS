@@ -21,7 +21,8 @@ public class EntireReviewView: UIView {
         $0.register(ReviewCollectionViewCell.self, forCellWithReuseIdentifier: ReviewCollectionViewCell.identifier)
         $0.backgroundColor = .clear
         $0.isScrollEnabled = true
-        $0.showsVerticalScrollIndicator = true
+        $0.showsVerticalScrollIndicator = false
+        $0.showsHorizontalScrollIndicator = false
     }
 
     public override init(frame: CGRect) {
@@ -36,13 +37,13 @@ public class EntireReviewView: UIView {
     }
     
     private func addComponents() {
-        [title, dropdownView, reviewCollectionView].forEach{ self.addSubview($0) }
+        addSubviews(title, dropdownView, reviewCollectionView)
     }
     
     private func constraints() {
         title.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide)
-            $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
+            $0.leading.equalToSuperview().inset(24)
             $0.height.equalTo(30)
         }
         
@@ -53,7 +54,7 @@ public class EntireReviewView: UIView {
         }
         
         reviewCollectionView.snp.makeConstraints {
-            $0.top.equalTo(title.snp.bottom).offset(DynamicPadding.dynamicValue(20))
+            $0.top.equalTo(title.snp.bottom).offset(16)
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide).inset(24)
             $0.bottom.equalToSuperview()
         }
