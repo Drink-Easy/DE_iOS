@@ -26,7 +26,7 @@ public enum AppTextStyle {
         )
         
         public static let body2 = TextStyle(
-            font: UIFont.pretendard(.semiBold, size: 14),
+            font: UIFont.pretendard(.medium, size: 14),
             fontSize: 14,
             lineHeightMultiple: 1.5,
             letterSpacingPercent: -2.5
