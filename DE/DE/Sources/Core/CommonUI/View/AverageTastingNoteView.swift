@@ -18,47 +18,38 @@ public class AverageTastingNoteView: UIView {
     private let title = TitleWithoutBarView(title: "Tasting Note", subTitle: "테이스팅 노트")
     public let writeNewTastingNoteBtn = TextIconButton(title: "작성하러 가기")
     
-    private func createTitle(text: String) ->  UILabel {
-        return UILabel().then {
-            $0.text = text
-            $0.textColor = AppColor.black
-            $0.font = UIFont.pretendard(.medium, size: 18)
-        }
-    }
-    
-    private func createContents(text: String) ->  UILabel {
-        return UILabel().then {
-            $0.text = text
-            $0.textColor = AppColor.black
-            $0.font = UIFont.pretendard(.regular, size: 14)
-            $0.numberOfLines = 0
-        }
-    }
-    
-    private lazy var nose = createTitle(text: "Nose")
-    private lazy var palate = createTitle(text: "Palate")
-    public lazy var noseContents = createContents(text: "")
-    public lazy var palateContents = createContents(text: "")
+    private let nose = UILabel()
+    private let palate = UILabel()
+    public lazy var noseContents = UILabel()
+    public lazy var palateContents = UILabel()
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .clear
-        self.addComponents()
-        self.constraints()
+        
+        setupUI()
+        setupLayout()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
     
-    private func addComponents() {
-        self.addSubviews(title, writeNewTastingNoteBtn, nose, palate, noseContents, palateContents, noTastinNote)
+    private func setupUI() {
+        addSubviews(title, writeNewTastingNoteBtn, nose, palate, noseContents, palateContents, noTastinNote)
     
+        AppTextStyle.KR.body2.apply(to: nose, text: "Nose", color: AppColor.gray50)
+        AppTextStyle.KR.body2.apply(to: palate, text: "Palate", color: AppColor.gray50)
+        
+        [noseContents, palateContents].forEach {
+            $0.numberOfLines = 0
+            $0.lineBreakStrategy = .hangulWordPriority
+        }
     }
     
-    private func constraints() {
+    private func setupLayout() {
         title.snp.makeConstraints {
-            $0.top.equalTo(safeAreaLayoutGuide).inset(23)
+            $0.top.equalTo(safeAreaLayoutGuide).inset(24)
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
             $0.height.equalTo(30)
         }
@@ -69,33 +60,32 @@ public class AverageTastingNoteView: UIView {
         }
         
         nose.snp.makeConstraints {
-            $0.top.equalTo(title.snp.bottom).offset(26)
-            $0.leading.equalTo(safeAreaLayoutGuide)
-        }
-        
-        palate.snp.makeConstraints {
-            $0.top.equalTo(nose.snp.bottom).offset(16)
-            $0.leading.equalTo(nose.snp.leading)
+            $0.top.equalTo(title.snp.bottom).offset(10)
+            $0.leading.equalToSuperview()
         }
         
         noseContents.snp.makeConstraints {
-            $0.centerY.equalTo(nose)
-            $0.leading.equalTo(safeAreaLayoutGuide).offset(89)
-            $0.trailing.equalTo(safeAreaLayoutGuide)
+            $0.top.equalTo(nose.snp.top)
+            $0.leading.equalTo(nose.snp.trailing).offset(33)
+            $0.trailing.lessThanOrEqualToSuperview()
         }
         
+        palate.snp.makeConstraints {
+            $0.top.equalTo(noseContents.snp.bottom).offset(8)
+            $0.leading.equalTo(nose.snp.leading)
+        }
+    
         palateContents.snp.makeConstraints {
             $0.top.equalTo(palate.snp.top)
-            $0.leading.equalTo(noseContents.snp.leading)
-            $0.trailing.equalTo(safeAreaLayoutGuide)
-            //$0.height.equalTo(50)
-            $0.bottom.equalToSuperview().inset(25)
+            $0.leading.equalTo(palate.snp.trailing).offset(27)
+            $0.trailing.lessThanOrEqualToSuperview()
+            $0.bottom.equalToSuperview().inset(24)
         }
         
         noTastinNote.snp.makeConstraints { 
-            $0.top.equalTo(title.snp.bottom).offset(16)
-            $0.leading.equalTo(safeAreaLayoutGuide)
-            $0.bottom.equalToSuperview().inset(25)
+            $0.top.equalTo(title.snp.bottom).offset(10)
+            $0.leading.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(24)
         }
     }
     
@@ -111,8 +101,9 @@ public class AverageTastingNoteView: UIView {
             noTastinNote.isHidden = false
         } else {
             [title, writeNewTastingNoteBtn, nose, palate, noseContents, palateContents].forEach{ self.addSubview($0) }
-            noseContents.text = model.wineNoseText
-            palateContents.text = "\(model.sugarContentDescription()), \(model.acidityDescription()), \(model.tanninDescription()),\n\(model.bodyDescription()), \(model.alcoholDescription())"
+            
+            AppTextStyle.KR.body3.apply(to: noseContents, text: model.wineNoseText, color: AppColor.gray100)
+            AppTextStyle.KR.body3.apply(to: palateContents, text: "\(model.sugarContentDescription()), \(model.acidityDescription()), \(model.tanninDescription()), \(model.bodyDescription()), \(model.alcoholDescription())", color: AppColor.gray100)
         }
         self.layoutIfNeeded()
     }
