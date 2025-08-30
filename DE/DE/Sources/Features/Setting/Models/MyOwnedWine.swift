@@ -5,21 +5,36 @@ import UIKit
 public struct MyOwnedWine {
     public var wineId: Int
     public var wineName: String
+    public var vintage: Int?
     public var price: String
     public var buyDate: String
     public var Dday : Int = 0
     
-    public init(wineId: Int = 0, wineName: String = "", price: String = "", buyDate: String = "") {
+    public init(
+        wineId: Int = 0,
+        wineName: String = "",
+        vintage: Int? = nil,
+        price: String = "",
+        buyDate: String = ""
+    ) {
         self.wineId = wineId
         self.wineName = wineName
+        self.vintage = vintage
         self.price = price
         self.buyDate = buyDate
     }
     
     // 업데이트 메서드
-    public mutating func updateWine(wineId: Int? = nil, wineName: String? = nil, price: String? = nil, buyDate: String? = nil) {
+    public mutating func updateWine(
+        wineId: Int? = nil,
+        wineName: String? = nil,
+        vintage: Int? = nil,
+        price: String? = nil,
+        buyDate: String? = nil
+    ) {
         if let wineId = wineId { self.wineId = wineId }
         if let wineName = wineName { self.wineName = wineName }
+        if let vintage = vintage { self.vintage = vintage }
         if let price = price { self.price = price }
         if let buyDate = buyDate { self.buyDate = buyDate }
     }
@@ -27,7 +42,7 @@ public struct MyOwnedWine {
     public func getBuyDate() -> DateComponents? {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
-        dateFormatter.locale = Locale(identifier: "ko_KR") // 한국 시간대 설정
+        dateFormatter.locale = Locale(identifier: "ko_KR")
         
         guard let date = dateFormatter.date(from: buyDate) else {
             return nil
@@ -38,7 +53,6 @@ public struct MyOwnedWine {
         return components
     }
 }
-
 
 public class MyOwnedWineManager {
     
@@ -78,14 +92,24 @@ public class MyOwnedWineManager {
         wine.buyDate = buyDate
     }
     
+    /// 와인 빈티지 설정
+    public func setVintage(_ year: Int) {
+        wine.vintage = year
+    }
+    
     /// 와인 ID 가져오기
     public func getWineId() -> Int {
         return wine.wineId
     }
     
-    /// 와인 이름 가져오기
+    /// 와인 이름 가져오기(이름 + 빈티지)
     public func getWineName() -> String {
-        return wine.wineName
+        var fullName: String = wine.wineName
+        if let vintage = wine.vintage {
+            fullName += " \(vintage)"
+        }
+        
+        return fullName
     }
     
     /// 와인 가격 가져오기
@@ -106,5 +130,9 @@ public class MyOwnedWineManager {
     /// 와인 데이터를 초기화
     public func resetWine() {
         wine = MyOwnedWine()
+    }
+    
+    public func resetVintage() {
+        wine.vintage = nil
     }
 }
