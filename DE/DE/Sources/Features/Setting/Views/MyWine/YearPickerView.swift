@@ -36,7 +36,9 @@ final class YearPickerView: UIView {
         self.minYear = minYear
         self.maxYear = maxYear
         let current = Calendar.current.component(.year, from: Date())
-        self.selectedYear = defaultYear ?? current
+        
+        let initial = defaultYear ?? current
+        self.selectedYear = (minYear...maxYear).contains(initial) ? initial : nil
         super.init(frame: .zero)
         setupUI()
     }
