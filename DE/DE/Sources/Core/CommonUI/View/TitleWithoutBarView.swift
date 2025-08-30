@@ -6,24 +6,18 @@ import Then
 import DesignSystem
 
 public class TitleWithoutBarView: UIView {
-    private let titleLabel = UILabel().then {
-        $0.font = UIFont.pretendard(.semiBold, size: 20)
-        $0.textColor = AppColor.black
-    }
+    private let titleLabel = UILabel()
 
-    private let subTitleLabel = UILabel().then {
-        $0.font = UIFont.pretendard(.regular, size: 14)
-        $0.textColor = AppColor.gray70
-    }
+    private let subTitleLabel = UILabel()
 
     public init(title: String, subTitle: String) {
         super.init(frame: .zero)
         backgroundColor = .clear
         setupView()
+        AppTextStyle.KR.subtitle1.apply(to: titleLabel, text: title, color: AppColor.gray100)
+        AppTextStyle.KR.caption1.apply(to: subTitleLabel, text: subTitle, color: AppColor.gray90)
+        
         setupConstraints()
-
-        titleLabel.text = title
-        subTitleLabel.text = subTitle
     }
 
     required init?(coder: NSCoder) {
@@ -40,8 +34,8 @@ public class TitleWithoutBarView: UIView {
         }
 
         subTitleLabel.snp.makeConstraints {
-            $0.leading.equalTo(titleLabel.snp.trailing).offset(6)
-            $0.top.bottom.equalToSuperview()
+            $0.leading.equalTo(titleLabel.snp.trailing).offset(7)
+            $0.centerY.equalToSuperview()
         }
     }
 }
