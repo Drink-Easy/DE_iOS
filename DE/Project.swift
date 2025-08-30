@@ -129,10 +129,13 @@ let project = Project(
             settings: .settings(
                 configurations: [
                     .debug(
-                        name: "DebugConfig",
+                        name: .debug,
                         xcconfig: .relativeToRoot("SupportingFiles/DebugConfig.xcconfig")
                     ),
-                    .release(name: "ReleaseConfig", xcconfig: .relativeToRoot("SupportingFiles/ReleaseConfig.xcconfig"))
+                    .release(
+                        name: .release,
+                        xcconfig: .relativeToRoot("SupportingFiles/ReleaseConfig.xcconfig")
+                    )
                 ]
             ) ,
             launchArguments: [.launchArgument(name: "-FIRDebugEnabled", isEnabled: true)]
