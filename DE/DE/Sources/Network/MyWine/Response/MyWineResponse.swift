@@ -6,7 +6,7 @@ public struct MyWineResponse : Decodable {
     public let myWineId : Int
     public let wineId : Int
     public let wineName : String
-    public let vintageYear : Int
+    public let vintageYear : Int?
     public let wineSort : String
     public let wineCountry : String
     public let wineRegion : String
@@ -20,7 +20,7 @@ public struct MyWineResponse : Decodable {
         myWineId: Int,
         wineId: Int,
         wineName: String,
-        vintageYear: Int,
+        vintageYear: Int? = nil,
         wineSort: String,
         wineCountry: String,
         wineRegion: String,

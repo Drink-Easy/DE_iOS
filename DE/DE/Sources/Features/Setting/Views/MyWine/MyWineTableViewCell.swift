@@ -112,7 +112,14 @@ class MyWineTableViewCell: UITableViewCell {
         } else {
             image.image = UIImage(named: "placeholder")
         }
-        self.name.text = model.wineName
+        
+        if let vintage = model.vintage {
+            /// 빈티지 있는 경우에는 이름에 빈티지도 함께 표시
+            self.name.text = "\(model.wineName) \(vintage)"
+        } else {
+            self.name.text = model.wineName
+        }
+        
         let priceString = formatPrice(model.purchasePrice)
         
         self.price.text = "구매가 \(priceString)원"

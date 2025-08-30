@@ -7,6 +7,7 @@ import Then
 import CoreModule
 import DesignSystem
 // 기기대응 완료
+// TODO : 현재 빈티지 수정 UI 디자인 가이드 없음(추후 논의 필요)
 
 class ChangeMyOwnedWineView: UIView {
     
