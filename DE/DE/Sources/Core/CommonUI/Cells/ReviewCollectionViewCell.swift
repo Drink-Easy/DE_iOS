@@ -17,10 +17,7 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
         $0.font = UIFont.pretendard(.medium, size: 16)
     }
     
-    public lazy var score = UILabel().then {
-        $0.textColor = AppColor.purple100
-        $0.font = UIFont.pretendard(.semiBold, size: 16)
-    }
+    public lazy var score = UILabel()
     
     public lazy var review = UILabel()
     
@@ -91,9 +88,8 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
     
     public func configure(model: WineReviewModel, isExpanded: Bool) {
         AppTextStyle.KR.body1.apply(to: nickname, text: model.name, color: AppColor.gray100)
-
-        score.text = "★ \(String(model.rating))"
-        
+        AppTextStyle.KR.body2
+            .apply(to: score, text: "★ \(String(model.rating))", color: AppColor.purple100)
         AppTextStyle.KR.body3.apply(to: review, text: model.contents, color: AppColor.gray90)
         
         if let data = model.createdAt.toFlexibleDotFormattedDate() {
