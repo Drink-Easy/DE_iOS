@@ -151,9 +151,7 @@ class TNWineDetailViewController: UIViewController, UIScrollViewDelegate, Fireba
     private lazy var contentView = UIView()
     
     private var wineInfoView = NewWineInfoView()
-    private var vintageInfoView = VintageInfoView(tabAction: {
-        print("빈티지 버튼 클릭")
-    })
+    private var vintageInfoView = VintageInfoView()
     private var wineDetailsView = WineDetailsView()
     private var averageTastingNoteView = AverageTastingNoteView()
     

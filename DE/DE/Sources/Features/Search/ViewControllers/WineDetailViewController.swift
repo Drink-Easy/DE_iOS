@@ -141,7 +141,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     //largeTitle -> smallTitle
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
-        let largeTitleBottom = wineInfoView.wineInfo.largeTitleLabel.frame.maxY + 5
+        let largeTitleBottom = wineInfoView.wineImage.frame.maxY + wineInfoView.wineInfo.largeTitleLabel.frame.height + 5
         
         UIView.animate(withDuration: 0.1) {
             self.largeTitleLabel.alpha = offsetY > largeTitleBottom ? 0 : 1
@@ -152,9 +152,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     private lazy var contentView = UIView()
     
     private var wineInfoView = NewWineInfoView()
-    private var vintageInfoView = VintageInfoView(tabAction: {
-        print("빈티지 버튼 클릭")
-    })
+    private var vintageInfoView = VintageInfoView()
     private var wineDetailsView = WineDetailsView()
     private var averageTastingNoteView = AverageTastingNoteView()
     private lazy var reviewView = ReviewView().then {
@@ -170,6 +168,10 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     private func addButtonTarget() {
         averageTastingNoteView.writeNewTastingNoteBtn.addTarget(self, action: #selector(goToTastingNote), for: .touchUpInside)
         reviewView.moreBtn.addTarget(self, action: #selector(goToEntireReview), for: .touchUpInside)
+        vintageInfoView.tabAction = { [weak self] in
+            let vc = VintageTableViewController()
+            self?.navigationController?.pushViewController(vc, animated: true)
+        }
     }
     
     @objc
@@ -341,7 +343,6 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
         }
         
         DispatchQueue.main.async {
-//            AppTextStyle.KR.head.apply(to: self.largeTitleLabel, text: self.wineName, color: AppColor.black)
             self.wineInfoForTN = infoData // 테이스팅 노트 작성을 위한 데이터 저장
             self.wineInfoView.configure(infoData)
             self.wineDetailsView.configure(infoData)
