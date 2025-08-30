@@ -7,7 +7,7 @@ import Then
 import DesignSystem
 
 public class VintageInfoView: UIView {
-    public var tabAction: (() -> Void)
+    public var tabAction: (() -> Void)?
 
     private let title = TitleWithoutBarView(title: "Vintages", subTitle: "빈티지")
 
@@ -50,8 +50,7 @@ public class VintageInfoView: UIView {
         }
     }
 
-    public init(tabAction: @escaping () -> Void) {
-        self.tabAction = tabAction
+    public init() {
         super.init(frame: .zero)
         setupLayout()
         configure(with: "1970")
@@ -78,7 +77,7 @@ public class VintageInfoView: UIView {
     }
 
     @objc private func handleTap() {
-        tabAction()
+        tabAction?()
     }
 
     public func configure(with yearText: String) {
