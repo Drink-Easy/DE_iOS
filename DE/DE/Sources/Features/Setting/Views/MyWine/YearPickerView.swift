@@ -28,7 +28,11 @@ final class YearPickerView: UIView {
     private let containerView = UIView()
     private let arrowImage = UIImageView()
 
-    init(minYear: Int = 1970, maxYear: Int = 2100, defaultYear: Int? = nil) {
+    init(
+        minYear: Int = 1970,
+        maxYear: Int = Calendar.current.component(.year, from: Date()),
+        defaultYear: Int? = nil
+    ) {
         self.minYear = minYear
         self.maxYear = maxYear
         let current = Calendar.current.component(.year, from: Date())
@@ -39,7 +43,7 @@ final class YearPickerView: UIView {
 
     required init?(coder: NSCoder) {
         self.minYear = 1970
-        self.maxYear = 2100
+        self.maxYear = Calendar.current.component(.year, from: Date())
         self.selectedYear = Calendar.current.component(.year, from: Date())
         super.init(coder: coder)
         setupUI()
