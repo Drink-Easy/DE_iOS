@@ -49,7 +49,7 @@ public class CookieStorage {
         }
 
         // ✅ 최종적으로 쿠키 저장
-        let domain = API.baseURL
+        let domain = API.authURL
 
         if let accessToken = extractedAccessToken {
             let expiry = accessTokenExpiry ?? Date().addingTimeInterval(3600)

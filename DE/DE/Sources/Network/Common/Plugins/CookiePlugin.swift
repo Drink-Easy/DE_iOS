@@ -8,7 +8,7 @@ class CookiePlugin: PluginType {
         var request = request
         
         // 저장된 쿠키를 가져와서 헤더에 추가
-        if let cookies = HTTPCookieStorage.shared.cookies(for: URL(string: API.baseURL)!) {
+        if let cookies = HTTPCookieStorage.shared.cookies(for: URL(string: API.authURL)!) {
             let cookieHeader = HTTPCookie.requestHeaderFields(with: cookies)
             for (key, value) in cookieHeader {
                 request.addValue(value, forHTTPHeaderField: key)
