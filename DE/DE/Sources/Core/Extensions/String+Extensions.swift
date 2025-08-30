@@ -63,4 +63,36 @@ extension String {
         
         return attributedString
     }
+    
+    /// "yyyy-MM-dd'T'HH:mm:ss.SSSZ" 또는 "yyyy-MM-dd'T'HH:mm:ss" 형식의 날짜 문자열을
+    /// "yyyy.MM.dd" 형식으로 변환합니다.
+    /// - Returns: 변환된 문자열. 변환에 실패하면 nil을 반환합니다.
+    func toFlexibleDotFormattedDate() -> String? {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        
+        // 시도할 날짜 형식들을 배열로 정의합니다.
+        let dateFormats = [
+            "yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+            "yyyy-MM-dd'T'HH:mm:ss"
+        ]
+        
+        var date: Date?
+        // 정의된 형식들을 순서대로 시도합니다.
+        for format in dateFormats {
+            formatter.dateFormat = format
+            if let d = formatter.date(from: self) {
+                date = d
+                break // 성공하면 루프를 빠져나옵니다.
+            }
+        }
+        
+        // 날짜 변환에 성공한 경우에만 원하는 형식으로 변경합니다.
+        guard let finalDate = date else {
+            return nil
+        }
+        
+        formatter.dateFormat = "yyyy.MM.dd"
+        return formatter.string(from: finalDate)
+    }
 }
