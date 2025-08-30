@@ -59,7 +59,7 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
     }
     
     private func addComponents() {
-        addSubviews(nickname, score, review, date, toggleButton)
+        contentView.addSubviews(nickname, score, review, date, toggleButton)
     }
     
     private func constraints() {
