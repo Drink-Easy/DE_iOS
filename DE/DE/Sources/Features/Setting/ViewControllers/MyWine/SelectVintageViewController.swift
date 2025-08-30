@@ -5,21 +5,22 @@ import CoreModule
 import DesignSystem
 import SnapKit
 import Then
+// step 1. 빈티지 선택
 
-public final class SelectVintageViewController: UIViewController {
+final class SelectVintageViewController: UIViewController {
 
     let navigationBarManager = NavigationBarManager()
     let vintageView = MyWineVintageView()
     
     let wineManager = MyOwnedWineManager.shared
     
-    public override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.vintageView.setWineName(wineManager.getWineName())
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
-    public override func viewWillDisappear(_ animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }

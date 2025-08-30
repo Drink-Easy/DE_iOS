@@ -8,6 +8,7 @@ import Then
 import CoreModule
 import DesignSystem
 import Network
+/// 하나의 보유와인 상세 페이지
 
 public class MyOwnedWineInfoViewController: UIViewController, ChildViewControllerDelegate, FirebaseTrackable {
     public var screenName: String = Tracking.VC.myWineDetailVC
