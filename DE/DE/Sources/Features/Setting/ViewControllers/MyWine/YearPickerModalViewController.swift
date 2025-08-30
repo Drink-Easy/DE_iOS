@@ -33,7 +33,12 @@ final class YearPickerModalViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = AppColor.background
-        years = Array(minYear...maxYear)
+        
+        if minYear <= maxYear {
+            years = Array(minYear...maxYear)
+        } else {
+            years = Array(maxYear...minYear).reversed()
+        }
         setupUI()
     }
 
@@ -46,7 +51,7 @@ final class YearPickerModalViewController: UIViewController {
         }
         
         confirmButton.addTarget(self, action: #selector(confirmTapped), for: .touchUpInside)
-        confirmButton.isEnabled(isEnabled: true)
+        confirmButton.isEnabled(isEnabled: !years.isEmpty)
 
         view.addSubview(pickerView)
         view.addSubview(confirmButton)
