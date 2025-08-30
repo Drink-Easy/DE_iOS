@@ -19,6 +19,7 @@ public class NetworkErrorHandler {
             showToastMessage(message: userMessage, in: viewController)
             
         default:
+            print("디버깅: \(error.localizedDescription)")
             showToastMessage(message: "알 수 없는 오류가 발생하였습니다. 관리자에게 문의하세요.", in: viewController)
         }
     }

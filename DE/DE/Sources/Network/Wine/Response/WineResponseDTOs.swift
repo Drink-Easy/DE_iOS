@@ -5,8 +5,8 @@ import Foundation
 public struct SearchWineResponseDTO: Decodable {
     public let wineId: Int
     public let name: String
-    public let nameEng: String
-    public let vintageYear: Int
+    public let nameEng: String?
+    public let vintageYear: Int?
     public let imageUrl : String
     public let sort: String
     public let country: String
@@ -14,6 +14,32 @@ public struct SearchWineResponseDTO: Decodable {
     public let variety: String
     public let vivinoRating: Double
     public let price: Int
+    
+    public init(
+        wineId: Int,
+        name: String,
+        nameEng: String?,
+        vintageYear: Int?,
+        imageUrl: String,
+        sort: String,
+        country: String,
+        region: String,
+        variety: String,
+        vivinoRating: Double,
+        price: Int
+    ) {
+        self.wineId = wineId
+        self.name = name
+        self.nameEng = nameEng
+        self.vintageYear = vintageYear
+        self.imageUrl = imageUrl
+        self.sort = sort
+        self.country = country
+        self.region = region
+        self.variety = variety
+        self.vivinoRating = vivinoRating
+        self.price = price
+    }
 }
 
 public struct PageSearchWineResponseDTO : Decodable {
@@ -30,7 +56,7 @@ public struct WineResponseWithThreeReviewsDTO: Decodable {
 public struct WineResponseDTO : Decodable {
     public let wineId: Int
     public let name: String
-    public let nameEng: String
+    public let nameEng: String?
     public let vintageYear: Int
     public let imageUrl: String
     public let price: Int
