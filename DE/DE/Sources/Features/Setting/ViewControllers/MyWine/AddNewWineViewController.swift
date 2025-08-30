@@ -143,7 +143,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         guard let content = response.content else { return }
         // reponse 와인 10개 매핑해주고
         let nextWineDatas = content.map { data in
-            SearchResultModel(wineId: data.wineId, name: data.name, nameEng: data.nameEng, imageUrl: data.imageUrl, sort: data.sort, country: data.country, region: data.region, variety: data.variety, vivinoRating: data.vivinoRating, price: data.price)
+            SearchResultModel(wineId: data.wineId, name: data.name, nameEng: data.nameEng ?? "", imageUrl: data.imageUrl, sort: data.sort, country: data.country, region: data.region, variety: data.variety, vivinoRating: data.vivinoRating, price: data.price)
         }
         // TODO : 와인 검색결과 표시 임시 처리
         let correctDatas = nextWineDatas.filter { $0.name.contains(query) || $0.nameEng.lowercased().contains(query.lowercased()) }
