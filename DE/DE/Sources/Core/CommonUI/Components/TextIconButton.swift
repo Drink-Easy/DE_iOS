@@ -8,8 +8,8 @@ import DesignSystem
 public final class TextIconButton: UIControl {
 
     private let label = UILabel().then {
-        $0.textColor = AppColor.gray50
-        $0.font = UIFont.pretendard(.medium, size: 12)
+        $0.textColor = AppColor.gray70
+        $0.font = UIFont.pretendard(.regular, size: 12)
         $0.numberOfLines = 1
     }
 
