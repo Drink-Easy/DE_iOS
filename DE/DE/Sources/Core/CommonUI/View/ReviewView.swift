@@ -8,7 +8,7 @@ import DesignSystem
 
 public class ReviewView: UIView {
     
-    public var score = 4.0 {
+    public var score = 0.0 {
         didSet {
             updateScore()
         }
@@ -30,8 +30,8 @@ public class ReviewView: UIView {
         // 전체 텍스트 스타일 설정
         attributedString.addAttributes(
             [
-                .foregroundColor: AppColor.gray70,
-                .font: UIFont.pretendard(.regular, size: 12)
+                .foregroundColor: AppColor.gray50,
+                .font: UIFont.pretendard(.regular, size: 16)
             ],
             range: NSRange(location: 0, length: text.count)
         )
@@ -42,7 +42,7 @@ public class ReviewView: UIView {
             attributedString.addAttributes(
                 [
                     .foregroundColor: AppColor.purple100,
-                    .font: UIFont.pretendard(.semiBold, size: 18)
+                    .font: UIFont.pretendard(.semiBold, size: 16)
                 ],
                 range: nsRange
             )
@@ -54,7 +54,6 @@ public class ReviewView: UIView {
     public lazy var scoreLabel = UILabel()
     
     public lazy var moreBtn = UIButton().then {
-        
         var configuration = UIButton.Configuration.plain()
         // 이미지 설정
         configuration.image = UIImage(systemName: "chevron.forward")?.withRenderingMode(.alwaysOriginal).withTintColor(AppColor.gray50)
@@ -109,17 +108,17 @@ public class ReviewView: UIView {
         }
         
         scoreLabel.snp.makeConstraints {
-            $0.trailing.equalToSuperview().offset(-24)
+            $0.trailing.equalToSuperview()
             $0.bottom.equalToSuperview().offset(-4)
         }
         
         moreBtn.snp.makeConstraints {
-            $0.top.equalTo(title.snp.bottom).offset(25)
-            $0.trailing.equalTo(safeAreaLayoutGuide).offset(-24)
+            $0.top.equalTo(title.snp.bottom).offset(4)
+            $0.trailing.equalToSuperview()
         }
         
         reviewCollectionView.snp.makeConstraints {
-            $0.top.equalTo(moreBtn.snp.bottom).offset(8)
+            $0.top.equalTo(moreBtn.snp.bottom).offset(10)
             $0.height.equalTo(332)
             $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
             $0.bottom.equalToSuperview()
