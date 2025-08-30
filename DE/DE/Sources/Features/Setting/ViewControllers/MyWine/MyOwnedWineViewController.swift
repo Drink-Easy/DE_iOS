@@ -86,6 +86,7 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
     
     @objc private func addNewWine() {
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.createBtnTapped, fileName: #file)
+        MyOwnedWineManager.shared.resetWine()
         let vc = AddNewWineViewController()
         vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: true)
@@ -119,7 +120,19 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
                 
                 if let responseData = data {
                     responseData.forEach { wine in
-                        let usingWine = MyWineViewModel(myWineId: wine.myWineId,wineId: wine.wineId, wineName: wine.wineName, wineSort: wine.wineSort, wineCountry: wine.wineCountry, wineRegion: wine.wineRegion, wineVariety: wine.wineVariety, wineImageUrl: wine.wineImageUrl, purchaseDate: wine.purchaseDate, purchasePrice: wine.purchasePrice, period: wine.period)
+                        let usingWine = MyWineViewModel(
+                            myWineId: wine.myWineId,
+                            wineId: wine.wineId,
+                            wineName: wine.wineName,
+                            wineSort: wine.wineSort,
+                            wineCountry: wine.wineCountry,
+                            wineRegion: wine.wineRegion,
+                            wineVariety: wine.wineVariety,
+                            wineImageUrl: wine.wineImageUrl,
+                            purchaseDate: wine.purchaseDate,
+                            purchasePrice: wine.purchasePrice,
+                            period: wine.period
+                        )
                         
                         wineResults.append(usingWine)
                     }

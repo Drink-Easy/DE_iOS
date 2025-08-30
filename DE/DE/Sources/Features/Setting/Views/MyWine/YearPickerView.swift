@@ -1,5 +1,6 @@
 // Copyright © 2025 DRINKIG. All rights reserved
 
+import DesignSystem
 import UIKit
 import SnapKit
 import Then
@@ -14,15 +15,18 @@ final class YearPickerView: UIView {
     public private(set) var selectedYear: Int? {
         didSet {
             if let year = selectedYear {
-                selectedYearLabel.text = "선택된 연도: \(year)"
+                selectedYearLabel.textColor = AppColor.black
+                selectedYearLabel.text = "\(year)"
                 onYearSelected?(year)
             } else {
-                selectedYearLabel.text = "선택된 연도: -"
+                selectedYearLabel.text = "빈티지 선택"
             }
         }
     }
 
     private let selectedYearLabel = UILabel()
+    private let containerView = UIView()
+    private let arrowImage = UIImageView()
 
     init(minYear: Int = 1970, maxYear: Int = 2100, defaultYear: Int? = nil) {
         self.minYear = minYear
@@ -42,23 +46,52 @@ final class YearPickerView: UIView {
     }
 
     private func setupUI() {
-        selectedYearLabel.do {
-            $0.textAlignment = .center
-            $0.font = .pretendard(.regular, size: 18)
-            $0.text = "빈티지 연도를 선택해주세요."
+        containerView.do {
+            $0.backgroundColor = AppColor.background
+            $0.layer.borderColor = AppColor.gray50.cgColor
+            $0.layer.borderWidth = 1
+            $0.layer.cornerRadius = 8
             $0.isUserInteractionEnabled = true
             let tap = UITapGestureRecognizer(target: self, action: #selector(labelTapped))
             $0.addGestureRecognizer(tap)
         }
 
-        addSubview(selectedYearLabel)
-        selectedYearLabel.snp.makeConstraints {
+        AppTextStyle.KR.body3
+            .apply(
+                to: selectedYearLabel,
+                text: "빈티지 선택",
+                color: AppColor.gray70
+            )
+        
+        arrowImage.do {
+            $0.image = UIImage(systemName: "chevron.down")
+            $0.tintColor = AppColor.gray70
+            $0.contentMode = .scaleAspectFit
+        }
+        
+        containerView.addSubviews(selectedYearLabel, arrowImage)
+        addSubview(containerView)
+
+        containerView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
+        
+        selectedYearLabel.snp.makeConstraints {
+            $0.leading.equalToSuperview().inset(16)
+            $0.top.bottom.equalToSuperview().inset(13.5)
+            $0.width.equalTo(198)
+        }
+        
+        arrowImage.snp.makeConstraints {
+            $0.trailing.equalToSuperview().inset(16)
+            $0.centerY.equalToSuperview()
+            $0.width.height.equalTo(20)
+        }
+        
     }
     
     private func updateLabel() {
-        selectedYearLabel.text = selectedYear.map { "선택된 연도: \($0)" } ?? "선택된 연도: -"
+        selectedYearLabel.text = selectedYear.map { "\($0)" } ?? "빈티지 선택"
     }
 
     @objc private func labelTapped() {
@@ -68,6 +101,16 @@ final class YearPickerView: UIView {
     public func setSelectedYear(_ year: Int) {
         guard (minYear...maxYear).contains(year) else { return }
         selectedYear = year
+    }
+    
+    public func updatePickerView(isModalOpen: Bool) {
+        if isModalOpen {
+            containerView.layer.borderColor = AppColor.gray100.cgColor
+            arrowImage.image = UIImage(systemName: "chevron.up")
+        } else {
+            containerView.layer.borderColor = AppColor.gray50.cgColor
+            arrowImage.image = UIImage(systemName: "chevron.down")
+        }
     }
 
 }
