@@ -230,7 +230,9 @@ class AccountInfoViewController: UIViewController, FirebaseTrackable {
     }
     
     private func clearCookie() {
-        guard let cookies = HTTPCookieStorage.shared.cookies(for: URL(string: API.baseURL)!) else { return }
+        guard let cookies = HTTPCookieStorage.shared.cookies(for: URL(string: API.authURL)!) else {
+            return
+        }
         
         let targetCookieNames = ["accessToken", "refreshToken"]
         
