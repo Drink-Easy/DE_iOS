@@ -55,7 +55,6 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        self.navigationController?.setNavigationBarHidden(true, animated: animated)
         Task {
             if originalIsLiked != isLiked {
                 if originalIsLiked {
@@ -170,6 +169,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
         reviewView.moreBtn.addTarget(self, action: #selector(goToEntireReview), for: .touchUpInside)
         vintageInfoView.tabAction = { [weak self] in
             let vc = VintageTableViewController()
+            vc.hidesBottomBarWhenPushed = true
             self?.navigationController?.pushViewController(vc, animated: true)
         }
     }

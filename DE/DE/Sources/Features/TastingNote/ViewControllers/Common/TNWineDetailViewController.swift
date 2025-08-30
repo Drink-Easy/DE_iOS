@@ -94,6 +94,15 @@ class TNWineDetailViewController: UIViewController, UIScrollViewDelegate, Fireba
         )
     }
     
+    func setButtonAction() {
+        vintageInfoView.tabAction = { [weak self] in
+            
+            let vc = VintageTableViewController()
+            vc.hidesBottomBarWhenPushed = true
+            self?.navigationController?.pushViewController(vc, animated: true)
+        }
+    }
+    
     private func showLiked() {
         DispatchQueue.main.async {
             if let rightButton = self.navigationItem.rightBarButtonItem?.customView as? UIButton {
