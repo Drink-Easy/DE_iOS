@@ -139,8 +139,10 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
         }
     }
     
-    func callEntireReviewAPI(wineId: Int, sortType: String, page: Int) async throws {
-        guard let response = try await networkService.fetchWineReviews(wineId: wineId, sortType: sortType, page: page) else { return }
+    func callEntireReviewAPI(wineId: Int, sortType: String, page: Int, vintage: Int? = nil) async throws {
+        guard let response = try await networkService.fetchWineReviews(wineId: wineId, vintageYear: vintage, sortType: sortType, page: page) else {
+            return
+        }
         
         guard let content = response.content else { return }
         // reponse 와인 10개 매핑해주고
