@@ -25,14 +25,14 @@ final class SelectVintageViewController: UIViewController {
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
-    public override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupActions()
         setupNavigationBar()
     }
 
-    public override func viewDidAppear(_ animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 //        logScreenView(fileName: #file)
     }
@@ -116,7 +116,7 @@ final class SelectVintageViewController: UIViewController {
 }
 
 extension SelectVintageViewController: UIAdaptivePresentationControllerDelegate {
-    public func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         vintageView.yearPicker.updatePickerView(isModalOpen: false)
     }
 }
