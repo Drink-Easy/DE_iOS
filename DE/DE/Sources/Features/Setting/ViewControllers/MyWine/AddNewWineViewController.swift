@@ -189,6 +189,9 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.searchWineCellTapped, fileName: #file, cellID: "SearchResultTableViewCell")
         
+        /// 다른 프로퍼티 초기화 후 진행
+        MyOwnedWineManager.shared.resetWine()
+        
         let vc = SelectVintageViewController()
         let selectedWine = wineResults[indexPath.row]
         MyOwnedWineManager.shared.setWineId(selectedWine.wineId)

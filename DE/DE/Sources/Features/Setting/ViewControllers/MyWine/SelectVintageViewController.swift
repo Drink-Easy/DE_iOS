@@ -6,20 +6,20 @@ import DesignSystem
 import SnapKit
 import Then
 
-final class SelectVintageViewController: UIViewController {
+public final class SelectVintageViewController: UIViewController {
 
     let navigationBarManager = NavigationBarManager()
     let vintageView = MyWineVintageView()
     
     let wineManager = MyOwnedWineManager.shared
     
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.vintageView.setWineName(wineManager.getWineName())
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
@@ -51,21 +51,21 @@ final class SelectVintageViewController: UIViewController {
         vintageView.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
         
         vintageView.yearPicker.onYearSelected = { [weak self] year in
-            print("선택된 연도: \(year)")
             self?.vintageView.nextButton.isEnabled(isEnabled: true)
         }
-        
         
         vintageView.yearPicker.onLabelTapped = { [weak self] in
             guard let self else { return }
             let modal = YearPickerModalViewController(
                 minYear: vintageView.yearPicker.minYear,
                 maxYear: vintageView.yearPicker.maxYear,
+                selectedYear: vintageView.yearPicker.selectedYear
             )
 
             modal.onYearConfirmed = { [weak self] selected in
-                self?.vintageView.yearPicker.setSelectedYear(selected) // 아래 확장으로 지원
+                self?.vintageView.yearPicker.setSelectedYear(selected)
                 self?.vintageView.nextButton.isEnabled = true
+                self?.vintageView.yearPicker.updatePickerView(isModalOpen: false)
             }
             
             modal.modalPresentationStyle = .pageSheet
@@ -75,7 +75,9 @@ final class SelectVintageViewController: UIViewController {
                 sheet.prefersGrabberVisible = true
                 sheet.prefersScrollingExpandsWhenScrolledToEdge = false
             }
-
+            modal.presentationController?.delegate = self
+            
+            vintageView.yearPicker.updatePickerView(isModalOpen: true)
             self.present(modal, animated: true)
         }
         
@@ -90,6 +92,7 @@ final class SelectVintageViewController: UIViewController {
     }
     
     @objc func prevVC() {
+        wineManager.resetVintage()
         navigationController?.popViewController(animated: true)
     }
     
@@ -101,11 +104,18 @@ final class SelectVintageViewController: UIViewController {
             return
         }
         
-        // 선택한 연도 검증
-        print("다음 화면으로 넘어갑니다. 현재 선택된 연도 \(selectedYear)")
-        
         // wineManager에 선택한 연도 저장
+        wineManager.setVintage(selectedYear)
         
         // 다음 화면으로 이동
+        let vc = BuyNewWineDateViewController()
+        navigationController?.pushViewController(vc, animated: true)
+        
+    }
+}
+
+extension SelectVintageViewController: UIAdaptivePresentationControllerDelegate {
+    public func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        vintageView.yearPicker.updatePickerView(isModalOpen: false)
     }
 }

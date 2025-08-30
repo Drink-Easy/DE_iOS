@@ -103,6 +103,7 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
     
     private func callPostAPI() async {
         let wm = MyOwnedWineManager.shared
+        // TODO : vintage 항목 추가 여기서
         let data = networkService.makePostDTO(wineId: wm.getWineId(), buyDate: wm.getBuyDate(), buyPrice: wm.getPrice())
         do {
             // 데이터 전송

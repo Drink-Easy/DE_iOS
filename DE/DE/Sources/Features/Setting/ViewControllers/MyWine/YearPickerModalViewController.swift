@@ -58,7 +58,7 @@ final class YearPickerModalViewController: UIViewController {
 
         confirmButton.snp.makeConstraints {
             $0.top.equalTo(pickerView.snp.bottom).offset(DynamicPadding.dynamicValue(20))
-            $0.leading.trailing.equalToSuperview()
+            $0.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
             $0.bottom.equalToSuperview().inset(DynamicPadding.dynamicValue(40))
         }
     }
