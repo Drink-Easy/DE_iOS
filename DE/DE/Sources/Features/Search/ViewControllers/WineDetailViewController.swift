@@ -355,7 +355,10 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
         self.view.showColorBlockingView()
         Task {
             do {
-                let responseData = try await wineNetworkService.fetchWineInfo(wineId: wineId)
+                let responseData = try await wineNetworkService.fetchWineInfo(
+                    wineId: wineId,
+                    vintageYear: nil
+                )
                 DispatchQueue.main.async {
                     self.reviewData.removeAll()
                     if let data = responseData {

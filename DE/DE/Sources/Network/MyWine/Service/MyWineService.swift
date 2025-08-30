@@ -26,13 +26,22 @@ public final class MyWineService : NetworkManager {
     // MARK: - DTO funcs
     
     /// 보유와인 추가 데이터 구조 생성
-    public func makePostDTO(wineId: Int, buyDate: String, buyPrice: Int) -> MyWineRequest {
-        return MyWineRequest(wineId: wineId, purchaseDate: buyDate, purchasePrice: buyPrice)
+    public func makePostDTO(wineId: Int, vintage: Int?, buyDate: String, buyPrice: Int) -> MyWineRequest {
+        return MyWineRequest(
+            wineId: wineId,
+            vintageYear: vintage,
+            purchaseDate: buyDate,
+            purchasePrice: buyPrice
+        )
     }
     
     /// 보유와인 업데이트 데이터 구조 생성
-    public func makeUpdateDTO(buyDate: String? = nil, buyPrice: Int? = nil) -> MyWineUpdateRequest {
-        return MyWineUpdateRequest(purchaseDate: buyDate, purchasePrice: buyPrice)
+    public func makeUpdateDTO(buyDate: String? = nil, vintage: Int? = nil, buyPrice: Int? = nil) -> MyWineUpdateRequest {
+        return MyWineUpdateRequest(
+            vintageYear: vintage,
+            purchaseDate: buyDate,
+            purchasePrice: buyPrice
+        )
     }
     
     /// 보유와인 가져오기 API
