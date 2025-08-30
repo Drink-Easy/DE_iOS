@@ -17,8 +17,6 @@ public class WineImageView: UIView {
 
     // 실제 콘텐츠를 담는 뷰 (cornerRadius 적용)
     public lazy var image = UIImageView().then {
-        $0.layer.cornerRadius = 12
-        $0.layer.masksToBounds = true
         $0.contentMode = .scaleAspectFit
     }
     
@@ -27,6 +25,7 @@ public class WineImageView: UIView {
         super.init(frame: frame)
         setupUI()
         setupLayout()
+        setupShadow()
     }
 
     required init?(coder: NSCoder) {
@@ -48,9 +47,18 @@ public class WineImageView: UIView {
         }
         
         image.snp.makeConstraints {
-            $0.verticalEdges.equalToSuperview().inset(3)
+            $0.verticalEdges.equalToSuperview()
             $0.horizontalEdges.equalToSuperview()
         }
+    }
+    
+    private func setupShadow() {
+        self.layer.cornerRadius = 12
+        self.layer.shadowColor = UIColor(hex: "111111")?.cgColor
+        self.layer.shadowOpacity = 0.1
+        self.layer.shadowOffset = CGSize(width: 0, height: 1)
+        self.layer.shadowRadius = 10
+        self.layer.masksToBounds = false
     }
     
     // MARK: - Configure

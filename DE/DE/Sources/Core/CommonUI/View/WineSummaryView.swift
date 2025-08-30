@@ -8,34 +8,16 @@ import DesignSystem
 import Cosmos
 
 public class WineSummaryView: UIView {
-  
     var wineName: String = "" {
         didSet {
-            AppTextStyle.KR.subtitle1.apply(to: largeTitleLabel, text: wineName, color: AppColor.black)
+            AppTextStyle.KR.head.apply(to: largeTitleLabel, text: wineName, color: AppColor.black)
         }
     }
     
     var score : Double = 0.0 {
         didSet {
             scoreStar.rating = score
-            AppTextStyle.KR.body2.apply(to: ratingLabel, text: "\(score)", color: AppColor.gray70)
-        }
-    }
-    
-    private func createTitle(text: String) ->  UILabel {
-        return UILabel().then {
-            $0.text = text
-            $0.textColor = AppColor.gray70
-            $0.font = UIFont.pretendard(.semiBold, size: 14)
-        }
-    }
-    
-    private func createContents(text: String) ->  UILabel {
-        return UILabel().then {
-            $0.text = text
-            $0.textColor = AppColor.black
-            $0.font = UIFont.pretendard(.medium, size: 12)
-            $0.numberOfLines = 0
+            AppTextStyle.KR.body2.apply(to: ratingLabel, text: "\(score)", color: AppColor.gray90)
         }
     }
     
@@ -59,10 +41,10 @@ public class WineSummaryView: UIView {
         $0.numberOfLines = 0
     }
     
-    private lazy var sort = createTitle(text: "종류")
-    private lazy var country = createTitle(text: "생산국")
-    public lazy var sortContents = createContents(text: "")
-    public lazy var countryContents = createContents(text: "")
+    private lazy var sort = UILabel()
+    private lazy var country = UILabel()
+    public lazy var sortContents = UILabel()
+    public lazy var countryContents = UILabel()
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -78,42 +60,50 @@ public class WineSummaryView: UIView {
     private func addComponents() {
         self.addSubviews(largeTitleLabel, scoreStar, ratingLabel, sort, country, sortContents, countryContents)
     
+        AppTextStyle.KR.body2.apply(to: sort, text: "종류", color: AppColor.gray50)
+        AppTextStyle.KR.body2.apply(to: country, text: "생산국", color: AppColor.gray50)
+        sortContents.numberOfLines = 1
+        sortContents.lineBreakMode = .byTruncatingTail
+        countryContents.numberOfLines = 1
+        countryContents.lineBreakMode = .byTruncatingTail
     }
     
     private func constraints() {
         largeTitleLabel.snp.makeConstraints {
             $0.top.equalTo(safeAreaLayoutGuide)
-            $0.leading.equalTo(safeAreaLayoutGuide)
+            $0.horizontalEdges.equalTo(safeAreaLayoutGuide)
         }
+        
         scoreStar.snp.makeConstraints {
             $0.top.equalTo(largeTitleLabel.snp.bottom).offset(6)
             $0.leading.equalTo(safeAreaLayoutGuide)
         }
+        
         ratingLabel.snp.makeConstraints {
             $0.centerY.equalTo(scoreStar)
             $0.leading.equalTo(scoreStar.snp.trailing).offset(6)
         }
+        
         sort.snp.makeConstraints {
-            $0.top.equalTo(scoreStar.snp.bottom).offset(20)
+            $0.top.equalTo(scoreStar.snp.bottom).offset(14)
             $0.leading.equalTo(safeAreaLayoutGuide)
         }
         
         country.snp.makeConstraints {
-            $0.top.equalTo(sort.snp.bottom).offset(9)
+            $0.top.equalTo(sort.snp.bottom).offset(5)
             $0.leading.equalTo(sort.snp.leading)
         }
         
         sortContents.snp.makeConstraints {
             $0.centerY.equalTo(sort)
-            $0.leading.equalTo(safeAreaLayoutGuide).offset(89)
-            $0.trailing.equalTo(safeAreaLayoutGuide)
+            $0.leading.equalTo(sort.snp.trailing).offset(39)
+            $0.trailing.lessThanOrEqualTo(safeAreaLayoutGuide)
         }
         
         countryContents.snp.makeConstraints {
             $0.top.equalTo(country.snp.top)
             $0.leading.equalTo(sortContents.snp.leading)
-            $0.trailing.equalTo(safeAreaLayoutGuide)
-            //$0.height.equalTo(50)
+            $0.trailing.lessThanOrEqualTo(safeAreaLayoutGuide)
             $0.bottom.equalToSuperview()
         }
     
@@ -122,8 +112,8 @@ public class WineSummaryView: UIView {
     public func configure(_ model: WineDetailInfoModel) {
         self.wineName = model.wineName
         self.score = model.rating
-        sortContents.text = model.sort
-        countryContents.text = model.country
+        AppTextStyle.KR.body2.apply(to: sortContents, text: model.sort, color: AppColor.gray100)
+        AppTextStyle.KR.body2.apply(to: countryContents, text: model.country, color: AppColor.gray100)
         self.layoutIfNeeded()
     }
     
