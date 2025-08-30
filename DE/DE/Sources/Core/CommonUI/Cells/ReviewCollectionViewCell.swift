@@ -13,39 +13,33 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
     public var onToggle: (() -> Void)?
     
     public lazy var nickname = UILabel().then {
-        $0.textColor = AppColor.black
+        $0.textColor = AppColor.gray100
         $0.font = UIFont.pretendard(.medium, size: 16)
     }
     
     public lazy var score = UILabel().then {
         $0.textColor = AppColor.purple100
-        $0.font = UIFont.pretendard(.medium, size: 14)
+        $0.font = UIFont.pretendard(.semiBold, size: 16)
     }
     
-    public lazy var review = UILabel().then {
-        $0.numberOfLines = 0
-        $0.textColor = AppColor.gray70
-        $0.font = UIFont.pretendard(.medium, size: 14)
-        $0.numberOfLines = 2
-        $0.setLineSpacingPercentage(0.3)
-    }
+    public lazy var review = UILabel()
     
     public lazy var date = UILabel().then {
-        $0.textColor = AppColor.gray90
+        $0.textColor = AppColor.gray50
         $0.font = UIFont.pretendard(.regular, size: 12)
     }
     
     private let toggleButton = UIButton().then {
         $0.setTitle("더보기", for: .normal)
         $0.titleLabel?.font = UIFont.pretendard(.medium, size: 13)
-        $0.setTitleColor(AppColor.gray50, for: .normal)
+        $0.setTitleColor(AppColor.gray70, for: .normal)
         $0.isHidden = true
     }
     
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.backgroundColor = AppColor.gray10
-        contentView.layer.cornerRadius = 14
+        contentView.backgroundColor = AppColor.gray05
+        contentView.layer.cornerRadius = 10
         contentView.layer.masksToBounds = true
         self.addComponents()
         self.constraints()
@@ -65,13 +59,13 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
     }
     
     private func addComponents() {
-        [nickname, score, review, date, toggleButton].forEach { contentView.addSubview($0) }
+        addSubviews(nickname, score, review, date, toggleButton)
     }
     
     private func constraints() {
         nickname.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(10)
-            $0.leading.equalToSuperview().offset(18)
+            $0.top.equalToSuperview().offset(12)
+            $0.leading.equalToSuperview().offset(16)
         }
         
         score.snp.makeConstraints {
@@ -80,14 +74,13 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
         }
         
         review.snp.makeConstraints {
-            $0.leading.equalTo(nickname.snp.leading)
-            $0.trailing.equalToSuperview().offset(-12)
+            $0.horizontalEdges.equalToSuperview().inset(16)
             $0.top.equalTo(nickname.snp.bottom).offset(7)
         }
         
         date.snp.makeConstraints {
             $0.centerY.equalTo(score)
-            $0.trailing.equalToSuperview().offset(-12)
+            $0.trailing.equalToSuperview().offset(-16)
         }
         
         toggleButton.snp.makeConstraints {
@@ -97,17 +90,17 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
     }
     
     public func configure(model: WineReviewModel, isExpanded: Bool) {
-        nickname.text = model.name
+        AppTextStyle.KR.body1.apply(to: nickname, text: model.name, color: AppColor.gray100)
+
         score.text = "★ \(String(model.rating))"
-        review.text = model.contents
-        let input = model.createdAt
-        if let range = input.range(of: "T") {
-            let result = String(input[..<range.lowerBound])
-            date.text = result
+        
+        AppTextStyle.KR.body3.apply(to: review, text: model.contents, color: AppColor.gray90)
+        
+        if let data = model.createdAt.toFlexibleDotFormattedDate() {
+            date.text = data
         }
         
         self.isExpanded = isExpanded
-        review.setLineSpacingPercentage(0.3)
         review.numberOfLines = isExpanded ? 0 : 2
         toggleButton.setTitle(isExpanded ? "접기" : "더보기", for: .normal)
         toggleButton.isHidden = !isReviewTextTruncated()
