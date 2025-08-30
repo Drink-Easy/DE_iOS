@@ -13,19 +13,6 @@ let major = 1
 let minor = 0
 let patch = 5
 
-
-//let crashlyticsScript = TargetScript.post(
-//    script: """
-//    ROOT_DIR=\(ProcessInfo.processInfo.environment["TUIST_ROOT_DIR"] ?? "")
-//    "${ROOT_DIR}/Tuist/.build/checkouts/firebase-ios-sdk/Crashlytics/run"
-//    """,
-//    name: "Firebase Crashlytics",
-//    inputPaths: [
-//        "$(DWARF_DSYM_FOLDER_PATH)/$(DWARF_DSYM_FILE_NAME)/Contents/Resources/DWARF/$(TARGET_NAME)",
-//        "$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)"
-//    ], basedOnDependencyAnalysis: true
-//)
-
 let project = Project(
     name: "\(projectName)",
     settings: .settings(
@@ -234,10 +221,7 @@ let project = Project(
         .scheme(name: "\(projectName)-Release",
                 buildAction: .buildAction(targets: ["\(releaseTargetName)"]),
                 runAction: .runAction(
-                    configuration: .release,
-                    arguments: .arguments(
-                        launchArguments: [.launchArgument(name: "-FIRDebugDisabled", isEnabled: true)]
-                    )
+                    configuration: .release
                 ),
                 archiveAction: .archiveAction(configuration: .release),
                 profileAction: .profileAction(configuration: .release),
@@ -248,7 +232,7 @@ let project = Project(
                 runAction: .runAction(
                     configuration: .debug,
                     arguments: .arguments(
-                        launchArguments: [.launchArgument(name: "-FIRDebugDisabled", isEnabled: true)]
+                        launchArguments: [.launchArgument(name: "-FIRDebugEnabled", isEnabled: true)]
                     )
                 ),
                 archiveAction: .archiveAction(configuration: .debug),
