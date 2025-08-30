@@ -21,12 +21,14 @@ let project = Project(
             "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym"
         ],
         configurations: [
-            .debug(name: "Debug", settings: [
-                "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym" // Debug 설정
-            ]),
-            .release(name: "Release", settings: [
-                "DEBUG_INFORMATION_FORMAT": "dwarf-with-dsym" // Release 설정
-            ])
+            .debug(
+                name: .debug,
+                xcconfig: .relativeToRoot("SupportingFiles/DebugConfig.xcconfig")
+            ),
+            .release(
+                name: .release,
+                xcconfig: .relativeToRoot("SupportingFiles/ReleaseConfig.xcconfig")
+            )
         ]
     ),
     targets: [
