@@ -11,8 +11,11 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
     var screenName: String = Tracking.VC.entireReviewVC
     
     let navigationBarManager = NavigationBarManager()
+    
     var wineId: Int = 0
     var wineName: String = ""
+    var vintage: Int? = nil
+    
     var reviewResults: [WineReviewModel] = []
     let networkService = WineService()
     private let errorHandler = NetworkErrorHandler()
@@ -28,7 +31,22 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
 
         addView()
         constraints()
-        self.view.showColorBlockingView()
+        setupNavigationBar()
+    }
+    
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        
+        view.addSubview(indicator)
+        view.showColorBlockingView()
+        setupDropdownAction()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
+        
         Task {
             do {
                 try await callEntireReviewAPI(wineId: self.wineId, sortType: "최신순", page: 0)
@@ -38,28 +56,9 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
                 errorHandler.handleNetworkError(error, in: self)
             }
         }
-        setupDropdownAction()
-        setupNavigationBar()
-    }
-    
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.view.addSubview(indicator)
-        self.navigationController?.setNavigationBarHidden(false, animated: animated)
-    }
-    
-    public override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        self.navigationController?.setNavigationBarHidden(true, animated: animated)
-    }
-    
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        logScreenView(fileName: #file)
     }
     
     private func setupNavigationBar() {
-        
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
@@ -71,21 +70,7 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
         navigationController?.popViewController(animated: true)
     }
     
-    private lazy var largeTitleLabel = UILabel().then {
-        let text = wineName
-        $0.numberOfLines = 0
-        
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 2
-        
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.pretendard(.semiBold, size: 24),
-            .paragraphStyle: paragraphStyle,
-            .foregroundColor: AppColor.black
-        ]
-        
-        $0.attributedText = NSAttributedString(string: text, attributes: attributes)
-    }
+    private let largeTitleLabel = UILabel()
 
     private lazy var entireReviewView = EntireReviewView().then {
         $0.reviewCollectionView.delegate = self
@@ -93,18 +78,27 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
     }
     
     private func addView() {
-        [largeTitleLabel, entireReviewView].forEach{ view.addSubview($0) }
+        view.addSubviews(largeTitleLabel, entireReviewView)
+        
+        var displayText = wineName
+        if let vintage = vintage {
+            displayText += " \(vintage)"
+        }
+        largeTitleLabel.numberOfLines = 0
+        largeTitleLabel.lineBreakMode = .byCharWrapping
+
+        AppTextStyle.KR.body1.apply(to: largeTitleLabel, text: displayText, color: AppColor.gray70)
     }
     
     private func constraints() {
         largeTitleLabel.snp.makeConstraints {
-            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(25)
-            $0.top.equalTo(view.safeAreaLayoutGuide).offset(10)
+            $0.horizontalEdges.equalToSuperview().inset(24)
+            $0.top.equalTo(view.safeAreaLayoutGuide).offset(8)
         }
         
         entireReviewView.snp.makeConstraints {
-            $0.top.equalTo(largeTitleLabel.snp.bottom).offset(36)
-            $0.horizontalEdges.equalTo(view.safeAreaLayoutGuide)
+            $0.top.equalTo(largeTitleLabel.snp.bottom).offset(8)
+            $0.horizontalEdges.equalToSuperview()
             $0.bottom.equalTo(view.safeAreaLayoutGuide)
         }
     }
