@@ -6,8 +6,8 @@ import DesignSystem
 import SnapKit
 import Then
 
+// 연도 선택기 모달
 final class YearPickerModalViewController: UIViewController {
-
     var minYear: Int
     var maxYear: Int
     var selectedYear: Int?

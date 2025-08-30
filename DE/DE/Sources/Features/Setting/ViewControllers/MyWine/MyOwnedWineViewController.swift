@@ -4,6 +4,7 @@ import UIKit
 import CoreModule
 import DesignSystem
 import Network
+/// 보유와인 루트 뷰
 
 class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
     var screenName: String = Tracking.VC.myWineVC

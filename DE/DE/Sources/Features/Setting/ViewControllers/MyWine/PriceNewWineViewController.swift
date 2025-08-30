@@ -6,8 +6,7 @@ import DesignSystem
 import SnapKit
 import Then
 import Network
-// 기기대응 완료
-// 보유와인 가격 입력
+// step 3. 보유와인 가격 입력
 
 class PriceNewWineViewController: UIViewController, FirebaseTrackable {
     var screenName: String = Tracking.VC.setMyWinePriceVC

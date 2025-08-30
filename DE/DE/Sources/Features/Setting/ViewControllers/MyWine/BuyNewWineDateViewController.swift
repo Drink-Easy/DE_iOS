@@ -4,8 +4,7 @@ import UIKit
 import CoreModule
 import DesignSystem
 import Network
-// 기기대응 완료
-// 보유와인 날짜 선택
+// step2. 보유와인 날짜 선택
 
 public class BuyNewWineDateViewController: UIViewController, FirebaseTrackable {
     public var screenName: String = Tracking.VC.setMyWineDateVC

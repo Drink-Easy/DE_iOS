@@ -6,7 +6,6 @@ import DesignSystem
 import Network
 import SnapKit
 import Then
-// 기기대응 완료
 // 보유와인 정보 수정
 
 class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
