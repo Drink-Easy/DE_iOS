@@ -77,6 +77,7 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
             return
         }
         MyOwnedWineManager.shared.setPrice(price)
+        
         Task {
             self.view.showBlockingView()
             await callPostAPI()
@@ -103,8 +104,12 @@ class PriceNewWineViewController: UIViewController, FirebaseTrackable {
     
     private func callPostAPI() async {
         let wm = MyOwnedWineManager.shared
-        // TODO : vintage 항목 추가 여기서
-        let data = networkService.makePostDTO(wineId: wm.getWineId(), buyDate: wm.getBuyDate(), buyPrice: wm.getPrice())
+        let data = networkService.makePostDTO(
+            wineId: wm.getWineId(),
+            vintage: wm.getVintage(),
+            buyDate: wm.getBuyDate(),
+            buyPrice: wm.getPrice()
+        )
         do {
             // 데이터 전송
             _ = try await networkService.postMyWine(data: data)

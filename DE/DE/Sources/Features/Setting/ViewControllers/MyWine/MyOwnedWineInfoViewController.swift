@@ -52,7 +52,12 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     
     private func setWineData() {
         guard let currentWine = self.registerWine else { return }
-        header.setWineName(currentWine.wineName)
+        var displayName = currentWine.wineName
+        if let vintage = currentWine.vintage {
+            displayName += " \(vintage)"
+        }
+        
+        header.setWineName(displayName)
         header.infoView.image.sd_setImage(with: URL(string: currentWine.wineImageUrl), placeholderImage: UIImage(named: "placeholder"))
         header.infoView.typeContents.text = "\(currentWine.wineCountry), \(currentWine.wineRegion)"
         header.infoView.countryContents.text = currentWine.wineVariety
@@ -172,7 +177,20 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
             do {
                 let data = try await networkService.fetchMyWine(myWineId: registerWine!.myWineId)
                 DispatchQueue.main.async { [self] in
-                    self.registerWine = MyWineViewModel(myWineId: data.myWineId, wineId: data.wineId, wineName: data.wineName, wineSort: data.wineSort, wineCountry: data.wineCountry, wineRegion: data.wineRegion, wineVariety: data.wineVariety, wineImageUrl: data.wineImageUrl, purchaseDate: data.purchaseDate, purchasePrice: data.purchasePrice, period: data.period)
+                    self.registerWine = MyWineViewModel(
+                        myWineId: data.myWineId,
+                        wineId: data.wineId,
+                        wineName: data.wineName,
+                        vintage: data.vintageYear,
+                        wineSort: data.wineSort,
+                        wineCountry: data.wineCountry,
+                        wineRegion: data.wineRegion,
+                        wineVariety: data.wineVariety,
+                        wineImageUrl: data.wineImageUrl,
+                        purchaseDate: data.purchaseDate,
+                        purchasePrice: data.purchasePrice,
+                        period: data.period
+                    )
                     self.setWineData()
 //                    self.needUpdate = false
                     self.view.hideBlockingView()

@@ -44,7 +44,6 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
         self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         setNavBarAppearance(navigationController: self.navigationController)
-        callGetAPI()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -55,6 +54,7 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         logScreenView(fileName: #file)
+        
         callGetAPI()
     }
     
@@ -86,7 +86,9 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
     
     @objc private func addNewWine() {
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.createBtnTapped, fileName: #file)
+        
         MyOwnedWineManager.shared.resetWine()
+        
         let vc = AddNewWineViewController()
         vc.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(vc, animated: true)
@@ -124,6 +126,7 @@ class MyOwnedWineViewController: UIViewController, FirebaseTrackable {
                             myWineId: wine.myWineId,
                             wineId: wine.wineId,
                             wineName: wine.wineName,
+                            vintage: wine.vintageYear,
                             wineSort: wine.wineSort,
                             wineCountry: wine.wineCountry,
                             wineRegion: wine.wineRegion,

@@ -127,6 +127,11 @@ public class MyOwnedWineManager {
         return wine.getBuyDate()
     }
     
+    /// 빈티지 연도 반환(Int?)
+    public func getVintage() -> Int? {
+        return wine.vintage
+    }
+    
     /// 와인 데이터를 초기화
     public func resetWine() {
         wine = MyOwnedWine()
