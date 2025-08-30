@@ -33,13 +33,6 @@ public final class VintageTableViewController: UIViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        self.tabBarController?.tabBar.isHidden = true
-    }
-    
-    public override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        self.navigationController?.setNavigationBarHidden(true, animated: false)
-        self.tabBarController?.tabBar.isHidden = false
     }
     
     // MARK: - Setup
