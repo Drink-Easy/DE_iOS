@@ -72,7 +72,7 @@ public class TestVC : UIViewController, FirebaseTrackable {
     
     func checkAuthenticationStatus() {
         
-        if let cookies = HTTPCookieStorage.shared.cookies(for: URL(string: API.baseURL)!) {
+        if let cookies = HTTPCookieStorage.shared.cookies(for: URL(string: API.authURL)!) {
             for cookie in cookies {
                 if cookie.name == "accessToken" {
                     if let expires = cookie.expiresDate {

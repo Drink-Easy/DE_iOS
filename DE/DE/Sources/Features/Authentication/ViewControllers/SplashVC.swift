@@ -79,7 +79,7 @@ public class SplashVC : UIViewController, FirebaseTrackable {
     
     func checkAuthenticationStatus() {
         // 저장된 쿠키 없는 경우
-        guard let cookies = HTTPCookieStorage.shared.cookies(for: URL(string: API.baseURL)!) else {
+        guard let cookies = HTTPCookieStorage.shared.cookies(for: URL(string: API.authURL)!) else {
             navigateToOnBoaringScreen()
             return
         }
