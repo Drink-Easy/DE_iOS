@@ -27,6 +27,7 @@ public final class TastingNoteService: NetworkManager {
     /// 모든 항목이 required임
     public func makePostNoteDTO(
         wineId : Int,
+        vintage: Int,
         color: String,
         tasteDate : String,
         sugarContent: Int,
@@ -40,7 +41,7 @@ public final class TastingNoteService: NetworkManager {
     ) -> TastingNoteRequestDTO {
         return TastingNoteRequestDTO(
             wineId: wineId,
-            vintageYear: nil,
+            vintageYear: vintage,
             color: color,
             tasteDate: tasteDate,
             sweetness: sugarContent,

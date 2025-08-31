@@ -43,7 +43,8 @@ public class NoseTestVC: UIViewController, UIScrollViewDelegate, FirebaseTrackab
             }
         }
         
-        topView.header.setTitleLabel(title: wineData.wineName,
+        let fullName = "\(wineData.wineName) \(wineData.vintage)"
+        topView.header.setTitleLabel(title: fullName,
                                      titleStyle: AppTextStyle.KR.subtitle1,
                                      titleColor: AppColor.purple100,
                                      description: despText,

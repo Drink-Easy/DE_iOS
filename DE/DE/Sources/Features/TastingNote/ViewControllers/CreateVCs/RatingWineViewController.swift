@@ -28,7 +28,9 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
            NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
-        rView.header.setTitleLabel(title: wineData.wineName)
+        
+        let fullName = "\(wineData.wineName) \(wineData.vintage)"
+        rView.header.setTitleLabel(title: fullName)
         rView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         rView.infoView.kindContents.text = wineData.sort
@@ -142,7 +144,20 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
     }
     
     private func postCreateTastingNote() async throws {
-        let createNoteDTO = networkService.makePostNoteDTO(wineId: wineData.wineId, color: tnManager.color, tasteDate: tnManager.tasteDate, sugarContent: tnManager.sugarContent, acidity: tnManager.acidity, tannin: tnManager.tannin, body: tnManager.body, alcohol: tnManager.alcohol, nose: tnManager.nose, rating: tnManager.rating, review: tnManager.review)
+        let createNoteDTO = networkService.makePostNoteDTO(
+            wineId: wineData.wineId,
+            vintage: wineData.vintage,
+            color: tnManager.color,
+            tasteDate: tnManager.tasteDate,
+            sugarContent: tnManager.sugarContent,
+            acidity: tnManager.acidity,
+            tannin: tnManager.tannin,
+            body: tnManager.body,
+            alcohol: tnManager.alcohol,
+            nose: tnManager.nose,
+            rating: tnManager.rating,
+            review: tnManager.review
+        )
         
         let _ = try await networkService.postNote(data: createNoteDTO)
     }
