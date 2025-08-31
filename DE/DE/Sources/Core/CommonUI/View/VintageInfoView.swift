@@ -53,7 +53,7 @@ public class VintageInfoView: UIView {
     public init() {
         super.init(frame: .zero)
         setupLayout()
-        configure(with: "1970")
+        configure(with: "빈티지 선택")
     }
 
     required init?(coder: NSCoder) {

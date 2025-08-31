@@ -12,6 +12,8 @@ public final class VintageTableViewController: UIViewController {
     private var sections: [Section<VintageItem>] = []
     private let navigationBarManager = NavigationBarManager()
     
+    public var onYearSelected: ((Int) -> Void)?
+    
     // MARK: - UI Components
     private let tableView = UITableView(frame: .zero, style: .grouped).then {
         $0.backgroundColor = AppColor.background
@@ -27,7 +29,7 @@ public final class VintageTableViewController: UIViewController {
         setupNavigationBar()
         setupLayout()
         setupTableView()
-        setupDummyData()
+        setupSectionData()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -69,36 +71,38 @@ public final class VintageTableViewController: UIViewController {
         tableView.estimatedSectionFooterHeight = 0
     }
     
-    private func setupDummyData() {
-        // 1980년대부터 2020년대까지의 섹션 생성
-        let decades = [
-            (title: "2020년대", startYear: 2020),
-            (title: "2010년대", startYear: 2010),
-            (title: "2000년대", startYear: 2000),
-            (title: "1990년대", startYear: 1990),
-            (title: "1980년대", startYear: 1980),
-            (title: "1970년대", startYear: 1970)
-        ]
+    private func setupSectionData() {
+        let currentYear = Calendar.current.component(.year, from: Date())
+        let fixedStartYear = 1970
+        var currentDecadeStartYear = (currentYear / 10) * 10 // 예: 2025년 -> 2020년
         
-        sections = decades.map { decade in
-            let endYear = decade.startYear == 2020 ? 2024 : decade.startYear + 9
+        var dynamicSections: [Section<VintageItem>] = []
+        
+        while currentDecadeStartYear >= fixedStartYear {
+            let startYear = currentDecadeStartYear
+            let endYear = (startYear == (currentYear / 10) * 10) ? (currentYear - 1) : (startYear + 9)
+            guard startYear <= endYear else {
+                currentDecadeStartYear -= 10
+                continue
+            }
             
-            let items = (decade.startYear...endYear)
+            let items = (startYear...endYear)
                 .reversed()
                 .map { year in
-                    VintageItem(
-                        year: year,
-                        score: 0.0
-                    )
+                    VintageItem(year: year, score: 0.0)
                 }
             
-            return Section(
-                title: decade.title,
+            let section = Section(
+                title: "\(currentDecadeStartYear)년대",
                 isExpanded: false,
                 items: items
             )
+            dynamicSections.append(section)
+            
+            currentDecadeStartYear -= 10
         }
         
+        self.sections = dynamicSections
         tableView.reloadData()
     }
     
@@ -116,7 +120,7 @@ extension VintageTableViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return sections[section].isExpanded ? sections[section].items.count : 0
     }
-
+    
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: VintageTableViewCell.identifier,
@@ -154,7 +158,7 @@ extension VintageTableViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 53
     }
-
+    
     public func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 0.01
     }
@@ -165,7 +169,9 @@ extension VintageTableViewController: UITableViewDelegate {
     
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedYear = sections[indexPath.section].items[indexPath.row].year
-        print("\(selectedYear)년 선택")
+        onYearSelected?(selectedYear)
+        
+        navigationController?.popViewController(animated: true)
     }
     
 }
