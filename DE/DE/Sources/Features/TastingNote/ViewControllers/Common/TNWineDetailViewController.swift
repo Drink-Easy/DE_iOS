@@ -16,6 +16,7 @@ class TNWineDetailViewController: UIViewController, UIScrollViewDelegate, Fireba
             AppTextStyle.KR.head.apply(to: largeTitleLabel, text: wineName, color: AppColor.black)
         }
     }
+    var vintage: Int? = nil
     let wineData = TNWineDataManager.shared
     let tnManager = NewTastingNoteManager.shared
     
@@ -247,7 +248,7 @@ class TNWineDetailViewController: UIViewController, UIScrollViewDelegate, Fireba
         DispatchQueue.main.async {
             self.wineInfoView.configure(infoData)
             self.wineDetailsView.configure(infoData)
-            self.averageTastingNoteView.configure(avgData)
+            self.averageTastingNoteView.configure(avgData, self.vintage)
         }
     }
     
