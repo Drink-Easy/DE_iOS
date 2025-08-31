@@ -8,6 +8,7 @@ class TNWineDataManager {
     
     var wineId: Int
     var wineName: String
+    var vintage: Int
     var sort: String
     var country: String
     var region: String
@@ -18,6 +19,7 @@ class TNWineDataManager {
     public init(
         wineId: Int = 0,
         wineName: String = "",
+        vintage: Int = 0,
         sort: String = "",
         country: String = "",
         region: String = "",
@@ -26,6 +28,7 @@ class TNWineDataManager {
     ) {
         self.wineId = wineId
         self.wineName = wineName
+        self.vintage = vintage
         self.sort = sort
         self.country = country
         self.region = region
@@ -37,6 +40,7 @@ class TNWineDataManager {
     func updateWineData(
         wineId: Int? = nil,
         wineName: String? = nil,
+        vintage: Int? = nil,
         sort: String? = nil,
         country: String? = nil,
         region: String? = nil,
@@ -45,6 +49,7 @@ class TNWineDataManager {
     ) {
         if let wineId = wineId { self.wineId = wineId }
         if let wineName = wineName { self.wineName = wineName }
+        if let vintage = vintage { self.vintage = vintage }
         if let sort = sort { self.sort = sort }
         if let country = country { self.country = country }
         if let region = region { self.region = region }
@@ -55,6 +60,7 @@ class TNWineDataManager {
     func resetData() {
         wineId = 0
         wineName = ""
+        vintage = 0
         sort = ""
         country = ""
         region = ""
