@@ -105,8 +105,7 @@ public class EditReviewViewController: UIViewController, FirebaseTrackable {
         } else {
             reviewString = rView.reviewBody.text ?? ""
         }
-        let reviewDate = "2026-13-13"
-        let updateData = networkService.makeUpdateNoteBodyDTO(tastingDate: reviewDate, review: reviewString)
+        let updateData = networkService.makeUpdateNoteBodyDTO(review: reviewString)
 //        let updateData = networkService.makeUpdateNoteBodyDTO(review: reviewString)
         
         let tnData = networkService.makeUpdateNoteDTO(noteId: tnManager.noteId, body: updateData)
