@@ -16,6 +16,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
             AppTextStyle.KR.head.apply(to: largeTitleLabel, text: wineName, color: AppColor.black)
         }
     }
+    var vintage: Int? = nil
     var wineInfoForTN : WineDetailInfoModel?
     
     var isLiked: Bool = false {
@@ -50,6 +51,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
         super.viewWillAppear(animated)
         self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        
         callWineDetailAPI(wineId: self.wineId)
     }
     
@@ -92,6 +94,27 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
             action: #selector(tappedLiked),
             tintColor: AppColor.purple100
         )
+    }
+    
+    private func addButtonTarget() {
+        averageTastingNoteView.writeNewTastingNoteBtn.addTarget(self, action: #selector(goToTastingNote), for: .touchUpInside)
+        reviewView.moreBtn.addTarget(self, action: #selector(goToEntireReview), for: .touchUpInside)
+        
+        vintageInfoView.tabAction = { [weak self] in
+            let vc = VintageTableViewController()
+            
+            vc.onYearSelected = { [weak self] year in
+                guard let self = self else { return }
+                
+                self.vintageInfoView.configure(with: "\(year)")
+                
+                if year != self.vintage {
+                    self.vintage = year
+                    self.callWineDetailAPI(wineId: self.wineId)
+                }
+            }
+            self?.navigationController?.pushViewController(vc, animated: true)
+        }
     }
     
     private func showLiked() {
@@ -164,16 +187,6 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     let divider3 = DividerFactory.make()
     let thinDivider = DividerFactory.make()
     
-    private func addButtonTarget() {
-        averageTastingNoteView.writeNewTastingNoteBtn.addTarget(self, action: #selector(goToTastingNote), for: .touchUpInside)
-        reviewView.moreBtn.addTarget(self, action: #selector(goToEntireReview), for: .touchUpInside)
-        vintageInfoView.tabAction = { [weak self] in
-            let vc = VintageTableViewController()
-            vc.hidesBottomBarWhenPushed = true
-            self?.navigationController?.pushViewController(vc, animated: true)
-        }
-    }
-    
     @objc
     private func goToTastingNote() {
         // 배정이 안되서 일단 비활성화 해둠!!
@@ -188,14 +201,21 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
             return
         }
         
+        guard let vintageYear = vintage else {
+            self.showToastMessage(message: "빈티지를 선택해주세요.", yPosition: view.frame.height * 0.75)
+            return
+        }
+        
         TNWineDataManager.shared.updateWineData(wineId: self.wineId,
                                                 wineName: self.wineName,
+                                                vintage: vintageYear,
                                                 sort: wineInfo.sort,
                                                 country: wineInfo.country,
                                                 region: wineInfo.region,
                                                 imageUrl: wineInfo.image,
                                                 variety: wineInfo.variety
         )
+        
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -206,6 +226,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
         let vc = EntireReviewViewController()
         vc.wineId = self.wineId
         vc.wineName = self.wineName
+        vc.vintage = self.vintage
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -310,6 +331,11 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
         self.wineName = wineResponse.name
         self.isLiked = wineResponse.liked
         self.originalIsLiked = wineResponse.liked
+        
+        if let vintageYear = wineResponse.vintageYear {
+            self.vintage = vintageYear
+        }
+        
         let noseNotes = [
             wineResponse.nose1,
             wineResponse.nose2,
@@ -323,12 +349,36 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
             self?.updateReviewView()
         }
         
-        let infoData = WineDetailInfoModel(wineName:wineResponse.name, rating:wineResponse.vivinoRating, image: wineResponse.imageUrl, sort: wineResponse.sort, country: wineResponse.country, region: wineResponse.region, variety: wineResponse.variety)
-        let rateData = WineViVinoRatingModel(vivinoRating: wineResponse.vivinoRating)
-        let avgData = WineAverageTastingNoteModel(wineNoseText: tastingNoteString, avgSugarContent: wineResponse.avgSweetness, avgAcidity: wineResponse.avgAcidity, avgTannin: wineResponse.avgTannin, avgBody: wineResponse.avgBody, avgAlcohol: wineResponse.avgAlcohol)
-        let roundedAvgMemberRating = (wineResponse.avgMemberRating * 10).rounded() / 10
-        let reviewData = WineAverageReviewModel(avgMemberRating: roundedAvgMemberRating)
+        let infoData = WineDetailInfoModel(
+            wineName:wineResponse.name,
+            rating:wineResponse.vivinoRating,
+            image: wineResponse.imageUrl,
+            sort: wineResponse.sort,
+            country: wineResponse.country,
+            region: wineResponse.region,
+            variety: wineResponse.variety
+        )
         
+        if let year = self.vintage {
+            self.vintageInfoView.configure(with: "\(year)")
+        } else {
+            self.vintageInfoView.configure(with: "빈티지 선택")
+        }
+        
+        let rateData = WineViVinoRatingModel(vivinoRating: wineResponse.vivinoRating)
+        
+        let avgData = WineAverageTastingNoteModel(
+            wineNoseText: tastingNoteString,
+            avgSugarContent: wineResponse.avgSweetness,
+            avgAcidity: wineResponse.avgAcidity,
+            avgTannin: wineResponse.avgTannin,
+            avgBody: wineResponse.avgBody,
+            avgAlcohol: wineResponse.avgAlcohol
+        )
+        
+        let roundedAvgMemberRating = (wineResponse.avgMemberRating * 10).rounded() / 10
+        
+        let reviewData = WineAverageReviewModel(avgMemberRating: roundedAvgMemberRating)
         if let reviewResponse = responseData.recentReviews {
             for data in reviewResponse {
                 if let name = data.name,
@@ -346,7 +396,8 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
             self.wineInfoForTN = infoData // 테이스팅 노트 작성을 위한 데이터 저장
             self.wineInfoView.configure(infoData)
             self.wineDetailsView.configure(infoData)
-            self.averageTastingNoteView.configure(avgData)
+            
+            self.averageTastingNoteView.configure(avgData, self.vintage)
             self.reviewView.configure(reviewData)
             self.reviewView.reviewCollectionView.reloadData()
         }
@@ -358,7 +409,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
             do {
                 let responseData = try await wineNetworkService.fetchWineInfo(
                     wineId: wineId,
-                    vintageYear: nil
+                    vintageYear: vintage
                 )
                 DispatchQueue.main.async {
                     self.reviewData.removeAll()
@@ -378,7 +429,10 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     func callLikeAPI(wineId: Int) async {
         self.view.showBlockingView()
         do {
-            let _ = try await likedNetworkService.postWishlist(wineId: wineId)
+            let _ = try await likedNetworkService.postWishlist(
+                wineId: wineId,
+                vintageYear: vintage
+            )
             self.view.hideBlockingView()
         } catch {
             self.view.hideBlockingView()
@@ -389,7 +443,10 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     func calldeleteLikedAPI(wineId: Int) async {
         self.view.showBlockingView()
         do {
-            let _ = try await likedNetworkService.deleteWishlist(wineId: wineId)
+            let _ = try await likedNetworkService.deleteWishlist(
+                wineId: wineId,
+                vintageYear: vintage
+            )
             self.view.hideBlockingView()
         } catch {
             self.view.hideBlockingView()
