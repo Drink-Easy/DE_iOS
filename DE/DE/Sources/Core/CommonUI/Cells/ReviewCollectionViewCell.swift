@@ -10,6 +10,8 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
     
     public static let identifier = "ReviewCollectionViewCell"
     var isExpanded = false
+    private var toggleBottomConstraint: Constraint?
+    private var reviewBottomConstraint: Constraint?
     public var onToggle: (() -> Void)?
     
     public lazy var nickname = UILabel().then {
@@ -30,6 +32,7 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
         $0.setTitle("더보기", for: .normal)
         $0.titleLabel?.font = UIFont.pretendard(.medium, size: 13)
         $0.setTitleColor(AppColor.gray70, for: .normal)
+        $0.contentHorizontalAlignment = .left
         $0.isHidden = true
     }
     
@@ -62,7 +65,7 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
     private func constraints() {
         nickname.snp.makeConstraints {
             $0.top.equalToSuperview().offset(12)
-            $0.leading.equalToSuperview().offset(16)
+            $0.leading.equalToSuperview().offset(17)
         }
         
         score.snp.makeConstraints {
@@ -71,18 +74,21 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
         }
         
         review.snp.makeConstraints {
-            $0.horizontalEdges.equalToSuperview().inset(16)
+            $0.horizontalEdges.equalToSuperview().inset(17)
             $0.top.equalTo(nickname.snp.bottom).offset(7)
+            self.reviewBottomConstraint = $0.bottom.equalToSuperview().offset(-12).constraint
         }
         
         date.snp.makeConstraints {
             $0.centerY.equalTo(score)
-            $0.trailing.equalToSuperview().offset(-16)
+            $0.trailing.equalToSuperview().offset(-17)
         }
         
         toggleButton.snp.makeConstraints {
             $0.top.equalTo(review.snp.bottom).offset(2)
             $0.leading.equalTo(review.snp.leading)
+            $0.bottom.equalToSuperview().offset(-10)
+            self.toggleBottomConstraint = $0.bottom.equalToSuperview().offset(-12).constraint
         }
     }
     
@@ -99,7 +105,17 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
         self.isExpanded = isExpanded
         review.numberOfLines = isExpanded ? 0 : 2
         toggleButton.setTitle(isExpanded ? "접기" : "더보기", for: .normal)
-        toggleButton.isHidden = !isReviewTextTruncated()
+        let shouldShowToggle = isReviewTextTruncated()
+        toggleButton.isHidden = !shouldShowToggle
+        
+        // 리뷰내 2줄 초과인지 아닌지에 따른 제약 활성화/비활성화
+        if shouldShowToggle {
+            toggleBottomConstraint?.activate()
+            reviewBottomConstraint?.deactivate()
+        } else {
+            toggleBottomConstraint?.deactivate()
+            reviewBottomConstraint?.activate()
+        }
     }
     
     private func isReviewTextTruncated() -> Bool {
