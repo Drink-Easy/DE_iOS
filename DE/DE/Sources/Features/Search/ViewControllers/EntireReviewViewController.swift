@@ -201,18 +201,27 @@ extension EntireReviewViewController: UICollectionViewDataSource, UICollectionVi
         let text = reviewResults[indexPath.item].contents
         let isExpanded = expandedCells[indexPath.item]
         
-        // 텍스트 높이 계산 + 패딩
         let labelFont = UIFont.pretendard(.medium, size: 14)
         let lineSpacing = labelFont.pointSize * 0.3
         let labelWidth = width - 30
-        //let estimatedHeight = text.heightWithConstrainedWidth(width: labelWidth, font: labelFont)
-        let numberOfLines = text.numberOfLines(width: labelWidth, font: labelFont, lineSpacing: lineSpacing)
         let lineHeight = labelFont.lineHeight + lineSpacing
         
-        let cellHeight = isExpanded
-                ? CGFloat(numberOfLines - 2) * lineHeight + 104
-                : 104
-        return CGSize(width: width, height: cellHeight)
+        let numberOfLines = text.numberOfLines(width: labelWidth, font: labelFont, lineSpacing: lineSpacing)
+        let isTruncated = numberOfLines > 2
+        
+        let baseHeight: CGFloat = 98
+        let toggleButtonExtraHeight: CGFloat = 13 + 12  // spacing + button + bottom inset
+        
+        let height: CGFloat
+        if isExpanded {
+            // 전체 줄 다 보여줄 때
+            height = CGFloat(numberOfLines) * lineHeight + (baseHeight - (2 * lineHeight)) + toggleButtonExtraHeight
+        } else {
+            // 접힌 상태. 줄 수가 2를 초과하면 toggleButton을 위한 여유 공간 확보
+            height = baseHeight + (isTruncated ? toggleButtonExtraHeight : 0)
+        }
+        
+        return CGSize(width: width, height: height)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
