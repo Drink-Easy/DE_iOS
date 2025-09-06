@@ -312,7 +312,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
             reviewView.moreBtn.isHidden = true
             reviewView.reviewCollectionView.isHidden = true
             reviewView.reviewCollectionView.snp.updateConstraints {
-                $0.height.equalTo(0) // 높이를 0으로 설정
+                $0.height.equalTo(0)
             }
             reviewView.scoreLabel.isHidden = true
             reviewView.noReviewLabel.isHidden = false
@@ -322,6 +322,10 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
             reviewView.reviewCollectionView.isHidden = false
             reviewView.scoreLabel.isHidden = false
             reviewView.noReviewLabel.isHidden = true
+            reviewView.reviewCollectionView.snp.updateConstraints {
+                /// 하나의 리뷰를 100 높이로 기본 세팅 -> 무조건 332 높이 no : 추후 반응형으로 바꿔주긴 해야함
+                $0.height.equalTo(32 + reviewData.count * 100)
+            }
         }
     }
     
