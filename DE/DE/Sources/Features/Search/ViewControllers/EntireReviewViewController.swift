@@ -41,21 +41,26 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
         view.addSubview(indicator)
         view.showColorBlockingView()
         setupDropdownAction()
-    }
-    
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        logScreenView(fileName: #file)
         
         Task {
             do {
-                try await callEntireReviewAPI(wineId: self.wineId, sortType: "최신순", page: 0)
+                try await callEntireReviewAPI(
+                    wineId: self.wineId,
+                    sortType: "최신순",
+                    page: 0,
+                    vintage: vintage
+                )
                 self.view.hideBlockingView()
             } catch {
                 self.view.hideBlockingView()
                 errorHandler.handleNetworkError(error, in: self)
             }
         }
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        logScreenView(fileName: #file)
     }
     
     private func setupNavigationBar() {
@@ -105,8 +110,10 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
     
     private func setupDropdownAction() {
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.dropdownBtnTapped, fileName: #file)
+        
         entireReviewView.dropdownView.onOptionSelected = { [weak self] selectedOption in
             guard let self = self else { return }
+            
             if selectedOption == "최신 순" {
                 currentType = "최신순"
             } else if selectedOption == "오래된 순" {
@@ -117,9 +124,16 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
                 currentType = "별점 낮은 순"
             }
             self.view.showBlockingView()
+            
             Task {
                 do {
-                    try await self.callEntireReviewAPI(wineId: self.wineId, sortType: self.currentType, page: 0)
+                    try await self.callEntireReviewAPI(
+                        wineId: self.wineId,
+                        sortType: self.currentType,
+                        page: 0,
+                        vintage: self.vintage
+                    )
+                    
                     DispatchQueue.main.async {
                         // 강제로 맨위로 올리기
                         self.entireReviewView.reviewCollectionView.setContentOffset(.zero, animated: true)
@@ -134,7 +148,12 @@ class EntireReviewViewController: UIViewController, FirebaseTrackable {
     }
     
     func callEntireReviewAPI(wineId: Int, sortType: String, page: Int, vintage: Int? = nil) async throws {
-        guard let response = try await networkService.fetchWineReviews(wineId: wineId, vintageYear: vintage, sortType: sortType, page: page) else {
+        guard let response = try await networkService.fetchWineReviews(
+            wineId: wineId,
+            vintageYear: vintage,
+            sortType: sortType,
+            page: page
+        ) else {
             return
         }
         
@@ -242,7 +261,12 @@ extension EntireReviewViewController: UICollectionViewDataSource, UICollectionVi
             self.view.showBlockingView()
             Task {
                 do {
-                    try await callEntireReviewAPI(wineId: self.wineId, sortType: currentType, page: currentPage + 1)
+                    try await callEntireReviewAPI(
+                        wineId: self.wineId,
+                        sortType: currentType,
+                        page: currentPage + 1,
+                        vintage: vintage
+                    )
                     self.view.hideBlockingView()
                 } catch {
                     self.view.hideBlockingView()
