@@ -7,8 +7,8 @@ import Then
 import DesignSystem
 
 public class ReviewCollectionViewCell: UICollectionViewCell {
-    
     public static let identifier = "ReviewCollectionViewCell"
+    
     var isExpanded = false
     private var toggleBottomConstraint: Constraint?
     private var reviewBottomConstraint: Constraint?
@@ -17,6 +17,7 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
     public lazy var nickname = UILabel().then {
         $0.textColor = AppColor.gray100
         $0.font = UIFont.pretendard(.medium, size: 16)
+        $0.setContentHuggingPriority(.required, for: .vertical)
     }
     
     public lazy var score = UILabel()
@@ -60,6 +61,7 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
     
     private func addComponents() {
         contentView.addSubviews(nickname, score, review, date, toggleButton)
+
     }
     
     private func constraints() {
@@ -85,7 +87,7 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
         }
         
         toggleButton.snp.makeConstraints {
-            $0.top.equalTo(review.snp.bottom).offset(2)
+            $0.top.greaterThanOrEqualTo(review.snp.bottom).offset(2)
             $0.leading.equalTo(review.snp.leading)
             $0.bottom.equalToSuperview().offset(-10)
             self.toggleBottomConstraint = $0.bottom.equalToSuperview().offset(-12).constraint
@@ -96,6 +98,8 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
         AppTextStyle.KR.body1.apply(to: nickname, text: model.name, color: AppColor.gray100)
         AppTextStyle.KR.body2
             .apply(to: score, text: "★ \(String(model.rating))", color: AppColor.purple100)
+        
+        
         AppTextStyle.KR.body3.apply(to: review, text: model.contents, color: AppColor.gray90)
         
         if let data = model.createdAt.toFlexibleDotFormattedDate() {
@@ -106,25 +110,30 @@ public class ReviewCollectionViewCell: UICollectionViewCell {
         review.numberOfLines = isExpanded ? 0 : 2
         toggleButton.setTitle(isExpanded ? "접기" : "더보기", for: .normal)
         let shouldShowToggle = isReviewTextTruncated()
-        toggleButton.isHidden = !shouldShowToggle
+        toggleButton.isHidden = !(shouldShowToggle > 2)
         
         // 리뷰내 2줄 초과인지 아닌지에 따른 제약 활성화/비활성화
-        if shouldShowToggle {
+        if shouldShowToggle > 2 {
             toggleBottomConstraint?.activate()
             reviewBottomConstraint?.deactivate()
         } else {
             toggleBottomConstraint?.deactivate()
             reviewBottomConstraint?.activate()
         }
+        
+        if shouldShowToggle == 1 {
+            let reviewString = "\(model.contents)\n"
+            AppTextStyle.KR.body3.apply(to: review, text: reviewString, color: AppColor.gray90)
+        }
     }
     
-    private func isReviewTextTruncated() -> Bool {
-        guard let text = review.text else { return false }
+    private func isReviewTextTruncated() -> Int {
+        guard let text = review.text else { return 0 }
         
         let labelWidth = contentView.frame.width - 30
         let labelFont = review.font ?? UIFont.systemFont(ofSize: 16)
         let lineSpacing = review.font.pointSize * 0.3
         let numberOfLines = text.numberOfLines(width: labelWidth, font: labelFont, lineSpacing: lineSpacing)
-        return numberOfLines > 2
+        return numberOfLines
     }
 }
