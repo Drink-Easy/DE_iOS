@@ -307,9 +307,9 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
     }
     
     private func updateReviewView() {
+        reviewView.configureButton(reviewData.count != 3)
+        
         if reviewData.isEmpty {
-            // 리뷰가 없을 때
-            reviewView.moreBtn.isHidden = true
             reviewView.reviewCollectionView.isHidden = true
             reviewView.reviewCollectionView.snp.updateConstraints {
                 $0.height.equalTo(0)
@@ -318,7 +318,6 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
             reviewView.noReviewLabel.isHidden = false
         } else {
             // 리뷰가 있을 때
-            reviewView.moreBtn.isHidden = false
             reviewView.reviewCollectionView.isHidden = false
             reviewView.scoreLabel.isHidden = false
             reviewView.noReviewLabel.isHidden = true
@@ -347,11 +346,6 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
         ].compactMap { $0 }
 
         let tastingNoteString = noseNotes.joined(separator: ", ")
-        
-        DispatchQueue.main.async { [weak self] in
-            //self.setupNavigationBar() // 제목 및 좋아요 설정
-            self?.updateReviewView()
-        }
         
         let infoData = WineDetailInfoModel(
             wineName:wineResponse.name,
@@ -402,6 +396,7 @@ class WineDetailViewController: UIViewController, UIScrollViewDelegate, Firebase
             self.wineDetailsView.configure(infoData)
             
             self.averageTastingNoteView.configure(avgData, self.vintage)
+            self.updateReviewView()
             self.reviewView.configure(reviewData)
             self.reviewView.reviewCollectionView.reloadData()
         }
