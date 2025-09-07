@@ -134,4 +134,8 @@ public class ReviewView: UIView {
     public func configure(_ model: WineAverageReviewModel) {
         score = model.avgMemberRating
     }
+    
+    public func configureButton(_ isHidden: Bool) {
+        moreBtn.isHidden = isHidden
+    }
 }
