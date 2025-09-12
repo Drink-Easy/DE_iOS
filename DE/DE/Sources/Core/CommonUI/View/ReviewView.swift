@@ -131,10 +131,12 @@ public class ReviewView: UIView {
         noReviewLabel.sizeToFit()
     }
     
+    @MainActor
     public func configure(_ model: WineAverageReviewModel) {
         score = model.avgMemberRating
     }
     
+    @MainActor
     public func configureButton(_ isHidden: Bool) {
         moreBtn.isHidden = isHidden
     }
