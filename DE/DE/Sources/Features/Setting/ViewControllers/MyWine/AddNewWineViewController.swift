@@ -199,7 +199,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         
         let vc = ReusableVintageSelectionViewController(viewModel: wineManager)
         
-        vc.onComplete = { [weak self] selectYear in
+        vc.onComplete = { [weak self] _ in
             let nextVC = BuyNewWineDateViewController()
             self?.navigationController?.pushViewController(nextVC, animated: true)
         }

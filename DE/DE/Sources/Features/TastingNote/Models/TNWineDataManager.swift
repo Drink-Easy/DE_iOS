@@ -9,7 +9,7 @@ class TNWineDataManager {
     
     var wineId: Int
     var wineName: String
-    var vintage: Int
+    var vintage: Int?
     var sort: String
     var country: String
     var region: String
@@ -20,7 +20,7 @@ class TNWineDataManager {
     public init(
         wineId: Int = 0,
         wineName: String = "",
-        vintage: Int = 0,
+        vintage: Int? = nil,
         sort: String = "",
         country: String = "",
         region: String = "",
@@ -69,6 +69,17 @@ class TNWineDataManager {
         variety = ""
     }
     
+    func resetVintage() {
+        vintage = nil
+    }
+    
+    public func getDisplayName() -> String {
+        if let vintage = vintage {
+            return "\(wineName) \(vintage)"
+        } else {
+            return wineName
+        }
+    }
 }
 
 
@@ -86,7 +97,7 @@ extension TNWineDataManager: VintageSelectionViewModel {
     }
 
     func handleBackButton() {
-        resetData()
+        resetVintage()
     }
 
     

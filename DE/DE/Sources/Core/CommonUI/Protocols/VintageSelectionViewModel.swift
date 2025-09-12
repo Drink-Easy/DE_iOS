@@ -2,7 +2,7 @@
 
 import Foundation
 
-public protocol VintageSelectionViewModel {
+public protocol VintageSelectionViewModel: AnyObject {
     // 화면 상단에 표시될 제목 (e.g., 와인 이름)
     var screenTitle: String { get }
     
