@@ -1,6 +1,7 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
 import Foundation
+import CoreModule
 
 class TNWineDataManager {
     // MARK: - Properties
@@ -70,3 +71,23 @@ class TNWineDataManager {
     
 }
 
+
+extension TNWineDataManager: VintageSelectionViewModel {
+    var screenTitle: String {
+        return self.wineName
+    }
+
+    var screenDescription: String {
+        return "빈티지를 선택해 주세요"
+    }
+
+    func save(vintage: Int) {
+        updateWineData(vintage: vintage)
+    }
+
+    func handleBackButton() {
+        resetData()
+    }
+
+    
+}
