@@ -3,8 +3,8 @@
 import UIKit
 import CoreModule
 import DesignSystem
+import SnapKit
 import Then
-import Network
 
 class MyWineVintageView: UIView {
     let despText = "빈티지를 선택해 주세요"
@@ -25,11 +25,11 @@ class MyWineVintageView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setWineName(_ name: String) {
+    func setTopSection(name: String, descText: String) {
         topView.setTitleLabel(title: name,
                               titleStyle: AppTextStyle.KR.subtitle1,
                               titleColor: AppColor.purple100,
-                              description: despText,
+                              description: descText,
                               descriptionStyle: AppTextStyle.KR.head,
                               descriptionColor: AppColor.black)
     }
