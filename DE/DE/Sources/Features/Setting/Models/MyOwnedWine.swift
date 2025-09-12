@@ -1,5 +1,6 @@
 // Copyright © 2024 DRINKIG. All rights reserved
 
+import CoreModule
 import UIKit
 
 public struct MyOwnedWine {
@@ -139,5 +140,23 @@ public class MyOwnedWineManager {
     
     public func resetVintage() {
         wine.vintage = nil
+    }
+}
+
+extension MyOwnedWineManager: VintageSelectionViewModel {
+    public var screenTitle: String {
+        return getWineName()
+    }
+    
+    public var screenDescription: String {
+        return "빈티지를 선택해 주세요"
+    }
+    
+    public func save(vintage: Int) {
+        setVintage(vintage)
+    }
+    
+    public func handleBackButton() {
+        resetVintage()
     }
 }
