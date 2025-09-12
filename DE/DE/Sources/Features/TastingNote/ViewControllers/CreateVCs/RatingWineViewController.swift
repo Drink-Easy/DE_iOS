@@ -27,10 +27,9 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
         self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardUp), name: UIResponder.keyboardWillShowNotification, object: nil)
-           NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDown), name: UIResponder.keyboardWillHideNotification, object: nil)
         
-        let fullName = "\(wineData.wineName) \(wineData.vintage)"
-        rView.header.setTitleLabel(title: fullName)
+        rView.header.setTitleLabel(title: wineData.getDisplayName())
         rView.infoView.image.sd_setImage(with: URL(string: wineData.imageUrl))
         rView.infoView.countryContents.text = wineData.country + ", " + wineData.region
         rView.infoView.kindContents.text = wineData.sort
@@ -144,9 +143,11 @@ public class RatingWineViewController: UIViewController, FirebaseTrackable {
     }
     
     private func postCreateTastingNote() async throws {
+        guard let vintage = wineData.vintage else { return }
+        
         let createNoteDTO = networkService.makePostNoteDTO(
             wineId: wineData.wineId,
-            vintage: wineData.vintage,
+            vintage: vintage,
             color: tnManager.color,
             tasteDate: tnManager.tasteDate,
             sugarContent: tnManager.sugarContent,

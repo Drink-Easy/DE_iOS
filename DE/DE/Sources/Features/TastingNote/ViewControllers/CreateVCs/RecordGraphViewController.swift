@@ -41,8 +41,7 @@ public class RecordGraphViewController: UIViewController, UIScrollViewDelegate, 
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
         recordGraphView.updateLabels()
-        let fullName = "\(wineData.wineName) \(wineData.vintage)"
-        header.setTitleLabel(title: fullName)
+        header.setTitleLabel(title: wineData.getDisplayName())
     }
     
     public override func viewWillDisappear(_ animated: Bool) {

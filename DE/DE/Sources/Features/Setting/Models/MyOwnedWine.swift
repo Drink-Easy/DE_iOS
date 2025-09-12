@@ -133,6 +133,10 @@ public class MyOwnedWineManager {
         return wine.vintage
     }
     
+    func getOnlyWineName() -> String {
+        return wine.wineName
+    }
+    
     /// 와인 데이터를 초기화
     public func resetWine() {
         wine = MyOwnedWine()
@@ -145,7 +149,7 @@ public class MyOwnedWineManager {
 
 extension MyOwnedWineManager: VintageSelectionViewModel {
     public var screenTitle: String {
-        return getWineName()
+        return getOnlyWineName()
     }
     
     public var screenDescription: String {

@@ -20,8 +20,7 @@ public class TastedDateViewController: UIViewController, FirebaseTrackable {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
-        let fullName = "\(self.wineData.wineName) \(self.wineData.vintage)"
-        tastedDateView.topView.setTitleLabel(title: fullName,
+        tastedDateView.topView.setTitleLabel(title: wineData.getDisplayName(),
                                              titleStyle: AppTextStyle.KR.subtitle1,
                                              titleColor: AppColor.purple100,
                                              description: despText,

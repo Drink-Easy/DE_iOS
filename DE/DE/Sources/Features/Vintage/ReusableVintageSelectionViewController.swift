@@ -13,16 +13,17 @@ final class ReusableVintageSelectionViewController: UIViewController {
     private let viewModel: VintageSelectionViewModel
     
     public var onComplete: ((Int) -> Void)?
-
+    
     init(viewModel: VintageSelectionViewModel) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-        
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.vintageView.setTopSection(name: viewModel.screenTitle, descText: viewModel.screenDescription)
@@ -40,13 +41,13 @@ final class ReusableVintageSelectionViewController: UIViewController {
         setupActions()
         setupNavigationBar()
     }
-
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-//        logScreenView(fileName: #file)
+        //        logScreenView(fileName: #file)
     }
     
-    func setupUI() {
+    private func setupUI() {
         view.backgroundColor = AppColor.background
         
         view.addSubview(vintageView)
@@ -57,7 +58,7 @@ final class ReusableVintageSelectionViewController: UIViewController {
         }
     }
     
-    func setupActions() {
+    private func setupActions() {
         vintageView.nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
         
         vintageView.yearPicker.onYearSelected = { [weak self] year in
@@ -71,7 +72,7 @@ final class ReusableVintageSelectionViewController: UIViewController {
                 maxYear: vintageView.yearPicker.maxYear,
                 selectedYear: vintageView.yearPicker.selectedYear
             )
-
+            
             modal.onYearConfirmed = { [weak self] selected in
                 self?.vintageView.yearPicker.setSelectedYear(selected)
                 self?.vintageView.nextButton.isEnabled = true
@@ -79,7 +80,7 @@ final class ReusableVintageSelectionViewController: UIViewController {
             }
             
             modal.modalPresentationStyle = .pageSheet
-
+            
             if let sheet = modal.sheetPresentationController {
                 sheet.detents = [.medium()]
                 sheet.prefersGrabberVisible = true

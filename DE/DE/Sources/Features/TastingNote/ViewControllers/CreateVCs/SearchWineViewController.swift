@@ -173,7 +173,7 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
         
         let selectVintageVC = ReusableVintageSelectionViewController(viewModel: TNWineDataManager.shared)
         
-        selectVintageVC.onComplete = { [weak self] selectedYear in
+        selectVintageVC.onComplete = { [weak self] _ in
             let vc = TastedDateViewController()
             self?.navigationController?.pushViewController(vc, animated: true)
         }
