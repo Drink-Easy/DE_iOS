@@ -20,12 +20,12 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.isNavigationBarHidden = false
         self.view.addSubview(indicator)
     }
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.isNavigationBarHidden = false
         view.backgroundColor = AppColor.background
         self.view = searchHomeView
         searchHomeView.noSearchResultLabel.isHidden = true
@@ -168,9 +168,17 @@ public class SearchWineViewController : UIViewController, UITableViewDelegate, U
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.searchWineCellTapped, fileName: #file, cellID: "SearchResultTableViewCell")
         
-        let vc = TastedDateViewController()
+        
         TNWineDataManager.shared.updateWineData(wineId: wineResults[indexPath.row].wineId, wineName: wineResults[indexPath.row].name, sort: wineResults[indexPath.row].sort, country: wineResults[indexPath.row].country, region: wineResults[indexPath.row].region, imageUrl: wineResults[indexPath.row].imageUrl, variety: wineResults[indexPath.row].variety)
-        navigationController?.pushViewController(vc, animated: true)
+        
+        let selectVintageVC = ReusableVintageSelectionViewController(viewModel: TNWineDataManager.shared)
+        
+        selectVintageVC.onComplete = { [weak self] selectedYear in
+            let vc = TastedDateViewController()
+            self?.navigationController?.pushViewController(vc, animated: true)
+        }
+        
+        navigationController?.pushViewController(selectVintageVC, animated: true)
     }
     
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
