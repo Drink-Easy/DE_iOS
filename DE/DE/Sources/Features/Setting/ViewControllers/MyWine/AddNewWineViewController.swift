@@ -15,6 +15,7 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
     var registerWine: MyOwnedWine = MyOwnedWine()
     let networkService = WineService()
     private let errorHandler = NetworkErrorHandler()
+    let wineManager = MyOwnedWineManager.shared
     
     var isLoading = false
     var currentPage = 0
@@ -190,12 +191,19 @@ public class AddNewWineViewController : UIViewController, UITextFieldDelegate, U
         logCellClick(screenName: screenName, indexPath: indexPath, cellName: Tracking.CellEvent.searchWineCellTapped, fileName: #file, cellID: "SearchResultTableViewCell")
         
         /// 다른 프로퍼티 초기화 후 진행
-        MyOwnedWineManager.shared.resetWine()
+        wineManager.resetWine()
         
-        let vc = SelectVintageViewController()
         let selectedWine = wineResults[indexPath.row]
-        MyOwnedWineManager.shared.setWineId(selectedWine.wineId)
-        MyOwnedWineManager.shared.setWineName(selectedWine.name)
+        wineManager.setWineId(selectedWine.wineId)
+        wineManager.setWineName(selectedWine.name)
+        
+        let vc = ReusableVintageSelectionViewController(viewModel: wineManager)
+        
+        vc.onComplete = { [weak self] selectYear in
+            let nextVC = BuyNewWineDateViewController()
+            self?.navigationController?.pushViewController(nextVC, animated: true)
+        }
+
         navigationController?.pushViewController(vc, animated: true)
     }
     

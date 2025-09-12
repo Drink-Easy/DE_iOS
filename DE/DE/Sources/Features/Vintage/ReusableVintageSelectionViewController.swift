@@ -5,18 +5,27 @@ import CoreModule
 import DesignSystem
 import SnapKit
 import Then
-// step 1. 빈티지 선택
 
-final class SelectVintageViewController: UIViewController {
-
+final class ReusableVintageSelectionViewController: UIViewController {
     let navigationBarManager = NavigationBarManager()
     let vintageView = MyWineVintageView()
     
-    let wineManager = MyOwnedWineManager.shared
+    private let viewModel: VintageSelectionViewModel
     
+    public var onComplete: ((Int) -> Void)?
+
+    init(viewModel: VintageSelectionViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.vintageView.setWineName(wineManager.getWineName())
+        self.vintageView.setTopSection(name: viewModel.screenTitle, descText: viewModel.screenDescription)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -36,7 +45,7 @@ final class SelectVintageViewController: UIViewController {
         super.viewDidAppear(animated)
 //        logScreenView(fileName: #file)
     }
-
+    
     func setupUI() {
         view.backgroundColor = AppColor.background
         
@@ -49,7 +58,7 @@ final class SelectVintageViewController: UIViewController {
     }
     
     func setupActions() {
-        vintageView.nextButton.addTarget(self, action: #selector(nextVC), for: .touchUpInside)
+        vintageView.nextButton.addTarget(self, action: #selector(nextButtonTapped), for: .touchUpInside)
         
         vintageView.yearPicker.onYearSelected = { [weak self] year in
             self?.vintageView.nextButton.isEnabled(isEnabled: true)
@@ -88,34 +97,34 @@ final class SelectVintageViewController: UIViewController {
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
-            action: #selector(prevVC)
+            action: #selector(backButtonTapped)
         )
     }
     
-    @objc func prevVC() {
-        wineManager.resetVintage()
+    @objc func backButtonTapped() {
+        viewModel.handleBackButton()
         navigationController?.popViewController(animated: true)
     }
     
-    @objc func nextVC() {
-//        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
+    @objc func nextButtonTapped() {
+        //        logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.nextBtnTapped, fileName: #file)
+        
         guard let selectedYear = vintageView.yearPicker.selectedYear else {
-            // 연도가 선택되지 않았을 경우: Alert 표시 등
             showToastMessage(message: "연도가 선택되지 않았습니다.", yPosition: view.frame.height * 0.5)
             return
         }
         
-        // wineManager에 선택한 연도 저장
-        wineManager.setVintage(selectedYear)
+        // 5. ViewModel에 선택된 빈티지 저장
+        viewModel.save(vintage: selectedYear)
         
-        // 다음 화면으로 이동
-        let vc = BuyNewWineDateViewController()
-        navigationController?.pushViewController(vc, animated: true)
-        
+        // 6. 외부에서 주입받은 onComplete 클로저 실행
+        onComplete?(selectedYear)
     }
+    
+    
 }
 
-extension SelectVintageViewController: UIAdaptivePresentationControllerDelegate {
+extension ReusableVintageSelectionViewController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         vintageView.yearPicker.updatePickerView(isModalOpen: false)
     }
