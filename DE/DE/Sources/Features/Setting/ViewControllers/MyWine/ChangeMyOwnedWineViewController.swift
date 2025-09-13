@@ -8,13 +8,13 @@ import SnapKit
 import Then
 // 보유와인 정보 수정
 
-class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
+final class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
     var screenName: String = Tracking.VC.updateMyWineVC
     
     weak var delegate: ChildViewControllerDelegate?
     
     let navigationBarManager = NavigationBarManager()
-    lazy var editInfoView = ChangeMyOwnedWineView()
+    lazy var editInfoView = ChangeMyWineView()
     
     let networkService = MyWineService()
     private let errorHandler = NetworkErrorHandler()
@@ -34,6 +34,8 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
         super.viewWillAppear(animated)
         self.view.addSubview(indicator)
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        
+        setData()
     }
     
     public override func viewWillDisappear(_ animated: Bool) {
@@ -59,17 +61,50 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
         configureCalendarSelection()
         editInfoView.priceTextField.textField.addTarget(self, action: #selector(checkEmpty), for: .allEditingEvents)
         editInfoView.nextButton.addTarget(self, action: #selector(completeEdit), for: .touchUpInside)
+        
+        editInfoView.yearPicker.onLabelTapped = { [weak self] in
+            guard let self else { return }
+            
+            let modal = YearPickerModalViewController(
+                minYear: self.editInfoView.yearPicker.minYear,
+                maxYear: self.editInfoView.yearPicker.maxYear,
+                selectedYear: self.editInfoView.yearPicker.selectedYear
+            )
+            
+            modal.onYearConfirmed = { [weak self] selectedYear in
+                self?.editInfoView.yearPicker.setSelectedYear(selectedYear)
+                self?.editInfoView.yearPicker.updatePickerView(isModalOpen: false)
+            }
+            
+            modal.modalPresentationStyle = .pageSheet
+            if let sheet = modal.sheetPresentationController {
+                sheet.detents = [.medium()]
+                sheet.prefersGrabberVisible = true
+                sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+            }
+            
+            modal.presentationController?.delegate = self
+            
+            self.editInfoView.yearPicker.updatePickerView(isModalOpen: true)
+            self.present(modal, animated: true)
+        }
+    }
+    
+    func setData() {
+        guard let wine = registerWine else { return }
+        guard let vintage = wine.getVintage() else { return }
+        
+        editInfoView.setTopSection(name: wine.wineName)
+        editInfoView.yearPicker.setInitalYear(vintage)
+        editInfoView.setWinePrice(wine.purchasePrice)
     }
     
     func setupUI() {
-        guard let wine = registerWine else {return}
-        
-        editInfoView.setWinePrice(wine.purchasePrice)
-        
         view.addSubview(editInfoView)
         editInfoView.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).offset(DynamicPadding.dynamicValue(40))
-            make.leading.trailing.equalToSuperview().inset(DynamicPadding.dynamicValue(24))
+            make.top.equalTo(view.safeAreaLayoutGuide)
+
+            make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
     }
@@ -111,10 +146,11 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
     @objc private func deleteNewWine() {
 
         guard let currentWine = self.registerWine else { return }
+        guard let vintage = currentWine.getVintage() else { return }
         
         let alert = UIAlertController(
             title: "이 와인을 삭제하시겠습니까?",
-            message: "\(currentWine.wineName)",
+            message: "\(currentWine.wineName) \(vintage)",
             preferredStyle: .alert
         )
         
@@ -136,12 +172,25 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
     @objc
     private func completeEdit() {
         logButtonClick(screenName: screenName, buttonName: Tracking.ButtonEvent.updatemyWineBtnTapped, fileName: #file)
+        
         guard let wine = registerWine else { return }
-        callUpdateAPI(wineId: wine.myWineId, price: checkPrice(), buyDate: checkDate())
-        DispatchQueue.main.async {
-            self.view.hideBlockingView()
-            self.navigationController?.popViewController(animated: true)
+        guard let selectedVintage = editInfoView.yearPicker.selectedYear else {
+                showToastMessage(message: "빈티지가 선택되지 않았습니다.", yPosition: view.frame.height * 0.5)
+                return
+            }
+        
+        callUpdateAPI(
+            wineId: wine.myWineId,
+            price: checkPrice(),
+            vintage: selectedVintage,
+            buyDate: checkDate()
+        )
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            self?.view.hideBlockingView()
+            self?.navigationController?.popViewController(animated: true)
         }
+
     }
     
     @objc func checkEmpty() {
@@ -193,8 +242,13 @@ class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable {
         }
     }
     
-    private func callUpdateAPI(wineId: Int, price: Int?, buyDate: String?) {
-        let data = networkService.makeUpdateDTO(buyDate: buyDate, buyPrice: price)
+    private func callUpdateAPI(wineId: Int, price: Int?, vintage: Int?, buyDate: String?) {
+        let data = networkService.makeUpdateDTO(
+            buyDate: buyDate,
+            vintage: vintage,
+            buyPrice: price
+        )
+        
         self.view.showBlockingView()
         Task {
             do {
@@ -241,5 +295,11 @@ extension ChangeMyOwnedWineViewController: UICalendarViewDelegate {
             }
         }
         return nil
+    }
+}
+
+extension ChangeMyOwnedWineViewController: UIAdaptivePresentationControllerDelegate {
+    public func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        editInfoView.yearPicker.updatePickerView(isModalOpen: false)
     }
 }
