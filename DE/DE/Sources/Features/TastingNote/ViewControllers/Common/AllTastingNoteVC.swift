@@ -180,7 +180,12 @@ extension AllTastingNoteVC: UICollectionViewDataSource, UICollectionViewDelegate
         }
         
         let tnItem = currentTastingNoteList[indexPath.row]
-        cell.configure(name: tnItem.wineName, imageURL: tnItem.imageUrl)
+        var displayedName = tnItem.wineName
+        if let vintage = tnItem.vintageYear {
+            displayedName += " \(vintage)"
+        }
+        
+        cell.configure(name: displayedName, imageURL: tnItem.imageUrl)
         return cell
     }
     

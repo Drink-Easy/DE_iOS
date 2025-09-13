@@ -30,7 +30,6 @@ public class WineTastingNoteVC: UIViewController, PropertyHeaderDelegate, UIScro
         $0.isScrollEnabled = true
         $0.bounces = false
         $0.alwaysBounceVertical = false
-//        $0.contentInsetAdjustmentBehavior = .never
     }
     
     let contentView = UIView().then {

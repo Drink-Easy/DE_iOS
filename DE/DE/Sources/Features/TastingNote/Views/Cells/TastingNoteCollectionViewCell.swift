@@ -27,6 +27,7 @@ class TastingNoteCollectionViewCell: UICollectionViewCell {
         l.textColor = AppColor.gray100
         l.textAlignment = .center
         l.numberOfLines = 2
+        l.lineBreakMode = .byTruncatingMiddle
     }
     
     override init(frame: CGRect) {
