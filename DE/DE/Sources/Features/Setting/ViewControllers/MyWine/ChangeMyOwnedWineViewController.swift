@@ -57,7 +57,7 @@ final class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable
         logScreenView(fileName: #file)
     }
     
-    func setupActions() {
+    private func setupActions() {
         configureCalendarSelection()
         editInfoView.priceTextField.textField.addTarget(self, action: #selector(checkEmpty), for: .allEditingEvents)
         editInfoView.nextButton.addTarget(self, action: #selector(completeEdit), for: .touchUpInside)
@@ -81,16 +81,15 @@ final class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable
                 sheet.detents = [.medium()]
                 sheet.prefersGrabberVisible = true
                 sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+                sheet.delegate = self
             }
-            
-            modal.presentationController?.delegate = self
             
             self.editInfoView.yearPicker.updatePickerView(isModalOpen: true)
             self.present(modal, animated: true)
         }
     }
     
-    func setData() {
+    private func setData() {
         guard let wine = registerWine else { return }
         
         editInfoView.setTopSection(name: wine.wineName)
@@ -98,7 +97,7 @@ final class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable
         editInfoView.yearPicker.setInitialYear(wine.getVintage())
     }
     
-    func setupUI() {
+    private func setupUI() {
         view.addSubview(editInfoView)
         editInfoView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
@@ -108,7 +107,7 @@ final class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable
         }
     }
     
-    func setupNavigationBar() {
+    private func setupNavigationBar() {
         navigationBarManager.addBackButton(
             to: navigationItem,
             target: self,
@@ -297,7 +296,7 @@ extension ChangeMyOwnedWineViewController: UICalendarViewDelegate {
     }
 }
 
-extension ChangeMyOwnedWineViewController: UIAdaptivePresentationControllerDelegate {
+extension ChangeMyOwnedWineViewController: UIAdaptivePresentationControllerDelegate, UISheetPresentationControllerDelegate {
     public func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         editInfoView.yearPicker.updatePickerView(isModalOpen: false)
     }

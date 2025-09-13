@@ -85,8 +85,8 @@ final class ReusableVintageSelectionViewController: UIViewController {
                 sheet.detents = [.medium()]
                 sheet.prefersGrabberVisible = true
                 sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+                sheet.delegate = self
             }
-            modal.presentationController?.delegate = self
             
             vintageView.yearPicker.updatePickerView(isModalOpen: true)
             self.present(modal, animated: true)
@@ -125,7 +125,7 @@ final class ReusableVintageSelectionViewController: UIViewController {
     
 }
 
-extension ReusableVintageSelectionViewController: UIAdaptivePresentationControllerDelegate {
+extension ReusableVintageSelectionViewController: UIAdaptivePresentationControllerDelegate, UISheetPresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         vintageView.yearPicker.updatePickerView(isModalOpen: false)
     }
