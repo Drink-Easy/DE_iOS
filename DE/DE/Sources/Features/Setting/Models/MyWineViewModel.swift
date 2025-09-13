@@ -58,4 +58,16 @@ public struct MyWineViewModel {
         let components = Calendar.current.dateComponents([.year, .month, .day], from: date)
         return components
     }
+    
+    public func getVintage() -> Int? {
+        return vintage
+    }
+    
+    public func getDisplayedName() -> String {
+        if let vintage = vintage {
+            return "\(wineName) \(vintage)"
+        } else {
+            return wineName
+        }
+    }
 }
