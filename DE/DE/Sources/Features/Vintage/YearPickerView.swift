@@ -50,6 +50,10 @@ final class YearPickerView: UIView {
         super.init(coder: coder)
         setupUI()
     }
+    
+    public func setInitalYear(_ year: Int) {
+        self.selectedYear = year
+    }
 
     private func setupUI() {
         containerView.do {
