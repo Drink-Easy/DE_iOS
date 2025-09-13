@@ -27,6 +27,7 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        fetchMyWineAPI()
         self.view.addSubview(indicator)
         self.hidesBottomBarWhenPushed = true
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
@@ -41,32 +42,30 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
         super.viewDidLoad()
         setupUI()
         setupNavigationBar()
-        setWineData()
+        setActions()
         wineDetailView.setEditButton(showEditButton: true)
     }
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         logScreenView(fileName: #file)
-        fetchMyWineAPI()
     }
     
+    private func setActions() {
+        wineDetailView.editButton.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
+        deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
+    }
+    
+    @MainActor
     private func setWineData() {
         guard let currentWine = self.registerWine else { return }
-        var displayName = currentWine.wineName
-        if let vintage = currentWine.vintage {
-            displayName += " \(vintage)"
-        }
-        
-        header.setWineName(displayName)
+        header.setWineName(currentWine.getDisplayedName())
         header.infoView.image.sd_setImage(with: URL(string: currentWine.wineImageUrl), placeholderImage: UIImage(named: "placeholder"))
         header.infoView.typeContents.text = "\(currentWine.wineCountry), \(currentWine.wineRegion)"
         header.infoView.countryContents.text = currentWine.wineVariety
         header.infoView.kindContents.text = currentWine.wineSort
         
         self.setWineDetailInfo(currentWine)
-        wineDetailView.editButton.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
-        deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
     }
     
     // MARK: - Setup Methods
@@ -177,28 +176,34 @@ public class MyOwnedWineInfoViewController: UIViewController, ChildViewControlle
         Task {
             do {
                 let data = try await networkService.fetchMyWine(myWineId: registerWine!.myWineId)
-                DispatchQueue.main.async { [self] in
-                    self.registerWine = MyWineViewModel(
-                        myWineId: data.myWineId,
-                        wineId: data.wineId,
-                        wineName: data.wineName,
-                        vintage: data.vintageYear,
-                        wineSort: data.wineSort,
-                        wineCountry: data.wineCountry,
-                        wineRegion: data.wineRegion,
-                        wineVariety: data.wineVariety,
-                        wineImageUrl: data.wineImageUrl,
-                        purchaseDate: data.purchaseDate,
-                        purchasePrice: data.purchasePrice,
-                        period: data.period
-                    )
+                
+                registerWine = MyWineViewModel(
+                    myWineId: data.myWineId,
+                    wineId: data.wineId,
+                    wineName: data.wineName,
+                    vintage: data.vintageYear,
+                    wineSort: data.wineSort,
+                    wineCountry: data.wineCountry,
+                    wineRegion: data.wineRegion,
+                    wineVariety: data.wineVariety,
+                    wineImageUrl: data.wineImageUrl,
+                    purchaseDate: data.purchaseDate,
+                    purchasePrice: data.purchasePrice,
+                    period: data.period
+                )
+                
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
                     self.setWineData()
-//                    self.needUpdate = false
+                    
                     self.view.hideBlockingView()
                 }
             } catch {
-                self.view.hideBlockingView()
-                errorHandler.handleNetworkError(error, in: self)
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.view.hideBlockingView()
+                    errorHandler.handleNetworkError(error, in: self)
+                }
             }
         }
     }
