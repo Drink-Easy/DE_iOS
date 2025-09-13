@@ -8,8 +8,6 @@ import Then
 
 class MyNoteTopView: UIView {
     public lazy var header = UILabel().then {
-        $0.textColor = AppColor.black
-        $0.font = UIFont.pretendard(.semiBold, size: 24)
         $0.numberOfLines = 0
     }
     
@@ -32,7 +30,7 @@ class MyNoteTopView: UIView {
     }
     
     public func setWineName(_ name: String) {
-        self.header.text = name
+        AppTextStyle.KR.head.apply(to: header, text: name, color: AppColor.black)
     }
     
     private func setConstraints() {
