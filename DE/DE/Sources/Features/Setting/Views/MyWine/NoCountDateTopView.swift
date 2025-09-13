@@ -9,19 +9,6 @@ import SnapKit
 // 기기대응 완료
 /// 날짜 있는 쪽에만 쓰는  빅타이틀
 class NoCountDateTopView: UIView {
-    
-//    public lazy var title = UILabel().then {
-//        $0.textColor = AppColor.purple100
-//        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
-//        $0.numberOfLines = 0
-//    }
-//    
-//    public lazy var desp = UILabel().then {
-//        $0.textColor = AppColor.black
-//        $0.font = UIFont.ptdSemiBoldFont(ofSize: 24)
-//        $0.numberOfLines = 1
-//    }
-    
     public lazy var titleLabel = UILabel().then {
         $0.numberOfLines = 0
     }
@@ -76,24 +63,13 @@ class NoCountDateTopView: UIView {
     }
     
     private func addComponents() {
-        [titleLabel].forEach{ self.addSubview($0) }
+        addSubview(titleLabel)
     }
     
     private func constraints() {
         titleLabel.snp.makeConstraints {
             $0.top.bottom.leading.trailing.equalToSuperview()
         }
-        
-//        title.snp.makeConstraints {
-//            $0.top.equalToSuperview()
-//            $0.leading.trailing.equalToSuperview()
-//        }
-//        
-//        desp.snp.makeConstraints {
-//            $0.top.equalTo(title.snp.bottom).offset(1)
-//            $0.leading.trailing.equalToSuperview()
-//            $0.bottom.equalToSuperview()
-//        }
     }
 }
 
