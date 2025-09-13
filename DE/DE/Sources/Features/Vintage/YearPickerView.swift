@@ -51,7 +51,7 @@ final class YearPickerView: UIView {
         setupUI()
     }
     
-    public func setInitalYear(_ year: Int) {
+    public func setInitialYear(_ year: Int?) {
         self.selectedYear = year
     }
 

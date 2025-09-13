@@ -92,11 +92,10 @@ final class ChangeMyOwnedWineViewController: UIViewController, FirebaseTrackable
     
     func setData() {
         guard let wine = registerWine else { return }
-        guard let vintage = wine.getVintage() else { return }
         
         editInfoView.setTopSection(name: wine.wineName)
-        editInfoView.yearPicker.setInitalYear(vintage)
         editInfoView.setWinePrice(wine.purchasePrice)
+        editInfoView.yearPicker.setInitialYear(wine.getVintage())
     }
     
     func setupUI() {
