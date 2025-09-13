@@ -8,9 +8,11 @@ import CoreModule
 import DesignSystem
 
 final class ChangeMyWineView: UIView {
+    // MARK: - Constants
     let decsText = "빈티지"
     let dateTitle = "구매 일자"
     
+    // MARK: - Subviews
     let scrollView = UIScrollView()
     let containerView = UIView()
     
@@ -55,6 +57,7 @@ final class ChangeMyWineView: UIView {
     
     public lazy var nextButton = CustomButton(title: "저장하기", isEnabled: true)
     
+    // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -65,11 +68,7 @@ final class ChangeMyWineView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setWinePrice(_ price: Int) {
-        self.priceTextField.textField.text = "\(price)"
-    }
-    
-    func setupUI() {
+    private func setupUI() {
         backgroundColor = AppColor.background
         AppTextStyle.KR.subtitle1.apply(to: dateTitleLabel, text: dateTitle, color: AppColor.black)
         scrollView.showsHorizontalScrollIndicator = false
@@ -82,16 +81,7 @@ final class ChangeMyWineView: UIView {
         containerView.addSubviews(topView, yearPicker, thinDivider1, priceTextField, thinDivider2, dateTitleLabel, calendarContainer)
     }
     
-    public func setTopSection(name: String) {
-        topView.setTitleLabel(title: name,
-                              titleStyle: AppTextStyle.KR.body1,
-                              titleColor: AppColor.purple100,
-                              description: decsText,
-                              descriptionStyle: AppTextStyle.KR.subtitle1,
-                              descriptionColor: AppColor.black)
-    }
-    
-    func setConstraints() {
+    private func setConstraints() {
         nextButton.snp.makeConstraints {
             $0.bottom.equalToSuperview().inset(42)
             $0.leading.trailing.equalToSuperview().inset(24)
@@ -150,5 +140,19 @@ final class ChangeMyWineView: UIView {
             $0.height.equalTo(calendarContainer.snp.width).multipliedBy(1.15)
             $0.bottom.equalToSuperview().inset(24)
         }
+    }
+    
+    // MARK: - Public Functions
+    public func setTopSection(name: String) {
+        topView.setTitleLabel(title: name,
+                              titleStyle: AppTextStyle.KR.body1,
+                              titleColor: AppColor.purple100,
+                              description: decsText,
+                              descriptionStyle: AppTextStyle.KR.subtitle1,
+                              descriptionColor: AppColor.black)
+    }
+    
+    public func setWinePrice(_ price: Int) {
+        self.priceTextField.textField.text = "\(price)"
     }
 }
