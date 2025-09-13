@@ -47,9 +47,7 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
                          textFieldPlaceholder: String, validationText: String) {
         
         // 설명 라벨 설정
-        descriptionLabel.text = descriptionLabelText
-        descriptionLabel.textColor = AppColor.black
-        descriptionLabel.font = UIFont.pretendard(.semiBold, size: 18)
+        AppTextStyle.KR.subtitle1.apply(to: descriptionLabel, text: descriptionLabelText, color: AppColor.black)
         
         // 텍스트 필드 설정
         textField.placeholder = textFieldPlaceholder
@@ -85,16 +83,18 @@ public class CustomTextFieldView: UIView, UITextFieldDelegate {
         
         descriptionLabel.snp.makeConstraints { make in
             make.top.equalToSuperview()
-            make.leading.equalToSuperview().offset(8)
+            make.leading.equalToSuperview()
         }
+        
         textField.snp.makeConstraints { make in
-            make.top.equalTo(descriptionLabel.snp.bottom).offset(10)
+            make.top.equalTo(descriptionLabel.snp.bottom).offset(20)
             make.leading.trailing.bottom.equalToSuperview()
             make.height.equalTo(DynamicPadding.dynamicValue(48.0))
         }
+        
         validationLabel.snp.makeConstraints { make in
             make.top.equalTo(textField.snp.bottom).offset(5)
-            make.leading.equalToSuperview().inset(8)
+            make.leading.equalToSuperview().inset(4)
         }
     }
     
